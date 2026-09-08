@@ -165,4 +165,4 @@ Docker sẽ xóa TẤT CẢ mọi thứ đang bị tắt. Do đó chúng ta cầ
    exit
    ```
    **Ví dụ câu lệnh đúng sẽ trông như thế này:** 
-   `select vdisk file="C:\Users\anhkc\AppData\Local\Docker\wsl\disk\docker_data.vhdx"`
+   `select vdisk file="C:\Users\HP\AppData\Local\Docker\wsl\disk\docker_data.vhdx"`
