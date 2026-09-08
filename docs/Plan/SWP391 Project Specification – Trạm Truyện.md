@@ -139,11 +139,10 @@ Kiến trúc này phù hợp với yêu cầu Codebase & Database của SWP391 v
 
 | Actor | Responsibility |
 |---|---|
-| Guest | Browse, search và đọc truyện |
-| Member | Đọc truyện, tủ sách, lịch sử, comment, report, xin cấp quyền tác giả |
-| Author | Là Member đã được cấp quyền, có thể đăng tải và quản lý truyện/chương |
-| Staff | Kiểm duyệt truyện, chương, comment, report và duyệt yêu cầu cấp quyền |
-| Admin | Quản lý user, role, category, system settings (tỷ giá quy đổi) và hệ thống |
+| Guest | Browse, search và đọc các chương truyện miễn phí |
+| Member | Đọc truyện, tủ sách, bookmark & tiến độ đọc, comment, report, nạp Coin, mở khóa chương VIP, sáng tác/đăng truyện & nhận chia sẻ doanh thu |
+| Staff | Kiểm duyệt truyện đăng mới, ẩn comment vi phạm và xử lý báo cáo lỗi chương |
+| Admin | Quản lý user, role, category, system settings (tỷ giá Coin, tỷ lệ chia sẻ doanh thu), đối soát giao dịch và hệ thống |
 
 ---
 
@@ -163,22 +162,23 @@ Tối thiểu phải đáp ứng yêu cầu môn học:
 1. users
 2. roles
 3. user_roles
-4. novels
-5. chapters
-6. categories
+4. password_reset_tokens
+5. categories
+6. novels
 7. novel_categories
-8. bookshelves
-9. reading_history
-10. comments
-11. chapter_reports
-12. reading_progress
-13. novel_reviews
-14. notifications
+8. chapters
+9. bookshelves
+10. user_read_chapters
+11. reading_progress
+12. comments
+13. chapter_reports
+14. unlocked_chapters
 15. transactions
-16. system_settings
+16. withdrawal_requests
+17. system_settings
 ```
 
-Có thể giảm còn 12 bảng nếu một số chức năng không cần triển khai.
+Hệ thống gồm đúng **17 tables** chuẩn hóa, đầy đủ PK/FK và quan hệ ràng buộc.
 
 ---
 
@@ -188,18 +188,18 @@ Team gồm **5 members**.
 
 Mục tiêu phân công:
 
-> Mỗi member khoảng **10 business functions**.
+> Mỗi member phụ trách đúng **10 business functions** theo quy trình liền mạch và Actor rõ ràng.
 
 Tổng:
 
 ```text
-Member 1 ≈ 10 functions
-Member 2 ≈ 10 functions
-Member 3 ≈ 12 functions
-Member 4 ≈ 10 functions
-Member 5 ≈ 10 functions
+Member 1: 10 functions (Novel & Creator Management)
+Member 2: 10 functions (Chapter, Reader & In-App Purchases)
+Member 3: 10 functions (Authentication & User Management)
+Member 4: 10 functions (Category, Search & Leaderboard)
+Member 5: 10 functions (Interaction, Moderation & Financial Admin)
 
-Total ≈ 52 tracked functions
+Total = 50 tracked functions
 ```
 
 **Lưu ý quan trọng:** 52 tracked functions không có nghĩa là phải tạo 52 use cases hoặc mỗi function đều phải có 240 LOC.
@@ -220,50 +220,55 @@ Do đó project vẫn phải kiểm soát tổng scope trong khoảng:
 1800–3600 LOC
 ```
 
-50 functions ở đây chủ yếu dùng để **chia workload và tracking contribution**.
+47 functions ở đây chủ yếu dùng để **chia workload và tracking contribution**.
 
 ---
 
-# 8. MEMBER 1 – NOVEL MANAGEMENT
+# 8. MEMBER 1 – NOVEL & CREATOR MANAGEMENT
 
 ## Functions
 
 | ID | Function |
 |---|---|
-| M1-F01 | Create Novel |
+| M1-F01 | Create Novel (Member) |
 | M1-F02 | View Novel List |
 | M1-F03 | View Novel Details |
-| M1-F04 | Update Novel |
+| M1-F04 | Update Novel & Upload Cover |
 | M1-F05 | Delete/Archive Novel |
-| M1-F06 | Upload Novel Cover |
-| M1-F07 | Submit Novel for Review (Req. 3 Drafts) |
-| M1-F08 | Review Novel Submission |
-| M1-F09 | Approve/Reject Novel |
-| M1-F10 | Manage Novel Status |
+| M1-F06 | Submit Novel for Review (Req. 3 Drafts) |
+| M1-F07 | Review Novel Submission (Staff) |
+| M1-F08 | Approve/Reject Novel (Staff) |
+| M1-F09 | Manage My Uploaded Novels (Member) |
+| M1-F10 | Request Withdrawal (Member) |
 
 ## Main Responsibility
 
 ```text
-Novel
-Novel Metadata
-Novel Cover
-Novel Status
-Novel Approval
+Novel CRUD & Metadata
+Novel Cover & Status
+Novel Approval Workflow
+Creator Story Management
+Creator Withdrawal Request
 ```
 
 ## Main Classes
 
 ```text
 NovelController
+WithdrawalController
 NovelService
+WithdrawalService
 NovelServiceImpl
+WithdrawalServiceImpl
 NovelRepository
+WithdrawalRequestRepository
 Novel
+WithdrawalRequest
 ```
 
 ---
 
-# 9. MEMBER 2 – CHAPTER & READER
+# 9. MEMBER 2 – CHAPTER, READER & IN-APP PURCHASES
 
 ## Functions
 
@@ -274,32 +279,37 @@ Novel
 | M2-F03 | View Chapter Details |
 | M2-F04 | Update Chapter |
 | M2-F05 | Delete Chapter |
-| M2-F06 | Validate Chapter Number |
-| M2-F07 | Manage Chapter Visibility & VIP |
-| M2-F08 | Read Chapter & Unlock VIP |
-| M2-F09 | Navigate Previous/Next Chapter |
-| M2-F10 | Save Reading Progress |
+| M2-F06 | Manage Chapter Visibility & VIP |
+| M2-F07 | Read Chapter & Mark Read |
+| M2-F08 | Save Reading Progress & Bookmark |
+| M2-F09 | Top-up Coin / Deposit (VNPay/Momo) |
+| M2-F10 | Unlock VIP Chapter with Coin |
 
 ## Main Responsibility
 
 ```text
-Chapter CRUD
-Chapter validation
-Chapter visibility
-Reader
-Navigation
-Reading progress
+Chapter CRUD & Visibility
+Reader & Reading Progress
+Mark Read Chapters
+In-App Payment (Deposit)
+VIP Chapter Purchase
 ```
 
 ## Main Classes
 
 ```text
 ChapterController
+PaymentController
 ChapterService
+PaymentService
 ChapterServiceImpl
+PaymentServiceImpl
 ChapterRepository
+TransactionRepository
+UnlockedChapterRepository
 Chapter
-ReadingProgress
+UnlockedChapter
+Transaction
 ```
 
 ---
@@ -313,28 +323,22 @@ ReadingProgress
 | M3-F01 | Register |
 | M3-F02 | Login |
 | M3-F03 | Logout |
-| M3-F04 | View Profile |
-| M3-F05 | Update Profile |
-| M3-F06 | Upload Avatar |
+| M3-F04 | Forgot / Reset Password |
+| M3-F05 | View Profile |
+| M3-F06 | Update Profile & Avatar |
 | M3-F07 | Change Password |
-| M3-F08 | View User List |
-| M3-F09 | Change User Role |
-| M3-F10 | Ban/Enable User |
-| M3-F11 | Request Author Role |
-| M3-F12 | Approve/Reject Role Request |
-| M3-F13 | Top-up Coin / Deposit |
-| M3-F14 | View Wallet Balance & Transaction History |
-| M3-F15 | Manage Transactions (Admin) |
-| M3-F16 | Manage System Settings |
+| M3-F08 | View User List (Admin) |
+| M3-F09 | Change User Role (Admin) |
+| M3-F10 | Ban/Enable User (Admin) |
 
 ## Main Responsibility
 
 ```text
-Authentication
-Authorization
-Profile
-User management
-Role management
+Authentication (Login/Register/Session)
+Password Reset Token Workflow
+Profile & Avatar Management
+User List & Ban/Enable
+Role Assignment (Staff/Admin)
 ```
 
 ## Main Classes
@@ -344,14 +348,19 @@ AuthController
 UserController
 AuthService
 UserService
+AuthServiceImpl
+UserServiceImpl
 UserRepository
+RoleRepository
+PasswordResetTokenRepository
 User
 Role
+PasswordResetToken
 ```
 
 ---
 
-# 11. MEMBER 4 – CATEGORY & SEARCH
+# 11. MEMBER 4 – CATEGORY, SEARCH & LEADERBOARD
 
 ## Functions
 
@@ -359,23 +368,24 @@ Role
 |---|---|
 | M4-F01 | Create Category |
 | M4-F02 | View Category List |
-| M4-F03 | View Category Details |
-| M4-F04 | Update Category |
-| M4-F05 | Delete Category |
-| M4-F06 | Assign Category to Novel |
-| M4-F07 | Remove Category from Novel |
-| M4-F08 | Search Novel by Keyword |
-| M4-F09 | Filter Novel by Category/Type |
-| M4-F10 | Advanced Search & Sorting |
+| M4-F03 | Update Category |
+| M4-F04 | Delete Category |
+| M4-F05 | Assign Category to Novel |
+| M4-F06 | Remove Category from Novel |
+| M4-F07 | Search Novel by Keyword |
+| M4-F08 | Filter Novel by Category/Status |
+| M4-F09 | Sort Novels List |
+| M4-F10 | Top Leaderboard (Day/Week/Month/All-time) |
 
 ## Main Responsibility
 
 ```text
-Category
-Novel classification
-Search
-Filter
-Sorting
+Category CRUD
+Novel Classification
+Keyword Search
+Category & Status Filter
+Novel Sorting (Latest/Views/Chapters/A-Z)
+Leaderboard Views Analytics
 ```
 
 ## Main Classes
@@ -383,8 +393,10 @@ Sorting
 ```text
 CategoryController
 SearchController
+LeaderboardController
 CategoryService
 SearchService
+LeaderboardService
 CategoryRepository
 NovelRepository
 Category
@@ -392,31 +404,31 @@ Category
 
 ---
 
-# 12. MEMBER 5 – INTERACTION & MODERATION
+# 12. MEMBER 5 – INTERACTION, MODERATION & FINANCIAL ADMIN
 
 ## Functions
 
 | ID | Function |
 |---|---|
 | M5-F01 | Add Novel to Bookshelf |
-| M5-F02 | View Bookshelf |
+| M5-F02 | View Bookshelf & Bookmark Progress |
 | M5-F03 | Remove from Bookshelf |
-| M5-F04 | View Reading History |
-| M5-F05 | Clear Reading History |
-| M5-F06 | Create Comment |
-| M5-F07 | View Comment List |
-| M5-F08 | Hide/Delete Comment |
-| M5-F09 | Create Chapter Issue Report |
-| M5-F10 | Process/Resolve Issue Report |
+| M5-F04 | Create Comment |
+| M5-F05 | View Comment List |
+| M5-F06 | Hide/Delete Comment (Staff/Admin) |
+| M5-F07 | Create Chapter Issue Report |
+| M5-F08 | Process/Resolve Issue Report (Staff) |
+| M5-F09 | Manage & Approve Withdrawals (Admin) |
+| M5-F10 | Manage Transactions & System Settings (Admin) |
 
 ## Main Responsibility
 
 ```text
-Bookshelf
-Reading history
-Comments
-Chapter reports
-Moderation
+Bookshelf Management
+Comment System & Moderation
+Chapter Issue Reports
+Admin Withdrawal Approval
+Financial Audit & System Settings
 ```
 
 ## Main Classes
@@ -425,9 +437,20 @@ Moderation
 BookshelfController
 CommentController
 ReportController
+AdminFinanceController
 BookshelfService
 CommentService
 ReportService
+AdminFinanceService
+BookshelfRepository
+CommentRepository
+ChapterReportRepository
+WithdrawalRequestRepository
+SystemSettingRepository
+Bookshelf
+Comment
+ChapterReport
+SystemSetting
 ```
 
 ---
@@ -458,16 +481,16 @@ UC05 Read Chapter
 
 ```text
 UC06 Register Account
-UC07 Login
+UC07 Login & Forgot Password
 UC08 Manage Profile
-UC09 Manage Bookshelf
-UC10 View Reading History
-UC11 Comment on Novel
-UC12 Report Chapter Issue
-UC13 Request Author Role
-UC14 Create Novel
-UC15 Submit Novel (First Publish)
-UC15b Publish Subsequent Chapters
+UC09 Manage Bookshelf & Bookmark
+UC10 Comment on Novel
+UC11 Report Chapter Issue
+UC12 Top-up Coin & Unlock VIP Chapter
+UC13 Create Novel
+UC14 Submit Novel (First Publish)
+UC14b Publish Subsequent Chapters
+UC14c Request Withdrawal
 ```
 
 ---
@@ -475,11 +498,10 @@ UC15b Publish Subsequent Chapters
 ## 13.3. Staff Use Cases
 
 ```text
-UC16 Manage Chapters
-UC17 Review Novel Submission
-UC18 Moderate Comments
-UC19 Resolve Chapter Issue Report
-UC20 Approve Role Request
+UC15 Manage Chapters
+UC16 Review Novel Submission
+UC17 Moderate Comments
+UC18 Resolve Chapter Issue Report
 ```
 
 ---
@@ -487,11 +509,12 @@ UC20 Approve Role Request
 ## 13.4. Admin Use Cases
 
 ```text
-UC21 Manage Users
-UC22 Manage Roles
-UC23 Manage Categories
-UC24 View Dashboard
-UC25 Manage System Settings
+UC19 Manage Users
+UC20 Manage Roles
+UC21 Manage Categories
+UC22 View Dashboard
+UC23 Manage System Settings
+UC24 Manage & Approve Withdrawals
 ```
 
 Use case naming nên sử dụng dạng **Verb + Object**, phù hợp với cấu trúc RDS template.
@@ -521,14 +544,15 @@ rectangle "Online Reading System" {
   usecase "Read Chapter" as UC05
 
   usecase "Register Account" as UC06
-  usecase "Login" as UC07
+  usecase "Login & Forgot Password" as UC07
   usecase "Manage Profile" as UC08
-  usecase "Manage Bookshelf" as UC09
-  usecase "View Reading History" as UC10
-  usecase "Comment on Novel" as UC11
-  usecase "Report Chapter Issue" as UC12
+  usecase "Manage Bookshelf & Bookmark" as UC09
+  usecase "Comment on Novel" as UC10
+  usecase "Report Chapter Issue" as UC11
+  usecase "Top-up Coin & Unlock VIP" as UC12
   usecase "Create Novel" as UC13
   usecase "Submit Novel" as UC14
+  usecase "Request Withdrawal" as UC14c
 
   usecase "Manage Chapters" as UC15
   usecase "Review Novel Submission" as UC16
@@ -539,6 +563,8 @@ rectangle "Online Reading System" {
   usecase "Manage Roles" as UC20
   usecase "Manage Categories" as UC21
   usecase "View Dashboard" as UC22
+  usecase "Manage System Settings" as UC23
+  usecase "Approve Withdrawals" as UC24
 }
 
 Guest --> UC01
@@ -556,6 +582,7 @@ Member --> UC11
 Member --> UC12
 Member --> UC13
 Member --> UC14
+Member --> UC14c
 
 Staff --> UC15
 Staff --> UC16
@@ -566,6 +593,8 @@ Admin --> UC19
 Admin --> UC20
 Admin --> UC21
 Admin --> UC22
+Admin --> UC23
+Admin --> UC24
 
 @enduml
 ```
@@ -719,7 +748,6 @@ Roles:
 ```text
 ROLE_ADMIN
 ROLE_STAFF
-ROLE_AUTHOR
 ROLE_MEMBER
 ```
 
@@ -741,7 +769,7 @@ Ví dụ:
 ## Workflow 1 – First-time Novel Publishing & Approval
 
 ```text
-Author
+Member (Creator)
   ↓
 Create Novel
   ↓
@@ -761,7 +789,7 @@ Novel Published
 ## Workflow 1.2 – Subsequent Chapter Publishing
 
 ```text
-Author
+Member (Creator)
   ↓
 Create Chapter(s)
   ↓
