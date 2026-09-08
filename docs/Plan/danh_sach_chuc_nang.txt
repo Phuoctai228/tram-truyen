@@ -1,0 +1,78 @@
+DANH SÁCH CHI TIẾT 52 CHỨC NĂNG (THEO CHUẨN SWP391)
+================================================================================
+(Lưu ý: Các thao tác CRUD như Create, Read List, Read Detail, Update, Delete đều được tách riêng thành các chức năng độc lập; Login/Logout cũng được tách riêng để tính khối lượng công việc - LOC).
+
+1. MODULE QUẢN LÝ TRUYỆN (NOVEL MANAGEMENT - MEMBER 1)
+--------------------------------------------------------------------------------
+[ ] M1-F01: Tạo truyện mới (Create Novel) - Chỉ dành cho ROLE_AUTHOR.
+[ ] M1-F02: Xem danh sách truyện (View Novel List)
+[ ] M1-F03: Xem chi tiết truyện (View Novel Details)
+[ ] M1-F04: Cập nhật thông tin truyện (Update Novel)
+[ ] M1-F05: Xóa/Lưu trữ truyện (Delete/Archive Novel)
+[ ] M1-F06: Tải lên ảnh bìa truyện (Upload Novel Cover)
+[ ] M1-F07: Gửi yêu cầu duyệt truyện lần đầu (Submit Novel for Review) - Yêu cầu có ít nhất 3 chương nháp.
+[ ] M1-F08: Xem danh sách truyện chờ duyệt (Review Novel Submission) - Dành cho Staff
+[ ] M1-F09: Phê duyệt/Từ chối truyện (Approve/Reject Novel) - Dành cho Staff
+[ ] M1-F10: Quản lý trạng thái truyện (Manage Novel Status)
+
+2. MODULE QUẢN LÝ CHƯƠNG & ĐỌC TRUYỆN (CHAPTER & READER - MEMBER 2)
+--------------------------------------------------------------------------------
+[ ] M2-F01: Tạo chương mới (Create Chapter)
+[ ] M2-F02: Xem danh sách chương (View Chapter List)
+[ ] M2-F03: Xem chi tiết chương (View Chapter Details) - tất cả nội dung chương lưu nội bô database
+[ ] M2-F04: Cập nhật chương (Update Chapter)
+[ ] M2-F05: Xóa chương (Delete Chapter)
+[ ] M2-F06: Kiểm tra số thứ tự chương hợp lệ (Validate Chapter Number)
+[ ] M2-F07: Cài đặt hiển thị và VIP (Manage Chapter Visibility & VIP) - Draft/Published (Thường/VIP), tự động mở khóa.
+[ ] M2-F08: Đọc chương truyện (Read Chapter) - Có kiểm tra quyền truy cập/mở khóa chương VIP.
+[ ] M2-F09: Chuyển chương Trước/Sau (Navigate Previous/Next Chapter)
+[ ] M2-F10: Lưu tiến độ đọc (Save Reading Progress) - Công thức: (Chương hiện tại / Tổng số chương xuất bản) * 100
+
+3. MODULE NGƯỜI DÙNG & XÁC THỰC (AUTH & USER MANAGEMENT - MEMBER 3)
+--------------------------------------------------------------------------------
+[ ] M3-F01: Đăng ký tài khoản (Register) - Mặc định là ROLE_MEMBER, mật khẩu mã hóa BCrypt.
+[ ] M3-F02: Đăng nhập (Login) - Bằng Email & Password, dùng Session.
+[ ] M3-F03: Đăng xuất (Logout) - Hủy Session.
+[ ] M3-F04: Xem hồ sơ cá nhân (View Profile)
+[ ] M3-F05: Cập nhật hồ sơ cá nhân (Update Profile)
+[ ] M3-F06: Tải lên ảnh đại diện (Upload Avatar) - tất cả liên quan đến hình ảnh phải lưu trên cloudinary 
+[ ] M3-F07: Đổi mật khẩu (Change Password)
+[ ] M3-F08: Xem danh sách người dùng (View User List) - Dành cho Admin
+[ ] M3-F09: Thay đổi Role người dùng (Change User Role) - Dành cho Admin
+[ ] M3-F10: Khóa/Mở khóa tài khoản (Ban/Enable User) - Dành cho Admin
+[ ] M3-F11: Xin cấp quyền Tác giả/Dịch giả (Request Author Role) - Form cho Member.
+[ ] M3-F12: Duyệt/Từ chối cấp quyền (Approve/Reject Role Request) - Dành cho Staff/Admin.
+[ ] M3-F13: Quản lý Nạp tiền và Tài khoản VIP (Manage Wallet & VIP Account) - Hỗ trợ thanh toán.
+[ ] M3-F14: Cấu hình hệ thống (Manage System Settings) - Dành cho Admin (Quản lý tỷ giá quy đổi tiền tệ, v.v.).
+
+4. MODULE DANH MỤC & TÌM KIẾM (CATEGORY & SEARCH - MEMBER 4)
+--------------------------------------------------------------------------------
+[ ] M4-F01: Thêm thể loại mới (Create Category)
+[ ] M4-F02: Xem danh sách thể loại (View Category List)
+[ ] M4-F03: Xem chi tiết thể loại (View Category Details)
+[ ] M4-F04: Cập nhật thể loại (Update Category)
+[ ] M4-F05: Xóa thể loại (Delete Category) - Cần có hướng xử lý các truyện đang gắn category này.
+[ ] M4-F06: Gắn thể loại vào truyện (Assign Category to Novel)
+[ ] M4-F07: Gỡ thể loại khỏi truyện (Remove Category from Novel)
+[ ] M4-F08: Tìm kiếm truyện theo từ khóa (Search Novel by Keyword)
+[ ] M4-F09: Lọc truyện theo Thể loại/Trạng thái (Filter Novel by Category/Type)
+[ ] M4-F10: Tìm kiếm & Sắp xếp nâng cao (Advanced Search & Sorting) - tìm hiểu search theo vector
+
+5. MODULE TƯƠNG TÁC & KIỂM DUYỆT (INTERACTION & MODERATION - MEMBER 5)
+--------------------------------------------------------------------------------
+[ ] M5-F01: Thêm truyện vào Tủ sách (Add Novel to Bookshelf)
+[ ] M5-F02: Xem Tủ sách cá nhân (View Bookshelf)
+[ ] M5-F03: Xóa truyện khỏi Tủ sách (Remove from Bookshelf)
+[ ] M5-F04: Xem Lịch sử đọc (View Reading History)
+[ ] M5-F05: Xóa Lịch sử đọc (Clear Reading History)
+[ ] M5-F06: Viết bình luận (Create Comment)
+[ ] M5-F07: Xem danh sách bình luận (View Comment List)
+[ ] M5-F08: Xóa/Ẩn bình luận (Hide/Delete Comment) - Dành cho Staff/Admin
+[ ] M5-F09: Báo cáo lỗi chương (Create Chapter Issue Report)
+[ ] M5-F10: Xử lý/Đóng báo cáo lỗi (Process/Resolve Issue Report) - Workflow theo Mô tả nghiệp vụ.
+
+--------------------------------------------------------------------------------
+TỔNG KẾT TRẠNG THÁI (STATUS ENUMS):
+- NOVEL_STATUS: PENDING, PUBLISHED, REJECTED, ARCHIVED
+- CHAPTER_STATUS: DRAFT, PUBLISHED_REGULAR, PUBLISHED_VIP
+- REPORT_STATUS: OPEN, RESOLVED, DISMISSED

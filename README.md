@@ -80,19 +80,19 @@ docker compose up -d
   ```
 
 ### Bước 3: Cách truy cập sau khi chạy thành công
-- **Trang chủ Website (Frontend)**: Truy cập [http://localhost:8080](http://localhost:8080)
-- **Database (Xem dữ liệu bằng pgAdmin/DBeaver)**:
-  1. Mở phần mềm **pgAdmin** (biểu tượng con voi).
+- **Trang chủ Website (Frontend/Backend)**: Truy cập [http://localhost:8080](http://localhost:8080)
+- **Database (Xem dữ liệu bằng pgAdmin/DBeaver cài trên máy tính)**:
+  1. Mở phần mềm **pgAdmin** (biểu tượng con voi) trên máy tính của bạn.
   2. Chuột phải vào chữ **Servers** (cột bên trái) > **Register** > **Server...**
-  3. Tab **General**: Mục Name nhập là `docker`.
+  3. Tab **General**: Mục Name nhập là `TramTruyen DB` (hoặc tên bất kỳ).
   4. Tab **Connection** nhập như sau:
-     - Host name/address: `localhost`
+     - Host name/address: `localhost` *(Lưu ý: Bắt buộc là localhost vì database trong Docker đã được map ra port của máy bạn)*
      - Port: `5432`
-     - Maintenance database: `postgres`
-     - Username: `postgres`
-     - Password: `123456`
+     - Maintenance database: `tramtruyen`
+     - Username: `postgres` (hoặc username cấu hình trong file `.env`)
+     - Password: `123456` (hoặc password cấu hình trong file `.env`)
      - Save password?: Bật lên.
-  5. Bấm **Save**. Lúc này ở cột trái sẽ xuất hiện server tên `docker`, mở ra bạn sẽ thấy database tên `tramtruyen` để sử dụng.
+  5. Bấm **Save**. Lúc này ở cột trái sẽ xuất hiện server vừa tạo, mở ra bạn sẽ thấy các bảng dữ liệu đã được nạp tự động (từ file `schema.sql`).
 
 ## 8. Default Accounts
 *Hệ thống sẽ được khởi tạo với các tài khoản mặc định thông qua file `database/seed.sql`.*

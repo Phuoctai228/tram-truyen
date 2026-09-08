@@ -140,9 +140,10 @@ Kiến trúc này phù hợp với yêu cầu Codebase & Database của SWP391 v
 | Actor | Responsibility |
 |---|---|
 | Guest | Browse, search và đọc truyện |
-| Member | Đọc truyện, tủ sách, lịch sử, comment, report, đăng truyện |
-| Staff | Kiểm duyệt truyện, chương, comment và report |
-| Admin | Quản lý user, role, category và hệ thống |
+| Member | Đọc truyện, tủ sách, lịch sử, comment, report, xin cấp quyền tác giả |
+| Author | Là Member đã được cấp quyền, có thể đăng tải và quản lý truyện/chương |
+| Staff | Kiểm duyệt truyện, chương, comment, report và duyệt yêu cầu cấp quyền |
+| Admin | Quản lý user, role, category, system settings (tỷ giá quy đổi) và hệ thống |
 
 ---
 
@@ -173,6 +174,8 @@ Tối thiểu phải đáp ứng yêu cầu môn học:
 12. reading_progress
 13. novel_reviews
 14. notifications
+15. transactions
+16. system_settings
 ```
 
 Có thể giảm còn 12 bảng nếu một số chức năng không cần triển khai.
@@ -192,14 +195,14 @@ Tổng:
 ```text
 Member 1 ≈ 10 functions
 Member 2 ≈ 10 functions
-Member 3 ≈ 10 functions
+Member 3 ≈ 12 functions
 Member 4 ≈ 10 functions
 Member 5 ≈ 10 functions
 
-Total ≈ 50 tracked functions
+Total ≈ 52 tracked functions
 ```
 
-**Lưu ý quan trọng:** 50 tracked functions không có nghĩa là phải tạo 50 use cases hoặc mỗi function đều phải có 240 LOC.
+**Lưu ý quan trọng:** 52 tracked functions không có nghĩa là phải tạo 52 use cases hoặc mỗi function đều phải có 240 LOC.
 
 SWP391 đánh giá LOC theo độ phức tạp của function:
 
@@ -233,7 +236,7 @@ Do đó project vẫn phải kiểm soát tổng scope trong khoảng:
 | M1-F04 | Update Novel |
 | M1-F05 | Delete/Archive Novel |
 | M1-F06 | Upload Novel Cover |
-| M1-F07 | Submit Novel for Review |
+| M1-F07 | Submit Novel for Review (Req. 3 Drafts) |
 | M1-F08 | Review Novel Submission |
 | M1-F09 | Approve/Reject Novel |
 | M1-F10 | Manage Novel Status |
@@ -272,8 +275,8 @@ Novel
 | M2-F04 | Update Chapter |
 | M2-F05 | Delete Chapter |
 | M2-F06 | Validate Chapter Number |
-| M2-F07 | Manage Chapter Visibility |
-| M2-F08 | Read Chapter |
+| M2-F07 | Manage Chapter Visibility & VIP |
+| M2-F08 | Read Chapter & Unlock VIP |
 | M2-F09 | Navigate Previous/Next Chapter |
 | M2-F10 | Save Reading Progress |
 
@@ -317,6 +320,10 @@ ReadingProgress
 | M3-F08 | View User List |
 | M3-F09 | Change User Role |
 | M3-F10 | Ban/Enable User |
+| M3-F11 | Request Author Role |
+| M3-F12 | Approve/Reject Role Request |
+| M3-F13 | Manage Wallet & VIP Account |
+| M3-F14 | Manage System Settings |
 
 ## Main Responsibility
 
@@ -455,8 +462,10 @@ UC09 Manage Bookshelf
 UC10 View Reading History
 UC11 Comment on Novel
 UC12 Report Chapter Issue
-UC13 Create Novel
-UC14 Submit Novel
+UC13 Request Author Role
+UC14 Create Novel
+UC15 Submit Novel (First Publish)
+UC15b Publish Subsequent Chapters
 ```
 
 ---
@@ -464,10 +473,11 @@ UC14 Submit Novel
 ## 13.3. Staff Use Cases
 
 ```text
-UC15 Manage Chapters
-UC16 Review Novel Submission
-UC17 Moderate Comments
-UC18 Resolve Chapter Issue Report
+UC16 Manage Chapters
+UC17 Review Novel Submission
+UC18 Moderate Comments
+UC19 Resolve Chapter Issue Report
+UC20 Approve Role Request
 ```
 
 ---
@@ -475,10 +485,11 @@ UC18 Resolve Chapter Issue Report
 ## 13.4. Admin Use Cases
 
 ```text
-UC19 Manage Users
-UC20 Manage Roles
-UC21 Manage Categories
-UC22 View Dashboard
+UC21 Manage Users
+UC22 Manage Roles
+UC23 Manage Categories
+UC24 View Dashboard
+UC25 Manage System Settings
 ```
 
 Use case naming nên sử dụng dạng **Verb + Object**, phù hợp với cấu trúc RDS template.
@@ -706,6 +717,7 @@ Roles:
 ```text
 ROLE_ADMIN
 ROLE_STAFF
+ROLE_AUTHOR
 ROLE_MEMBER
 ```
 
@@ -724,16 +736,16 @@ Ví dụ:
 
 # 20. NOVEL WORKFLOW
 
-## Workflow 1 – Novel Publishing & Approval
+## Workflow 1 – First-time Novel Publishing & Approval
 
 ```text
-Member
+Author
   ↓
 Create Novel
   ↓
-Fill Novel Information
+Fill Novel Information & Upload Cover
   ↓
-Upload Cover
+Create at least 3 Chapter Drafts
   ↓
 Submit for Review
   ↓
@@ -742,6 +754,18 @@ Staff Review
 Approve / Reject
   ↓
 Novel Published
+```
+
+## Workflow 1.2 – Subsequent Chapter Publishing
+
+```text
+Author
+  ↓
+Create Chapter(s)
+  ↓
+Select Visibility (Regular / VIP / Auto-unlock)
+  ↓
+Publish (No Staff Review required)
 ```
 
 ### Exception Path 1
