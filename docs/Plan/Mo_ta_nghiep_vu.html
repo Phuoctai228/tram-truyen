@@ -49,10 +49,10 @@
             <ul>
                 <li>Đọc truyện, tìm kiếm, lọc truyện theo thể loại và xem các bảng xếp hạng (Top Ngày/Tuần/Tháng/Toàn thời gian).</li>
                 <li>Tạo tài khoản để quản lý tủ sách cá nhân, tự động theo dõi tiến độ đọc và đánh dấu (bookmark) vị trí chương đang đọc dở để "Đọc tiếp" thuận tiện.</li>
-                <li>Tương tác thông qua bình luận và gửi báo cáo khi phát hiện chương truyện bị lỗi.</li>
+                <li>Tương tác thông qua bình luận, gửi báo cáo bình luận vi phạm và gửi báo cáo khi phát hiện chương truyện bị lỗi.</li>
                 <li>Đăng tải truyện mới (sáng tác hoặc dịch) và gửi yêu cầu kiểm duyệt để xuất bản tới độc giả mà không cần xin cấp quyền tác giả riêng biệt.</li>
                 <li>Nạp tiền quy đổi thành Coin để mở khóa các chương VIP trả phí. Người đăng truyện có chương VIP được hưởng chia sẻ doanh thu Coin tự động từ hệ thống và có thể rút tiền về tài khoản ngân hàng thực tế.</li>
-                <li>Ban quản trị (Staff/Admin) kiểm duyệt nội dung (truyện, bình luận, báo cáo lỗi), phê duyệt yêu cầu rút tiền tác quyền và cấu hình vận hành hệ thống.</li>
+                <li>Ban quản trị (Staff/Admin) kiểm duyệt nội dung (truyện mới, bình luận vi phạm bị báo cáo, báo cáo lỗi chương), phê duyệt yêu cầu rút tiền tác quyền và cấu hình vận hành hệ thống.</li>
             </ul>
         </li>
     </ul>
@@ -75,12 +75,12 @@
         <li><span class="bold">Thành viên (Member):</span> Người dùng đã đăng ký tài khoản. Có đầy đủ các quyền:
             <ul>
                 <li>Đọc truyện, tự động đánh dấu các chương đã đọc, lưu truyện vào Tủ sách cá nhân, theo dõi tiến độ đọc và click nút "Đọc tiếp" để nhảy đến đúng chương gần nhất.</li>
-                <li>Bình luận, báo cáo lỗi chương truyện.</li>
+                <li>Bình luận, báo cáo bình luận vi phạm và báo cáo lỗi chương truyện.</li>
                 <li>Nạp tiền quy đổi thành Coin qua cổng thanh toán (VNPay sandbox / Momo), dùng Coin để mở khóa trực tiếp các chương VIP.</li>
                 <li><span class="bold">Tự do sáng tác & Kiếm thu nhập tác quyền:</span> Mọi Member đều có thể tạo truyện mới, tải lên ảnh bìa, thêm chương nháp và gửi yêu cầu xuất bản mà không cần thủ tục xin cấp quyền tác giả riêng. Khi độc giả mở khóa chương VIP của truyện mình đăng, Member được tự động cộng Coin chia sẻ doanh thu vào ví cá nhân và có quyền gửi yêu cầu rút tiền về tài khoản ngân hàng khi đạt hạn mức tối thiểu.</li>
             </ul>
         </li>
-        <li><span class="bold">Nhân viên kiểm duyệt (Staff):</span> Tiếp nhận và kiểm duyệt truyện đăng mới lần đầu, kiểm duyệt/ẩn bình luận vi phạm và tiếp nhận, giải quyết các báo cáo lỗi chương từ người dùng.</li>
+        <li><span class="bold">Nhân viên kiểm duyệt (Staff):</span> Tiếp nhận và kiểm duyệt truyện đăng mới lần đầu, kiểm tra và xử lý các bình luận bị báo cáo vi phạm (ẩn/xóa), và tiếp nhận, giải quyết các báo cáo lỗi chương từ người dùng.</li>
         <li><span class="bold">Quản trị viên (Admin):</span> Quản lý toàn bộ hệ thống: phân quyền tài khoản (Staff/Admin), khóa/mở khóa tài khoản, quản lý danh mục thể loại (Category), kiểm tra và phê duyệt các yêu cầu rút tiền của tác giả, tra cứu đối soát toàn bộ giao dịch nạp/tiêu Coin, và cấu hình các thông số hệ thống (tỷ giá quy đổi VNĐ sang Coin, tỷ lệ % chia sẻ doanh thu cho tác giả, hạn mức rút tiền tối thiểu).</li>
     </ul>
 
@@ -120,6 +120,7 @@
                 <li><span class="bold">Quy trình Xuất bản Truyện Lần Đầu (Workflow 1):</span> Member tạo truyện -> Cập nhật thông tin & ảnh bìa -> Đăng ít nhất 3 chương nháp -> Gửi yêu cầu xuất bản -> Staff kiểm duyệt -> Xuất bản truyện (hoặc từ chối kèm lý do).</li>
                 <li><span class="bold">Quy trình Xuất bản Chương Các Lần Sau:</span> Người đăng truyện thêm chương mới (có thể lưu nháp hoặc tick chọn xuất bản trực tiếp) mà không cần Staff duyệt lại từng chương. Staff/Admin chỉ can thiệp khi có báo cáo vi phạm.</li>
                 <li><span class="bold">Quy trình Rút tiền tác quyền (Workflow 2):</span> Member đạt hạn mức Coin >= Min Withdrawal -> Điền thông tin ngân hàng và số Coin muốn rút -> Hệ thống tạm khóa số Coin và tạo yêu cầu PENDING -> Admin kiểm tra và thực hiện chuyển khoản ngoài đời -> Bấm Phê duyệt (hoặc Từ chối thì hệ thống hoàn lại Coin vào ví).</li>
+                <li><span class="bold">Quy trình Báo cáo & Kiểm duyệt Bình luận (Workflow 3):</span> Member phát hiện bình luận xúc phạm/spam -> Nhấn nút "Báo cáo bình luận" (chọn lý do) -> Hệ thống ghi nhận phiếu báo cáo PENDING -> Staff/Admin tra cứu danh sách bình luận bị báo cáo -> Thực hiện Ẩn/Xóa bình luận vi phạm (đổi trạng thái báo cáo thành RESOLVED) hoặc Bác bỏ báo cáo nếu không vi phạm (DISMISSED).</li>
                 <li><span class="bold">Cơ chế ghi nhận tiến độ & Bookmark:</span> Mỗi khi người dùng click vào đọc một chương, hệ thống tự động đánh dấu chương đó là "Đã đọc", đồng thời cập nhật chương đó làm vị trí Bookmark gần nhất của truyện.</li>
             </ul>
         </li>
@@ -131,10 +132,10 @@
             <ul>
                 <li>Quản lý Truyện (Novel) & Chương truyện (Chapter).</li>
                 <li>Quản lý Tủ sách (Bookshelf) & Đánh dấu tiến độ đọc (Bookmark & Reading Progress).</li>
-                <li>Quản lý tương tác: Bình luận (Comment) & Báo cáo lỗi chương (Chapter Report).</li>
+                <li>Quản lý tương tác: Bình luận (Comment), Báo cáo bình luận vi phạm (Comment Report) & Báo cáo lỗi chương (Chapter Report).</li>
                 <li>Quản lý Danh mục (Category) & Tìm kiếm/Lọc truyện (Search/Filter theo thể loại, trạng thái, Bảng xếp hạng Top Ngày/Tuần/Tháng/Toàn thời gian).</li>
                 <li>Quản lý người dùng, phân quyền thành viên (Guest, Member, Staff, Admin), Quên/Đặt lại mật khẩu qua Email.</li>
-                <li>Chức năng kiểm duyệt nội dung (Staff duyệt truyện đăng lần đầu, xử lý báo cáo chương lỗi, ẩn bình luận).</li>
+                <li>Chức năng kiểm duyệt nội dung (Staff duyệt truyện đăng lần đầu, xử lý báo cáo chương lỗi, kiểm duyệt và ẩn/xóa bình luận vi phạm).</li>
                 <li><span class="bold">Thanh toán, Chia sẻ doanh thu & Rút tiền (Monetization, Revenue Sharing & Payout):</span>
                     <ul>
                         <li>Hỗ trợ nạp tiền quy đổi thành Coin qua cổng thanh toán VNPay sandbox / Momo.</li>
@@ -155,6 +156,8 @@
                 <span class="bold">Cách xử lý:</span> Giao diện cung cấp nút "Báo lỗi chương", người đọc gửi báo cáo. Staff trực tiếp xử lý (nếu truyện do Admin/Staff đăng) hoặc chuyển nháp để tác giả sửa (nếu truyện do Member đăng).</li>
                 <li><span class="bold">Tình huống 3:</span> Yêu cầu rút tiền bị từ chối.<br>
                 <span class="bold">Cách xử lý:</span> Nếu thông tin tài khoản ngân hàng không hợp lệ hoặc phát hiện gian lận, Admin bấm Từ chối kèm lý do phản hồi. Hệ thống tự động hoàn lại số Coin đã tạm giữ về ví của Member.</li>
+                <li><span class="bold">Tình huống 4:</span> Bình luận vi phạm tiêu chuẩn cộng đồng.<br>
+                <span class="bold">Cách xử lý:</span> Độc giả gửi báo cáo vi phạm. Staff kiểm tra: nếu bình luận có nội dung xấu/spam, Staff chuyển trạng thái bình luận thành "Ẩn" (HIDDEN) hoặc xóa hẳn và đổi trạng thái báo cáo thành RESOLVED; nếu báo cáo không chính xác, Staff bác bỏ báo cáo (DISMISSED).</li>
             </ul>
         </li>
         <li><span class="bold">Out-of-Scope (Tính năng ngoài phạm vi hiện tại):</span>
@@ -209,7 +212,7 @@
     <ul>
         <li><span class="bold">Trạng thái Truyện (Novel Status):</span> Pending (Chờ duyệt), Published (Đã xuất bản), Rejected (Bị từ chối), Archived (Đã lưu trữ/Ẩn).</li>
         <li><span class="bold">Trạng thái Chương (Chapter Visibility):</span> Draft (Bản nháp), Published (Đã hiển thị - bao gồm Thường và VIP).</li>
-        <li><span class="bold">Trạng thái Báo cáo (Report Status):</span> Open (Chờ xử lý), Resolved (Đã giải quyết), Dismissed (Đã bỏ qua).</li>
+        <li><span class="bold">Trạng thái Báo cáo (Report Status - áp dụng cho cả Báo cáo chương và Báo cáo bình luận):</span> Pending (Chờ xử lý), Resolved (Đã giải quyết/Xử lý), Dismissed (Đã bác bỏ/Bỏ qua).</li>
         <li><span class="bold">Trạng thái Yêu cầu Rút tiền (Withdrawal Status):</span> Pending (Chờ duyệt), Approved (Đã chuyển khoản), Rejected (Từ chối).</li>
         <li><span class="bold">Loại giao dịch ví (Transaction Type):</span> DEPOSIT (Nạp tiền vào ví), UNLOCK_CHAPTER (Dùng Coin mở khóa chương VIP), AUTHOR_RECEIVE (Tác giả nhận Coin chia sẻ doanh thu), WITHDRAWAL (Rút tiền về tài khoản ngân hàng).</li>
     </ul>

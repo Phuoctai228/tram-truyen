@@ -5,10 +5,10 @@ Hệ thống là một nền tảng đọc truyện chữ trực tuyến (Trạm
 Người dùng có thể:
 - Đọc truyện, tìm kiếm, lọc truyện theo thể loại và xem các bảng xếp hạng (Top Ngày/Tuần/Tháng/Toàn thời gian).
 - Tạo tài khoản để quản lý tủ sách cá nhân, tự động theo dõi tiến độ đọc và đánh dấu (bookmark) vị trí chương đang đọc dở để "Đọc tiếp" thuận tiện.
-- Tương tác thông qua bình luận và gửi báo cáo khi phát hiện chương truyện bị lỗi.
+- Tương tác thông qua bình luận, gửi báo cáo bình luận vi phạm và gửi báo cáo khi phát hiện chương truyện bị lỗi.
 - Đăng tải truyện mới (sáng tác hoặc dịch) và gửi yêu cầu kiểm duyệt để xuất bản tới độc giả mà không cần xin cấp quyền tác giả riêng biệt.
 - Nạp tiền quy đổi thành Coin để mở khóa các chương VIP trả phí. Người đăng truyện có chương VIP được hưởng chia sẻ doanh thu Coin tự động từ hệ thống và có thể rút tiền về tài khoản ngân hàng thực tế.
-- Ban quản trị (Staff/Admin) kiểm duyệt nội dung (truyện, bình luận, báo cáo lỗi), phê duyệt yêu cầu rút tiền tác quyền và cấu hình vận hành hệ thống.
+- Ban quản trị (Staff/Admin) kiểm duyệt nội dung (truyện mới, bình luận vi phạm bị báo cáo, báo cáo lỗi chương), phê duyệt yêu cầu rút tiền tác quyền và cấu hình vận hành hệ thống.
 
 ### **2. Mục tiêu nghiệp vụ (Business Objectives)**
 Hệ thống được xây dựng nhằm:
@@ -21,10 +21,10 @@ Hệ thống được xây dựng nhằm:
 - **Khách truy cập (Guest):** Tìm kiếm, duyệt và đọc các chương truyện miễn phí mà không cần tài khoản.
 - **Thành viên (Member):** Người dùng đã đăng ký tài khoản. Có đầy đủ các quyền:
   - Đọc truyện, tự động đánh dấu các chương đã đọc, lưu truyện vào Tủ sách cá nhân, theo dõi tiến độ đọc và click nút "Đọc tiếp" để nhảy đến đúng chương gần nhất.
-  - Bình luận, báo cáo lỗi chương truyện.
+  - Bình luận, báo cáo bình luận vi phạm và báo cáo lỗi chương truyện.
   - Nạp tiền quy đổi thành Coin qua cổng thanh toán (VNPay sandbox / Momo), dùng Coin để mở khóa trực tiếp các chương VIP.
   - **Tự do sáng tác & Kiếm thu nhập tác quyền:** Mọi Member đều có thể tạo truyện mới, tải lên ảnh bìa, thêm chương nháp và gửi yêu cầu xuất bản mà không cần thủ tục xin cấp quyền tác giả riêng. Khi độc giả mở khóa chương VIP của truyện mình đăng, Member được tự động cộng Coin chia sẻ doanh thu vào ví cá nhân và có quyền gửi yêu cầu rút tiền về tài khoản ngân hàng khi đạt hạn mức tối thiểu.
-- **Nhân viên kiểm duyệt (Staff):** Tiếp nhận và kiểm duyệt truyện đăng mới lần đầu, kiểm duyệt/ẩn bình luận vi phạm và tiếp nhận, giải quyết các báo cáo lỗi chương từ người dùng.
+- **Nhân viên kiểm duyệt (Staff):** Tiếp nhận và kiểm duyệt truyện đăng mới lần đầu, kiểm tra và xử lý các bình luận bị báo cáo vi phạm (ẩn/xóa), và tiếp nhận, giải quyết các báo cáo lỗi chương từ người dùng.
 - **Quản trị viên (Admin):** Quản lý toàn bộ hệ thống: phân quyền tài khoản (Staff/Admin), khóa/mở khóa tài khoản, quản lý danh mục thể loại (Category), kiểm tra và phê duyệt các yêu cầu rút tiền của tác giả, tra cứu đối soát toàn bộ giao dịch nạp/tiêu Coin, và cấu hình các thông số hệ thống (tỷ giá quy đổi VNĐ sang Coin, tỷ lệ % chia sẻ doanh thu cho tác giả, hạn mức rút tiền tối thiểu).
 
 ### **4. Quy trình nghiệp vụ hiện tại (As-Is)**
@@ -52,6 +52,7 @@ Sau khi hệ thống Trạm Truyện được triển khai:
 - *Quy trình Xuất bản Truyện Lần Đầu (Workflow 1):* Member tạo truyện -> Cập nhật thông tin & ảnh bìa -> Đăng ít nhất 3 chương nháp -> Gửi yêu cầu xuất bản -> Staff kiểm duyệt -> Xuất bản truyện (hoặc từ chối kèm lý do).
 - *Quy trình Xuất bản Chương Các Lần Sau:* Người đăng truyện thêm chương mới (có thể lưu nháp hoặc tick chọn xuất bản trực tiếp) mà không cần Staff duyệt lại từng chương. Staff/Admin chỉ can thiệp khi có báo cáo vi phạm.
 - *Quy trình Rút tiền tác quyền (Workflow 2):* Member đạt hạn mức Coin $\ge$ Min Withdrawal $\rightarrow$ Điền thông tin ngân hàng và số Coin muốn rút $\rightarrow$ Hệ thống tạm khóa số Coin và tạo yêu cầu PENDING $\rightarrow$ Admin kiểm tra và thực hiện chuyển khoản ngoài đời $\rightarrow$ Bấm Phê duyệt (hoặc Từ chối thì hệ thống hoàn lại Coin vào ví).
+- *Quy trình Báo cáo & Kiểm duyệt Bình luận (Workflow 3):* Member phát hiện bình luận xúc phạm/spam $\rightarrow$ Nhấn nút "Báo cáo bình luận" (chọn lý do) $\rightarrow$ Hệ thống ghi nhận phiếu báo cáo PENDING $\rightarrow$ Staff/Admin tra cứu danh sách bình luận bị báo cáo $\rightarrow$ Thực hiện Ẩn/Xóa bình luận vi phạm (đổi trạng thái báo cáo thành RESOLVED) hoặc Bác bỏ báo cáo nếu không vi phạm (DISMISSED).
 - *Cơ chế ghi nhận tiến độ & Bookmark:* Mỗi khi người dùng click vào đọc một chương, hệ thống tự động đánh dấu chương đó là "Đã đọc", đồng thời cập nhật chương đó làm vị trí Bookmark gần nhất của truyện.
 
 ### **6. Phạm vi hệ thống (In-Scope / Out-of-Scope)**
@@ -59,10 +60,10 @@ Sau khi hệ thống Trạm Truyện được triển khai:
 **In-Scope:**
 - Quản lý Truyện (Novel) & Chương truyện (Chapter).
 - Quản lý Tủ sách (Bookshelf) & Đánh dấu tiến độ đọc (Bookmark & Reading Progress).
-- Quản lý tương tác: Bình luận (Comment) & Báo cáo lỗi chương (Chapter Report).
+- Quản lý tương tác: Bình luận (Comment), Báo cáo bình luận vi phạm (Comment Report) & Báo cáo lỗi chương (Chapter Report).
 - Quản lý Danh mục (Category) & Tìm kiếm/Lọc truyện (Search/Filter theo thể loại, trạng thái, Bảng xếp hạng Top Ngày/Tuần/Tháng/Toàn thời gian).
 - Quản lý người dùng, phân quyền thành viên (Guest, Member, Staff, Admin), Quên/Đặt lại mật khẩu qua Email.
-- Chức năng kiểm duyệt nội dung (Staff duyệt truyện đăng lần đầu, xử lý báo cáo chương lỗi, ẩn bình luận).
+- Chức năng kiểm duyệt nội dung (Staff duyệt truyện đăng lần đầu, xử lý báo cáo chương lỗi, kiểm duyệt và ẩn/xóa bình luận vi phạm).
 - **Thanh toán, Chia sẻ doanh thu & Rút tiền (Monetization, Revenue Sharing & Payout):**
   - Hỗ trợ nạp tiền quy đổi thành Coin qua cổng thanh toán VNPay sandbox / Momo.
   - Độc giả dùng Coin trong ví để mở khóa các chương VIP.
@@ -80,6 +81,8 @@ Sau khi hệ thống Trạm Truyện được triển khai:
     - **Nếu truyện do Member đăng:** Staff không tự ý can thiệp sửa văn phong của tác giả. Thay vào đó, Staff chuyển trạng thái chương thành "Bản nháp" (Draft) để tạm ẩn khỏi độc giả, đồng thời gửi thông báo yêu cầu Member tự vào chỉnh sửa. Khi Member sửa xong, chương sẽ được hiển thị lại và Staff đóng báo cáo.
 - *Tình huống 3:* Yêu cầu rút tiền bị từ chối.
   *Cách xử lý:* Nếu thông tin tài khoản ngân hàng không hợp lệ hoặc phát hiện gian lận, Admin bấm Từ chối kèm lý do phản hồi. Hệ thống tự động hoàn lại số Coin đã tạm giữ về ví của Member.
+- *Tình huống 4:* Bình luận vi phạm tiêu chuẩn cộng đồng.
+  *Cách xử lý:* Độc giả gửi báo cáo vi phạm. Staff kiểm tra: nếu bình luận có nội dung xấu/spam, Staff chuyển trạng thái bình luận thành "Ẩn" (HIDDEN) hoặc xóa hẳn và đổi trạng thái báo cáo thành RESOLVED; nếu báo cáo không chính xác, Staff bác bỏ báo cáo (DISMISSED).
 
 **Out-of-Scope (Tính năng ngoài phạm vi hiện tại):**
 - **Cổng chi hộ ngân hàng tự động (Automated Banking Payout API):** Để phù hợp với môi trường đồ án sinh viên và không yêu cầu giấy phép doanh nghiệp trung gian thanh toán, quy trình rút tiền được xử lý theo cơ chế: Người dùng nộp yêu cầu -> Admin đối soát và duyệt chuyển khoản thủ công trên hệ thống.
@@ -122,6 +125,6 @@ Trong quá trình phát triển, các thông số sau cần được hệ thốn
 **Phụ lục: Các trạng thái (Status) áp dụng trong hệ thống**
 1. *Trạng thái Truyện (Novel Status):* Pending (Chờ duyệt), Published (Đã xuất bản), Rejected (Bị từ chối), Archived (Đã lưu trữ/Ẩn).
 2. *Trạng thái Chương (Chapter Visibility):* Draft (Bản nháp), Published (Đã hiển thị - bao gồm Thường và VIP).
-3. *Trạng thái Báo cáo (Report Status):* Open (Chờ xử lý), Resolved (Đã giải quyết), Dismissed (Đã bỏ qua).
+3. *Trạng thái Báo cáo (Report Status - áp dụng cho cả Báo cáo chương và Báo cáo bình luận):* Pending (Chờ xử lý), Resolved (Đã giải quyết/Xử lý), Dismissed (Đã bác bỏ/Bỏ qua).
 4. *Trạng thái Yêu cầu Rút tiền (Withdrawal Status):* Pending (Chờ duyệt), Approved (Đã chuyển khoản), Rejected (Từ chối).
 5. *Loại giao dịch ví (Transaction Type):* DEPOSIT (Nạp tiền vào ví), UNLOCK_CHAPTER (Dùng Coin mở khóa chương VIP), AUTHOR_RECEIVE (Tác giả nhận Coin chia sẻ doanh thu), WITHDRAWAL (Rút tiền về tài khoản ngân hàng).
