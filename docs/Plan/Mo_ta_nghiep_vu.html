@@ -124,7 +124,7 @@
                 <li>Quản lý Danh mục (Category) & Tìm kiếm/Lọc truyện (Search/Filter).</li>
                 <li>Quản lý người dùng, phân quyền thành viên (Guest, Member, Author, Staff, Admin). Cấp/Duyệt quyền Tác giả/Dịch giả.</li>
                 <li>Chức năng kiểm duyệt nội dung (Moderation workflow).</li>
-                <li><span class="bold">Thanh toán / Trả phí (Monetization):</span> Hỗ trợ nạp tiền, tài khoản VIP. Phân loại chương thường và chương VIP. Tác giả/Dịch giả có thể cấu hình chương VIP tự động mở khóa sau X ngày kể từ khi xuất bản, hoặc mở khóa thủ công. Admin có quyền cấu hình tỷ giá quy đổi giữa tiền thật và tiền ảo (Coin).</li>
+                <li><span class="bold">Thanh toán / Trả phí (Monetization):</span> Hỗ trợ nạp tiền quy đổi thành Coin qua cổng thanh toán (hệ thống không có tài khoản VIP hay cửa hàng vật phẩm). Người đọc dùng Coin để mở khóa trực tiếp các chương VIP. Phân loại chương thường (miễn phí) và chương VIP. Tác giả/Dịch giả có thể cấu hình chương VIP tự động mở khóa sau X ngày kể từ khi xuất bản, hoặc mở khóa thủ công. Admin có quyền cấu hình tỷ giá quy đổi giữa tiền thật (VNĐ) và Coin, đồng thời quản lý, đối soát các giao dịch nạp tiền.</li>
             </ul>
         </li>
         <li><span class="bold">Quy định xử lý ngoại lệ (Exception Handling):</span>
@@ -165,8 +165,14 @@
                 <li><span class="bold">Tổng lượt xem truyện (Total Novel Views):</span><br>
                 Tổng lượt xem = Sum(Lượt xem của tất cả các chương thuộc truyện đó)<br>
                 (Mỗi khi người dùng mở đọc 1 chương, view count của chương đó +1, sau đó cộng dồn lên Novel)</li>
-                <li><span class="bold">Truyện thịnh hành (Trending Novels):</span><br>
-                Truyện thịnh hành = Lọc Top N truyện có lượt views tăng nhiều nhất trong 7 ngày qua</li>
+                <li><span class="bold">Bảng xếp hạng / Top lượt xem (Leaderboard / Top Views):</span>
+                    <ul>
+                        <li><span class="bold">Top Ngày (Daily Top):</span> Lọc Top N truyện có lượt xem tăng nhiều nhất trong 24 giờ qua (hoặc trong ngày hiện tại).</li>
+                        <li><span class="bold">Top Tuần / Thịnh hành (Weekly Top / Trending):</span> Lọc Top N truyện có lượt xem tăng nhiều nhất trong 7 ngày qua.</li>
+                        <li><span class="bold">Top Tháng (Monthly Top):</span> Lọc Top N truyện có lượt xem tăng nhiều nhất trong 30 ngày qua (hoặc trong tháng hiện tại).</li>
+                        <li><span class="bold">Top Toàn thời gian (All-time Top):</span> Lọc Top N truyện có tổng lượt xem tích lũy (Sum(views)) cao nhất từ trước đến nay.</li>
+                    </ul>
+                </li>
             </ul>
         </li>
     </ul>

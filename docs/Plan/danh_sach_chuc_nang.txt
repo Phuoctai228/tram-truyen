@@ -1,4 +1,4 @@
-DANH SÁCH CHI TIẾT 52 CHỨC NĂNG (THEO CHUẨN SWP391)
+DANH SÁCH CHI TIẾT 56 CHỨC NĂNG (THEO CHUẨN SWP391)
 ================================================================================
 (Lưu ý: Các thao tác CRUD như Create, Read List, Read Detail, Update, Delete đều được tách riêng thành các chức năng độc lập; Login/Logout cũng được tách riêng để tính khối lượng công việc - LOC).
 
@@ -24,7 +24,7 @@ DANH SÁCH CHI TIẾT 52 CHỨC NĂNG (THEO CHUẨN SWP391)
 [ ] M2-F05: Xóa chương (Delete Chapter)
 [ ] M2-F06: Kiểm tra số thứ tự chương hợp lệ (Validate Chapter Number)
 [ ] M2-F07: Cài đặt hiển thị và VIP (Manage Chapter Visibility & VIP) - Draft/Published (Thường/VIP), tự động mở khóa.
-[ ] M2-F08: Đọc chương truyện (Read Chapter) - Có kiểm tra quyền truy cập/mở khóa chương VIP.
+[ ] M2-F08: Đọc chương truyện (Read Chapter) - Có kiểm tra quyền truy cập / mở khóa chương VIP bằng Coin.
 [ ] M2-F09: Chuyển chương Trước/Sau (Navigate Previous/Next Chapter)
 [ ] M2-F10: Lưu tiến độ đọc (Save Reading Progress) - Công thức: (Chương hiện tại / Tổng số chương xuất bản) * 100
 
@@ -42,8 +42,10 @@ DANH SÁCH CHI TIẾT 52 CHỨC NĂNG (THEO CHUẨN SWP391)
 [ ] M3-F10: Khóa/Mở khóa tài khoản (Ban/Enable User) - Dành cho Admin
 [ ] M3-F11: Xin cấp quyền Tác giả/Dịch giả (Request Author Role) - Form cho Member.
 [ ] M3-F12: Duyệt/Từ chối cấp quyền (Approve/Reject Role Request) - Dành cho Staff/Admin.
-[ ] M3-F13: Quản lý Nạp tiền và Tài khoản VIP (Manage Wallet & VIP Account) - Hỗ trợ thanh toán.
-[ ] M3-F14: Cấu hình hệ thống (Manage System Settings) - Dành cho Admin (Quản lý tỷ giá quy đổi tiền tệ, v.v.).
+[ ] M3-F13: Nạp tiền quy đổi Coin qua cổng thanh toán (Top-up Coin / Deposit) - Tích hợp cổng thanh toán (VNPay sandbox / Momo), tự động cộng Coin vào ví khi giao dịch thành công.
+[ ] M3-F14: Xem số dư ví và Lịch sử giao dịch (View Wallet Balance & Transaction History) - Member xem số dư Coin hiện tại và biến động số dư (nạp Coin, trừ Coin khi mở khóa chương).
+[ ] M3-F15: Quản lý và đối soát giao dịch nạp tiền (Manage Transactions) - Dành cho Admin tra cứu, lọc và kiểm tra trạng thái các giao dịch nạp tiền trong toàn hệ thống.
+[ ] M3-F16: Cấu hình hệ thống (Manage System Settings) - Dành cho Admin (Quản lý tỷ giá quy đổi VNĐ sang Coin, v.v.).
 
 4. MODULE DANH MỤC & TÌM KIẾM (CATEGORY & SEARCH - MEMBER 4)
 --------------------------------------------------------------------------------

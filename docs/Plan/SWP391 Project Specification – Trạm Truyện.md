@@ -322,8 +322,10 @@ ReadingProgress
 | M3-F10 | Ban/Enable User |
 | M3-F11 | Request Author Role |
 | M3-F12 | Approve/Reject Role Request |
-| M3-F13 | Manage Wallet & VIP Account |
-| M3-F14 | Manage System Settings |
+| M3-F13 | Top-up Coin / Deposit |
+| M3-F14 | View Wallet Balance & Transaction History |
+| M3-F15 | Manage Transactions (Admin) |
+| M3-F16 | Manage System Settings |
 
 ## Main Responsibility
 
