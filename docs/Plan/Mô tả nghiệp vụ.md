@@ -55,7 +55,7 @@ Sau khi hệ thống Trạm Truyện được triển khai:
 - Quản lý Danh mục (Category) & Tìm kiếm/Lọc truyện (Search/Filter).
 - Quản lý người dùng, phân quyền thành viên (Guest, Member, Author, Staff, Admin). Cấp/Duyệt quyền Tác giả/Dịch giả.
 - Chức năng kiểm duyệt nội dung (Moderation workflow).
-- **Thanh toán / Trả phí (Monetization):** Hỗ trợ nạp tiền, tài khoản VIP. Phân loại chương thường và chương VIP. Tác giả/Dịch giả có thể cấu hình chương VIP tự động mở khóa sau X ngày kể từ khi xuất bản, hoặc mở khóa thủ công. Admin có quyền cấu hình tỷ giá quy đổi giữa tiền thật và tiền ảo (Coin).
+- **Thanh toán / Trả phí (Monetization):** Hỗ trợ nạp tiền quy đổi thành Coin qua cổng thanh toán (hệ thống không có tài khoản VIP hay cửa hàng vật phẩm). Người đọc dùng Coin để mở khóa trực tiếp các chương VIP. Phân loại chương thường (miễn phí) và chương VIP. Tác giả/Dịch giả có thể cấu hình chương VIP tự động mở khóa sau X ngày kể từ khi xuất bản, hoặc mở khóa thủ công. Admin có quyền cấu hình tỷ giá quy đổi giữa tiền thật (VNĐ) và Coin, đồng thời quản lý, đối soát các giao dịch nạp tiền.
 
 **Quy định xử lý ngoại lệ (Exception Handling):**
 - *Tình huống 1:* Truyện bị từ chối kiểm duyệt.
@@ -84,8 +84,11 @@ Trong quá trình phát triển, các thông số sau cần được hệ thốn
 2. **Tổng lượt xem truyện (Total Novel Views):**
    `Tổng lượt xem = Sum(Lượt xem của tất cả các chương thuộc truyện đó)`
    *(Mỗi khi người dùng mở đọc 1 chương, view count của chương đó +1, sau đó cộng dồn lên Novel)*
-3. **Truyện thịnh hành (Trending Novels):**
-   `Truyện thịnh hành = Lọc Top N truyện có lượt views tăng nhiều nhất trong 7 ngày qua`
+3. **Bảng xếp hạng / Top lượt xem (Leaderboard / Top Views):**
+   - **Top Ngày (Daily Top):** Lọc Top N truyện có lượt xem tăng nhiều nhất trong 24 giờ qua (hoặc trong ngày hiện tại).
+   - **Top Tuần / Thịnh hành (Weekly Top / Trending):** Lọc Top N truyện có lượt xem tăng nhiều nhất trong 7 ngày qua.
+   - **Top Tháng (Monthly Top):** Lọc Top N truyện có lượt xem tăng nhiều nhất trong 30 ngày qua (hoặc trong tháng hiện tại).
+   - **Top Toàn thời gian (All-time Top):** Lọc Top N truyện có tổng lượt xem tích lũy (`Sum(views)`) cao nhất từ trước đến nay.
 
 ---
 **Phụ lục: Các trạng thái (Status) áp dụng trong hệ thống**
