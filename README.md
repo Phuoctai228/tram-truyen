@@ -120,14 +120,18 @@ Tuyệt đối không ai được push trực tiếp vào branch `main`. Quy tr�
 5. Yêu cầu một thành viên khác thực hiện **Code Review**.
 6. PR được review và test thành công thì mới được phép Merge.
 
-## 12. Test Information
+## 12. Coding Standards
+Dự án tuân thủ nghiêm ngặt các tiêu chuẩn lập trình Java. Vui lòng tham khảo và áp dụng các tiêu chuẩn được quy định tại:
+- [Tiêu chuẩn coding trong Java (Coding Standards)](https://gpcoder.com/1775-tieu-chuan-coding-trong-java-coding-standards/)
+
+## 13. Test Information ( chưa thực hiện)
 - **Mục tiêu**: Đạt 30-40 test cases (Coverage > 80%).
 - Các kịch bản kiểm thử xoay quanh: Xác thực tài khoản, Quy trình đăng truyện, Quản lý chương, Tương tác bình luận, Quản lý tủ sách, v.v.
-- Được thực hiện kết hợp giữa AI Testing và Manual Testing.
+- Được thực hiện kết hợp giữa Unit Testing và System Testing.
 
 ---
 
-## 13. Hướng dẫn dọn dẹp và giải phóng dung lượng Docker
+## 14. Hướng dẫn dọn dẹp và giải phóng dung lượng Docker
 *Lý do: Dùng Docker lâu ngày ổ C: sẽ bị đầy. Quá trình này giúp xóa các rác thừa và thu nhỏ ổ cứng ảo của Docker.*
 
 ### Phần 1: Dọn rác bên trong Docker

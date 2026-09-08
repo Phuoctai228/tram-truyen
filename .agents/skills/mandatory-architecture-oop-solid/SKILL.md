@@ -9,15 +9,15 @@ description: >-
 You are acting as a Senior Software Architect and Code Quality Engineer.
 This skill serves as a **mandatory coding gate** for the SWP391 Web Đọc Truyện Chữ project.
 
-## 1. BỐI CẢNH PROJECT (PROJECT CONTEXT)
+## 1. PROJECT CONTEXT
 
-**Web Đọc Truyện Chữ**
+**Online Novel Reading Platform (Web Đọc Truyện Chữ)**
 Technology stack: Java 21, Spring Boot 3.x, Spring MVC, Spring Data JPA / Hibernate, Spring Security, Thymeleaf, PostgreSQL, Docker, GitHub.
 
-Kiến trúc bắt buộc (Mandatory Architecture):
+Mandatory Architecture:
 Presentation → Controller → Service → Repository → Entity → Database
 
-Package structure dự kiến:
+Expected package structure:
 ```text
 com.readingweb
 ├── config
@@ -32,9 +32,9 @@ com.readingweb
 └── util
 ```
 
-Project sử dụng: MVC, Multi-layer architecture, OOP, SOLID, Separation of Concerns, Dependency Injection, Repository Pattern, Service Layer.
+The project employs: MVC, Multi-layer architecture, OOP, SOLID, Separation of Concerns, Dependency Injection, Repository Pattern, Service Layer.
 
-## 2. MỤC TIÊU CỦA SKILL (SKILL OBJECTIVES)
+## 2. SKILL OBJECTIVES
 
 When asked to implement a feature (e.g., "Implement M1-F01 Create Novel"), you **MUST NOT start writing code immediately**. You must perform architecture/design validation first.
 
@@ -120,10 +120,49 @@ Use DTOs to separate HTTP Request → DTO → Service → Entity. Do not expose 
 - **Transaction:** Evaluate transaction boundaries. Use `@Transactional` at the Service layer when multiple related data changes occur. Don't place it arbitrarily on Controllers.
 - **Exceptions:** Don't swallow exceptions (`try { ... } catch (Exception e) { return null; }`). Use clear exceptions (e.g., `ResourceNotFoundException`) and global exception handlers.
 
-## 9. CODE QUALITY
-- **Duplication:** Propose reuse/refactor before copy-pasting.
+## 9. CODE QUALITY & JAVA CODING STANDARDS
+
+### A. General Quality & Clean Code
+- **Duplication:** Propose reuse/refactoring before copy-pasting.
 - **God Class:** Warn if a class has too many responsibilities or methods, but do not over-engineer.
-- **Design Patterns:** Only suggest patterns when there's an actual design problem. Explain the problem, need, alternative, and trade-off.
+- **Design Patterns:** Only suggest patterns when there's an actual design problem. Explain the problem, necessity, alternatives, and trade-offs.
+
+### B. Mandatory Java Coding Standards (GP Coder / Oracle Standards)
+Reference: [Java Coding Standards](https://gpcoder.com/1775-tieu-chuan-coding-trong-java-coding-standards/)
+
+1. **Naming Conventions:**
+   - **Package:** All lowercase, no underscores or special characters (`com.tramtruyen.service`, `com.tramtruyen.repository`).
+   - **Class & Interface:** `UpperCamelCase`. Classes must be nouns or noun phrases (`NovelController`, `ChapterService`). Interfaces describe capabilities or nouns (`NovelService`, `Auditable`).
+   - **Method:** `lowerCamelCase`. Must start with a verb/verb phrase representing the action (`getNovelById`, `updateChapterContent`, `isPublished`).
+   - **Variable & Parameter:** `lowerCamelCase`. Concise, meaningful, no leading `_` or `$` (`totalNovels`, `chapterIndex`).
+   - **Constant:** `UPPER_SNAKE_CASE` paired with `static final` (`DEFAULT_PAGE_SIZE`, `MAX_TITLE_LENGTH`).
+   - **Generic Type:** Single uppercase letter: `T` (Type), `E` (Element), `K` (Key), `V` (Value).
+
+2. **Formatting & Code Layout:**
+   - **Indentation:** Standard 4 spaces (never mix Tabs and Spaces).
+   - **Braces (K&R style):** Opening brace `{` at the end of the declaration line; closing brace `}` on a new line matching indentation:
+     ```java
+     public void processNovel(Novel novel) {
+         if (novel.isPublished()) {
+             // Logic
+         } else {
+             // Logic
+         }
+     }
+     ```
+   - **Braces Required for Control Blocks:** Always use braces `{}` for `if`, `else`, `for`, `while`, and `do` statements, even when the body contains only a single statement.
+   - **Line Length:** Maximum 120 characters per line. Break long expressions after commas or operators with an 8-space indent.
+   - **Declarations:** Declare only one variable per line. Declare variables as close as possible to their point of use (local scope).
+
+3. **Comments & Javadoc:**
+   - Provide standard Javadoc (`/** ... */`) for all public classes, interfaces, and significant methods with `@param`, `@return`, and `@throws`.
+   - Avoid redundant comments that merely restate what the code clearly expresses.
+
+4. **Clean Code & Practices:**
+   - **Exception Handling:** Never swallow exceptions (e.g., empty `catch (Exception e) {}`). Always log appropriately or throw domain/custom exceptions.
+   - **Magic Values:** Do not hardcode magic numbers or magic strings. Use `static final` constants or `enum`.
+   - **Method Length:** Keep methods under 50 lines of code, breaking them down according to the Single Responsibility Principle (SRP).
+
 
 ## 10. BEFORE IMPLEMENTATION CHECKLIST
 
@@ -145,6 +184,7 @@ Before coding, ensure you have:
 [ ] Circular dependency checked
 [ ] Transaction requirement checked
 [ ] Exception handling checked
+[ ] Java Coding Standards checked
 ```
 If checklist fails, DO NOT proceed with complete implementation.
 
@@ -165,6 +205,12 @@ OOP/SOLID/Quality:
 [ ] No unnecessary duplication, God Class, dead code, magic values
 [ ] Meaningful names
 [ ] Exception handling, Validation, Security, Transaction boundaries
+
+Java Coding Standards:
+[ ] Naming conventions (packages, classes, methods, variables, constants)
+[ ] K&R braces style & brackets `{}` on all control statements
+[ ] 4-space indentation, max 120 line length
+[ ] No magic values, proper exception handling & Javadoc for public APIs
 ```
 
 ## 12. REQUIRED RESPONSE FORMAT
