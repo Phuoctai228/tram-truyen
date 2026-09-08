@@ -4,6 +4,7 @@
 
 DROP TABLE IF EXISTS withdrawal_requests CASCADE;
 DROP TABLE IF EXISTS password_reset_tokens CASCADE;
+DROP TABLE IF EXISTS comment_reports CASCADE;
 DROP TABLE IF EXISTS chapter_reports CASCADE;
 DROP TABLE IF EXISTS comments CASCADE;
 DROP TABLE IF EXISTS user_read_chapters CASCADE;
@@ -152,7 +153,18 @@ CREATE TABLE chapter_reports (
     resolved_at TIMESTAMP
 );
 
--- 14. UNLOCKED_CHAPTERS (Danh sách chương VIP người dùng đã mở khóa bằng Coin)
+-- 14. COMMENT_REPORTS (Báo cáo bình luận vi phạm)
+CREATE TABLE comment_reports (
+    id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(id) ON DELETE CASCADE,
+    comment_id INT REFERENCES comments(id) ON DELETE CASCADE,
+    reason TEXT NOT NULL,
+    status VARCHAR(50) DEFAULT 'PENDING', -- PENDING, RESOLVED, DISMISSED
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    resolved_at TIMESTAMP
+);
+
+-- 15. UNLOCKED_CHAPTERS (Danh sách chương VIP người dùng đã mở khóa bằng Coin)
 CREATE TABLE unlocked_chapters (
     id SERIAL PRIMARY KEY,
     user_id INT REFERENCES users(id) ON DELETE CASCADE,
@@ -162,7 +174,7 @@ CREATE TABLE unlocked_chapters (
     UNIQUE (user_id, chapter_id)
 );
 
--- 15. TRANSACTIONS (Lịch sử giao dịch ví: Nạp tiền, Mở khóa VIP, Nhận doanh thu, Rút tiền)
+-- 16. TRANSACTIONS (Lịch sử giao dịch ví: Nạp tiền, Mở khóa VIP, Nhận doanh thu, Rút tiền)
 CREATE TABLE transactions (
     id SERIAL PRIMARY KEY,
     user_id INT REFERENCES users(id) ON DELETE CASCADE,
@@ -172,7 +184,7 @@ CREATE TABLE transactions (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 16. WITHDRAWAL_REQUESTS (Yêu cầu rút tiền tác quyền về tài khoản ngân hàng)
+-- 17. WITHDRAWAL_REQUESTS (Yêu cầu rút tiền tác quyền về tài khoản ngân hàng)
 CREATE TABLE withdrawal_requests (
     id SERIAL PRIMARY KEY,
     user_id INT REFERENCES users(id) ON DELETE CASCADE,
@@ -187,7 +199,7 @@ CREATE TABLE withdrawal_requests (
     processed_at TIMESTAMP
 );
 
--- 17. SYSTEM_SETTINGS (Cấu hình hệ thống: Tỷ giá Coin, % Ăn chia doanh thu, Hạn mức rút)
+-- 18. SYSTEM_SETTINGS (Cấu hình hệ thống: Tỷ giá Coin, % Ăn chia doanh thu, Hạn mức rút)
 CREATE TABLE system_settings (
     setting_key VARCHAR(100) PRIMARY KEY,
     setting_value VARCHAR(255) NOT NULL,

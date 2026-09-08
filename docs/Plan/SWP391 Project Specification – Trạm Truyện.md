@@ -408,27 +408,31 @@ Category
 
 ## Functions
 
-| ID | Function |
-|---|---|
-| M5-F01 | Add Novel to Bookshelf |
-| M5-F02 | View Bookshelf & Bookmark Progress |
-| M5-F03 | Remove from Bookshelf |
-| M5-F04 | Create Comment |
-| M5-F05 | View Comment List |
-| M5-F06 | Hide/Delete Comment (Staff/Admin) |
-| M5-F07 | Create Chapter Issue Report |
-| M5-F08 | Process/Resolve Issue Report (Staff) |
-| M5-F09 | Manage & Approve Withdrawals (Admin) |
-| M5-F10 | Manage Transactions & System Settings (Admin) |
+| ID | Function | Actor |
+|---|---|---|
+| M5-F01 | Add Novel to Bookshelf | Member |
+| M5-F02 | View Bookshelf | Member |
+| M5-F03 | Remove from Bookshelf | Member |
+| M5-F04 | Create Comment | Member |
+| M5-F05 | View Comment List | Guest, Member |
+| M5-F06 | Report Comment | Member |
+| M5-F07 | Moderate Reported Comments | Staff, Admin |
+| M5-F08 | Create Chapter Issue Report | Member |
+| M5-F09 | Process/Resolve Issue Report | Staff, Admin |
+| M5-F10 | Manage & Approve Withdrawals | Admin |
+| M5-F11 | Audit Transactions | Admin |
+| M5-F12 | Manage System Settings | Admin |
 
 ## Main Responsibility
 
 ```text
 Bookshelf Management
-Comment System & Moderation
-Chapter Issue Reports
+Comment System
+Comment Reporting & Moderation
+Chapter Issue Reports & Resolution
 Admin Withdrawal Approval
-Financial Audit & System Settings
+Audit Transactions & Financial Logs
+System Settings Configuration
 ```
 
 ## Main Classes
@@ -444,11 +448,13 @@ ReportService
 AdminFinanceService
 BookshelfRepository
 CommentRepository
+CommentReportRepository
 ChapterReportRepository
 WithdrawalRequestRepository
 SystemSettingRepository
 Bookshelf
 Comment
+CommentReport
 ChapterReport
 SystemSetting
 ```
@@ -485,6 +491,7 @@ UC07 Login & Forgot Password
 UC08 Manage Profile
 UC09 Manage Bookshelf & Bookmark
 UC10 Comment on Novel
+UC10b Report Comment
 UC11 Report Chapter Issue
 UC12 Top-up Coin & Unlock VIP Chapter
 UC13 Create Novel
@@ -515,6 +522,7 @@ UC21 Manage Categories
 UC22 View Dashboard
 UC23 Manage System Settings
 UC24 Manage & Approve Withdrawals
+UC25 Audit Transactions
 ```
 
 Use case naming nên sử dụng dạng **Verb + Object**, phù hợp với cấu trúc RDS template.
@@ -548,6 +556,7 @@ rectangle "Online Reading System" {
   usecase "Manage Profile" as UC08
   usecase "Manage Bookshelf & Bookmark" as UC09
   usecase "Comment on Novel" as UC10
+  usecase "Report Comment" as UC10b
   usecase "Report Chapter Issue" as UC11
   usecase "Top-up Coin & Unlock VIP" as UC12
   usecase "Create Novel" as UC13
@@ -565,6 +574,7 @@ rectangle "Online Reading System" {
   usecase "View Dashboard" as UC22
   usecase "Manage System Settings" as UC23
   usecase "Approve Withdrawals" as UC24
+  usecase "Audit Transactions" as UC25
 }
 
 Guest --> UC01
@@ -578,6 +588,7 @@ Member --> UC07
 Member --> UC08
 Member --> UC09
 Member --> UC10
+Member --> UC10b
 Member --> UC11
 Member --> UC12
 Member --> UC13
@@ -595,6 +606,7 @@ Admin --> UC21
 Admin --> UC22
 Admin --> UC23
 Admin --> UC24
+Admin --> UC25
 
 @enduml
 ```
