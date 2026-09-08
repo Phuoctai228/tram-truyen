@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Mô tả nghiệp vụ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #000;
+            line-height: 1.5;
+            margin: 40px;
+        }
+        h1 {
+            font-size: 17pt;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        h2 {
+            font-size: 13pt;
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        ul, p {
+            font-size: 11pt;
+            margin-bottom: 5px;
+        }
+        ul {
+            list-style-type: disc;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            padding-left: 40px;
+        }
+        ul ul {
+            list-style-type: circle;
+        }
+        .bold {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Mô tả nghiệp vụ (Business Description Template)</h1>
+
+    <h2>1. Tổng quan nghiệp vụ (Business Overview)</h2>
+    <ul>
+        <li>Hệ thống là một nền tảng đọc truyện chữ trực tuyến (Trạm Truyện) hỗ trợ độc giả và các tác giả/dịch giả.</li>
+        <li>Người dùng có thể:
+            <ul>
+                <li>Đọc truyện, tìm kiếm và phân loại truyện theo thể loại.</li>
+                <li>Tạo tài khoản để quản lý tủ sách cá nhân và theo dõi lịch sử đọc.</li>
+                <li>Tương tác thông qua bình luận và báo lỗi chương truyện.</li>
+                <li>Đăng tải truyện mới (sáng tác hoặc dịch) và chờ kiểm duyệt để xuất bản.</li>
+                <li>Ban quản trị có thể kiểm duyệt nội dung (truyện, chương, bình luận, báo cáo) và quản lý hệ thống.</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h2>2. Mục tiêu nghiệp vụ (Business Objectives)</h2>
+    <ul>
+        <li>Hệ thống được xây dựng nhằm:
+            <ul>
+                <li>Cung cấp một nền tảng đọc truyện mượt mà, tiện lợi cho độc giả đam mê truyện chữ.</li>
+                <li>Tạo không gian kết nối giữa người đọc và tác giả/người dịch thông qua tính năng bình luận.</li>
+                <li>Xây dựng kho truyện phong phú, đa dạng thể loại với cơ chế quản lý và kiểm duyệt chặt chẽ để đảm bảo chất lượng nội dung.</li>
+                <li>Tối ưu hóa trải nghiệm người dùng thông qua các tính năng lưu tủ sách và theo dõi tiến độ đọc tự động.</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h2>3. Stakeholders (Các bên liên quan)</h2>
+    <ul>
+        <li><span class="bold">Khách truy cập (Guest):</span> Tìm kiếm, duyệt và đọc truyện tự do mà không cần tài khoản.</li>
+        <li><span class="bold">Thành viên (Member):</span> Đọc truyện, quản lý tủ sách, lịch sử đọc, bình luận, báo cáo lỗi. Có thể nộp form xin cấp quyền Tác giả/Dịch giả (ROLE_AUTHOR) để được phép đăng tải tác phẩm.</li>
+        <li><span class="bold">Tác giả/Dịch giả (Author):</span> Là Member đã được cấp quyền, có toàn quyền tạo mới và quản lý danh sách truyện, chương truyện của mình.</li>
+        <li><span class="bold">Nhân viên kiểm duyệt (Staff):</span> Kiểm duyệt truyện đăng mới, kiểm duyệt chương truyện, bình luận và giải quyết các báo cáo lỗi từ người dùng.</li>
+        <li><span class="bold">Quản trị viên (Admin):</span> Quản lý toàn bộ hệ thống, phân quyền (role), quản lý người dùng, cấu hình hệ thống (tỷ giá quy đổi tiền tệ...) và các danh mục (category) truyện.</li>
+    </ul>
+
+    <h2>4. Quy trình nghiệp vụ hiện tại (As-Is)</h2>
+    <ul>
+        <li>Hiện tại, việc đọc truyện và đăng tải truyện thường gặp một số hạn chế:
+            <ul>
+                <li><span class="bold">Người đọc:</span> Phải tìm kiếm truyện ở nhiều nguồn rời rạc, dễ bị quên hoặc mất tiến độ đọc khi đổi thiết bị. Không có một nơi quản lý tập trung những bộ truyện đang theo dõi.</li>
+                <li><span class="bold">Tác giả/Người dịch:</span> Thiếu một nền tảng quy củ để đăng tải tác phẩm, khó quản lý danh sách chương và tiếp nhận phản hồi từ độc giả một cách có hệ thống.</li>
+                <li><span class="bold">Quản lý nội dung:</span> Các tác phẩm đăng tải ở nhiều nơi thường không qua kiểm duyệt, dẫn đến tình trạng sai chính tả, nội dung kém chất lượng hoặc chương bị lỗi (thiếu text, sai định dạng) mà không có người xử lý kịp thời.</li>
+            </ul>
+        </li>
+        <li><span class="bold">Pain point:</span>
+            <ul>
+                <li>Độc giả khó theo dõi tiến độ đọc của bản thân.</li>
+                <li>Tác giả khó quản lý tác phẩm và khó tương tác hiệu quả với độc giả.</li>
+                <li>Chất lượng truyện không đồng đều do thiếu cơ chế kiểm duyệt và xử lý lỗi chương.</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h2>5. Quy trình nghiệp vụ mong muốn (To-Be)</h2>
+    <ul>
+        <li>Sau khi hệ thống Trạm Truyện được triển khai:
+            <ul>
+                <li>Độc giả có thể tìm kiếm truyện dễ dàng qua hệ thống phân loại, thêm truyện vào tủ sách và hệ thống tự động lưu lại "Reading Progress" (tiến độ đọc).</li>
+                <li>Tác giả/Dịch giả tự do tạo truyện mới, tải lên ảnh bìa, thêm chương và gửi yêu cầu kiểm duyệt (Submit for Review).</li>
+                <li>Staff nhận thông báo, tiến hành đọc thử và duyệt/từ chối. Truyện đạt yêu cầu sẽ được xuất bản (Published) tới mọi người.</li>
+                <li>Khi người đọc phát hiện chương bị lỗi, họ sử dụng tính năng "Báo lỗi chương" (Report Issue). Staff tiếp nhận report và phân loại xử lý dựa trên quyền sở hữu (nguồn gốc) của truyện.</li>
+            </ul>
+        </li>
+        <li><span class="bold">Lưu ý nghiệp vụ (Quy trình xuất bản & Kiểm duyệt):</span>
+            <ul>
+                <li><span class="bold">Quy trình Xuất bản Truyện Lần Đầu (Workflow 1):</span> Tác giả đăng truyện -> Cập nhật thông tin & ảnh bìa -> Đăng ít nhất 3 chương nháp -> Submit yêu cầu xuất bản -> Staff kiểm duyệt -> Xuất bản truyện (hoặc bị từ chối nếu vi phạm).</li>
+                <li><span class="bold">Quy trình Xuất bản Chương Các Lần Sau:</span> Tác giả đăng thêm chương (có thể tạo nháp và tick chọn publish một hoặc nhiều chương cùng lúc) -> Chương tự động được xuất bản mà không cần Staff duyệt. Staff/Admin chỉ can thiệp khi truyện bị báo cáo (report).</li>
+                <li><span class="bold">Cơ chế lưu tiến độ:</span> Tiến độ đọc được lưu tự động xuống database mỗi khi Member đọc một chương mới, giúp họ có thể tiếp tục đọc trên bất kỳ thiết bị nào.</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h2>6. Phạm vi hệ thống (In-Scope / Out-of-Scope)</h2>
+    <ul>
+        <li><span class="bold">In-Scope:</span>
+            <ul>
+                <li>Quản lý Truyện (Novel) & Chương truyện (Chapter).</li>
+                <li>Quản lý Tủ sách (Bookshelf) & Lịch sử đọc (Reading History).</li>
+                <li>Quản lý tương tác: Bình luận (Comment) & Báo cáo lỗi chương (Chapter Report).</li>
+                <li>Quản lý Danh mục (Category) & Tìm kiếm/Lọc truyện (Search/Filter).</li>
+                <li>Quản lý người dùng, phân quyền thành viên (Guest, Member, Author, Staff, Admin). Cấp/Duyệt quyền Tác giả/Dịch giả.</li>
+                <li>Chức năng kiểm duyệt nội dung (Moderation workflow).</li>
+                <li><span class="bold">Thanh toán / Trả phí (Monetization):</span> Hỗ trợ nạp tiền, tài khoản VIP. Phân loại chương thường và chương VIP. Tác giả/Dịch giả có thể cấu hình chương VIP tự động mở khóa sau X ngày kể từ khi xuất bản, hoặc mở khóa thủ công. Admin có quyền cấu hình tỷ giá quy đổi giữa tiền thật và tiền ảo (Coin).</li>
+            </ul>
+        </li>
+        <li><span class="bold">Quy định xử lý ngoại lệ (Exception Handling):</span>
+            <ul>
+                <li><span class="bold">Tình huống 1:</span> Truyện bị từ chối kiểm duyệt.<br>
+                <span class="bold">Cách xử lý:</span> Hệ thống chuyển trạng thái truyện thành "Bị từ chối" kèm lý do. Người đăng có thể chỉnh sửa lại nội dung và gửi yêu cầu kiểm duyệt lại.</li>
+                <li><span class="bold">Tình huống 2:</span> Người đọc vào một chương truyện bị lỗi hiển thị.<br>
+                <span class="bold">Cách xử lý:</span> Giao diện cung cấp sẵn nút "Báo lỗi chương", người đọc gửi báo cáo. Quá trình xử lý của Staff sẽ phụ thuộc vào ai là người đăng truyện:
+                    <ul>
+                        <li><span class="bold">Nếu truyện do Admin/Staff đăng:</span> Staff trực tiếp vào chỉnh sửa nội dung chương bị lỗi và đóng (Resolve) báo cáo.</li>
+                        <li><span class="bold">Nếu truyện do Member đăng:</span> Staff không tự ý can thiệp sửa nội dung của Member. Thay vào đó, Staff sẽ đánh dấu lỗi, chuyển trạng thái chương thành "Bản nháp" (Draft) để ẩn khỏi người đọc thông thường, và hệ thống tự động gửi Thông báo (Notification) yêu cầu Member tự vào sửa. Sau khi Member sửa xong và cập nhật, Staff xác nhận và hiển thị lại chương.</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li><span class="bold">Out-of-Scope (Tính năng ngoài phạm vi hiện tại):</span>
+            <ul>
+                <li><span class="bold">Hệ thống SPA/REST API độc lập:</span> Phiên bản này sử dụng kiến trúc Multi-layer MVC (Spring Boot + Thymeleaf) kết xuất trực tiếp HTML. Không xây dựng Frontend riêng biệt kết nối qua REST API.</li>
+                <li><span class="bold">Ứng dụng di động (Mobile App Native):</span> Chỉ tập trung vào giao diện Web Responsive để hiển thị tốt trên thiết bị di động, không phát triển ứng dụng Native iOS/Android.</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h2>7. Giá trị mang lại (Business Benefits)</h2>
+    <ul>
+        <li>Cải thiện tối đa trải nghiệm đọc truyện bằng các tiện ích tủ sách cá nhân và lưu tiến độ thông minh.</li>
+        <li>Kết nối mạnh mẽ cộng đồng tác giả và độc giả.</li>
+        <li>Xây dựng một thư viện truyện chữ chất lượng cao, "sạch" và ít lỗi thông qua sự tham gia của đội ngũ kiểm duyệt nội dung.</li>
+    </ul>
+
+    <h2>8. Các Công thức & Quy tắc tính toán (Formulas & Rules)</h2>
+    <ul>
+        <li>Trong quá trình phát triển, các thông số sau cần được hệ thống tính toán tự động dựa trên công thức chuẩn:
+            <ul>
+                <li><span class="bold">Tiến độ đọc (Reading Progress %):</span><br>
+                Tiến độ (%) = (Số thứ tự chương hiện tại / Tổng số chương đã xuất bản) * 100<br>
+                (Lưu ý: Chỉ tính mẫu số dựa trên những chương có trạng thái là Published, không tính Draft)</li>
+                <li><span class="bold">Tổng lượt xem truyện (Total Novel Views):</span><br>
+                Tổng lượt xem = Sum(Lượt xem của tất cả các chương thuộc truyện đó)<br>
+                (Mỗi khi người dùng mở đọc 1 chương, view count của chương đó +1, sau đó cộng dồn lên Novel)</li>
+                <li><span class="bold">Truyện thịnh hành (Trending Novels):</span><br>
+                Truyện thịnh hành = Lọc Top N truyện có lượt views tăng nhiều nhất trong 7 ngày qua</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h2>Phụ lục: Các trạng thái (Status) áp dụng trong hệ thống</h2>
+    <ul>
+        <li><span class="bold">Trạng thái Truyện (Novel Status):</span> Pending (Chờ duyệt), Published (Đã xuất bản), Rejected (Bị từ chối), Archived (Đã lưu trữ/Ẩn).</li>
+        <li><span class="bold">Trạng thái Chương (Chapter Visibility):</span> Draft (Bản nháp), Published (Đã hiển thị).</li>
+        <li><span class="bold">Trạng thái Báo cáo (Report Status):</span> Open (Chờ xử lý), Resolved (Đã giải quyết), Dismissed (Đã bỏ qua).</li>
+    </ul>
+</body>
+</html>

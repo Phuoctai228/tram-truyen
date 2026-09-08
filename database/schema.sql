@@ -2,6 +2,9 @@ DROP TABLE IF EXISTS chapter_reports CASCADE;
 DROP TABLE IF EXISTS comments CASCADE;
 DROP TABLE IF EXISTS reading_history CASCADE;
 DROP TABLE IF EXISTS bookshelves CASCADE;
+DROP TABLE IF EXISTS unlocked_chapters CASCADE;
+DROP TABLE IF EXISTS transactions CASCADE;
+DROP TABLE IF EXISTS system_settings CASCADE;
 DROP TABLE IF EXISTS chapters CASCADE;
 DROP TABLE IF EXISTS novel_categories CASCADE;
 DROP TABLE IF EXISTS novels CASCADE;
@@ -21,6 +24,7 @@ CREATE TABLE users (
     password VARCHAR(255) NOT NULL,
     full_name VARCHAR(100) NOT NULL,
     avatar_url VARCHAR(255),
+    wallet_balance INT DEFAULT 0,
     status VARCHAR(20) DEFAULT 'ACTIVE', -- ACTIVE, BANNED
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -63,7 +67,9 @@ CREATE TABLE chapters (
     chapter_number INT NOT NULL,
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
-    status VARCHAR(50) DEFAULT 'PUBLISHED', -- DRAFT, PUBLISHED, HIDDEN
+    price INT DEFAULT 0,
+    auto_unlock_at TIMESTAMP,
+    status VARCHAR(50) DEFAULT 'DRAFT', -- DRAFT, PUBLISHED_REGULAR, PUBLISHED_VIP
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (novel_id, chapter_number)
@@ -105,4 +111,29 @@ CREATE TABLE chapter_reports (
     status VARCHAR(50) DEFAULT 'PENDING', -- PENDING, RESOLVED, REJECTED
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     resolved_at TIMESTAMP
+);
+
+CREATE TABLE unlocked_chapters (
+    id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(id) ON DELETE CASCADE,
+    chapter_id INT REFERENCES chapters(id) ON DELETE CASCADE,
+    price_paid INT DEFAULT 0,
+    unlocked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (user_id, chapter_id)
+);
+
+CREATE TABLE transactions (
+    id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(id) ON DELETE CASCADE,
+    amount INT NOT NULL,
+    type VARCHAR(50) NOT NULL, -- DEPOSIT, UNLOCK_CHAPTER
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE system_settings (
+    setting_key VARCHAR(100) PRIMARY KEY,
+    setting_value VARCHAR(255) NOT NULL,
+    description TEXT,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

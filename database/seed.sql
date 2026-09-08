@@ -30,5 +30,11 @@ INSERT INTO categories (name, description) VALUES
 ('Đô Thị', 'Truyện bối cảnh hiện đại, đời sống thành phố.')
 ON CONFLICT DO NOTHING;
 
+-- Seed system_settings
+INSERT INTO system_settings (setting_key, setting_value, description) VALUES 
+('coin_to_vnd_rate', '1', 'Tỷ lệ quy đổi từ Coin sang VNĐ (ví dụ 1 Coin = 1 VNĐ)'),
+('vnd_to_coin_rate', '1', 'Tỷ lệ quy đổi từ VNĐ sang Coin (ví dụ nạp 1 VNĐ được 1 Coin)')
+ON CONFLICT DO NOTHING;
+
 -- Reset sequence for users so subsequent inserts don't fail
 SELECT setval('users_id_seq', (SELECT MAX(id) FROM users));
