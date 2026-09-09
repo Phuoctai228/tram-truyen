@@ -21,18 +21,16 @@
 
 **Trạm Truyện**
 
-Hệ thống là nền tảng đọc truyện chữ trực tuyến, có chức năng tương tự các website đọc truyện hiện nay.
+Hệ thống là nền tảng đọc truyện chữ trực tuyến, tập trung vào trải nghiệm đọc mượt mà, nội dung do ban quản trị trực tiếp đăng tải và phát hành.
 
 Hệ thống hỗ trợ:
 
-- Khách truy cập đọc truyện.
-- Member đăng ký và quản lý tài khoản.
-- Member lưu truyện vào tủ sách.
-- Member theo dõi lịch sử đọc.
-- Member bình luận và báo lỗi chương.
-- Member có thể đăng truyện.
-- Staff kiểm duyệt truyện, chương và bình luận.
-- Admin quản lý người dùng, role, category và hệ thống.
+- Khách truy cập đọc truyện miễn phí, tìm kiếm và gửi liên hệ.
+- Member đăng ký và quản lý tài khoản, lưu truyện vào tủ sách, lưu bookmark tiến độ đọc.
+- Member bình luận, gửi báo lỗi chương và báo cáo vi phạm bộ truyện.
+- Member nạp Coin vào ví qua cổng thanh toán để mở khóa đọc các chương VIP vĩnh viễn (không hoàn tiền, không rút tiền).
+- Staff biên tập nội dung, đăng tải truyện, xuất bản chương, gắn thẻ VIP, xử lý báo lỗi và kiểm duyệt bình luận.
+- Admin quản lý người dùng, phân quyền role, quản lý thể loại, tiếp nhận & xử lý báo cáo vi phạm, đối soát giao dịch nạp Coin và cấu hình hệ thống.
 
 ---
 
@@ -139,10 +137,10 @@ Kiến trúc này phù hợp với yêu cầu Codebase & Database của SWP391 v
 
 | Actor | Responsibility |
 |---|---|
-| Guest | Browse, search và đọc các chương truyện miễn phí |
-| Member | Đọc truyện, tủ sách, bookmark & tiến độ đọc, comment, report, nạp Coin, mở khóa chương VIP, sáng tác/đăng truyện & nhận chia sẻ doanh thu |
-| Staff | Kiểm duyệt truyện đăng mới, ẩn comment vi phạm và xử lý báo cáo lỗi chương |
-| Admin | Quản lý user, role, category, system settings (tỷ giá Coin, tỷ lệ chia sẻ doanh thu), đối soát giao dịch và hệ thống |
+| Guest | Duyệt truyện, tìm kiếm nâng cao, đọc chương miễn phí, gửi liên hệ, đăng ký tài khoản, kích hoạt email OTP, đăng nhập Google OAuth2 |
+| Member | Đọc truyện, tùy chỉnh giao diện đọc, lưu tủ sách, bookmark & tiến độ đọc, đánh giá sao & nhận xét truyện, bình luận, báo lỗi chương/truyện, nạp Coin qua VNPay mở khóa chương VIP (không hoàn tiền, không rút tiền) |
+| Staff | Đăng tải truyện mới, biên tập chương, gắn thẻ VIP, sửa lỗi nội dung, xử lý báo lỗi chương/truyện và kiểm duyệt bình luận |
+| Admin | Quản lý user, role, category, cấu hình hệ thống (tỷ giá Coin, liên hệ, chính sách), tiếp nhận & xử lý báo cáo vi phạm, đối soát giao dịch nạp Coin |
 
 ---
 
@@ -150,35 +148,34 @@ Kiến trúc này phù hợp với yêu cầu Codebase & Database của SWP391 v
 
 Mục tiêu database:
 
-**12–14 tables**
-
-Tối thiểu phải đáp ứng yêu cầu môn học:
-
-**≥10 tables**, normalized, đầy đủ PK/FK.
+**≥10 tables**, normalized, đầy đủ PK/FK theo yêu cầu SWP391.
 
 ## 6.1. Proposed Tables
 
 ```text
-1. users
-2. roles
+1. roles
+2. users
 3. user_roles
 4. password_reset_tokens
-5. categories
-6. novels
-7. novel_categories
-8. chapters
-9. bookshelves
-10. user_read_chapters
-11. reading_progress
-12. comments
-13. chapter_reports
+5. email_verification_tokens
+6. categories
+7. novels
+8. novel_categories
+9. novel_ratings
+10. chapters
+11. bookshelves
+12. user_read_chapters
+13. reading_progress
 14. unlocked_chapters
-15. transactions
-16. withdrawal_requests
-17. system_settings
+15. comments
+16. comment_reports
+17. chapter_reports
+18. novel_reports
+19. transactions
+20. system_settings
 ```
 
-Hệ thống gồm đúng **17 tables** chuẩn hóa, đầy đủ PK/FK và quan hệ ràng buộc.
+Hệ thống gồm đúng **20 tables** chuẩn hóa, đầy đủ PK/FK và quan hệ ràng buộc chặt chẽ.
 
 ---
 
@@ -188,21 +185,21 @@ Team gồm **5 members**.
 
 Mục tiêu phân công:
 
-> Mỗi member phụ trách đúng **10 business functions** theo quy trình liền mạch và Actor rõ ràng.
+> Mỗi member phụ trách **10–13 business functions** theo quy trình liền mạch và Actor rõ ràng.
 
 Tổng:
 
 ```text
-Member 1: 10 functions (Novel & Creator Management)
-Member 2: 10 functions (Chapter, Reader & In-App Purchases)
-Member 3: 10 functions (Authentication & User Management)
-Member 4: 10 functions (Category, Search & Leaderboard)
-Member 5: 10 functions (Interaction, Moderation & Financial Admin)
+Member 1: 10 functions (Novel & Chapter CMS)
+Member 2: 10 functions (Reader Experience, Bookshelf & VIP Unlock)
+Member 3: 11 functions (Auth, Security, OAuth2 & VNPay Payment)
+Member 4: 10 functions (Category, Search Specification & Novel Rating)
+Member 5: 12 functions (Community, Reports, Notifications & User Admin)
 
-Total = 50 tracked functions
+Total = 53 tracked functions
 ```
 
-**Lưu ý quan trọng:** 52 tracked functions không có nghĩa là phải tạo 52 use cases hoặc mỗi function đều phải có 240 LOC.
+**Lưu ý quan trọng:** 53 tracked functions tuân thủ nguyên tắc Single Responsibility (mỗi chức năng giải quyết đúng 1 nghiệp vụ rõ ràng, không gộp lẫn).
 
 SWP391 đánh giá LOC theo độ phức tạp của function:
 
@@ -220,172 +217,195 @@ Do đó project vẫn phải kiểm soát tổng scope trong khoảng:
 1800–3600 LOC
 ```
 
-47 functions ở đây chủ yếu dùng để **chia workload và tracking contribution**.
+53 functions ở đây dùng để **chia workload đều cho 5 sinh viên và tracking contribution trên GitHub**.
 
 ---
 
-# 8. MEMBER 1 – NOVEL & CREATOR MANAGEMENT
+# 8. MEMBER 1 – NOVEL & CHAPTER CMS
 
 ## Functions
 
-| ID | Function |
-|---|---|
-| M1-F01 | Create Novel (Member) |
-| M1-F02 | View Novel List |
-| M1-F03 | View Novel Details |
-| M1-F04 | Update Novel & Upload Cover |
-| M1-F05 | Delete/Archive Novel |
-| M1-F06 | Submit Novel for Review (Req. 3 Drafts) |
-| M1-F07 | Review Novel Submission (Staff) |
-| M1-F08 | Approve/Reject Novel (Staff) |
-| M1-F09 | Manage My Uploaded Novels (Member) |
-| M1-F10 | Request Withdrawal (Member) |
+| ID | Function | Actor |
+|---|---|---|
+| M1-F01 | Create Novel | Staff, Admin |
+| M1-F02 | Update Novel | Staff, Admin |
+| M1-F03 | Archive Novel | Staff, Admin |
+| M1-F04 | Delete Novel | Admin |
+| M1-F05 | View Internal Novels | Staff, Admin |
+| M1-F06 | Create Chapter | Staff, Admin |
+| M1-F07 | Update Chapter | Staff, Admin |
+| M1-F08 | Hide Chapter | Staff, Admin |
+| M1-F09 | Delete Chapter | Staff, Admin |
+| M1-F10 | Configure Chapter | Staff, Admin |
 
 ## Main Responsibility
 
 ```text
-Novel CRUD & Metadata
-Novel Cover & Status
-Novel Approval Workflow
-Creator Story Management
-Creator Withdrawal Request
+Novel CRUD & Metadata (Staff/Admin)
+Novel Cover & Status Management (Archive vs Soft Delete)
+Internal Novels Admin Dashboard (CMS)
+Chapter CRUD (Create, Update, Hide, Soft Delete)
+Chapter Visibility & VIP Pricing Configuration
+```
+
+## Main Classes
+
+```text
+NovelAdminController
+ChapterAdminController
+NovelService
+ChapterService
+NovelServiceImpl
+ChapterServiceImpl
+NovelRepository
+ChapterRepository
+Novel
+Chapter
+```
+
+---
+
+# 9. MEMBER 2 – READER EXPERIENCE, BOOKSHELF & VIP UNLOCK
+
+## Functions
+
+| ID | Function | Actor |
+|---|---|---|
+| M2-F01 | View Novels | Guest, Member |
+| M2-F02 | View Novel Details | Guest, Member |
+| M2-F03 | Read Chapter | Guest, Member |
+| M2-F04 | Customize Reader | Guest, Member |
+| M2-F05 | Save Reading Progress | Member |
+| M2-F06 | Add Novel to Bookshelf | Member |
+| M2-F07 | View Bookshelf | Member |
+| M2-F08 | Remove Novel from Bookshelf | Member |
+| M2-F09 | Unlock Chapter | Member |
+| M2-F10 | View Reading History | Member |
+
+## Main Responsibility
+
+```text
+Public Novel & Chapter Catalog (Guest & Member)
+Reader UI Engine & Mark Read Chapters (is_read)
+Reader Display Customization (Font size, themes, scroll mode)
+Reading Progress Percentage & Bookmark ("Đọc tiếp")
+Personal Bookshelf Management (Add, View, Remove)
+VIP Chapter Unlock with Coin (Concurrency check, wallet deduction)
+Unlocked Reading History
 ```
 
 ## Main Classes
 
 ```text
 NovelController
-WithdrawalController
-NovelService
-WithdrawalService
-NovelServiceImpl
-WithdrawalServiceImpl
-NovelRepository
-WithdrawalRequestRepository
-Novel
-WithdrawalRequest
-```
-
----
-
-# 9. MEMBER 2 – CHAPTER, READER & IN-APP PURCHASES
-
-## Functions
-
-| ID | Function |
-|---|---|
-| M2-F01 | Create Chapter |
-| M2-F02 | View Chapter List |
-| M2-F03 | View Chapter Details |
-| M2-F04 | Update Chapter |
-| M2-F05 | Delete Chapter |
-| M2-F06 | Manage Chapter Visibility & VIP |
-| M2-F07 | Read Chapter & Mark Read |
-| M2-F08 | Save Reading Progress & Bookmark |
-| M2-F09 | Top-up Coin / Deposit (VNPay/Momo) |
-| M2-F10 | Unlock VIP Chapter with Coin |
-
-## Main Responsibility
-
-```text
-Chapter CRUD & Visibility
-Reader & Reading Progress
-Mark Read Chapters
-In-App Payment (Deposit)
-VIP Chapter Purchase
-```
-
-## Main Classes
-
-```text
-ChapterController
-PaymentController
-ChapterService
-PaymentService
-ChapterServiceImpl
-PaymentServiceImpl
-ChapterRepository
-TransactionRepository
+ReaderController
+BookshelfController
+ReaderService
+BookshelfService
+VIPUnlockService
+ReaderServiceImpl
+BookshelfServiceImpl
+VIPUnlockServiceImpl
+BookshelfRepository
+ReadingProgressRepository
+UserReadChapterRepository
 UnlockedChapterRepository
-Chapter
+Bookshelf
+ReadingProgress
+UserReadChapter
 UnlockedChapter
-Transaction
 ```
 
 ---
 
-# 10. MEMBER 3 – AUTHENTICATION & USER MANAGEMENT
+# 10. MEMBER 3 – AUTH, SECURITY, OAUTH2 & PAYMENT
 
 ## Functions
 
-| ID | Function |
-|---|---|
-| M3-F01 | Register |
-| M3-F02 | Login |
-| M3-F03 | Logout |
-| M3-F04 | Forgot / Reset Password |
-| M3-F05 | View Profile |
-| M3-F06 | Update Profile & Avatar |
-| M3-F07 | Change Password |
-| M3-F08 | View User List (Admin) |
-| M3-F09 | Change User Role (Admin) |
-| M3-F10 | Ban/Enable User (Admin) |
+| ID | Function | Actor |
+|---|---|---|
+| M3-F01 | Register Account | Guest |
+| M3-F02 | Verify Account | Guest |
+| M3-F03 | Login | Guest |
+| M3-F04 | Login with Google | Guest |
+| M3-F05 | Logout | Member, Staff, Admin |
+| M3-F06 | Reset Password | Guest |
+| M3-F07 | Change Password | Member, Staff, Admin |
+| M3-F08 | View Profile | Member, Staff, Admin |
+| M3-F09 | View Coin History | Member, Staff, Admin |
+| M3-F10 | Update Profile | Member, Staff, Admin |
+| M3-F11 | Top-up Coin | Member |
 
 ## Main Responsibility
 
 ```text
-Authentication (Login/Register/Session)
-Password Reset Token Workflow
-Profile & Avatar Management
-User List & Ban/Enable
-Role Assignment (Staff/Admin)
+Authentication & Session Management (Form Login + Remember Me)
+Email OTP Account Verification (JavaMailSender, Async, Token expiry)
+Social Login (Spring Security OAuth2 Client - Google Login)
+Password Reset Token Workflow with Email
+Profile & Avatar Cloudinary Upload
+VNPay Payment Gateway Integration (HMAC-SHA512, Checksum, IPN Webhook)
+Coin Transaction History (Top-up and Spend)
 ```
 
 ## Main Classes
 
 ```text
 AuthController
-UserController
+OAuth2Controller
+ProfileController
+PaymentGatewayController
 AuthService
+EmailService
+OAuth2Service
 UserService
+PaymentGatewayService
 AuthServiceImpl
+EmailServiceImpl
+OAuth2ServiceImpl
 UserServiceImpl
+PaymentGatewayServiceImpl
 UserRepository
 RoleRepository
 PasswordResetTokenRepository
+EmailVerificationTokenRepository
+TransactionRepository
 User
 Role
 PasswordResetToken
+EmailVerificationToken
+Transaction
 ```
 
 ---
 
-# 11. MEMBER 4 – CATEGORY, SEARCH & LEADERBOARD
+# 11. MEMBER 4 – CATEGORY, SEARCH SPECIFICATION & NOVEL RATING
 
 ## Functions
 
-| ID | Function |
-|---|---|
-| M4-F01 | Create Category |
-| M4-F02 | View Category List |
-| M4-F03 | Update Category |
-| M4-F04 | Delete Category |
-| M4-F05 | Assign Category to Novel |
-| M4-F06 | Remove Category from Novel |
-| M4-F07 | Search Novel by Keyword |
-| M4-F08 | Filter Novel by Category/Status |
-| M4-F09 | Sort Novels List |
-| M4-F10 | Top Leaderboard (Day/Week/Month/All-time) |
+| ID | Function | Actor |
+|---|---|---|
+| M4-F01 | Create Category | Admin |
+| M4-F02 | View Categories | Guest, Member, Staff, Admin |
+| M4-F03 | Update Category | Admin |
+| M4-F04 | Delete Category | Admin |
+| M4-F05 | Categorize Novel | Staff, Admin |
+| M4-F06 | Search Novels | Guest, Member |
+| M4-F07 | Filter Novels | Guest, Member |
+| M4-F08 | Sort Novels | Guest, Member |
+| M4-F09 | Review Novel | Member |
+| M4-F10 | View Leaderboards | Guest, Member |
 
 ## Main Responsibility
 
 ```text
-Category CRUD
-Novel Classification
-Keyword Search
-Category & Status Filter
-Novel Sorting (Latest/Views/Chapters/A-Z)
-Leaderboard Views Analytics
+Category CRUD & Novel Category Many-to-Many Mapping
+Advanced Search Engine with JPA Specification & CriteriaBuilder
+Live Search Autocomplete / Quick Suggestion REST API
+Novel Category & Status Filter
+Multi-attribute Sorting (Latest, Views, Rating, Chapters, A-Z)
+Novel Rating & Review System (1-5 stars, composite average calculation)
+Top Views Leaderboard (Day, Week, Month, All-time)
 ```
 
 ## Main Classes
@@ -393,70 +413,91 @@ Leaderboard Views Analytics
 ```text
 CategoryController
 SearchController
+NovelRatingController
 LeaderboardController
 CategoryService
 SearchService
+NovelRatingService
 LeaderboardService
+CategoryServiceImpl
+SearchServiceImpl
+NovelRatingServiceImpl
+LeaderboardServiceImpl
+NovelSpecification
 CategoryRepository
+NovelRatingRepository
 NovelRepository
 Category
+NovelRating
 ```
 
 ---
 
-# 12. MEMBER 5 – INTERACTION, MODERATION & FINANCIAL ADMIN
+# 12. MEMBER 5 – COMMUNITY, REPORTS & FINANCIAL ADMIN
 
-## Functions
+### Member 5 (Community, Reports, Notifications & User Admin)
 
 | ID | Function | Actor |
 |---|---|---|
-| M5-F01 | Add Novel to Bookshelf | Member |
-| M5-F02 | View Bookshelf | Member |
-| M5-F03 | Remove from Bookshelf | Member |
-| M5-F04 | Create Comment | Member |
-| M5-F05 | View Comment List | Guest, Member |
-| M5-F06 | Report Comment | Member |
-| M5-F07 | Moderate Reported Comments | Staff, Admin |
-| M5-F08 | Create Chapter Issue Report | Member |
-| M5-F09 | Process/Resolve Issue Report | Staff, Admin |
-| M5-F10 | Manage & Approve Withdrawals | Admin |
-| M5-F11 | Audit Transactions | Admin |
-| M5-F12 | Manage System Settings | Admin |
+| M5-F01 | Create Comment | Member |
+| M5-F02 | View Comments | Guest, Member |
+| M5-F03 | Report Comment | Member |
+| M5-F04 | Report Content | Member |
+| M5-F05 | Resolve Reports | Staff, Admin |
+| M5-F06 | Send Notification | Staff, Admin |
+| M5-F07 | View Mailbox | Member |
+| M5-F08 | Audit Transactions | Admin |
+| M5-F09 | Configure System | Admin |
+| M5-F10 | View User List | Admin |
+| M5-F11 | Assign Roles | Admin |
+| M5-F12 | Ban/Enable User | Admin |
 
 ## Main Responsibility
 
 ```text
-Bookshelf Management
-Comment System
-Comment Reporting & Moderation
-Chapter Issue Reports & Resolution
-Admin Withdrawal Approval
-Audit Transactions & Financial Logs
-System Settings Configuration
+Community Comment System & Paginated Comment List
+Comment Toxicity Reporting & Content Moderation
+Chapter Issue Reports & Content Correction Workflow
+Novel Violation Report Processing
+System Financial Audit & Coin Flow Reconcile
+Global System Configuration (Coin Rate, Hotline, Email, Policy)
+Notification System
+User Account Management
 ```
 
 ## Main Classes
 
 ```text
-BookshelfController
 CommentController
 ReportController
+NotificationController
 AdminFinanceController
-BookshelfService
+UserAdminController
 CommentService
 ReportService
+NotificationService
 AdminFinanceService
-BookshelfRepository
+UserService
+CommentServiceImpl
+ReportServiceImpl
+NotificationServiceImpl
+AdminFinanceServiceImpl
+UserServiceImpl
 CommentRepository
 CommentReportRepository
-ChapterReportRepository
-WithdrawalRequestRepository
+ReportRepository
+NotificationRepository
+TransactionRepository
 SystemSettingRepository
-Bookshelf
+UserRepository
+RoleRepository
 Comment
 CommentReport
-ChapterReport
+ContentReport
+Notification
 SystemSetting
+User
+Role
 ```
 
 ---
@@ -465,9 +506,9 @@ SystemSetting
 
 Mục tiêu khoảng:
 
-**18–22 use cases**
+**20–25 use cases**
 
-Không nên biến tất cả 50 functions thành 50 use cases.
+Không nên biến tất cả 53 functions thành 53 use cases.
 
 ---
 
@@ -478,7 +519,7 @@ UC01 Browse Novels
 UC02 Search Novels
 UC03 Filter Novels
 UC04 View Novel Details
-UC05 Read Chapter
+UC05 Read Free Chapters
 ```
 
 ---
@@ -486,18 +527,16 @@ UC05 Read Chapter
 ## 13.2. Member Use Cases
 
 ```text
-UC06 Register Account
-UC07 Login & Forgot Password
-UC08 Manage Profile
-UC09 Manage Bookshelf & Bookmark
-UC10 Comment on Novel
-UC10b Report Comment
-UC11 Report Chapter Issue
-UC12 Top-up Coin & Unlock VIP Chapter
-UC13 Create Novel
-UC14 Submit Novel (First Publish)
-UC14b Publish Subsequent Chapters
-UC14c Request Withdrawal
+UC07 Register Account
+UC08 Login & Forgot Password
+UC09 Manage Profile
+UC10 Manage Bookshelf & Bookmark
+UC11 Comment on Novel
+UC11b Report Comment
+UC12 Report Chapter Issue
+UC12b Report Novel Issue
+UC13 Top-up Coin (VNPay/Momo)
+UC14 Unlock VIP Chapter with Coin
 ```
 
 ---
@@ -505,10 +544,10 @@ UC14c Request Withdrawal
 ## 13.3. Staff Use Cases
 
 ```text
-UC15 Manage Chapters
-UC16 Review Novel Submission
+UC15 Manage Novels & Upload Cover
+UC16 Manage Chapters & VIP Pricing
 UC17 Moderate Comments
-UC18 Resolve Chapter Issue Report
+UC18 Resolve Chapter & Novel Reports
 ```
 
 ---
@@ -519,10 +558,9 @@ UC18 Resolve Chapter Issue Report
 UC19 Manage Users
 UC20 Manage Roles
 UC21 Manage Categories
-UC22 View Dashboard
+UC22 View Dashboard & Novel Analytics
 UC23 Manage System Settings
-UC24 Manage & Approve Withdrawals
-UC25 Audit Transactions
+UC24 Audit Coin Transactions
 ```
 
 Use case naming nên sử dụng dạng **Verb + Object**, phù hợp với cấu trúc RDS template.
@@ -543,38 +581,36 @@ actor Member
 actor Staff
 actor Admin
 
-rectangle "Online Reading System" {
+rectangle "Online Reading System (Trạm Truyện)" {
 
   usecase "Browse Novels" as UC01
   usecase "Search Novels" as UC02
   usecase "Filter Novels" as UC03
   usecase "View Novel Details" as UC04
-  usecase "Read Chapter" as UC05
+  usecase "Read Free Chapters" as UC05
 
-  usecase "Register Account" as UC06
-  usecase "Login & Forgot Password" as UC07
-  usecase "Manage Profile" as UC08
-  usecase "Manage Bookshelf & Bookmark" as UC09
-  usecase "Comment on Novel" as UC10
-  usecase "Report Comment" as UC10b
-  usecase "Report Chapter Issue" as UC11
-  usecase "Top-up Coin & Unlock VIP" as UC12
-  usecase "Create Novel" as UC13
-  usecase "Submit Novel" as UC14
-  usecase "Request Withdrawal" as UC14c
+  usecase "Register Account" as UC07
+  usecase "Login & Forgot Password" as UC08
+  usecase "Manage Profile" as UC09
+  usecase "Manage Bookshelf & Bookmark" as UC10
+  usecase "Comment on Novel" as UC11
+  usecase "Report Comment" as UC11b
+  usecase "Report Chapter Issue" as UC12
+  usecase "Report Novel Issue" as UC12b
+  usecase "Top-up Coin" as UC13
+  usecase "Unlock VIP Chapter" as UC14
 
-  usecase "Manage Chapters" as UC15
-  usecase "Review Novel Submission" as UC16
+  usecase "Manage Novels & Cover" as UC15
+  usecase "Manage Chapters & VIP" as UC16
   usecase "Moderate Comments" as UC17
-  usecase "Resolve Issue Report" as UC18
+  usecase "Resolve Issue Reports" as UC18
 
   usecase "Manage Users" as UC19
   usecase "Manage Roles" as UC20
   usecase "Manage Categories" as UC21
-  usecase "View Dashboard" as UC22
+  usecase "View Dashboard & Analytics" as UC22
   usecase "Manage System Settings" as UC23
-  usecase "Approve Withdrawals" as UC24
-  usecase "Audit Transactions" as UC25
+  usecase "Audit Coin Transactions" as UC24
 }
 
 Guest --> UC01
@@ -583,17 +619,16 @@ Guest --> UC03
 Guest --> UC04
 Guest --> UC05
 
-Member --> UC06
 Member --> UC07
 Member --> UC08
 Member --> UC09
 Member --> UC10
-Member --> UC10b
 Member --> UC11
+Member --> UC11b
 Member --> UC12
+Member --> UC12b
 Member --> UC13
 Member --> UC14
-Member --> UC14c
 
 Staff --> UC15
 Staff --> UC16
@@ -606,7 +641,6 @@ Admin --> UC21
 Admin --> UC22
 Admin --> UC23
 Admin --> UC24
-Admin --> UC25
 
 @enduml
 ```
@@ -651,24 +685,24 @@ SD01 Register
 SD02 Login
 SD03 Update Profile
 
-SD04 Create Novel
-SD05 Submit Novel
-SD06 Review Novel
-SD07 Approve/Reject Novel
+SD04 Create Novel (Staff)
+SD05 Update Novel & Cover (Staff)
+SD06 Archive/Delete Novel (Staff/Admin)
+SD07 Process Novel Report (Staff/Admin)
 
-SD08 Create Chapter
-SD09 Update Chapter
-SD10 Read Chapter
-SD11 Navigate Chapter
-SD12 Save Reading Progress
+SD08 Create Chapter (Staff)
+SD09 Update Chapter & VIP Pricing (Staff)
+SD10 Read Chapter & Mark Read
+SD11 Save Reading Progress & Bookmark
+SD12 Top-up Coin (VNPay/Momo)
+SD13 Unlock VIP Chapter with Coin
 
-SD13 Search Novel
-SD14 Filter Novel
-SD15 Manage Category
+SD14 Search & Filter Novels
+SD15 Manage Category (Admin)
 
-SD16 Add Novel to Bookshelf
-SD17 Create Comment
-SD18 Report Chapter Issue
+SD16 Manage Bookshelf
+SD17 Create Comment & Report Comment
+SD18 Report Chapter Issue & Resolve
 ```
 
 Có thể bổ sung sequence diagram cho Admin Dashboard hoặc User Management nếu cần tăng độ đầy đủ của SDS.
@@ -776,105 +810,97 @@ Ví dụ:
 
 ---
 
-# 20. NOVEL WORKFLOW
+# 20. NOVEL & VIP CHAPTER PUBLISHING WORKFLOW
 
-## Workflow 1 – First-time Novel Publishing & Approval
-
-```text
-Member (Creator)
-  ↓
-Create Novel
-  ↓
-Fill Novel Information & Upload Cover
-  ↓
-Create at least 3 Chapter Drafts
-  ↓
-Submit for Review
-  ↓
-Staff Review
-  ↓
-Approve / Reject
-  ↓
-Novel Published
-```
-
-## Workflow 1.2 – Subsequent Chapter Publishing
+## Workflow 1 – Staff Novel & Chapter Publishing
 
 ```text
-Member (Creator)
+Staff / Admin
   ↓
-Create Chapter(s)
+Create Novel (Title, Original Author, Description)
   ↓
-Select Visibility (Regular / VIP / Auto-unlock)
+Upload Novel Cover (Cloudinary)
   ↓
-Publish (No Staff Review required)
+Assign Categories
+  ↓
+Create Chapter (Number, Title, Text Content)
+  ↓
+Set Chapter Visibility (Regular Free / VIP Coin Price)
+  ↓
+Publish Novel & Chapters (Live on website)
 ```
 
 ### Exception Path 1
 
 ```text
-Invalid novel information
+Invalid cover image / text formatting
         ↓
-Reject submission
+Display validation error
         ↓
-Member corrects information
+Staff corrects information
 ```
 
 ### Exception Path 2
 
 ```text
-Novel violates rules
+Novel reported or requested for takedown
         ↓
-Staff rejects
+Admin/Staff changes status to ARCHIVED
         ↓
-Novel remains unpublished
+Novel hidden from public catalog
 ```
 
 ---
 
-# 21. READING WORKFLOW
+# 21. READING & VIP UNLOCK WORKFLOW
 
-## Workflow 2 – Reading & Interaction
+## Workflow 2 – Reading, Bookmark & VIP Unlock
 
 ```text
-Guest/Member
+Guest / Member
      ↓
-Search Novel
+Search / Browse Novel
      ↓
-View Novel Details
+View Novel Details & Chapter List
      ↓
-Select Chapter
+Select Chapter to Read
      ↓
-Read Chapter
+Check Chapter Type (Regular vs VIP)
      ↓
-Save Reading Progress
+[If VIP & Not Unlocked]
+  ├── Insufficient Coin → Prompt Top-up Coin via VNPay/Momo
+  └── Sufficient Coin → Deduct Coin & Unlock Chapter Permanently
      ↓
-Add to Bookshelf
+Read Chapter Content
      ↓
-Comment / Report Issue
+System auto-marks Read & Updates Bookmark Progress
+     ↓
+Add to Bookshelf / Comment / Report Chapter Issue
 ```
 
 ### Exception Path 1
 
 ```text
-Chapter unavailable
+Insufficient Coin balance for VIP chapter
         ↓
-Display error
+Prompt modal with price details
         ↓
-Return to novel details
+Redirect to Coin Top-up Page (VNPay/Momo)
 ```
 
 ### Exception Path 2
 
 ```text
-User not authenticated
+Chapter is currently Draft / Hidden
         ↓
-Cannot use member-only function
+Display notice: "Chương đang cập nhật"
         ↓
-Redirect to Login
+Redirect to Novel Details page
 ```
 
 ---
+
+
 
 # 22. WORKFLOW 0 – DATA INITIALIZATION
 
@@ -1119,8 +1145,9 @@ Hoặc chia branch nhỏ hơn theo function:
 
 ```text
 feature/M1-F01-create-novel
-feature/M1-F02-view-novel
-feature/M2-F01-create-chapter
+feature/M1-F07-create-chapter
+feature/M2-F01-view-novel-list
+feature/M2-F04-read-chapter
 feature/M3-F01-register
 ...
 ```
@@ -1137,11 +1164,10 @@ Ví dụ:
 
 ```text
 [M1-F01] Create Novel
-[M1-F02] View Novel List
-[M1-F03] View Novel Details
+[M1-F07] Create Chapter
 
-[M2-F01] Create Chapter
-[M2-F02] View Chapter List
+[M2-F01] View Novel List
+[M2-F04] Read Chapter & Mark Read
 
 [M3-F01] Register
 [M3-F02] Login
@@ -1258,7 +1284,7 @@ Có thể thêm Function ID:
 
 ```text
 feat(M1-F01): implement create novel
-fix(M2-F06): validate duplicate chapter number
+fix(M1-F08): validate duplicate chapter number
 test(M3-F01): add registration tests
 docs(M4-F08): update search sequence diagram
 ```
@@ -1420,13 +1446,13 @@ Ví dụ Member 1:
 M1-F01
 M1-F02
 ...
-M1-F10
+M1-F11
 ```
 
 GitHub evidence:
 
 ```text
-10 Issues
+11 Issues
 15+ Commits
 5+ Pull Requests
 Related code
@@ -1746,22 +1772,21 @@ Student Guide cũng yêu cầu presentation có project introduction, use case d
                        ↓
                  Comment / Report
                        ↓
-                Create Novel
-                       ↓
-               Submit for Review
+                Top-up Coin & VIP
                        ↓
                ┌────────────────┐
                │     Staff      │
                └───────┬────────┘
                        ↓
-                Review / Moderate
+               Create Novel & Chapter
                        ↓
                ┌────────────────┐
                │     Admin      │
                └───────┬────────┘
                        ↓
-             User / Role / Category
-                    Management
+             User / Category / Settings
+                        ↓
+              Notice & Takedown Claims
 ```
 
 ---
@@ -1849,10 +1874,10 @@ Các tiêu chí trên được xây dựng từ các mốc Assessment 1–3 và 
 | Item | Target |
 |---|---:|
 | Team members | 5 |
-| Functions | ≈50 tracked functions |
-| Use cases | 18–22 |
-| Sequence diagrams | ≈18 |
-| Database tables | 12–14 |
+| Functions | 58 tracked functions |
+| Use cases | 20–25 |
+| Sequence diagrams | 19 |
+| Database tables | 21 |
 | User stories | ≥12 |
 | SRS | ≥15 pages |
 | SDS | ≥15 pages |
@@ -1861,7 +1886,7 @@ Các tiêu chí trên được xây dựng từ các mốc Assessment 1–3 và 
 | Test pass rate | ≥80% |
 | Commits/member | ≥15 recommended |
 | AI logs | ≥10 recommended |
-| Main workflows | 3 |
+| Main workflows | 4 (WF 0, 1, 2, 3) |
 | Exception paths | ≥2 / main workflow |
 | Git platform | GitHub |
 
@@ -1942,8 +1967,8 @@ Team:
 
 ```text
 5 members
-≈10 tracked functions/member
-≈50 tracked functions
+11–13 tracked functions/member
+58 tracked functions
 ```
 
 Project scope:
@@ -1955,15 +1980,16 @@ Project scope:
 Database:
 
 ```text
-12–14 tables target
+21 tables target
 ```
 
 Main workflows:
 
 ```text
 Workflow 0 – Data Initialization
-Workflow 1 – Novel Publishing & Approval
-Workflow 2 – Reading & Interaction
+Workflow 1 – Staff Novel & VIP Chapter Publishing
+Workflow 2 – Reading, Bookmark & VIP Unlock
+Workflow 3 – Copyright Notice & Takedown
 ```
 
 Source control:

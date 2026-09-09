@@ -1,86 +1,88 @@
-DANH SÁCH CHI TIẾT 52 CHỨC NĂNG (THEO CHUẨN SWP391)
+DANH SÁCH CHI TIẾT 53 CHỨC NĂNG (THEO CHUẨN SWP391 - WEB ĐỌC TRUYỆN THUẦN TÚY)
 ================================================================================
-(Hệ thống tuân thủ nguyên tắc Single Responsibility: 1 chức năng chỉ đảm nhận 1 nhiệm vụ duy nhất. Quy trình liền mạch và Actor rõ ràng).
+(Hệ thống tuân thủ nguyên tắc Single Responsibility: 1 chức năng chỉ đảm nhận 1 nhiệm vụ duy nhất. Quy trình liền mạch, Actor rõ ràng, phân bổ 11–13 chức năng/sinh viên, đảm bảo mỗi thành viên đều có chức năng COMPLEX đạt chuẩn LOC môn học).
 
 DANH SÁCH CÁC ACTORS TRONG HỆ THỐNG:
-- Guest: Khách vãng lai chưa đăng nhập (đọc truyện miễn phí, tìm kiếm, lọc, xem BXH).
-- Member: Thành viên đã đăng nhập (bao gồm cả vai trò Tác giả/Người đăng truyện: tự do sáng tác, quản lý chương, nhận Coin chia sẻ doanh thu và rút tiền).
-- Staff: Nhân viên kiểm duyệt nội dung (duyệt truyện đăng lần đầu, xử lý báo cáo chương lỗi, kiểm duyệt bình luận vi phạm).
-- Admin: Quản trị viên toàn hệ thống (quản lý người dùng/role, quản lý thể loại, duyệt rút tiền, đối soát giao dịch và cấu hình hệ thống).
+- Guest: Khách vãng lai chưa đăng nhập (đọc truyện miễn phí, tìm kiếm, lọc, xem BXH, gửi liên hệ, đăng ký tài khoản, kích hoạt email OTP, đăng nhập Google).
+- Member: Thành viên đã đăng nhập (đọc truyện, tùy chỉnh giao diện đọc, lưu tủ sách, đánh dấu tiến độ đọc/bookmark, đánh giá truyện, bình luận, báo lỗi chương/truyện, nạp Coin qua VNPay mở khóa chương VIP - không hoàn tiền/không rút tiền).
+- Staff: Nhân viên biên tập & kiểm duyệt nội dung (tạo truyện, tạo chương, cập nhật truyện, cài đặt chương, xử lý báo cáo).
+- Admin: Quản trị viên toàn hệ thống (quản lý người dùng/role, quản lý thể loại, đối soát giao dịch, cấu hình hệ thống).
 
-================================================================================
+===============================================================================
 
-1. MODULE QUẢN LÝ TRUYỆN & TÁC GIẢ (NOVEL & CREATOR MANAGEMENT - MEMBER 1)
+1. MODULE QUẢN TRỊ NỘI DUNG TRUYỆN & CHƯƠNG (NOVEL & CHAPTER CMS - MEMBER 1)
 --------------------------------------------------------------------------------
-[ ] M1-F01: Tạo truyện mới (Create Novel) [Actor: Member] - Thành viên khởi tạo truyện mới để bắt đầu đăng tải tác phẩm sáng tác hoặc dịch.
-[ ] M1-F02: Xem danh sách truyện (View Novel List) [Actor: Guest, Member] - Hiển thị danh sách truyện công khai trên hệ thống (Trang chủ, Danh mục).
-[ ] M1-F03: Xem chi tiết truyện (View Novel Details) [Actor: Guest, Member] - Xem thông tin truyện, tác giả, tóm tắt, danh sách chương và đánh giá.
-[ ] M1-F04: Cập nhật thông tin truyện & Ảnh bìa (Update Novel & Cover) [Actor: Member (Tác giả)] - Chỉnh sửa thông tin truyện và tải ảnh bìa lên Cloudinary.
-[ ] M1-F05: Xóa/Lưu trữ truyện (Delete/Archive Novel) [Actor: Member (Tác giả), Admin] - Tác giả ẩn/lưu trữ truyện của mình hoặc Admin xóa truyện vi phạm.
-[ ] M1-F06: Gửi yêu cầu duyệt truyện lần đầu (Submit Novel for Review) [Actor: Member (Tác giả)] - Gửi truyện lên ban quản trị sau khi đã có tối thiểu 3 chương nháp.
-[ ] M1-F07: Xem danh sách truyện chờ duyệt (Review Novel Submission) [Actor: Staff, Admin] - Tra cứu danh sách truyện đang ở trạng thái PENDING chờ kiểm duyệt.
-[ ] M1-F08: Phê duyệt/Từ chối truyện (Approve/Reject Novel) [Actor: Staff, Admin] - Duyệt xuất bản truyện hoặc từ chối kèm lý do phản hồi cho tác giả.
-[ ] M1-F09: Quản lý truyện đã đăng & Thống kê doanh thu (Manage My Novels & Analytics) [Actor: Member (Tác giả)] - Tác giả theo dõi danh sách truyện của mình, lượt xem và doanh thu Coin nhận được.
-[ ] M1-F10: Gửi yêu cầu rút tiền tác quyền về ngân hàng (Request Withdrawal) [Actor: Member (Tác giả)] - Tác giả tạo lệnh rút tiền từ doanh thu Coin về tài khoản ngân hàng khi đạt hạn mức tối thiểu.
+[ ] M1-F01: Tạo truyện (Create Novel) [Actor: Staff, Admin] - Ban quản trị khởi tạo bộ truyện mới (tiêu đề, tác giả gốc, tóm tắt).
+[ ] M1-F02: Cập nhật truyện (Update Novel) [Actor: Staff, Admin] - Chỉnh sửa thông tin truyện, trạng thái tiến độ (Đang ra/Hoàn thành) và tải ảnh bìa mới lên Cloudinary.
+[ ] M1-F03: Tạm ẩn truyện (Archive Novel) [Actor: Staff, Admin] - Chuyển trạng thái truyện sang ARCHIVED để tạm ẩn khỏi danh mục công khai (phục vụ xử lý khiếu nại hoặc tạm dừng phát hành).
+[ ] M1-F04: Xóa truyện (Delete Novel) [Actor: Admin] - Thực hiện xóa mềm bộ truyện (đánh dấu is_deleted = true, gỡ bỏ khỏi danh sách hoạt động trên hệ thống).
+[ ] M1-F05: Xem danh sách truyện nội bộ (View Internal Novels) [Actor: Staff, Admin] - Bảng quản trị tra cứu toàn bộ truyện trong hệ thống, tìm kiếm và lọc theo trạng thái.
+[ ] M1-F06: Tạo chương (Create Chapter) [Actor: Staff, Admin] - Ban quản trị thêm chương mới cho truyện (soạn thảo tiêu đề, số thứ tự, nội dung văn bản chương).
+[ ] M1-F07: Cập nhật chương (Update Chapter) [Actor: Staff, Admin] - Chỉnh sửa tiêu đề, thứ tự hoặc sửa đổi nội dung văn bản của chương đã đăng.
+[ ] M1-F08: Tạm ẩn chương (Hide Chapter) [Actor: Staff, Admin] - Chuyển trạng thái chương sang DRAFT để tạm thời ẩn chương khỏi mục lục công khai (khi phát hiện lỗi hoặc đang chỉnh sửa).
+[ ] M1-F09: Xóa chương (Delete Chapter) [Actor: Staff, Admin] - Thực hiện xóa mềm chương truyện (đánh dấu is_deleted = true, gỡ bỏ chương khỏi mục lục truyện).
+[ ] M1-F10: Cài đặt chương (Configure Chapter) [Actor: Staff, Admin] - Thiết lập trạng thái (Bản nháp / Xuất bản), gắn thẻ VIP và đặt giá Coin cần mở khóa cho chương.
 
-2. MODULE QUẢN LÝ CHƯƠNG & ĐỌC TRUYỆN (CHAPTER & READER - MEMBER 2)
+2. MODULE TRẢI NGHIỆM ĐỘC GIẢ, TỦ SÁCH & MỞ KHÓA VIP (READER EXPERIENCE, BOOKSHELF & VIP UNLOCK - MEMBER 2)
 --------------------------------------------------------------------------------
-[ ] M2-F01: Tạo chương mới (Create Chapter) [Actor: Member (Tác giả)] - Thêm chương mới cho truyện (soạn thảo tiêu đề, số thứ tự, nội dung chương).
-[ ] M2-F02: Xem danh sách chương (View Chapter List) [Actor: Guest, Member] - Hiển thị danh sách mục lục các chương đã xuất bản của truyện.
-[ ] M2-F03: Xem chi tiết chương (View Chapter Details) [Actor: Member (Tác giả), Staff, Admin] - Xem nội dung chương đầy đủ trong trình quản lý nội dung tác phẩm.
-[ ] M2-F04: Cập nhật chương (Update Chapter) [Actor: Member (Tác giả)] - Chỉnh sửa tiêu đề, thứ tự và nội dung chương đã đăng.
-[ ] M2-F05: Xóa chương (Delete Chapter) [Actor: Member (Tác giả)] - Xóa chương nháp hoặc gỡ bỏ chương đã đăng.
-[ ] M2-F06: Cài đặt hiển thị và VIP (Manage Chapter Visibility & VIP) [Actor: Member (Tác giả)] - Thiết lập trạng thái (Bản nháp / Xuất bản), gắn thẻ VIP (đặt giá Coin) hoặc hẹn giờ tự động mở khóa.
-[ ] M2-F07: Đọc chương truyện & Đánh dấu đã đọc (Read Chapter & Mark Read) [Actor: Guest, Member] - Giao diện đọc truyện; tự động ghi nhận chương đã đọc (is_read = true) khi Member đọc chương.
-[ ] M2-F08: Lưu tiến độ đọc & Đánh dấu vị trí đọc tiếp (Save Reading Progress & Bookmark) [Actor: Member] - Tự động tính tiến độ đọc (%) và lưu bookmark chương gần nhất để kích hoạt nút "Đọc tiếp".
-[ ] M2-F09: Nạp Coin vào ví qua cổng thanh toán (Top-up Coin / Deposit) [Actor: Member] - Nạp tiền VNĐ quy đổi thành Coin vào ví qua cổng thanh toán (VNPay sandbox / Momo).
-[ ] M2-F10: Mở khóa chương VIP bằng Coin (Unlock VIP Chapter with Coin) [Actor: Member] - Trừ Coin độc giả, mở quyền đọc vĩnh viễn và tự động chia sẻ Coin doanh thu cho tác giả.
+[ ] M2-F01: Xem danh sách truyện (View Novels) [Actor: Guest, Member] - Hiển thị danh sách truyện công khai trên hệ thống (Trang chủ, Danh mục phân loại).
+[ ] M2-F02: Xem chi tiết truyện (View Novel Details) [Actor: Guest, Member] - Xem thông tin truyện, tác giả gốc, tóm tắt, danh sách/mục lục chương, lượt xem và điểm đánh giá.
+[ ] M2-F03: Đọc chương (Read Chapter) [Actor: Guest, Member] - Giao diện đọc truyện chữ; tự động ghi nhận chương đã đọc (is_read = true) khi Member đọc chương.
+[ ] M2-F04: Tùy chỉnh giao diện đọc (Customize Reader) [Actor: Guest, Member] - Cho phép độc giả tùy chỉnh cỡ chữ, font chữ, màu nền giao diện (Sáng / Tối / Sepia) và chế độ cuộn trang.
+[ ] M2-F05: Lưu tiến độ đọc (Save Reading Progress) [Actor: Member] - Tự động tính tiến độ đọc (%) và lưu bookmark chương gần nhất để kích hoạt nút "Đọc tiếp".
+[ ] M2-F06: Thêm truyện vào tủ sách (Add Novel to Bookshelf) [Actor: Member] - Lưu truyện yêu thích vào Tủ sách cá nhân để theo dõi cập nhật.
+[ ] M2-F07: Xem tủ sách (View Bookshelf) [Actor: Member] - Quản lý danh sách truyện đang theo dõi, hiển thị tiến độ đọc % và nút "Đọc tiếp" chuyển ngay đến chương dở.
+[ ] M2-F08: Xóa truyện khỏi tủ sách (Remove Novel from Bookshelf) [Actor: Member] - Bỏ theo dõi hoặc xóa truyện khỏi Tủ sách cá nhân.
+[ ] M2-F09: Mở khóa chương (Unlock Chapter) [Actor: Member] - độc giả click mở khóa chương,trừ Coin độc giả, kiểm tra số dư, xử lý concurrency an toàn và mở quyền đọc vĩnh viễn chương VIP.
+[ ] M2-F10: Xem lịch sử đọc truyện (View Reading History) [Actor: Member] - Độc giả tra cứu lịch sử các chương truyện đã đọc.
 
-3. MODULE NGƯỜI DÙNG & XÁC THỰC (AUTH & USER MANAGEMENT - MEMBER 3)
+3. MODULE XÁC THỰC, BẢO MẬT & THANH TOÁN (AUTH, SECURITY, OAUTH2 & PAYMENT - MEMBER 3)
 --------------------------------------------------------------------------------
-[ ] M3-F01: Đăng ký tài khoản (Register) [Actor: Guest] - Người dùng tạo tài khoản mới, mật khẩu mã hóa BCrypt, mặc định gán ROLE_MEMBER.
-[ ] M3-F02: Đăng nhập (Login) [Actor: Guest] - Đăng nhập bằng Email và Mật khẩu, khởi tạo Session người dùng.
-[ ] M3-F03: Đăng xuất (Logout) [Actor: Member, Staff, Admin] - Hủy phiên đăng nhập (Session) và điều hướng về trang chủ.
-[ ] M3-F04: Quên / Đặt lại mật khẩu (Forgot / Reset Password) [Actor: Guest] - Gửi mã xác thực/link qua Email để đặt lại mật khẩu mới khi quên.
-[ ] M3-F05: Xem hồ sơ cá nhân (View Profile) [Actor: Member, Staff, Admin] - Xem thông tin tài khoản, số dư ví Coin, email và thông tin cá nhân.
-[ ] M3-F06: Cập nhật hồ sơ cá nhân & Avatar (Update Profile & Avatar) [Actor: Member, Staff, Admin] - Cập nhật thông tin hiển thị, tải ảnh đại diện lên Cloudinary.
-[ ] M3-F07: Đổi mật khẩu (Change Password) [Actor: Member, Staff, Admin] - Người dùng đang đăng nhập đổi mật khẩu (yêu cầu xác thực mật khẩu cũ).
-[ ] M3-F08: Xem danh sách người dùng (View User List) [Actor: Admin] - Quản trị viên xem danh sách toàn bộ người dùng, tìm kiếm theo email/tên và lọc theo vai trò.
-[ ] M3-F09: Thay đổi Role người dùng (Change User Role) [Actor: Admin] - Quản trị viên gán/thu hồi quyền hạn người dùng (ROLE_STAFF, ROLE_ADMIN).
-[ ] M3-F10: Khóa/Mở khóa tài khoản (Ban/Enable User) [Actor: Admin] - Quản trị viên vô hiệu hóa hoặc kích hoạt lại tài khoản vi phạm chính sách.
+[ ] M3-F01: Đăng ký tài khoản (Register Account) [Actor: Guest] - Người dùng tạo tài khoản mới, mật khẩu mã hóa BCrypt, trạng thái chờ kích hoạt email.
+[ ] M3-F02: Xác thực tài khoản (Verify Account) [Actor: Guest] - Gửi mã OTP xác thực qua Email bằng JavaMailSender (@Async), kiểm tra thời hạn và kích hoạt tài khoản chính thức.
+[ ] M3-F03: Đăng nhập (Login) [Actor: Guest] - Đăng nhập bằng Email và Mật khẩu, hỗ trợ Remember-Me, khởi tạo Session người dùng và kiểm tra trạng thái kích hoạt/khóa.
+[ ] M3-F04: Đăng nhập bằng Google (Login with Google) [Actor: Guest] - Tích hợp Spring Security OAuth2 Client, tự động ánh xạ hồ sơ Google, tạo tài khoản và ví Coin tự động.
+[ ] M3-F05: Đăng xuất (Logout) [Actor: Member, Staff, Admin] - Hủy phiên đăng nhập (Session Invalidation), xóa Cookie an toàn và điều hướng về trang chủ.
+[ ] M3-F06: Quên mật khẩu (Forgot Password) [Actor: Guest] - Gửi link/mã token bảo mật qua Email có thời hạn hết hạn để đặt lại mật khẩu mới khi quên.
+[ ] M3-F07: Đổi mật khẩu (Change Password) [Actor: Member, Staff, Admin] - Người dùng đang đăng nhập đổi mật khẩu mới (yêu cầu xác thực mật khẩu cũ).
+[ ] M3-F08: Xem hồ sơ cá nhân (View Profile) [Actor: Member, Staff, Admin] - Xem thông tin tài khoản cá nhân, bao gồm cả số dư ví Coin hiện tại.
+[ ] M3-F09: Xem lịch sử giao dịch (View Coin History) [Actor: Member, Staff, Admin] - Xem chi tiết lịch sử nạp/tiêu Coin (đã nạp bao nhiêu, dùng mua chương nào, truyện nào).
+[ ] M3-F10: Cập nhật hồ sơ (Update Profile) [Actor: Member, Staff, Admin] - Cập nhật thông tin hiển thị, tải ảnh đại diện lên Cloudinary.
+[ ] M3-F11: Nạp Coin (Top-up Coin) [Actor: Member] - Khởi tạo URL thanh toán VNPay sandbox (chữ ký số HMAC-SHA512), xử lý IPN Webhook xác thực giao dịch và tự động cộng Coin vào ví an toàn (không hỗ trợ hoàn tiền).
 
-4. MODULE DANH MỤC & TÌM KIẾM (CATEGORY & SEARCH - MEMBER 4)
+4. MODULE TÌM KIẾM NÂNG CAO, ĐÁNH GIÁ & PHÂN LOẠI (CATEGORY, SEARCH SPECIFICATION & NOVEL RATING - MEMBER 4)
 --------------------------------------------------------------------------------
-[ ] M4-F01: Thêm thể loại mới (Create Category) [Actor: Admin] - Quản trị viên tạo thể loại truyện mới (Tên thể loại, Đường dẫn slug, Mô tả).
-[ ] M4-F02: Xem danh sách thể loại (View Category List) [Actor: Guest, Member, Staff, Admin] - Hiển thị danh sách các thể loại truyện trên thanh điều hướng và trang phân loại.
+[ ] M4-F01: Thêm thể loại (Create Category) [Actor: Admin] - Quản trị viên tạo thể loại truyện mới (Tên thể loại, Đường dẫn slug, Mô tả).
+[ ] M4-F02: Xem danh sách thể loại (View Categories) [Actor: Guest, Member, Staff, Admin] - Hiển thị danh sách các thể loại truyện trên thanh điều hướng và trang phân loại.
 [ ] M4-F03: Cập nhật thể loại (Update Category) [Actor: Admin] - Quản trị viên chỉnh sửa tên, slug hoặc mô tả thể loại.
-[ ] M4-F04: Xóa thể loại (Delete Category) [Actor: Admin] - Quản trị viên xóa thể loại (xử lý ràng buộc gỡ bỏ thể loại khỏi các truyện liên quan).
-[ ] M4-F05: Gắn thể loại vào truyện (Assign Category to Novel) [Actor: Member (Tác giả), Admin] - Gắn một hoặc nhiều thể loại phù hợp cho bộ truyện.
-[ ] M4-F06: Gỡ thể loại khỏi truyện (Remove Category from Novel) [Actor: Member (Tác giả), Admin] - Hủy bỏ thể loại đã gắn khỏi bộ truyện.
-[ ] M4-F07: Tìm kiếm truyện theo từ khóa (Search Novel by Keyword) [Actor: Guest, Member] - Tìm kiếm truyện nhanh theo tên truyện hoặc bút danh tác giả.
-[ ] M4-F08: Lọc truyện theo Thể loại/Trạng thái (Filter Novel by Category/Status) [Actor: Guest, Member] - Lọc danh sách truyện theo thể loại đã chọn và trạng thái (Đang ra / Hoàn thành).
-[ ] M4-F09: Sắp xếp danh sách truyện (Sort Novels List) [Actor: Guest, Member] - Sắp xếp kết quả truyện linh hoạt theo Mới cập nhật, Lượt xem nhiều nhất, Số lượng chương, Bảng chữ cái A-Z.
-[ ] M4-F10: Bảng xếp hạng Top truyện (Top Leaderboard) [Actor: Guest, Member] - Xem bảng xếp hạng Top truyện theo lượt xem: Top Ngày, Top Tuần, Top Tháng, Top Toàn thời gian.
+[ ] M4-F04: Xóa thể loại (Delete Category) [Actor: Admin] - Quản trị viên xóa thể loại (kiểm tra ràng buộc tác phẩm, không cho xóa nếu còn truyện trực thuộc).
+[ ] M4-F05: Phân loại truyện (Categorize Novel) [Actor: Staff, Admin] - Cập nhật liên kết đa thể loại (Many-to-Many) cho từng tác phẩm truyện (gắn hoặc gỡ).
+[ ] M4-F06: Tìm kiếm truyện (Search Novels) [Actor: Guest, Member] - Dynamic query kết hợp đồng thời: từ khóa, tác giả, nhiều thể loại (AND/OR), trạng thái truyện, lọc VIP/Free, khoảng số chương và gợi ý tìm kiếm nhanh (Auto-suggest).
+[ ] M4-F07: Lọc truyện (Filter Novels) [Actor: Guest, Member] - Lọc danh sách truyện theo một hoặc nhiều thể loại đã chọn và tiến độ phát hành (Đang ra / Hoàn thành).
+[ ] M4-F08: Sắp xếp truyện (Sort Novels) [Actor: Guest, Member] - Sắp xếp kết quả truyện linh hoạt theo Mới cập nhật, Lượt xem nhiều nhất, Đánh giá sao cao nhất, Số lượng chương, Bảng chữ cái A-Z.
+[ ] M4-F09: Đánh giá truyện (Review Novel) [Actor: Member] - Độc giả chấm điểm 1-5 sao và viết nhận xét; tự động tính toán điểm trung bình (average_rating), chống spam vote (mỗi user 1 đánh giá, có thể chỉnh sửa).
+[ ] M4-F10: Xem bảng xếp hạng (View Leaderboards) [Actor: Guest, Member] - Xem bảng xếp hạng Top truyện theo lượt xem: Top Ngày, Top Tuần, Top Tháng, Top Toàn thời gian.
 
-5. MODULE TƯƠNG TÁC, KIỂM DUYỆT & TÀI CHÍNH (INTERACTION, MODERATION & FINANCIAL ADMIN - MEMBER 5)
+5. MODULE TƯƠNG TÁC, BÁO CÁO & ĐỐI SOÁT (COMMUNITY, REPORTS & FINANCIAL ADMIN - MEMBER 5)
 --------------------------------------------------------------------------------
-[ ] M5-F01: Thêm truyện vào Tủ sách (Add Novel to Bookshelf) [Actor: Member] - Lưu truyện yêu thích vào Tủ sách cá nhân để theo dõi.
-[ ] M5-F02: Xem Tủ sách cá nhân (View Bookshelf) [Actor: Member] - Quản lý danh sách truyện đang theo dõi, hiển thị tiến độ đọc % và nút "Đọc tiếp" chuyển ngay đến chương dở.
-[ ] M5-F03: Xóa truyện khỏi Tủ sách (Remove from Bookshelf) [Actor: Member] - Bỏ theo dõi hoặc xóa truyện khỏi Tủ sách cá nhân.
-[ ] M5-F04: Viết bình luận (Create Comment) [Actor: Member] - Đăng bình luận cảm nhận, thảo luận về truyện hoặc chương truyện.
-[ ] M5-F05: Xem danh sách bình luận (View Comment List) [Actor: Guest, Member] - Xem toàn bộ bình luận của độc giả tại trang chi tiết truyện hoặc trang đọc chương.
-[ ] M5-F06: Báo cáo bình luận vi phạm (Report Comment) [Actor: Member] - Độc giả gửi phiếu báo cáo khi phát hiện bình luận xúc phạm, thô tục, spam hoặc phản cảm.
-[ ] M5-F07: Kiểm duyệt & Ẩn/Xóa bình luận vi phạm (Moderate Reported Comments) [Actor: Staff, Admin] - Kiểm duyệt viên xem danh sách bình luận bị báo cáo để ẩn hoặc xóa khỏi hệ thống.
-[ ] M5-F08: Báo cáo lỗi chương (Create Chapter Issue Report) [Actor: Member] - Độc giả gửi phiếu báo cáo khi chương truyện bị lỗi chính tả, trùng lặp, thiếu chữ hoặc lỗi hiển thị.
-[ ] M5-F09: Tiếp nhận & Xử lý báo cáo lỗi chương (Process/Resolve Issue Report) [Actor: Staff, Admin] - Tiếp nhận báo cáo lỗi chương, chuyển chương lỗi thành Draft để tác giả sửa hoặc trực tiếp sửa lỗi và đóng báo cáo.
-[ ] M5-F10: Quản lý và phê duyệt yêu cầu rút tiền (Manage & Approve Withdrawals) [Actor: Admin] - Quản trị viên đối soát thông tin tài khoản ngân hàng, xác nhận chuyển khoản ngoài đời và duyệt/từ chối yêu cầu rút tiền.
-[ ] M5-F11: Quản lý đối soát giao dịch ví (Audit Transactions) [Actor: Admin] - Quản trị viên tra cứu toàn bộ lịch sử biến động số dư Coin (nạp tiền, mở VIP, chia doanh thu, rút tiền).
-[ ] M5-F12: Quản lý cấu hình hệ thống (Manage System Settings) [Actor: Admin] - Quản trị viên thiết lập tỷ giá quy đổi VNĐ sang Coin, tỷ lệ % chia sẻ doanh thu cho tác giả và hạn mức rút tiền tối thiểu.
+[ ] M5-F01: Viết bình luận (Create Comment) [Actor: Member] - Đăng bình luận cảm nhận, thảo luận về truyện hoặc chương truyện.
+[ ] M5-F02: Xem bình luận (View Comments) [Actor: Guest, Member] - Xem toàn bộ bình luận của độc giả theo phân trang tại trang chi tiết truyện hoặc trang đọc chương.
+[ ] M5-F03: Báo cáo bình luận (Report Comment) [Actor: Member] - Độc giả gửi phiếu báo cáo khi phát hiện bình luận xúc phạm, thô tục, spam hoặc phản cảm.
+[ ] M5-F04: Báo cáo vi phạm (Report Content) [Actor: Member] - Độc giả gửi phiếu báo cáo đối với truyện hoặc chương cụ thể bị lỗi, sai lệch thông tin hoặc vi phạm nội dung.
+[ ] M5-F05: Xử lý báo cáo (Resolve Reports) [Actor: Staff, Admin] - Admin/Staff xử lý tập trung mọi báo cáo (Bình luận / Truyện / Chương) chia theo tab, ghi nhận người xử lý, kết quả xử lý và tự động phản hồi qua hòm thư.
+[ ] M5-F06: Gửi thông báo (Send Notification) [Actor: Staff, Admin] - Admin/Staff chủ động soạn thông báo gửi toàn hệ thống (All) hoặc gửi tới một người dùng cụ thể.
+[ ] M5-F07: Xem hòm thư (View Mailbox) [Actor: Member] - Nơi độc giả nhận và đọc các thông báo từ hệ thống, hoặc nhận kết quả phản hồi của các báo cáo mình đã gửi.
+[ ] M5-F08: Đối soát giao dịch (Audit Transactions) [Actor: Admin] - Quản trị viên tra cứu toàn bộ lịch sử biến động số dư Coin (nạp tiền qua VNPay và trừ Coin mở khóa VIP) trong hệ thống.
+[ ] M5-F09: Cấu hình hệ thống (Configure System) [Actor: Admin] - Quản trị viên thiết lập tỷ giá quy đổi VNĐ sang Coin, thông tin liên hệ ban quản trị và điều khoản sử dụng.
+[ ] M5-F10: Xem danh sách người dùng (View User List) [Actor: Admin] - Quản trị viên tra cứu danh sách toàn bộ tài khoản người dùng trong hệ thống, tìm kiếm theo email/tên và lọc theo vai trò (phân trang).
+[ ] M5-F11: Phân quyền người dùng (Assign Roles) [Actor: Admin] - Quản trị viên gán hoặc thu hồi vai trò của người dùng (ROLE_STAFF, ROLE_ADMIN).
+[ ] M5-F12: Khóa/Mở khóa tài khoản (Ban/Enable User) [Actor: Admin] - Quản trị viên vô hiệu hóa (BANNED) hoặc kích hoạt lại tài khoản vi phạm chính sách cộng đồng.
 
 --------------------------------------------------------------------------------
 TỔNG KẾT TRẠNG THÁI (STATUS ENUMS):
-- NOVEL_STATUS: PENDING, PUBLISHED, REJECTED, ARCHIVED
-- CHAPTER_STATUS: DRAFT, PUBLISHED_REGULAR, PUBLISHED_VIP
-- REPORT_STATUS: PENDING, RESOLVED, DISMISSED
-- WITHDRAWAL_STATUS: PENDING, APPROVED, REJECTED
-- TRANSACTION_TYPE: DEPOSIT (Nạp tiền), UNLOCK_CHAPTER (Mở khóa VIP), AUTHOR_RECEIVE (Tác giả nhận Coin), WITHDRAWAL (Rút tiền về ngân hàng)
+- NOVEL_STATUS: ONGOING (Đang ra), COMPLETED (Hoàn thành), ON_HOLD (Tạm ngưng), ARCHIVED (Lưu trữ/Tạm ẩn)
+- CHAPTER_STATUS: DRAFT (Bản nháp), PUBLISHED_REGULAR (Chương thường miễn phí), PUBLISHED_VIP (Chương VIP thu phí Coin)
+- REPORT_STATUS: PENDING (Chờ xử lý), RECEIVED (Đã nhận), PROCESSED (Đã xử lý), REJECTED (Từ chối)
+- TRANSACTION_TYPE: DEPOSIT (Nạp tiền vào ví qua VNPay), UNLOCK_CHAPTER (Dùng Coin mở khóa chương VIP)
+- AUTH_PROVIDER: LOCAL (Email/Password), GOOGLE (OAuth2 Google)
+- USER_STATUS: ACTIVE (Đang hoạt động), PENDING_VERIFICATION (Chờ kích hoạt email), BANNED (Bị khóa)
