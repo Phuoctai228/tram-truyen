@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Mô tả nghiệp vụ</title>
+    <title>Mô tả nghiệp vụ (Business Description Template)</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -37,6 +37,11 @@
         .bold {
             font-weight: bold;
         }
+        .section-subhead {
+            font-weight: bold;
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 <body>
@@ -44,177 +49,88 @@
 
     <h2>1. Tổng quan nghiệp vụ (Business Overview)</h2>
     <ul>
-        <li>Hệ thống là một nền tảng đọc truyện chữ trực tuyến (Trạm Truyện) hỗ trợ độc giả và các thành viên sáng tác/dịch truyện.</li>
+        <li>Nền tảng kinh doanh dịch vụ <span class="bold">đọc truyện chữ trực tuyến (Trạm Truyện)</span>.</li>
         <li>Người dùng có thể:
             <ul>
-                <li>Đọc truyện, tìm kiếm, lọc truyện theo thể loại và xem các bảng xếp hạng (Top Ngày/Tuần/Tháng/Toàn thời gian).</li>
-                <li>Tạo tài khoản để quản lý tủ sách cá nhân, tự động theo dõi tiến độ đọc và đánh dấu (bookmark) vị trí chương đang đọc dở để "Đọc tiếp" thuận tiện.</li>
-                <li>Tương tác thông qua bình luận, gửi báo cáo bình luận vi phạm và gửi báo cáo khi phát hiện chương truyện bị lỗi.</li>
-                <li>Đăng tải truyện mới (sáng tác hoặc dịch) và gửi yêu cầu kiểm duyệt để xuất bản tới độc giả mà không cần xin cấp quyền tác giả riêng biệt.</li>
-                <li>Nạp tiền quy đổi thành Coin để mở khóa các chương VIP trả phí. Người đăng truyện có chương VIP được hưởng chia sẻ doanh thu Coin tự động từ hệ thống và có thể rút tiền về tài khoản ngân hàng thực tế.</li>
-                <li>Ban quản trị (Staff/Admin) kiểm duyệt nội dung (truyện mới, bình luận vi phạm bị báo cáo, báo cáo lỗi chương), phê duyệt yêu cầu rút tiền tác quyền và cấu hình vận hành hệ thống.</li>
+                <li>Xem thông tin, tìm kiếm và lọc truyện theo thể loại / bảng xếp hạng</li>
+                <li>Quản lý tủ sách cá nhân, tự động lưu tiến độ đọc và bấm "Đọc tiếp"</li>
+                <li>Đăng tải sáng tác/dịch truyện mới và xuất bản chương</li>
+                <li>Nạp Coin để mở khóa các chương VIP trả phí</li>
+                <li>Nhận chia sẻ doanh thu tác quyền và rút tiền về tài khoản ngân hàng</li>
             </ul>
         </li>
     </ul>
 
     <h2>2. Mục tiêu nghiệp vụ (Business Objectives)</h2>
+    <p>Hệ thống được xây dựng nhằm:</p>
     <ul>
-        <li>Hệ thống được xây dựng nhằm:
-            <ul>
-                <li>Cung cấp một nền tảng đọc truyện mượt mà, tiện lợi cho độc giả đam mê truyện chữ.</li>
-                <li>Thúc đẩy nền kinh tế sáng tạo (Creator Economy) bằng cách cho phép mọi thành viên đăng truyện, nhận chia sẻ doanh thu Coin từ các chương VIP và rút tiền mặt về tài khoản ngân hàng.</li>
-                <li>Xây dựng kho truyện phong phú, đa dạng thể loại với cơ chế quản lý và kiểm duyệt chặt chẽ để đảm bảo chất lượng nội dung.</li>
-                <li>Tối ưu hóa trải nghiệm người dùng thông qua các tính năng lưu tủ sách, ghi nhận chương đã đọc và đánh dấu vị trí đọc tiếp tự động.</li>
-            </ul>
-        </li>
+        <li>Cung cấp nền tảng đọc truyện mượt mà, tiện lợi cho độc giả</li>
+        <li>Thúc đẩy cộng đồng sáng tác/dịch truyện qua cơ chế chia sẻ doanh thu Coin</li>
+        <li>Quản lý tập trung truyện – chương – người dùng – giao dịch hiệu quả</li>
+        <li>Xây dựng niềm tin với người dùng thông qua nội dung được kiểm duyệt rõ ràng</li>
     </ul>
 
     <h2>3. Stakeholders (Các bên liên quan)</h2>
     <ul>
-        <li><span class="bold">Khách truy cập (Guest):</span> Tìm kiếm, duyệt và đọc các chương truyện miễn phí mà không cần tài khoản.</li>
-        <li><span class="bold">Thành viên (Member):</span> Người dùng đã đăng ký tài khoản. Có đầy đủ các quyền:
-            <ul>
-                <li>Đọc truyện, tự động đánh dấu các chương đã đọc, lưu truyện vào Tủ sách cá nhân, theo dõi tiến độ đọc và click nút "Đọc tiếp" để nhảy đến đúng chương gần nhất.</li>
-                <li>Bình luận, báo cáo bình luận vi phạm và báo cáo lỗi chương truyện.</li>
-                <li>Nạp tiền quy đổi thành Coin qua cổng thanh toán (VNPay sandbox / Momo), dùng Coin để mở khóa trực tiếp các chương VIP.</li>
-                <li><span class="bold">Tự do sáng tác & Kiếm thu nhập tác quyền:</span> Mọi Member đều có thể tạo truyện mới, tải lên ảnh bìa, thêm chương nháp và gửi yêu cầu xuất bản mà không cần thủ tục xin cấp quyền tác giả riêng. Khi độc giả mở khóa chương VIP của truyện mình đăng, Member được tự động cộng Coin chia sẻ doanh thu vào ví cá nhân và có quyền gửi yêu cầu rút tiền về tài khoản ngân hàng khi đạt hạn mức tối thiểu.</li>
-            </ul>
-        </li>
-        <li><span class="bold">Nhân viên kiểm duyệt (Staff):</span> Tiếp nhận và kiểm duyệt truyện đăng mới lần đầu, kiểm tra và xử lý các bình luận bị báo cáo vi phạm (ẩn/xóa), và tiếp nhận, giải quyết các báo cáo lỗi chương từ người dùng.</li>
-        <li><span class="bold">Quản trị viên (Admin):</span> Quản lý toàn bộ hệ thống: phân quyền tài khoản (Staff/Admin), khóa/mở khóa tài khoản, quản lý danh mục thể loại (Category), kiểm tra và phê duyệt các yêu cầu rút tiền của tác giả, tra cứu đối soát toàn bộ giao dịch nạp/tiêu Coin, và cấu hình các thông số hệ thống (tỷ giá quy đổi VNĐ sang Coin, tỷ lệ % chia sẻ doanh thu cho tác giả, hạn mức rút tiền tối thiểu).</li>
+        <li><span class="bold">Khách vãng lai (Guest):</span> Đọc truyện miễn phí, tìm kiếm, lọc theo thể loại và đăng ký tài khoản</li>
+        <li><span class="bold">Thành viên (Member):</span> Đọc truyện, lưu tủ sách, bình luận, nạp Coin mở VIP, đăng sáng tác/dịch truyện và rút tiền doanh thu</li>
+        <li><span class="bold">Nhân viên kiểm duyệt (Staff):</span> Duyệt truyện mới, xử lý báo cáo lỗi chương và kiểm duyệt bình luận vi phạm</li>
+        <li><span class="bold">Quản trị viên (Admin):</span> Quản trị người dùng, danh mục thể loại, phê duyệt rút tiền và cấu hình hệ thống</li>
     </ul>
 
     <h2>4. Quy trình nghiệp vụ hiện tại (As-Is)</h2>
+    <p>Hiện tại việc đọc và đăng truyện:</p>
     <ul>
-        <li>Hiện tại, việc đọc truyện và đăng tải truyện thường gặp một số hạn chế:
+        <li>Đọc truyện qua:
             <ul>
-                <li><span class="bold">Người đọc:</span> Phải tìm kiếm truyện ở nhiều nguồn rời rạc, dễ bị quên hoặc mất tiến độ đọc khi đổi thiết bị. Không có nơi quản lý tập trung những bộ truyện đang theo dõi và khó quay lại đúng chương đọc dở.</li>
-                <li><span class="bold">Người viết/Người dịch:</span> Thủ tục đăng ký làm tác giả ở nhiều nền tảng rườm rà, thiếu cơ chế chia sẻ doanh thu và thanh toán tác quyền minh bạch khiến người viết không có động lực cống hiến.</li>
-                <li><span class="bold">Quản lý nội dung:</span> Các tác phẩm đăng tải tự do thường không qua kiểm duyệt lần đầu, dẫn đến tình trạng sai chính tả, nội dung phản cảm hoặc chương bị lỗi (thiếu text, lỗi định dạng) mà không có quy trình xử lý kịp thời.</li>
+                <li>Các nguồn diễn đàn rời rạc</li>
+                <li>Mạng xã hội / Nhóm tự phát</li>
             </ul>
         </li>
-        <li><span class="bold">Pain point:</span>
-            <ul>
-                <li>Độc giả khó theo dõi tiến độ đọc và chương đang đọc dở.</li>
-                <li>Thành viên muốn đăng truyện gặp rào cản phân quyền rườm rà.</li>
-                <li>Chưa có cơ chế phân chia doanh thu và chi trả thu nhập tác quyền minh bạch.</li>
-            </ul>
-        </li>
+        <li>Theo dõi tiến độ thủ công (ghi nhớ chương hoặc bookmark trình duyệt)</li>
+        <li>Đăng truyện tự do, không kiểm duyệt chất lượng nội dung</li>
+        <li>Không có cơ chế chi trả nhuận bút / tác quyền minh bạch</li>
+    </ul>
+    <p class="bold">Pain point:</p>
+    <ul>
+        <li>Khó theo dõi tiến độ đọc khi đổi thiết bị</li>
+        <li>Tác giả không có nguồn thu ổn định, thiếu động lực gắn bó</li>
+        <li>Nhiều truyện lỗi font, thiếu chương, vi phạm bản quyền hoặc spam</li>
     </ul>
 
     <h2>5. Quy trình nghiệp vụ mong muốn (To-Be)</h2>
+    <p>Sau khi có hệ thống:</p>
     <ul>
-        <li>Sau khi hệ thống Trạm Truyện được triển khai:
-            <ul>
-                <li>Độc giả tìm kiếm truyện dễ dàng qua phân loại, thêm truyện vào tủ sách; hệ thống tự động ghi nhận chương đã đọc và đánh dấu (bookmark) vị trí chương gần nhất để nhấn "Đọc tiếp" mọi lúc mọi nơi.</li>
-                <li>Thành viên (Member) tự do tạo truyện mới, tải lên ảnh bìa, thêm ít nhất 3 chương nháp và gửi yêu cầu kiểm duyệt xuất bản lần đầu (Submit for Review).</li>
-                <li>Staff nhận thông báo, tiến hành đọc thử và duyệt/từ chối. Truyện đạt yêu cầu sẽ được xuất bản (Published) tới mọi người.</li>
-                <li>Với các chương đăng thêm sau này, người đăng có thể lưu nháp hoặc xuất bản trực tiếp để phục vụ độc giả kịp thời.</li>
-                <li>Độc giả nạp Coin để mở khóa chương VIP -> Hệ thống tự động chia sẻ doanh thu Coin cho tác giả theo tỷ lệ quy định.</li>
-                <li>Tác giả đạt hạn mức Coin tối thiểu có thể tạo yêu cầu rút tiền về tài khoản ngân hàng -> Admin đối soát và phê duyệt chuyển khoản.</li>
-                <li>Khi người đọc phát hiện chương bị lỗi, họ sử dụng tính năng "Báo lỗi chương" (Report Issue). Staff tiếp nhận report và phân loại xử lý.</li>
-            </ul>
-        </li>
-        <li><span class="bold">Lưu ý nghiệp vụ (Quy trình xuất bản & Rút tiền):</span>
-            <ul>
-                <li><span class="bold">Quy trình Xuất bản Truyện Lần Đầu (Workflow 1):</span> Member tạo truyện -> Cập nhật thông tin & ảnh bìa -> Đăng ít nhất 3 chương nháp -> Gửi yêu cầu xuất bản -> Staff kiểm duyệt -> Xuất bản truyện (hoặc từ chối kèm lý do).</li>
-                <li><span class="bold">Quy trình Xuất bản Chương Các Lần Sau:</span> Người đăng truyện thêm chương mới (có thể lưu nháp hoặc tick chọn xuất bản trực tiếp) mà không cần Staff duyệt lại từng chương. Staff/Admin chỉ can thiệp khi có báo cáo vi phạm.</li>
-                <li><span class="bold">Quy trình Rút tiền tác quyền (Workflow 2):</span> Member đạt hạn mức Coin >= Min Withdrawal -> Điền thông tin ngân hàng và số Coin muốn rút -> Hệ thống tạm khóa số Coin và tạo yêu cầu PENDING -> Admin kiểm tra và thực hiện chuyển khoản ngoài đời -> Bấm Phê duyệt (hoặc Từ chối thì hệ thống hoàn lại Coin vào ví).</li>
-                <li><span class="bold">Quy trình Báo cáo & Kiểm duyệt Bình luận (Workflow 3):</span> Member phát hiện bình luận xúc phạm/spam -> Nhấn nút "Báo cáo bình luận" (chọn lý do) -> Hệ thống ghi nhận phiếu báo cáo PENDING -> Staff/Admin tra cứu danh sách bình luận bị báo cáo -> Thực hiện Ẩn/Xóa bình luận vi phạm (đổi trạng thái báo cáo thành RESOLVED) hoặc Bác bỏ báo cáo nếu không vi phạm (DISMISSED).</li>
-                <li><span class="bold">Cơ chế ghi nhận tiến độ & Bookmark:</span> Mỗi khi người dùng click vào đọc một chương, hệ thống tự động đánh dấu chương đó là "Đã đọc", đồng thời cập nhật chương đó làm vị trí Bookmark gần nhất của truyện.</li>
-            </ul>
-        </li>
+        <li>Độc giả đọc truyện trực tuyến, tự động lưu tiến độ đọc và bấm "Đọc tiếp" tức thì</li>
+        <li>Tác giả tự đăng truyện; Staff duyệt truyện mới trước khi hiển thị công khai</li>
+        <li>Độc giả nạp Coin mở khóa chương VIP; hệ thống tự chia sẻ doanh thu cho tác giả theo tỷ lệ %</li>
+        <li>Tác giả gửi yêu cầu rút tiền; Admin đối soát và phê duyệt chuyển khoản ngân hàng</li>
+        <li>Người đọc gửi báo lỗi chương / bình luận xấu; Staff tiếp nhận và xử lý tập trung</li>
     </ul>
 
     <h2>6. Phạm vi hệ thống (In-Scope / Out-of-Scope)</h2>
+    <p class="section-subhead">In-Scope</p>
     <ul>
-        <li><span class="bold">In-Scope:</span>
-            <ul>
-                <li>Quản lý Truyện (Novel) & Chương truyện (Chapter).</li>
-                <li>Quản lý Tủ sách (Bookshelf) & Đánh dấu tiến độ đọc (Bookmark & Reading Progress).</li>
-                <li>Quản lý tương tác: Bình luận (Comment), Báo cáo bình luận vi phạm (Comment Report) & Báo cáo lỗi chương (Chapter Report).</li>
-                <li>Quản lý Danh mục (Category) & Tìm kiếm/Lọc truyện (Search/Filter theo thể loại, trạng thái, Bảng xếp hạng Top Ngày/Tuần/Tháng/Toàn thời gian).</li>
-                <li>Quản lý người dùng, phân quyền thành viên (Guest, Member, Staff, Admin), Quên/Đặt lại mật khẩu qua Email.</li>
-                <li>Chức năng kiểm duyệt nội dung (Staff duyệt truyện đăng lần đầu, xử lý báo cáo chương lỗi, kiểm duyệt và ẩn/xóa bình luận vi phạm).</li>
-                <li><span class="bold">Thanh toán, Chia sẻ doanh thu & Rút tiền (Monetization, Revenue Sharing & Payout):</span>
-                    <ul>
-                        <li>Hỗ trợ nạp tiền quy đổi thành Coin qua cổng thanh toán VNPay sandbox / Momo.</li>
-                        <li>Độc giả dùng Coin trong ví để mở khóa các chương VIP.</li>
-                        <li><span class="bold">Cơ chế ăn chia doanh thu Coin:</span> Khi độc giả mở khóa một chương VIP, số Coin chi trả sẽ được hệ thống phân chia tự động: Phần người đăng truyện (Royalty Share %, ví dụ 70%) cộng trực tiếp vào ví tác giả; Phần nền tảng (Platform Fee %, ví dụ 30%) giữ lại cho chi phí vận hành hệ thống.</li>
-                        <li><span class="bold">Quy trình rút tiền về ngân hàng:</span> Tác giả gửi yêu cầu rút tiền khi đạt hạn mức tối thiểu; Admin đối soát thông tin tài khoản ngân hàng và duyệt chuyển khoản thủ công.</li>
-                        <li>Admin có quyền cấu hình tỷ giá quy đổi (VNĐ -> Coin), tỷ lệ % chia sẻ doanh thu và hạn mức rút tiền tối thiểu trong mục Cấu hình hệ thống (Manage System Settings).</li>
-                        <li>Member và Admin đều có thể tra cứu số dư ví và lịch sử biến động số dư.</li>
-                    </ul>
-                </li>
-            </ul>
-        </li>
-        <li><span class="bold">Quy định xử lý ngoại lệ (Exception Handling):</span>
-            <ul>
-                <li><span class="bold">Tình huống 1:</span> Truyện bị từ chối kiểm duyệt.<br>
-                <span class="bold">Cách xử lý:</span> Hệ thống chuyển trạng thái truyện thành "Bị từ chối" kèm lý do phản hồi của Staff. Member có thể chỉnh sửa lại nội dung truyện/ảnh bìa/chương nháp và gửi yêu cầu kiểm duyệt lại.</li>
-                <li><span class="bold">Tình huống 2:</span> Người đọc vào một chương truyện bị lỗi hiển thị.<br>
-                <span class="bold">Cách xử lý:</span> Giao diện cung cấp nút "Báo lỗi chương", người đọc gửi báo cáo. Staff trực tiếp xử lý (nếu truyện do Admin/Staff đăng) hoặc chuyển nháp để tác giả sửa (nếu truyện do Member đăng).</li>
-                <li><span class="bold">Tình huống 3:</span> Yêu cầu rút tiền bị từ chối.<br>
-                <span class="bold">Cách xử lý:</span> Nếu thông tin tài khoản ngân hàng không hợp lệ hoặc phát hiện gian lận, Admin bấm Từ chối kèm lý do phản hồi. Hệ thống tự động hoàn lại số Coin đã tạm giữ về ví của Member.</li>
-                <li><span class="bold">Tình huống 4:</span> Bình luận vi phạm tiêu chuẩn cộng đồng.<br>
-                <span class="bold">Cách xử lý:</span> Độc giả gửi báo cáo vi phạm. Staff kiểm tra: nếu bình luận có nội dung xấu/spam, Staff chuyển trạng thái bình luận thành "Ẩn" (HIDDEN) hoặc xóa hẳn và đổi trạng thái báo cáo thành RESOLVED; nếu báo cáo không chính xác, Staff bác bỏ báo cáo (DISMISSED).</li>
-            </ul>
-        </li>
-        <li><span class="bold">Out-of-Scope (Tính năng ngoài phạm vi hiện tại):</span>
-            <ul>
-                <li><span class="bold">Cổng chi hộ ngân hàng tự động (Automated Banking Payout API):</span> Để phù hợp với môi trường đồ án sinh viên và không yêu cầu giấy phép doanh nghiệp trung gian thanh toán, quy trình rút tiền được xử lý theo cơ chế: Người dùng nộp yêu cầu -> Admin đối soát và duyệt chuyển khoản thủ công trên hệ thống.</li>
-                <li><span class="bold">Hệ thống SPA/REST API độc lập:</span> Phiên bản này sử dụng kiến trúc Multi-layer MVC (Spring Boot + Thymeleaf) kết xuất trực tiếp HTML. Không xây dựng Frontend riêng biệt kết nối qua REST API.</li>
-                <li><span class="bold">Ứng dụng di động (Mobile App Native):</span> Chỉ tập trung vào giao diện Web Responsive để hiển thị tốt trên thiết bị di động, không phát triển ứng dụng Native iOS/Android.</li>
-            </ul>
-        </li>
+        <li>Quản lý truyện, chương, danh mục thể loại</li>
+        <li>Tủ sách cá nhân & đánh dấu tiến độ đọc (Bookmark)</li>
+        <li>Bình luận, báo cáo vi phạm và báo lỗi chương</li>
+        <li>Nạp Coin (VNPay/Momo) & mở khóa chương VIP</li>
+        <li>Chia sẻ doanh thu tác quyền & rút tiền về ngân hàng</li>
+        <li>Quản trị người dùng, phân quyền và kiểm duyệt nội dung</li>
+    </ul>
+    <p class="section-subhead">Out-of-Scope (giai đoạn đầu)</p>
+    <ul>
+        <li>Cổng chi hộ ngân hàng tự động (dùng Admin duyệt thủ công)</li>
+        <li>Ứng dụng di động Native (tập trung Web Responsive)</li>
+        <li>Tích hợp AI dịch truyện hoặc viết truyện tự động</li>
     </ul>
 
     <h2>7. Giá trị mang lại (Business Benefits)</h2>
     <ul>
-        <li>Cải thiện tối đa trải nghiệm đọc truyện bằng tiện ích tủ sách cá nhân, đánh dấu chương đã đọc và nút "Đọc tiếp" thông minh.</li>
-        <li>Thúc đẩy cộng đồng dịch giả, tác giả sáng tác truyện chữ nhờ cơ chế phân chia doanh thu Coin minh bạch và quy trình rút tiền thật về tài khoản ngân hàng rõ ràng.</li>
-        <li>Đảm bảo nguồn thu bền vững cho nền tảng từ phí dịch vụ chương VIP và tạo luồng tiền khép kín chuẩn mực.</li>
-        <li>Xây dựng thư viện truyện chữ chất lượng cao, "sạch" và ít lỗi thông qua sự tham gia của đội ngũ kiểm duyệt nội dung.</li>
-    </ul>
-
-    <h2>8. Các Công thức & Quy tắc tính toán (Formulas & Rules)</h2>
-    <ul>
-        <li>Trong quá trình phát triển, các thông số sau cần được hệ thống tính toán tự động dựa trên công thức chuẩn:
-            <ul>
-                <li><span class="bold">Đánh dấu chương đã đọc & Tiến độ đọc (Reading Progress %):</span><br>
-                - Quy tắc đánh dấu đã đọc: Mỗi chương truyện có trạng thái ghi nhận đối với từng Member (is_read = true khi Member click vào xem/đọc chương đó).<br>
-                - Công thức: Tiến độ (%) = (Số chương đã đọc / Tổng số chương đã xuất bản) * 100<br>
-                (Lưu ý: Mẫu số chỉ tính những chương có trạng thái là Published, không tính Draft)<br>
-                - Bookmark (Vị trí đọc tiếp): Hệ thống tự động ghi nhớ chương gần nhất mà Member đã đọc. Khi Member truy cập trang Chi tiết truyện hoặc vào Tủ sách cá nhân bấm "Đọc tiếp" (Continue Reading), hệ thống sẽ tự động mapping điều hướng ngay đến đúng vị trí chương đó.</li>
-                <li><span class="bold">Tổng lượt xem truyện (Total Novel Views):</span><br>
-                Tổng lượt xem = Sum(Lượt xem của tất cả các chương thuộc truyện đó)<br>
-                (Mỗi khi người dùng mở đọc 1 chương, view count của chương đó +1, sau đó cộng dồn lên Novel)</li>
-                <li><span class="bold">Bảng xếp hạng / Top lượt xem (Leaderboard / Top Views):</span>
-                    <ul>
-                        <li><span class="bold">Top Ngày (Daily Top):</span> Lọc Top N truyện có lượt xem tăng nhiều nhất trong 24 giờ qua (hoặc trong ngày hiện tại).</li>
-                        <li><span class="bold">Top Tuần / Thịnh hành (Weekly Top / Trending):</span> Lọc Top N truyện có lượt xem tăng nhiều nhất trong 7 ngày qua.</li>
-                        <li><span class="bold">Top Tháng (Monthly Top):</span> Lọc Top N truyện có lượt xem tăng nhiều nhất trong 30 ngày qua (hoặc trong tháng hiện tại).</li>
-                        <li><span class="bold">Top Toàn thời gian (All-time Top):</span> Lọc Top N truyện có tổng lượt xem tích lũy (Sum(views)) cao nhất từ trước đến nay.</li>
-                    </ul>
-                </li>
-                <li><span class="bold">Quy tắc chia sẻ doanh thu Coin chương VIP (Revenue Sharing Formula):</span><br>
-                Khi độc giả dùng Coin mở khóa một chương VIP có giá là P (Coin), và tỷ lệ chia sẻ doanh thu cho tác giả do Admin cấu hình là R% (ví dụ: R = 70%):<br>
-                - Coin cộng vào ví tác giả = P * (R / 100)<br>
-                - Coin phí nền tảng giữ lại = P - Coin cộng vào ví tác giả</li>
-                <li><span class="bold">Quy tắc quy đổi rút tiền về tài khoản ngân hàng (Withdrawal Cash-out):</span><br>
-                - Điều kiện: Số Coin yêu cầu rút >= Hạn mức tối thiểu (min_withdrawal_coin)<br>
-                - Số tiền VNĐ chuyển khoản = Số Coin rút * Tỷ lệ quy đổi (coin_to_vnd_rate)</li>
-            </ul>
-        </li>
-    </ul>
-
-    <h2>Phụ lục: Các trạng thái (Status) áp dụng trong hệ thống</h2>
-    <ul>
-        <li><span class="bold">Trạng thái Truyện (Novel Status):</span> Pending (Chờ duyệt), Published (Đã xuất bản), Rejected (Bị từ chối), Archived (Đã lưu trữ/Ẩn).</li>
-        <li><span class="bold">Trạng thái Chương (Chapter Visibility):</span> Draft (Bản nháp), Published (Đã hiển thị - bao gồm Thường và VIP).</li>
-        <li><span class="bold">Trạng thái Báo cáo (Report Status - áp dụng cho cả Báo cáo chương và Báo cáo bình luận):</span> Pending (Chờ xử lý), Resolved (Đã giải quyết/Xử lý), Dismissed (Đã bác bỏ/Bỏ qua).</li>
-        <li><span class="bold">Trạng thái Yêu cầu Rút tiền (Withdrawal Status):</span> Pending (Chờ duyệt), Approved (Đã chuyển khoản), Rejected (Từ chối).</li>
-        <li><span class="bold">Loại giao dịch ví (Transaction Type):</span> DEPOSIT (Nạp tiền vào ví), UNLOCK_CHAPTER (Dùng Coin mở khóa chương VIP), AUTHOR_RECEIVE (Tác giả nhận Coin chia sẻ doanh thu), WITHDRAWAL (Rút tiền về tài khoản ngân hàng).</li>
+        <li>Nâng cao trải nghiệm độc giả: đọc liền mạch, tìm truyện nhanh chóng</li>
+        <li>Thu hút và giữ chân tác giả nhờ nguồn thu nhập trực tiếp, minh bạch</li>
+        <li>Tự động hóa vận hành, giảm công sức kiểm soát nội dung và đối soát doanh thu</li>
+        <li>Dễ mở rộng kinh doanh sau này (app mobile, gói hội viên VIP)</li>
     </ul>
 </body>
 </html>
