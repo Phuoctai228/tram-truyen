@@ -92,7 +92,7 @@ docker compose up -d
      - Username: `postgres` (hoặc username cấu hình trong file `.env`)
      - Password: `123456` (hoặc password cấu hình trong file `.env`)
      - Save password?: Bật lên.
-  5. Bấm **Save**. Lúc này ở cột trái sẽ xuất hiện server vừa tạo, mở ra bạn sẽ thấy các bảng dữ liệu đã được nạp tự động (từ file `schema.sql`).
+  5. Bấm **Save**. Lúc này ở cột trái sẽ xuất hiện server vừa tạo, mở ra bạn sẽ thấy các bảng dữ liệu đã được nạp tự động (từ file `novels.sql`).
 
 ## 8. Default Accounts
 *Hệ thống sẽ được khởi tạo với các tài khoản mặc định thông qua file `database/seed.sql`.*

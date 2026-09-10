@@ -1392,7 +1392,7 @@ tram-truyen-swp391/
 │   └── state/
 │
 ├── database/
-│   ├── schema.sql
+│   ├── novels.sql
 │   └── seed.sql
 │
 ├── src/
@@ -1615,7 +1615,7 @@ PostgreSQL Container
 Database script được lưu trong:
 
 ```text
-/database/schema.sql
+/database/novels.sql
 /database/seed.sql
 ```
 
@@ -1917,7 +1917,7 @@ tram-truyen-swp391/
 │   └── package/
 │
 ├── database/
-│   ├── schema.sql
+│   ├── novels.sql
 │   └── seed.sql
 │
 ├── src/
