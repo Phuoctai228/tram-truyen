@@ -12,6 +12,11 @@ DROP TABLE IF EXISTS reading_progress CASCADE;
 DROP TABLE IF EXISTS user_read_chapters CASCADE;
 DROP TABLE IF EXISTS bookshelves CASCADE;
 DROP TABLE IF EXISTS unlocked_chapters CASCADE;
+DROP TABLE IF EXISTS system_audit_logs CASCADE;
+DROP TABLE IF EXISTS user_login_logs CASCADE;
+DROP TABLE IF EXISTS payment_logs CASCADE;
+DROP TABLE IF EXISTS deposit_orders CASCADE;
+DROP TABLE IF EXISTS coin_packages CASCADE;
 DROP TABLE IF EXISTS transactions CASCADE;
 DROP TABLE IF EXISTS system_settings CASCADE;
 DROP TABLE IF EXISTS novel_ratings CASCADE;
@@ -220,21 +225,83 @@ CREATE TABLE notifications (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 19. TRANSACTIONS (Lịch sử biến động ví: Nạp tiền VNPay M3-F10, Tiêu Coin mở VIP M2-F10 & Đối soát M5-F08)
-CREATE TABLE transactions (
+-- 19. COIN_PACKAGES (Danh sách các gói nạp Coin M3-F10)
+CREATE TABLE coin_packages (
     id SERIAL PRIMARY KEY,
-    user_id INT REFERENCES users(id) ON DELETE CASCADE,
-    amount INT NOT NULL, -- Số Coin biến động (+ nạp tiền, - mở khóa VIP)
-    type VARCHAR(50) NOT NULL, -- DEPOSIT (Nạp tiền vào ví qua VNPay), UNLOCK_CHAPTER (Dùng Coin mở khóa VIP)
-    payment_transaction_id VARCHAR(100), -- Mã giao dịch phản hồi từ cổng VNPay (nếu nạp tiền)
-    description TEXT,
+    name VARCHAR(100) NOT NULL,
+    price INT NOT NULL, -- Số tiền VNĐ
+    coin_amount INT NOT NULL, -- Số Coin nhận được
+    bonus_coin INT DEFAULT 0, -- Coin khuyến mãi (nếu có)
+    status VARCHAR(20) DEFAULT 'ACTIVE', -- ACTIVE, INACTIVE
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 20. SYSTEM_SETTINGS (Cấu hình hệ thống: Tỷ giá Coin, Email hỗ trợ, Chính sách M5-F09)
+-- 20. DEPOSIT_ORDERS (Đơn nạp tiền & Đối soát trạng thái thanh toán M3-F10, M5-F08)
+CREATE TABLE deposit_orders (
+    id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(id) ON DELETE CASCADE,
+    package_id INT REFERENCES coin_packages(id) ON DELETE SET NULL,
+    order_code VARCHAR(50) UNIQUE NOT NULL, -- VD: TT123456 (Dùng cho nội dung chuyển khoản)
+    amount_vnd INT NOT NULL, -- Số tiền VNĐ cần thanh toán
+    coin_received INT NOT NULL, -- Số Coin sẽ được cộng (bao gồm cả khuyến mãi)
+    status VARCHAR(50) DEFAULT 'PENDING', -- PENDING (Chờ CK), SUCCESS (Đã CK), FAILED (Thất bại/Quá hạn)
+    payment_method VARCHAR(50) DEFAULT 'BANK_TRANSFER', -- BANK_TRANSFER, VNPAY, MOMO
+    bank_transaction_code VARCHAR(100), -- Mã giao dịch thật sự của Ngân Hàng (Mã đối soát)
+    paid_at TIMESTAMP, -- Thời gian thực tế ngân hàng ghi nhận có tiền
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 21. PAYMENT_LOGS (Truy vết kỹ thuật IPN/Webhook từ Ngân hàng / VNPay)
+CREATE TABLE payment_logs (
+    id SERIAL PRIMARY KEY,
+    order_code VARCHAR(50), -- Map với order nếu nhận diện được
+    raw_payload TEXT, -- Lưu toàn bộ dữ liệu trả về từ Bank/VNPay (JSON string)
+    ip_address VARCHAR(50),
+    status VARCHAR(50), -- SUCCESS (xử lý thành công), UNMATCHED (Không tìm thấy đơn), ERROR (Lỗi code)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 22. TRANSACTIONS (Sổ cái ví: Ghi nhận biến động số dư thực tế, M2-F10)
+CREATE TABLE transactions (
+    id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(id) ON DELETE CASCADE,
+    amount INT NOT NULL, -- SỐ COIN (+ hoặc -)
+    balance_after INT NOT NULL, -- Lưu lại số dư ví sau khi biến động để truy vết dễ hơn
+    type VARCHAR(50) NOT NULL, -- DEPOSIT_COIN, UNLOCK_CHAPTER, REFUND, ADMIN_ADJUSTMENT, GIFT_COIN
+    reference_id INT, -- ID tham chiếu (Ví dụ: ID của deposit_orders hoặc ID của chapters)
+    description TEXT,
+    created_by INT REFERENCES users(id) ON DELETE SET NULL, -- Lưu ID Admin/Staff nếu thao tác cộng/trừ thủ công
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 23. SYSTEM_SETTINGS (Cấu hình hệ thống: Tỷ giá Coin, Email hỗ trợ, Chính sách M5-F09)
 CREATE TABLE system_settings (
     setting_key VARCHAR(100) PRIMARY KEY,
     setting_value VARCHAR(255) NOT NULL,
     description TEXT,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 24. SYSTEM_AUDIT_LOGS (Nhật ký hoạt động của Admin/Staff chống lạm quyền)
+CREATE TABLE system_audit_logs (
+    id SERIAL PRIMARY KEY,
+    admin_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE, -- Ai làm
+    action_type VARCHAR(100) NOT NULL, -- Làm hành động gì (VD: DELETE_NOVEL, BAN_USER, ADD_COIN)
+    target_entity VARCHAR(100), -- Tác động lên bảng nào (VD: NOVELS, USERS)
+    target_id INT, -- Tác động lên ID nào
+    old_value TEXT, -- Dữ liệu trước khi sửa (JSON format)
+    new_value TEXT, -- Dữ liệu sau khi sửa (JSON format)
+    ip_address VARCHAR(50),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 25. USER_LOGIN_LOGS (Nhật ký đăng nhập của Member, phục vụ xử lý tranh chấp)
+CREATE TABLE user_login_logs (
+    id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(id) ON DELETE CASCADE,
+    ip_address VARCHAR(50),
+    user_agent TEXT, -- Thiết bị, Trình duyệt
+    status VARCHAR(50) DEFAULT 'SUCCESS', -- SUCCESS, FAILED_PASSWORD, LOCKED
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
