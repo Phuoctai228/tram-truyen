@@ -10,9 +10,6 @@ Dưới đây là danh sách 53 chức năng được sắp xếp theo từng Ac
 - [ ] M2-F04: Tùy chỉnh giao diện đọc (Customize Reader)
 - [ ] M3-F01: Đăng ký tài khoản (Register Account)
 - [ ] M3-F02: Xác thực tài khoản (Verify Account)
-- [ ] M3-F03: Đăng nhập (Login)
-- [ ] M3-F04: Đăng nhập bằng Google (Login with Google)
-- [ ] M3-F06: Quên mật khẩu (Forgot Password)
 - [ ] M4-F03: Xem danh sách thể loại (View Categories)
 - [ ] M4-F06: Tìm kiếm truyện (Search Novels)
 - [ ] M4-F07: Lọc truyện (Filter Novels)
@@ -39,6 +36,9 @@ Dưới đây là danh sách 53 chức năng được sắp xếp theo từng Ac
 - [ ] M5-F01: Báo cáo bình luận (Report Comment)
 - [ ] M5-F02: Báo cáo vi phạm (Report Content)
 - [ ] M5-F05: Xem hòm thư (View Mailbox)
+- [ ] M3-F06: Quên mật khẩu (Forgot Password)
+- [ ] M3-F03: Đăng nhập (Login)
+- [ ] M3-F04: Đăng nhập bằng Google (Login with Google)
 
 ## 3. STAFF (Nhân viên biên tập & Kiểm duyệt)
 *Các chức năng quản trị nội dung (Truyện, Chương) và xử lý kiểm duyệt.*
