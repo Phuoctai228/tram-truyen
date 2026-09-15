@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trạm Truyện - Đọc Truyện Online</title>
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Trạm Truyện</h1>
+            <nav>
+                <ul class="categories-menu">
+                    <li th:each="category : ${categories}">
+                        <a th:href="@{/the-loai/{slug}(slug=${category.slug})}" th:text="${category.name}"></a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Truyện Hot -->
+        <section class="hot-novels">
+            <h2>Truyện Hot Trong Tháng</h2>
+            <div class="novel-grid">
+                <div class="novel-card" th:each="novel : ${hotNovels}">
+                    <img th:src="${novel.coverUrl != null ? novel.coverUrl : '/images/default-cover.jpg'}" th:alt="${novel.title}">
+                    <h3 th:text="${novel.title}"></h3>
+                    <p class="author" th:text="${novel.author}"></p>
+                    <p class="views">👁 <span th:text="${novel.views}"></span></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Truyện Mới Cập Nhật -->
+        <section class="recent-novels">
+            <h2>Truyện Mới Cập Nhật</h2>
+            <div class="novel-list">
+                <div class="novel-item" th:each="novel : ${recentlyUpdatedNovels}">
+                    <span class="title" th:text="${novel.title}"></span>
+                    <span class="author" th:text="${novel.author}"></span>
+                    <span class="time" th:text="${#temporals.format(novel.updatedAt, 'dd/MM/yyyy HH:mm')}"></span>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Truyện Đã Hoàn Thành -->
+        <section class="completed-novels">
+            <h2>Truyện Đã Hoàn Thành</h2>
+            <div class="novel-grid">
+                <div class="novel-card" th:each="novel : ${completedNovels}">
+                    <img th:src="${novel.coverUrl != null ? novel.coverUrl : '/images/default-cover.jpg'}" th:alt="${novel.title}">
+                    <h3 th:text="${novel.title}"></h3>
+                    <span class="badge completed">Full</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Trạm Truyện - SWP391 Project</p>
+        </div>
+    </footer>
+</body>
+</html>
