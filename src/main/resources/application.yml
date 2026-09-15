@@ -10,7 +10,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: validate # Do not change schema, only validate it against the database (schema.sql handles structure)
+      ddl-auto: validate # Do not change schema, only validate it against the database (novels.sql handles structure)
     show-sql: true
     properties:
       hibernate:
