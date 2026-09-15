@@ -4,6 +4,7 @@
 -- Chuẩn hóa 21 tables, đầy đủ PK, FK, quan hệ ràng buộc và chỉ mục tìm kiếm
 -- ================================================================================
 
+DROP TABLE IF EXISTS themes CASCADE;
 DROP TABLE IF EXISTS novel_reports CASCADE;
 DROP TABLE IF EXISTS chapter_reports CASCADE;
 DROP TABLE IF EXISTS comment_reports CASCADE;
@@ -45,7 +46,7 @@ CREATE TABLE users (
     avatar_url VARCHAR(255),
     wallet_balance INT DEFAULT 0, -- Số dư Coin nạp (dùng mở khóa chương VIP, không rút tiền, không hoàn tiền)
     auth_provider VARCHAR(50) DEFAULT 'LOCAL', -- LOCAL (Form email/password), GOOGLE (OAuth2 Google M3-F04)
-    provider_id VARCHAR(255), -- ID định danh từ Google nếu đăng nhập OAuth2
+    -- provider_id VARCHAR(255), -- ID định danh từ Google nếu đăng nhập OAuth2
     status VARCHAR(50) DEFAULT 'ACTIVE', -- ACTIVE, PENDING_VERIFICATION (M3-F02), BANNED (M3-F13: Ban/Enable User)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -58,7 +59,7 @@ CREATE TABLE user_roles (
     PRIMARY KEY (user_id, role_id)
 );
 
--- 4. PASSWORD_RESET_TOKENS (Mã token đặt lại mật khẩu qua Email M3-F06)
+-- 4. PASSWORD_RESET_TOKENS (Mã token đặt lại mật khẩu qua Email M3-F06) 
 CREATE TABLE password_reset_tokens (
     id SERIAL PRIMARY KEY,
     user_id INT REFERENCES users(id) ON DELETE CASCADE,
@@ -89,7 +90,7 @@ CREATE TABLE novels (
     id SERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     author VARCHAR(100) NOT NULL, -- Tác giả gốc của tác phẩm
-    summary TEXT,
+    summary TEXT, --descriptions
     cover_url VARCHAR(255),
     status VARCHAR(50) DEFAULT 'ONGOING', -- ONGOING (Đang ra), COMPLETED (Hoàn thành), ON_HOLD (Tạm ngưng), ARCHIVED (Tạm ẩn M1-F03)
     is_deleted BOOLEAN DEFAULT FALSE, -- Cờ xóa mềm bộ truyện (M1-F04: Delete Novel)
@@ -231,7 +232,6 @@ CREATE TABLE coin_packages (
     name VARCHAR(100) NOT NULL,
     price INT NOT NULL, -- Số tiền VNĐ
     coin_amount INT NOT NULL, -- Số Coin nhận được
-    bonus_coin INT DEFAULT 0, -- Coin khuyến mãi (nếu có)
     status VARCHAR(20) DEFAULT 'ACTIVE', -- ACTIVE, INACTIVE
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -275,10 +275,10 @@ CREATE TABLE transactions (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 23. SYSTEM_SETTINGS (Cấu hình hệ thống: Tỷ giá Coin, Email hỗ trợ, Chính sách M5-F09)
+-- 23. SYSTEM_SETTINGS (Cấu hình hệ thống: Tỷ giá Coin, Email hỗ trợ, Chính sách, Giao diện M5-F09)
 CREATE TABLE system_settings (
     setting_key VARCHAR(100) PRIMARY KEY,
-    setting_value VARCHAR(255) NOT NULL,
+    setting_value TEXT NOT NULL, -- Đổi thành TEXT để có thể lưu cấu hình Theme (ví dụ: chuỗi JSON, CSS)
     description TEXT,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -304,4 +304,16 @@ CREATE TABLE user_login_logs (
     user_agent TEXT, -- Thiết bị, Trình duyệt
     status VARCHAR(50) DEFAULT 'SUCCESS', -- SUCCESS, FAILED_PASSWORD, LOCKED
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 26. THEMES (Quản lý các giao diện được Admin upload lên hệ thống)
+CREATE TABLE themes (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL, -- Tên theme (VD: Giao diện Tết 2026)
+    folder_path VARCHAR(255) UNIQUE NOT NULL, -- Đường dẫn tới thư mục chứa source code/assets của theme sau khi giải nén
+    thumbnail_url VARCHAR(255), -- Ảnh xem trước (preview) của giao diện
+    is_active BOOLEAN DEFAULT FALSE, -- Cờ xác định theme nào đang được bật cho cả trang web
+    uploaded_by INT REFERENCES users(id) ON DELETE SET NULL, -- Admin nào upload
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

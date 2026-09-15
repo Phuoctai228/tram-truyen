@@ -19,7 +19,7 @@ DANH SÁCH CÁC ACTORS TRONG HỆ THỐNG:
 [ ] M1-F05: Xem danh sách truyện nội bộ (View Internal Novels) [Actor: Staff, Admin] - Bảng quản trị tra cứu toàn bộ truyện trong hệ thống, tìm kiếm và lọc theo trạng thái.
 [ ] M1-F06: Tạo chương (Create Chapter) [Actor: Staff, Admin] - Ban quản trị thêm chương mới cho truyện (soạn thảo tiêu đề, số thứ tự, nội dung văn bản chương).
 [ ] M1-F07: Cập nhật chương (Update Chapter) [Actor: Staff, Admin] - Chỉnh sửa tiêu đề, thứ tự hoặc sửa đổi nội dung văn bản của chương đã đăng.
-[ ] M1-F08: Tạm ẩn chương (Hide Chapter) [Actor: Staff, Admin] - Chuyển trạng thái chương sang DRAFT để tạm thời ẩn chương khỏi mục lục công khai (khi phát hiện lỗi hoặc đang chỉnh sửa).
+[ ] M1-F08: Khóa ẩn chương (Lock Chapter) [Actor: Staff, Admin] - Chuyển trạng thái chương sang LOCKED để tạm thời ẩn chương khỏi mục lục công khai (khi phát hiện lỗi hoặc đang chỉnh sửa).
 [ ] M1-F09: Xóa chương (Delete Chapter) [Actor: Staff, Admin] - Thực hiện xóa mềm chương truyện (đánh dấu is_deleted = true, gỡ bỏ chương khỏi mục lục truyện).
 [ ] M1-F10: Cài đặt chương (Configure Chapter) [Actor: Staff, Admin] - Thiết lập trạng thái (Bản nháp / Xuất bản), gắn thẻ VIP và đặt giá Coin cần mở khóa cho chương.
 
@@ -33,7 +33,7 @@ DANH SÁCH CÁC ACTORS TRONG HỆ THỐNG:
 [ ] M2-F06: Thêm truyện vào tủ sách (Add Novel to Bookshelf) [Actor: Member] - Lưu truyện yêu thích vào Tủ sách cá nhân để theo dõi cập nhật.
 [ ] M2-F07: Xem tủ sách (View Bookshelf) [Actor: Member] - Quản lý danh sách truyện đang theo dõi, hiển thị tiến độ đọc % và nút "Đọc tiếp" chuyển ngay đến chương dở.
 [ ] M2-F08: Xóa truyện khỏi tủ sách (Remove Novel from Bookshelf) [Actor: Member] - Bỏ theo dõi hoặc xóa truyện khỏi Tủ sách cá nhân.
-[ ] M2-F09: Mở khóa chương (Unlock Chapter) [Actor: Member] - độc giả click mở khóa chương,trừ Coin độc giả, kiểm tra số dư, xử lý concurrency an toàn và mở quyền đọc vĩnh viễn chương VIP.
+[ ] M2-F09: Mở khóa chương (Buy Chapter) [Actor: Member] - độc giả click mở khóa chương,trừ Coin độc giả, kiểm tra số dư, xử lý concurrency an toàn và mở quyền đọc vĩnh viễn chương VIP.
 [ ] M2-F10: Xem lịch sử đọc truyện (View Reading History) [Actor: Member] - Độc giả tra cứu lịch sử các chương truyện đã đọc.
 
 3. MODULE XÁC THỰC, BẢO MẬT & THANH TOÁN (AUTH, SECURITY, OAUTH2 & PAYMENT - MEMBER 3 - Ngọc)
@@ -73,15 +73,15 @@ DANH SÁCH CÁC ACTORS TRONG HỆ THỐNG:
 [ ] M5-F04: Gửi thông báo (Send Notification) [Actor: Staff, Admin] - Admin/Staff chủ động soạn thông báo gửi toàn hệ thống (All) hoặc gửi tới một người dùng cụ thể.
 [ ] M5-F05: Xem hòm thư (View Mailbox) [Actor: Member] - Nơi độc giả nhận và đọc các thông báo từ hệ thống, hoặc nhận kết quả phản hồi của các báo cáo mình đã gửi.
 [ ] M5-F06: Đối soát giao dịch (Audit Transactions) [Actor: Admin] - Quản trị viên tra cứu toàn bộ lịch sử biến động số dư Coin (nạp tiền qua VNPay và trừ Coin mở khóa VIP) trong hệ thống.
-[ ] M5-F07: Cấu hình hệ thống (Configure System) [Actor: Admin] - Quản trị viên thiết lập tỷ giá quy đổi VNĐ sang Coin, thông tin liên hệ ban quản trị và điều khoản sử dụng.
+[ ] M5-F07: Cấu hình hệ thống (Configure System) [Actor: Admin] - Quản trị viên thiết lập tỷ giá quy đổi VNĐ sang Coin, thông tin liên hệ ban quản trị và điều khoản sử dụng, thêm theme web.
 [ ] M5-F08: Xem danh sách người dùng (View User List) [Actor: Admin] - Quản trị viên tra cứu danh sách toàn bộ tài khoản người dùng trong hệ thống, tìm kiếm theo email/tên và lọc theo vai trò.
-[ ] M5-F09: Phân quyền người dùng (Assign Roles) [Actor: Admin] - Quản trị viên gán hoặc thu hồi vai trò của người dùng (ROLE_STAFF, ROLE_ADMIN).
+[ ] M5-F09: Quản lý nhân viên (Manage Staffs) [Actor: Admin] - Quản trị viên gán hoặc thu hồi vai trò của người dùng (ROLE_STAFF, ROLE_ADMIN).
 [ ] M5-F10: Khóa/Mở khóa tài khoản (Ban/Enable User) [Actor: Admin] - Quản trị viên vô hiệu hóa (BANNED) hoặc kích hoạt lại tài khoản vi phạm chính sách cộng đồng.
 
 --------------------------------------------------------------------------------
 TỔNG KẾT TRẠNG THÁI (STATUS ENUMS):
 - NOVEL_STATUS: ONGOING (Đang ra), COMPLETED (Hoàn thành), ON_HOLD (Tạm ngưng), ARCHIVED (Lưu trữ/Tạm ẩn)
-- CHAPTER_STATUS: DRAFT (Bản nháp), PUBLISHED_REGULAR (Chương thường miễn phí), PUBLISHED_VIP (Chương VIP thu phí Coin)
+- CHAPTER_STATUS: LOCKED (Khóa chương), PUBLISHED_REGULAR (Chương thường miễn phí), PUBLISHED_VIP (Chương VIP thu phí Coin), DRAFT (Nháp)
 - REPORT_STATUS: PENDING (Chờ xử lý), RECEIVED (Đã nhận), PROCESSED (Đã xử lý), REJECTED (Từ chối)
 - TRANSACTION_TYPE: DEPOSIT (Nạp tiền vào ví qua VNPay), UNLOCK_CHAPTER (Dùng Coin mở khóa chương VIP)
 - AUTH_PROVIDER: LOCAL (Email/Password), GOOGLE (OAuth2 Google)
