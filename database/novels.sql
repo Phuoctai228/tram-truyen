@@ -1,9 +1,11 @@
 -- ================================================================================
 -- DATABASE SCHEMA: TRẠM TRUYỆN (SWP391)
 -- Mô hình Web đọc truyện thuần túy, nội dung do Admin/Staff phát hành
--- Chuẩn hóa 21 tables, đầy đủ PK, FK, quan hệ ràng buộc và chỉ mục tìm kiếm
+-- Chuẩn hóa 28 tables, đầy đủ PK, FK, quan hệ ràng buộc và chỉ mục tìm kiếm
 -- ================================================================================
 
+DROP TABLE IF EXISTS user_reader_settings CASCADE;
+DROP TABLE IF EXISTS user_daily_checkins CASCADE;
 DROP TABLE IF EXISTS themes CASCADE;
 DROP TABLE IF EXISTS novel_reports CASCADE;
 DROP TABLE IF EXISTS chapter_reports CASCADE;
@@ -315,5 +317,27 @@ CREATE TABLE themes (
     is_active BOOLEAN DEFAULT FALSE, -- Cờ xác định theme nào đang được bật cho cả trang web
     uploaded_by INT REFERENCES users(id) ON DELETE SET NULL, -- Admin nào upload
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 27. USER_DAILY_CHECKINS (Lịch sử điểm danh hàng ngày của Member - M2-F11)
+CREATE TABLE user_daily_checkins (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    checkin_date DATE NOT NULL DEFAULT CURRENT_DATE, -- Ngày điểm danh
+    reward_coin INT DEFAULT 0, -- Số Coin thưởng nhận được
+    streak_count INT DEFAULT 1, -- Chuỗi ngày điểm danh liên tiếp
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, checkin_date) -- Đảm bảo 1 user chỉ điểm danh 1 lần/ngày
+);
+
+-- 28. USER_READER_SETTINGS (Cài đặt cá nhân hóa khi đọc truyện và nghe Audio của Member - M2-F04)
+CREATE TABLE user_reader_settings (
+    user_id INT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+    font_family VARCHAR(50) DEFAULT 'Inter', -- Font chữ
+    font_size INT DEFAULT 18, -- Cỡ chữ
+    theme_mode VARCHAR(20) DEFAULT 'LIGHT', -- Màu nền (LIGHT, DARK, SEPIA)
+    audio_voice VARCHAR(50) DEFAULT 'DEFAULT', -- Giọng đọc (VD: Giọng Nam/Nữ)
+    audio_speed DECIMAL(3,1) DEFAULT 1.0, -- Tốc độ đọc (1.0x, 1.25x...)
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
