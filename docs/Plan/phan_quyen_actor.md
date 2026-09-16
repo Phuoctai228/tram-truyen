@@ -1,13 +1,12 @@
 # PHÂN BỔ CHỨC NĂNG THEO ACTOR
 
-Dưới đây là danh sách 53 chức năng được sắp xếp theo từng Actor chịu trách nhiệm chính. Đối với các chức năng dùng chung (kế thừa), chức năng sẽ được gán cho Actor có quyền thấp nhất/chính yếu nhất (ví dụ: Guest, Member) để tránh trùng lặp.
+Dưới đây là danh sách 54 chức năng được sắp xếp theo từng Actor chịu trách nhiệm chính. Đối với các chức năng dùng chung (kế thừa), chức năng sẽ được gán cho Actor có quyền thấp nhất/chính yếu nhất (ví dụ: Guest, Member) để tránh trùng lặp.
 
 ## 1. GUEST (Khách vãng lai chưa đăng nhập)
 *Các chức năng mang tính chất xem công khai hoặc thao tác định danh bước đầu.*
 - [ ] M2-F01: Xem danh sách truyện (View Novels)
 - [ ] M2-F02: Xem chi tiết truyện (View Novel Details)
 - [ ] M2-F03: Đọc chương (Read Chapter)
-- [ ] M2-F04: Tùy chỉnh giao diện đọc (Customize Reader)
 - [ ] M3-F01: Đăng ký tài khoản (Register Account)
 - [ ] M3-F02: Xác thực tài khoản (Verify Account)
 - [ ] M4-F03: Xem danh sách thể loại (View Categories)
@@ -19,12 +18,14 @@ Dưới đây là danh sách 53 chức năng được sắp xếp theo từng Ac
 
 ## 2. MEMBER (Thành viên đã đăng nhập)
 *Bao gồm các chức năng tương tác cá nhân hóa, thanh toán và báo cáo.*
+- [ ] M2-F04: Nghe đọc truyện (Audio Reader)
 - [ ] M2-F05: Lưu tiến độ đọc (Save Reading Progress)
 - [ ] M2-F06: Thêm truyện vào tủ sách (Add Novel to Bookshelf)
 - [ ] M2-F07: Xem tủ sách (View Bookshelf)
 - [ ] M2-F08: Xóa truyện khỏi tủ sách (Remove Novel from Bookshelf)
-- [ ] M2-F09: Mở khóa chương (Unlock Chapter)
+- [ ] M2-F09: Mở khóa (mua) chương (Buy Chapter)
 - [ ] M2-F10: Xem lịch sử đọc truyện (View Reading History)
+- [ ] M2-F11: Điểm danh hàng ngày (Daily Check-in)
 - [ ] M3-F05: Đăng xuất (Logout)
 - [ ] M3-F07: Đổi mật khẩu (Change Password)
 - [ ] M3-F08: Xem hồ sơ cá nhân (View Profile)
@@ -48,7 +49,7 @@ Dưới đây là danh sách 53 chức năng được sắp xếp theo từng Ac
 - [ ] M1-F05: Xem danh sách truyện nội bộ (View Internal Novels)
 - [ ] M1-F06: Tạo chương (Create Chapter)
 - [ ] M1-F07: Cập nhật chương (Update Chapter)
-- [ ] M1-F08: Tạm ẩn chương (Hide Chapter)
+- [ ] M1-F08: Khóa/mở khóa chương (Lock/Unlock Chapter)
 - [ ] M1-F09: Xóa chương (Delete Chapter)
 - [ ] M1-F10: Cài đặt chương (Configure Chapter)
 - [ ] M4-F05: Phân loại truyện (Categorize Novel)

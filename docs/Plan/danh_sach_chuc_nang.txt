@@ -1,4 +1,4 @@
-DANH SÁCH CHI TIẾT 53 CHỨC NĂNG (THEO CHUẨN SWP391 - WEB ĐỌC TRUYỆN THUẦN TÚY)
+DANH SÁCH CHI TIẾT 54 CHỨC NĂNG (THEO CHUẨN SWP391 - WEB ĐỌC TRUYỆN THUẦN TÚY)
 ================================================================================
 (Hệ thống tuân thủ nguyên tắc Single Responsibility: 1 chức năng chỉ đảm nhận 1 nhiệm vụ duy nhất. Quy trình liền mạch theo Workflow, Actor rõ ràng, phân bổ 10–12 chức năng/sinh viên, đảm bảo mỗi thành viên đều có chức năng COMPLEX đạt chuẩn LOC môn học).
 
@@ -19,7 +19,7 @@ DANH SÁCH CÁC ACTORS TRONG HỆ THỐNG:
 [ ] M1-F05: Xem danh sách truyện nội bộ (View Internal Novels) [Actor: Staff, Admin] - Bảng quản trị tra cứu toàn bộ truyện trong hệ thống, tìm kiếm và lọc theo trạng thái.
 [ ] M1-F06: Tạo chương (Create Chapter) [Actor: Staff, Admin] - Ban quản trị thêm chương mới cho truyện (soạn thảo tiêu đề, số thứ tự, nội dung văn bản chương).
 [ ] M1-F07: Cập nhật chương (Update Chapter) [Actor: Staff, Admin] - Chỉnh sửa tiêu đề, thứ tự hoặc sửa đổi nội dung văn bản của chương đã đăng.
-[ ] M1-F08: Khóa ẩn chương (Lock Chapter) [Actor: Staff, Admin] - Chuyển trạng thái chương sang LOCKED để tạm thời ẩn chương khỏi mục lục công khai (khi phát hiện lỗi hoặc đang chỉnh sửa).
+[ ] M1-F08: Khóa/mở khóa chương (Lock/Unlock Chapter) [Actor: Staff, Admin] - Chuyển trạng thái chương sang LOCKED để tạm thời ẩn chương khỏi mục lục công khai (khi phát hiện lỗi hoặc đang chỉnh sửa).
 [ ] M1-F09: Xóa chương (Delete Chapter) [Actor: Staff, Admin] - Thực hiện xóa mềm chương truyện (đánh dấu is_deleted = true, gỡ bỏ chương khỏi mục lục truyện).
 [ ] M1-F10: Cài đặt chương (Configure Chapter) [Actor: Staff, Admin] - Thiết lập trạng thái (Bản nháp / Xuất bản), gắn thẻ VIP và đặt giá Coin cần mở khóa cho chương.
 
@@ -27,14 +27,15 @@ DANH SÁCH CÁC ACTORS TRONG HỆ THỐNG:
 --------------------------------------------------------------------------------
 [ ] M2-F01: Xem danh sách truyện (View Novels) [Actor: Guest, Member] - Hiển thị danh sách truyện công khai trên hệ thống (Trang chủ, Danh mục phân loại).
 [ ] M2-F02: Xem chi tiết truyện (View Novel Details) [Actor: Guest, Member] - Xem thông tin truyện, tác giả gốc, tóm tắt, danh sách/mục lục chương, lượt xem và điểm đánh giá.
-[ ] M2-F03: Đọc chương (Read Chapter) [Actor: Guest, Member] - Giao diện đọc truyện chữ; tự động ghi nhận chương đã đọc (is_read = true) khi Member đọc chương.
-[ ] M2-F04: Tùy chỉnh giao diện đọc (Customize Reader) [Actor: Guest, Member] - Cho phép độc giả tùy chỉnh cỡ chữ, font chữ, màu nền giao diện (Sáng / Tối / Sepia) và chế độ cuộn trang.
+[ ] M2-F03: Đọc chương (Read Chapter) [Actor: Guest, Member] - Giao diện đọc truyện chữ (tích hợp tùy chỉnh cỡ chữ, font, màu nền, chế độ cuộn); tự động ghi nhận chương đã đọc (is_read) đối với Member.
+[ ] M2-F04: Nghe đọc truyện (Audio Reader) [Actor: Member] - Trình phát âm thanh tự động chuyển đổi nội dung văn bản của chương thành giọng nói, có tùy chỉnh tốc độ.
 [ ] M2-F05: Lưu tiến độ đọc (Save Reading Progress) [Actor: Member] - Tự động tính tiến độ đọc (%) và lưu bookmark chương gần nhất để kích hoạt nút "Đọc tiếp".
 [ ] M2-F06: Thêm truyện vào tủ sách (Add Novel to Bookshelf) [Actor: Member] - Lưu truyện yêu thích vào Tủ sách cá nhân để theo dõi cập nhật.
 [ ] M2-F07: Xem tủ sách (View Bookshelf) [Actor: Member] - Quản lý danh sách truyện đang theo dõi, hiển thị tiến độ đọc % và nút "Đọc tiếp" chuyển ngay đến chương dở.
 [ ] M2-F08: Xóa truyện khỏi tủ sách (Remove Novel from Bookshelf) [Actor: Member] - Bỏ theo dõi hoặc xóa truyện khỏi Tủ sách cá nhân.
-[ ] M2-F09: Mở khóa chương (Buy Chapter) [Actor: Member] - độc giả click mở khóa chương,trừ Coin độc giả, kiểm tra số dư, xử lý concurrency an toàn và mở quyền đọc vĩnh viễn chương VIP.
+[ ] M2-F09: Mở khóa (mua) chương (Buy Chapter) [Actor: Member] - độc giả click mở khóa chương,trừ Coin độc giả, kiểm tra số dư, xử lý concurrency an toàn và mở quyền đọc vĩnh viễn chương VIP.
 [ ] M2-F10: Xem lịch sử đọc truyện (View Reading History) [Actor: Member] - Độc giả tra cứu lịch sử các chương truyện đã đọc.
+[ ] M2-F11: Điểm danh hàng ngày (Daily Check-in) [Actor: Member] - Độc giả đăng nhập và điểm danh mỗi ngày để nhận phần thưởng (Coin miễn phí) dùng mở khóa truyện.
 
 3. MODULE XÁC THỰC, BẢO MẬT & THANH TOÁN (AUTH, SECURITY, OAUTH2 & PAYMENT - MEMBER 3 - Ngọc)
 --------------------------------------------------------------------------------
