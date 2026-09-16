@@ -173,9 +173,11 @@ Mục tiêu database:
 18. novel_reports
 19. transactions
 20. system_settings
+21. user_daily_checkins
+22. user_reader_settings
 ```
 
-Hệ thống gồm đúng **20 tables** chuẩn hóa, đầy đủ PK/FK và quan hệ ràng buộc chặt chẽ.
+Hệ thống gồm **28 tables** (danh sách trên minh họa các bảng cốt lõi), đầy đủ PK/FK và quan hệ ràng buộc chặt chẽ.
 
 ---
 
@@ -191,15 +193,15 @@ Tổng:
 
 ```text
 Member 1: 10 functions (Novel & Chapter CMS)
-Member 2: 10 functions (Reader Experience, Bookshelf & VIP Unlock)
+Member 2: 11 functions (Reader Experience, Bookshelf, Audio & VIP Unlock)
 Member 3: 11 functions (Auth, Security, OAuth2 & VNPay Payment)
 Member 4: 10 functions (Category, Search Specification & Novel Rating)
 Member 5: 12 functions (Community, Reports, Notifications & User Admin)
 
-Total = 53 tracked functions
+Total = 54 tracked functions
 ```
 
-**Lưu ý quan trọng:** 53 tracked functions tuân thủ nguyên tắc Single Responsibility (mỗi chức năng giải quyết đúng 1 nghiệp vụ rõ ràng, không gộp lẫn).
+**Lưu ý quan trọng:** 54 tracked functions tuân thủ nguyên tắc Single Responsibility (mỗi chức năng giải quyết đúng 1 nghiệp vụ rõ ràng, không gộp lẫn).
 
 SWP391 đánh giá LOC theo độ phức tạp của function:
 
@@ -217,7 +219,7 @@ Do đó project vẫn phải kiểm soát tổng scope trong khoảng:
 1800–3600 LOC
 ```
 
-53 functions ở đây dùng để **chia workload đều cho 5 sinh viên và tracking contribution trên GitHub**.
+54 functions ở đây dùng để **chia workload đều cho 5 sinh viên và tracking contribution trên GitHub**.
 
 ---
 
@@ -273,25 +275,27 @@ Chapter
 |---|---|---|
 | M2-F01 | View Novels | Guest, Member |
 | M2-F02 | View Novel Details | Guest, Member |
-| M2-F03 | Read Chapter | Guest, Member |
-| M2-F04 | Customize Reader | Guest, Member |
+| M2-F03 | Read Chapter (incl. Customization) | Guest, Member |
+| M2-F04 | Audio Reader | Member |
 | M2-F05 | Save Reading Progress | Member |
 | M2-F06 | Add Novel to Bookshelf | Member |
 | M2-F07 | View Bookshelf | Member |
 | M2-F08 | Remove Novel from Bookshelf | Member |
 | M2-F09 | Unlock Chapter | Member |
 | M2-F10 | View Reading History | Member |
+| M2-F11 | Daily Check-in | Member |
 
 ## Main Responsibility
 
 ```text
 Public Novel & Chapter Catalog (Guest & Member)
-Reader UI Engine & Mark Read Chapters (is_read)
-Reader Display Customization (Font size, themes, scroll mode)
+Reader UI Engine (incl. Display Customization) & Mark Read Chapters
+Audio Reader Engine (Text-to-Speech playback)
 Reading Progress Percentage & Bookmark ("Đọc tiếp")
 Personal Bookshelf Management (Add, View, Remove)
 VIP Chapter Unlock with Coin (Concurrency check, wallet deduction)
 Unlocked Reading History
+Daily Check-in & Reward System
 ```
 
 ## Main Classes
