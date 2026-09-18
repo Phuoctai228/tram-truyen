@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>UC-01 Xem Danh Sách Truyện</title>
+</head>
+<body>
+<div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">
+    <style>
+        .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
+            font-family: 'Times New Roman', serif !important;
+            font-size: 12pt !important;
+            color: black !important;
+        }
+    </style>
+    <p><b>Functional Description Template</b></p>
+    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Mã và Tên UC:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-01 Xem Danh Sách Truyện</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Người tạo:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Tài</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Ngày tạo:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-18</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân chính:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Guest, Member</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân phụ:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Không có</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Kích hoạt (Trigger):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Tác nhân truy cập vào trang chủ hoặc trang danh mục truyện cụ thể thông qua thanh điều hướng chính.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mô tả (Description):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cho phép tác nhân duyệt danh sách các truyện công khai trên hệ thống theo từng trang (pagination). Hệ thống hỗ trợ truy vấn động giúp tác nhân khám phá nội dung dễ dàng.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện tiên quyết:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> Hệ thống đang hoạt động và kết nối thành công với cơ sở dữ liệu.</p><p><b>PRE-2.</b> Có ít nhất một truyện đã được xuất bản trên hệ thống.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện hậu quyết:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> Tác nhân xem được danh sách truyện phân trang.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng cơ bản:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Xem danh sách thành công</b></p><ol><li>Tác nhân truy cập vào trang chủ hoặc trang danh mục cụ thể.</li><li>Hệ thống trích xuất dữ liệu phiên làm việc (session) của tác nhân hiện tại (nếu có).</li><li>Hệ thống truy vấn cơ sở dữ liệu để lấy danh sách truyện công khai dựa trên đường dẫn hiện tại.</li><li>Hệ thống áp dụng quy tắc sắp xếp mặc định (ví dụ: mới cập nhật nhất).</li><li>Hệ thống tính toán dữ liệu phân trang (pagination) dựa trên tổng số kết quả.</li><li>Hệ thống hiển thị danh sách truyện, bao gồm: tiêu đề, ảnh bìa, tác giả và đoạn trích tóm tắt.</li><li>Hệ thống hiển thị các nút điều hướng phân trang ở cuối danh sách.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng thay thế:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.3 Alt Danh mục trống</b></p><ol><li>Hệ thống xác định không có truyện nào khớp với danh mục hoặc bộ lọc hiện tại.</li><li>Hệ thống hiển thị hình ảnh minh họa trạng thái trống và một thông báo mô tả phù hợp.</li><li>Quay lại bước 1.</li></ol><p><b>A.7 Alt Chuyển trang</b></p><ol><li>Tác nhân nhấn vào một số trang cụ thể hoặc nút "Tiếp theo" trên thanh điều hướng phân trang.</li><li>Hệ thống tính toán độ lệch (offset) cho trang được yêu cầu.</li><li>Hệ thống truy vấn cơ sở dữ liệu để lấy danh sách bản ghi truyện của trang đó.</li><li>Hệ thống cập nhật giao diện người dùng để hiển thị tập truyện mới.</li><li>Quay lại bước 7.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Ngoại lệ (Exceptions):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-3 Hết hạn kết nối DB</b></p><ol><li>Hệ thống không thể truy vấn cơ sở dữ liệu trong thời gian cho phép.</li><li>Hệ thống ghi nhận (log) lỗi quá thời gian.</li><li>Hệ thống hiển thị một thông báo lỗi chung cho biết dịch vụ đang gián đoạn tạm thời.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mức độ ưu tiên:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High, Must Have</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tần suất sử dụng:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Rất cao (Mỗi lượt truy cập)</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Quy tắc nghiệp vụ:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Chỉ các truyện có trạng thái ONGOING (Đang ra) hoặc COMPLETED (Hoàn thành) mới được hiển thị.</li><li>Các truyện ARCHIVED (Lưu trữ) và ON_HOLD (Tạm ngưng) bị loại trừ hoàn toàn khỏi danh sách công khai.</li></ul></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Thông tin khác:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Giới hạn phân trang mặc định là 20 truyện mỗi trang.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Giả định:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Tác nhân có kết nối internet ổn định.</li></ul></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

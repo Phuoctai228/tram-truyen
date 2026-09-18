@@ -25,7 +25,7 @@ DANH SÁCH CÁC ACTORS TRONG HỆ THỐNG:
 
 2. MODULE TRẢI NGHIỆM ĐỘC GIẢ, TỦ SÁCH & MỞ KHÓA VIP (READER EXPERIENCE & BOOKSHELF - MEMBER 2 - Tài)
 --------------------------------------------------------------------------------
-[ ] M2-F01: Xem danh sách truyện (View Novels) [Actor: Guest, Member] - Hiển thị danh sách truyện công khai trên hệ thống (Trang chủ, Danh mục phân loại).
+[ ] M2-F01: Xem danh sách truyện (View Novel List) [Actor: Guest, Member] - Hiển thị danh sách truyện công khai trên hệ thống (Trang chủ, Danh mục phân loại).
 [ ] M2-F02: Xem chi tiết truyện (View Novel Details) [Actor: Guest, Member] - Xem thông tin truyện, tác giả gốc, tóm tắt, danh sách/mục lục chương, lượt xem và điểm đánh giá.
 [ ] M2-F03: Đọc chương (Read Chapter) [Actor: Guest, Member] - Giao diện đọc truyện chữ (tích hợp tùy chỉnh cỡ chữ, font, màu nền, chế độ cuộn); tự động ghi nhận chương đã đọc (is_read) đối với Member.
 [ ] M2-F04: Nghe đọc truyện (Audio Reader) [Actor: Member] - Trình phát âm thanh tự động chuyển đổi nội dung văn bản của chương thành giọng nói, có tùy chỉnh tốc độ.
@@ -33,7 +33,7 @@ DANH SÁCH CÁC ACTORS TRONG HỆ THỐNG:
 [ ] M2-F06: Thêm truyện vào tủ sách (Add Novel to Bookshelf) [Actor: Member] - Lưu truyện yêu thích vào Tủ sách cá nhân để theo dõi cập nhật.
 [ ] M2-F07: Xem tủ sách (View Bookshelf) [Actor: Member] - Quản lý danh sách truyện đang theo dõi, hiển thị tiến độ đọc % và nút "Đọc tiếp" chuyển ngay đến chương dở.
 [ ] M2-F08: Xóa truyện khỏi tủ sách (Remove Novel from Bookshelf) [Actor: Member] - Bỏ theo dõi hoặc xóa truyện khỏi Tủ sách cá nhân.
-[ ] M2-F09: Mở khóa (mua) chương (Buy Chapter) [Actor: Member] - độc giả click mở khóa chương,trừ Coin độc giả, kiểm tra số dư, xử lý concurrency an toàn và mở quyền đọc vĩnh viễn chương VIP.
+[ ] M2-F09: Mở khóa (mua) chương (Lock Paid Chapter) [Actor: Member] - độc giả click mở khóa chương,trừ Coin độc giả, kiểm tra số dư, xử lý concurrency an toàn và mở quyền đọc vĩnh viễn chương VIP.
 [ ] M2-F10: Xem lịch sử đọc truyện (View Reading History) [Actor: Member] - Độc giả tra cứu lịch sử các chương truyện đã đọc.
 [ ] M2-F11: Điểm danh hàng ngày (Daily Check-in) [Actor: Member] - Độc giả đăng nhập và điểm danh mỗi ngày để nhận phần thưởng (Coin miễn phí) dùng mở khóa truyện.
 

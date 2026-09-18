@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>UC-05 Lưu Tiến Độ Đọc</title>
+</head>
+<body>
+<div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">
+    <style>
+        .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
+            font-family: 'Times New Roman', serif !important;
+            font-size: 12pt !important;
+            color: black !important;
+        }
+    </style>
+    <p><b>Functional Description Template</b></p>
+    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Mã và Tên UC:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-05 Lưu Tiến Độ Đọc</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Người tạo:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Tài</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Ngày tạo:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-18</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân chính:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Member</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân phụ:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Không có</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Kích hoạt (Trigger):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Member tải thành công và đọc một chương trên giao diện đọc.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mô tả (Description):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Tự động theo dõi và lưu lại tiến độ đọc của thành viên (tỷ lệ phần trăm và ID chương mới nhất) ở chế độ chạy ngầm trong khi họ đang đọc truyện, nhằm cập nhật đánh dấu (bookmark) trong tủ sách.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện tiên quyết:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> Nội dung chương phải được tải thành công.</p><p><b>PRE-2.</b> Người dùng phải được xác thực với vai trò Member.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện hậu quyết:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> Tiến độ đọc của thành viên được đồng bộ hóa với cơ sở dữ liệu.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng cơ bản:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Lưu tiến độ thành công</b></p><ol><li>Member đọc một chương trên giao diện đọc.</li><li>Hệ thống xác định vị trí (index) của chương hiện tại so với tổng số chương đã xuất bản của truyện.</li><li>Hệ thống tính toán tỷ lệ phần trăm hoàn thành tổng thể.</li><li>Hệ thống tạo ra một gói dữ liệu (payload) chứa ID chương và tỷ lệ phần trăm vừa tính.</li><li>Hệ thống gửi một yêu cầu ngầm (async) để cập nhật bản ghi bookmark cho truyện này.</li><li>Hệ thống lưu thành công tiến độ vào cơ sở dữ liệu.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng thay thế:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>Không có</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Ngoại lệ (Exceptions):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Phiên bản không hợp lệ (Chưa đăng nhập)</b></p><ol><li>Hệ thống nhận được phản hồi không có quyền truy cập (unauthorized) trong khi gửi yêu cầu ngầm.</li><li>Hệ thống âm thầm hủy bỏ bản cập nhật tiến độ (không làm gián đoạn việc đọc, nhưng tiến độ không được lưu).</li></ol><p><b>EX-5 Lỗi mạng</b></p><ol><li>Hệ thống gặp sự cố mạng tạm thời khi đang lưu tiến độ.</li><li>Hệ thống đưa bản cập nhật vào hàng đợi cục bộ.</li><li>Hệ thống thử đồng bộ lại vào lần tương tác mạng thành công tiếp theo (ví dụ: chuyển sang chương sau).</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mức độ ưu tiên:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Medium, Must Have</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tần suất sử dụng:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Rất cao</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Quy tắc nghiệp vụ:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Tiến độ chỉ được theo dõi đối với các Member đã xác thực.</li><li>Tỷ lệ hoàn thành được tính toán động dựa trên tổng số chương đã xuất bản tại đúng thời điểm đó.</li></ul></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Thông tin khác:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Quá trình diễn ra hoàn toàn không đồng bộ ở chế độ nền (background).</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Giả định:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Thành viên duy trì kết nối internet ổn định trong khi đọc.</li></ul></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

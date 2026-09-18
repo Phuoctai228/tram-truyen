@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Functional Specification: Daily Check-in</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', serif;
+            color: #000000;
+            font-size: 12pt;
+            line-height: 1.5;
+            margin: 0;
+            padding: 20px;
+        }
+        p { margin: 8px 0; }
+        strong { font-weight: bold; }
+        hr { border: none; border-top: 1px solid #ccc; margin: 20px 0; }
+        ul, ol { margin: 8px 0; padding-left: 20px; }
+        li { margin-bottom: 4px; }
+        h4 { font-family: 'Times New Roman', serif; font-weight: bold; font-size: 12pt; margin: 8px 0; }
+    </style>
+</head>
+<body>
+
+<h4>M2-F11. Daily Check-in</h4>
+
+<p><strong>Function Trigger:</strong> A logged-in Member clicks the "Check-in" or "Claim Reward" button on the homepage or their profile dashboard.</p>
+
+<p><strong>Function Description:</strong> Encourages daily user engagement by allowing members to check in once per day to receive a small reward of free Coin, which can be accumulated to unlock VIP chapters.</p>
+
+<p><strong>Screen Layout:</strong><br>[Placeholder for UI mockups: Check-in widget showing streak and reward amount]</p>
+
+<p><strong>Function Details</strong></p>
+
+<ul>
+    <li><strong>Preconditions</strong>
+        <ul>
+            <li>The user must be logged in as a Member.</li>
+            <li>The user must not have already checked in on the current calendar day (server time).</li>
+        </ul>
+    </li>
+    <li><strong>Process</strong>
+        <ul>
+            <li><strong>Validate Eligibility:</strong>
+                <ul>
+                    <li>The system checks the latest check-in record for the user to confirm it does not fall within the current day.</li>
+                </ul>
+            </li>
+            <li><strong>Process Reward:</strong>
+                <ul>
+                    <li>The system calculates the reward amount (a fixed value or a variable amount based on consecutive login streaks).</li>
+                    <li>The system adds the calculated Coin amount to the user's wallet.</li>
+                    <li>The system creates a transaction record indicating a system-generated Coin deposit.</li>
+                    <li>The system records the current timestamp as the user's latest check-in time.</li>
+                </ul>
+            </li>
+            <li><strong>Interface Update:</strong>
+                <ul>
+                    <li>The system displays a celebratory notification showing the amount of Coin received.</li>
+                    <li>The system updates the Check-in button to a disabled or "Claimed" state.</li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li><strong>Alternative Flow (Already Checked In)</strong>
+        <ul>
+            <li>If the user attempts to check in again on the same day (e.g., via direct API call or concurrent clicking):
+                <ul>
+                    <li>The system rejects the action, does not award Coin, and displays a message indicating they have already claimed their reward for today.</li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li><strong>Postconditions</strong>
+        <ul>
+            <li>The user's Coin balance increases, and their daily check-in streak is updated.</li>
+        </ul>
+    </li>
+    <li><strong>Error Handling</strong>
+        <ul>
+            <li><strong>Concurrency Handling:</strong> If two requests are sent simultaneously, optimistic locking on the user's record ensures only the first request succeeds and awards Coin.</li>
+        </ul>
+    </li>
+    <li><strong>Security Measures</strong>
+        <ul>
+            <li>The check-in validation relies strictly on secure backend server time, preventing users from manipulating client-side clocks to claim multiple rewards.</li>
+        </ul>
+    </li>
+</ul>
+
+</body>
+</html>

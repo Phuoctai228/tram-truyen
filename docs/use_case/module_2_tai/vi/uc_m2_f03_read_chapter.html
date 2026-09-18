@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>UC-03 Đọc Chương</title>
+</head>
+<body>
+<div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">
+    <style>
+        .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
+            font-family: 'Times New Roman', serif !important;
+            font-size: 12pt !important;
+            color: black !important;
+        }
+    </style>
+    <p><b>Functional Description Template</b></p>
+    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Mã và Tên UC:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-03 Đọc Chương</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Người tạo:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Tài</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Ngày tạo:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-18</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân chính:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Guest, Member</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân phụ:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Không có</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Kích hoạt (Trigger):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Tác nhân nhấn vào một liên kết chương cụ thể từ trang chi tiết truyện hoặc tủ sách.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mô tả (Description):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cho phép tác nhân đọc nội dung văn bản của một chương đã xuất bản. Hệ thống xác thực quyền truy cập (Miễn phí hay VIP) và tự động ghi lại lịch sử/tiến độ đọc cho các thành viên đã đăng nhập.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện tiên quyết:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> Chương được yêu cầu phải tồn tại và có trạng thái PUBLISHED.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện hậu quyết:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> Tác nhân đọc được nội dung chương.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng cơ bản:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Đọc chương miễn phí thành công</b></p><ol><li>Tác nhân truy cập vào trang đọc của một chương cụ thể.</li><li>Hệ thống trích xuất ID chương từ yêu cầu.</li><li>Hệ thống xác thực trạng thái xuất bản của chương.</li><li>Hệ thống xác định đây là chương Miễn phí (Free).</li><li>Hệ thống lấy nội dung văn bản của chương từ cơ sở dữ liệu.</li><li>Hệ thống lấy các tùy chọn đọc đã lưu của tác nhân (ví dụ: cỡ chữ, màu nền) nếu có.</li><li>Hệ thống kết xuất giao diện đọc, hiển thị văn bản đã định dạng và các nút điều hướng (Chương trước/Sau).</li><li>Hệ thống kích hoạt một tiến trình ngầm (async) để cập nhật tổng lượt xem của truyện.</li><li>(Async) Nếu tác nhân là Member, hệ thống ghi nhận chương này vào lịch sử đọc và cập nhật tiến độ (bookmark) của họ.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng thay thế:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.4 Alt Chương VIP bị khóa</b></p><ol><li>Hệ thống xác định đây là chương VIP.</li><li>Hệ thống kiểm tra phiên đăng nhập và hồ sơ mở khóa của tác nhân.</li><li>Hệ thống xác định tác nhân chưa mở khóa chương này.</li><li>Hệ thống ngắt luồng đọc truyện.</li><li>Hệ thống hiển thị một lớp phủ (overlay) yêu cầu người dùng mở khóa chương bằng Coin.</li><li>Quay lại bước 1 (được kích hoạt sau khi tác nhân mở khóa thành công qua UC-09).</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Ngoại lệ (Exceptions):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-3 Không tìm thấy chương</b></p><ol><li>Hệ thống xác định ID chương được yêu cầu không tồn tại hoặc đã bị hủy xuất bản.</li><li>Hệ thống hiển thị thông báo lỗi 404.</li><li>Hệ thống chuyển hướng tác nhân trở lại trang chi tiết truyện.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mức độ ưu tiên:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High, Must Have</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tần suất sử dụng:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Rất cao</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Quy tắc nghiệp vụ:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Tác nhân Guest không thể bỏ qua khóa VIP trong bất kỳ trường hợp nào.</li><li>Việc theo dõi tiến độ (bookmark và lịch sử) chỉ dành riêng cho tác nhân Member đã xác thực.</li></ul></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Thông tin khác:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Không có.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Giả định:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Tác nhân có kết nối internet ổn định.</li></ul></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

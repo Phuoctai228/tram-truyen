@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Functional Specification: Remove Novel from Bookshelf</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', serif;
+            color: #000000;
+            font-size: 12pt;
+            line-height: 1.5;
+            margin: 0;
+            padding: 20px;
+        }
+        p { margin: 8px 0; }
+        strong { font-weight: bold; }
+        hr { border: none; border-top: 1px solid #ccc; margin: 20px 0; }
+        ul, ol { margin: 8px 0; padding-left: 20px; }
+        li { margin-bottom: 4px; }
+        h4 { font-family: 'Times New Roman', serif; font-weight: bold; font-size: 12pt; margin: 8px 0; }
+    </style>
+</head>
+<body>
+
+<h4>M2-F08. Remove Novel from Bookshelf</h4>
+
+<p><strong>Function Trigger:</strong> A logged-in Member clicks the "Remove" or "Unfollow" button on a novel card within the Bookshelf page, or toggles the status on the Novel Details page.</p>
+
+<p><strong>Function Description:</strong> Allows users to unfollow a novel, removing it from their personal Bookshelf so they no longer track its updates or see it in their quick-access list.</p>
+
+<p><strong>Screen Layout:</strong><br>[Placeholder for UI mockups: Remove button on Bookshelf item / Unfollow state on Novel Details Page]</p>
+
+<p><strong>Function Details</strong></p>
+
+<ul>
+    <li><strong>Preconditions</strong>
+        <ul>
+            <li>The user must be logged in as a Member.</li>
+            <li>The specified novel must currently exist in the user's bookshelf.</li>
+        </ul>
+    </li>
+    <li><strong>Process</strong>
+        <ul>
+            <li><strong>Confirmation (Optional based on UI context):</strong>
+                <ul>
+                    <li>If triggered from the Bookshelf page, the system may display a prompt asking the user to confirm the removal.</li>
+                </ul>
+            </li>
+            <li><strong>Database Update:</strong>
+                <ul>
+                    <li>The system deletes the bookshelf association record between the user's ID and the novel's ID in the database.</li>
+                </ul>
+            </li>
+            <li><strong>Interface Update:</strong>
+                <ul>
+                    <li>If on the Bookshelf page, the system dynamically removes the novel card from the view without requiring a full page reload.</li>
+                    <li>If on the Novel Details page, the system updates the button state back to "Add to Bookshelf".</li>
+                    <li>The system displays a brief success notification confirming the removal.</li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li><strong>Postconditions</strong>
+        <ul>
+            <li>The novel is no longer tracked in the user's bookshelf.</li>
+        </ul>
+    </li>
+    <li><strong>Error Handling</strong>
+        <ul>
+            <li><strong>Deletion Error:</strong> If the removal request fails on the backend, the system displays an error message and reverts the UI state to show the novel is still in the bookshelf.</li>
+        </ul>
+    </li>
+    <li><strong>Security Measures</strong>
+        <ul>
+            <li>The backend strictly verifies that the user making the request is the owner of the bookshelf being modified.</li>
+        </ul>
+    </li>
+</ul>
+
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>UC-03 Read Chapter</title>
+</head>
+<body>
+<div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">
+    <style>
+        .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
+            font-family: 'Times New Roman', serif !important;
+            font-size: 12pt !important;
+            color: black !important;
+        }
+    </style>
+    <p><b>Functional Description Template</b></p>
+    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>UC ID and Name:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-03 Read Chapter</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Created By:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Tài</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Date Created:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-18</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Primary Actor:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Guest, Member</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Secondary Actors:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">None</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Trigger:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Actor clicks on a specific chapter link from the novel details page or bookshelf.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Description:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Allows an actor to read the textual content of a published chapter. The system validates access rights (Free vs VIP) and automatically records reading history/progress for authenticated members.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Preconditions:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> The requested chapter must exist and have a PUBLISHED status.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Postconditions:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> The actor reads the chapter content.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Normal Flow:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Read Free Chapter Successfully</b></p><ol><li>Actor accesses the reading page for a specific chapter.</li><li>The system extracts the chapter ID from the request.</li><li>The system validates the chapter's publication status.</li><li>The system determines the chapter is Free.</li><li>The system retrieves the textual content of the chapter from the database.</li><li>The system retrieves the actor's saved reading preferences (e.g., font size, background color) if available.</li><li>The system renders the reading interface, displaying the formatted text and navigation controls (Next/Previous).</li><li>The system triggers an asynchronous background job to update the novel's total view count.</li><li>(Async) If the actor is a Member, the system records the chapter in their reading history and updates their bookmark progress.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Alternative Flows:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.4 Alt Locked VIP Chapter</b></p><ol><li>The system determines the chapter is a VIP chapter.</li><li>The system checks the actor's session and unlock records.</li><li>The system determines the actor has not unlocked this chapter.</li><li>The system interrupts the reading flow.</li><li>The system displays a prompt overlay asking the user to unlock the chapter with Coin.</li><li>Back to step 1 (triggered after the actor successfully unlocks it via UC-09).</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Exceptions:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-3 Chapter Not Found</b></p><ol><li>The system determines the requested chapter ID does not exist or has been unpublished.</li><li>The system displays a 404 Not Found message.</li><li>The system redirects the actor to the novel's detail page.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Priority:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High, Must Have</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Frequency of Use:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Very High</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Business Rules:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Guest actors cannot bypass VIP locks under any circumstances.</li><li>Progress tracking (bookmarks and history) is strictly reserved for authenticated Member actors.</li></ul></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Other Information:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">None</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Assumptions:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Actor has a stable internet connection.</li></ul></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

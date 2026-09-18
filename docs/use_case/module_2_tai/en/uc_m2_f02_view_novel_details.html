@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>UC-02 View Novel Details</title>
+</head>
+<body>
+<div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">
+    <style>
+        .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
+            font-family: 'Times New Roman', serif !important;
+            font-size: 12pt !important;
+            color: black !important;
+        }
+    </style>
+    <p><b>Functional Description Template</b></p>
+    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>UC ID and Name:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-02 View Novel Details</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Created By:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Tài</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Date Created:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-18</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Primary Actor:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Guest, Member</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Secondary Actors:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">None</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Trigger:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Actor clicks on a novel card or title from any list view.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Description:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Displays comprehensive metadata about a single novel, including its synopsis, average rating, and a paginated list of its chapters. Provides interaction points for reading, bookmarking, and reviewing.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Preconditions:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> The requested novel must exist in the database and have a public status.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Postconditions:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> The actor is presented with the novel details and chapter index.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Normal Flow:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. View Details Successfully</b></p><ol><li>Actor clicks on a specific novel.</li><li>The system extracts the unique novel identifier from the request.</li><li>The system retrieves the novel's core metadata (title, author, synopsis, cover image).</li><li>The system calculates the novel's average rating and total view count.</li><li>The system retrieves the paginated list of published chapters for the novel.</li><li>The system determines the access status (Free vs. VIP) for each retrieved chapter.</li><li>The system triggers an asynchronous background job to increment the novel's total view count.</li><li>The system checks if the current actor is an authenticated Member and has bookmarked this novel.</li><li>The system renders the novel details page, displaying metadata, the chapter list, and action buttons ("Read First Chapter", "Add to Bookshelf").</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Alternative Flows:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.8 Alt Already Bookmarked</b></p><ol><li>The system determines the current Member has already bookmarked the novel.</li><li>The system changes the action button state to "Remove from Bookshelf".</li><li>Proceed to step 9.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Exceptions:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-3 Novel Not Found</b></p><ol><li>The system determines the requested novel ID does not exist, has been deleted, or has an unpublished status.</li><li>The system displays a 404 Not Found error page.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Priority:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High, Must Have</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Frequency of Use:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Business Rules:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Draft or locked chapters (DRAFT, LOCKED) are not retrieved or displayed in the index for standard actors (Guest, Member).</li><li>VIP chapters (PUBLISHED_VIP) must be visually distinct in the chapter list (e.g., displaying a lock icon or a Coin price tag).</li></ul></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Other Information:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">None</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Assumptions:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Actor has a stable internet connection.</li></ul></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

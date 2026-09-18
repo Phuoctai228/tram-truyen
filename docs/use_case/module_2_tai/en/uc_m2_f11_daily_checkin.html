@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>UC-11 Daily Check-in</title>
+</head>
+<body>
+<div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">
+    <style>
+        .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
+            font-family: 'Times New Roman', serif !important;
+            font-size: 12pt !important;
+            color: black !important;
+        }
+    </style>
+    <p><b>Functional Description Template</b></p>
+    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>UC ID and Name:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-11 Daily Check-in</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Created By:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Tài</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Date Created:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-18</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Primary Actor:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Member</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Secondary Actors:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">None</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Trigger:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Member clicks the "Check-in" button on the homepage or user profile.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Description:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Allows a member to claim a daily reward (free Coin) once every server-day to encourage user retention. The system uses optimistic locking to ensure the reward is only claimed once per day.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Preconditions:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> The user must be authenticated as a Member.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Postconditions:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> Free Coin is added to the member's wallet and the check-in time is recorded.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Normal Flow:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Check-in Successfully</b></p><ol><li>Member clicks the "Check-in" button.</li><li>The system initiates a database transaction for the member's wallet record.</li><li>The system retrieves the `last_checkin_time` field.</li><li>The system determines the current server date is strictly greater than the date of `last_checkin_time`.</li><li>The system calculates the free Coin reward amount based on the current consecutive check-in streak.</li><li>The system adds the reward to the member's Coin balance.</li><li>The system updates the `last_checkin_time` to the current timestamp.</li><li>The system commits the transaction to persist the update.</li><li>The system displays a success modal showing the amount of Coin received.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Alternative Flows:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.4 Alt Already Checked In</b></p><ol><li>The system determines the current server date is identical to the date of `last_checkin_time`.</li><li>The system aborts the transaction.</li><li>The system displays an error message indicating the member has already checked in today.</li><li>Back to step 1.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Exceptions:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Session Invalid (Not Logged In)</b></p><ol><li>The system determines the actor is not logged in.</li><li>The system displays an authentication error message.</li><li>The system redirects the user to the login page.</li></ol><p><b>EX-2 Optimistic Lock Failure</b></p><ol><li>The system encounters a version mismatch when committing the transaction (e.g., due to double-clicking).</li><li>The system rolls back the transaction.</li><li>The system displays a generic "System busy" message.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Priority:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Medium, Should Have</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Frequency of Use:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High (Once per day per user)</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Business Rules:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>The daily reset time is strictly governed by the server's time zone (e.g., 00:00:00 ICT), not the client's local device time.</li><li>Check-in rewards cannot be withdrawn or converted to fiat currency.</li></ul></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Other Information:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">None</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Assumptions:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Member has a stable internet connection.</li></ul></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

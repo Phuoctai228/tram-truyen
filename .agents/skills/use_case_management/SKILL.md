@@ -12,7 +12,7 @@ This skill provides comprehensive instructions for formatting, writing, and edit
 ### Standardized Primary Actors
 Do NOT invent custom actor names (like "Learner" or "Customer"). You must exclusively use one of the following exact standardized actors depending on the use case context:
 - `Guest` (Unauthenticated actor)
-- `Member` (Authenticated user, reader, or author)
+- `Member` (Authenticated user, reader)
 - `Staff` (Authorized moderator or reviewer)
 - `Admin` (Highest Authority manager)
 

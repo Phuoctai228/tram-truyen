@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Functional Specification: Add Novel to Bookshelf</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', serif;
+            color: #000000;
+            font-size: 12pt;
+            line-height: 1.5;
+            margin: 0;
+            padding: 20px;
+        }
+        p { margin: 8px 0; }
+        strong { font-weight: bold; }
+        hr { border: none; border-top: 1px solid #ccc; margin: 20px 0; }
+        ul, ol { margin: 8px 0; padding-left: 20px; }
+        li { margin-bottom: 4px; }
+        h4 { font-family: 'Times New Roman', serif; font-weight: bold; font-size: 12pt; margin: 8px 0; }
+    </style>
+</head>
+<body>
+
+<h4>M2-F06. Add Novel to Bookshelf</h4>
+
+<p><strong>Function Trigger:</strong> A logged-in Member clicks the "Add to Bookshelf" button on a novel details page.</p>
+
+<p><strong>Function Description:</strong> Allows users to bookmark or follow a specific novel by adding it to their personal Bookshelf, enabling them to easily track updates and access the novel quickly in the future.</p>
+
+<p><strong>Screen Layout:</strong><br>[Placeholder for UI mockups: "Add to Bookshelf" button state changes on Novel Details Page]</p>
+
+<p><strong>Function Details</strong></p>
+
+<ul>
+    <li><strong>Preconditions</strong>
+        <ul>
+            <li>The user must be logged in as a Member.</li>
+            <li>The novel must not already be in the user's bookshelf.</li>
+        </ul>
+    </li>
+    <li><strong>Process</strong>
+        <ul>
+            <li><strong>User Action:</strong>
+                <ul>
+                    <li>The user initiates the action to add the novel to their bookshelf.</li>
+                </ul>
+            </li>
+            <li><strong>Database Update:</strong>
+                <ul>
+                    <li>The system creates a new entry in the bookshelf records linking the user's ID with the selected novel's ID.</li>
+                </ul>
+            </li>
+            <li><strong>Interface Update:</strong>
+                <ul>
+                    <li>The system updates the button state on the UI to indicate the novel is now "In Bookshelf" (e.g., changing color or text to "Remove from Bookshelf").</li>
+                    <li>The system displays a brief success notification (e.g., toast message) confirming the action.</li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li><strong>Alternative Flow (Not Logged In)</strong>
+        <ul>
+            <li>If a Guest user attempts to add a novel to the bookshelf:
+                <ul>
+                    <li>The system interrupts the action and prompts the user to log in or register to use this feature.</li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li><strong>Postconditions</strong>
+        <ul>
+            <li>The novel is successfully added to the user's personal bookshelf and will appear when they view the Bookshelf page.</li>
+        </ul>
+    </li>
+    <li><strong>Error Handling</strong>
+        <ul>
+            <li><strong>Database Conflict (Already Added):</strong> If the system detects the novel is already in the bookshelf (e.g., due to a duplicate request), it silently ignores the addition and ensures the UI reflects the correct state.</li>
+        </ul>
+    </li>
+    <li><strong>Security Measures</strong>
+        <ul>
+            <li>The system verifies the user's active session token before allowing any modifications to the bookshelf records.</li>
+        </ul>
+    </li>
+</ul>
+
+</body>
+</html>

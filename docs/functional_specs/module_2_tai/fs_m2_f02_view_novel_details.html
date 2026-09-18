@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Functional Specification: View Novel Details</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', serif;
+            color: #000000;
+            font-size: 12pt;
+            line-height: 1.5;
+            margin: 0;
+            padding: 20px;
+        }
+        p { margin: 8px 0; }
+        strong { font-weight: bold; }
+        hr { border: none; border-top: 1px solid #ccc; margin: 20px 0; }
+        ul, ol { margin: 8px 0; padding-left: 20px; }
+        li { margin-bottom: 4px; }
+        h4 { font-family: 'Times New Roman', serif; font-weight: bold; font-size: 12pt; margin: 8px 0; }
+    </style>
+</head>
+<body>
+
+<h4>M2-F02. View Novel Details</h4>
+
+<p><strong>Function Trigger:</strong> The user clicks on a novel from the homepage, search results, or category list.</p>
+
+<p><strong>Function Description:</strong> Displays comprehensive information about a specific novel, including its synopsis, author, status, rating, view count, and the complete chapter index.</p>
+
+<p><strong>Screen Layout:</strong><br>[Placeholder for UI mockups: Novel Details Page]</p>
+
+<p><strong>Function Details</strong></p>
+
+<ul>
+    <li><strong>Preconditions</strong>
+        <ul>
+            <li>The selected novel must exist and not be in a deleted or archived state.</li>
+        </ul>
+    </li>
+    <li><strong>Process</strong>
+        <ul>
+            <li><strong>Fetch Novel Information:</strong>
+                <ul>
+                    <li>The system retrieves the novel's metadata, including title, author, synopsis, cover image, average rating, total views, and categories.</li>
+                </ul>
+            </li>
+            <li><strong>Fetch Chapter List:</strong>
+                <ul>
+                    <li>The system retrieves the list of published chapters associated with the novel.</li>
+                    <li>The system determines the status of each chapter (e.g., Free, VIP).</li>
+                </ul>
+            </li>
+            <li><strong>Render Details Page:</strong>
+                <ul>
+                    <li>The system displays the novel's overview information at the top.</li>
+                    <li>The system presents the chapter index in chronological order, clearly marking VIP chapters with an appropriate icon or tag.</li>
+                    <li>The system increments the view count for the novel (if applicable based on view-counting logic).</li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li><strong>Alternative Flow (Novel Not Found or Archived)</strong>
+        <ul>
+            <li>If the novel is deleted or temporarily archived:
+                <ul>
+                    <li>The system redirects the user to a "404 Not Found" page or displays a message stating the novel is currently unavailable.</li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li><strong>Postconditions</strong>
+        <ul>
+            <li>The user is presented with the full details of the novel and can choose to read a chapter, add it to their bookshelf, or view comments.</li>
+        </ul>
+    </li>
+    <li><strong>Error Handling</strong>
+        <ul>
+            <li><strong>Data Fetch Failure:</strong> The system displays an error message indicating that the novel details could not be loaded and prompts the user to refresh the page.</li>
+        </ul>
+    </li>
+    <li><strong>Security Measures</strong>
+        <ul>
+            <li>Draft or locked chapters are not displayed in the chapter index to standard users.</li>
+        </ul>
+    </li>
+</ul>
+
+</body>
+</html>

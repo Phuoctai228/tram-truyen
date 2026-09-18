@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Functional Specification: View Novels</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', serif;
+            color: #000000;
+            font-size: 12pt;
+            line-height: 1.5;
+            margin: 0;
+            padding: 20px;
+        }
+        p { margin: 8px 0; }
+        strong { font-weight: bold; }
+        hr { border: none; border-top: 1px solid #ccc; margin: 20px 0; }
+        ul, ol { margin: 8px 0; padding-left: 20px; }
+        li { margin-bottom: 4px; }
+        h4 { font-family: 'Times New Roman', serif; font-weight: bold; font-size: 12pt; margin: 8px 0; }
+    </style>
+</head>
+<body>
+
+<h4>M2-F01. View Novels</h4>
+
+<p><strong>Function Trigger:</strong> The user navigates to the homepage or a category page on the platform.</p>
+
+<p><strong>Function Description:</strong> This function displays a public list of available novels, allowing readers to browse titles on the homepage or through categorized lists.</p>
+
+<p><strong>Screen Layout:</strong><br>[Placeholder for UI mockups: Homepage / Category Page]</p>
+
+<p><strong>Function Details</strong></p>
+
+<ul>
+    <li><strong>Preconditions</strong>
+        <ul>
+            <li>The system is operational and the database is accessible.</li>
+        </ul>
+    </li>
+    <li><strong>Process</strong>
+        <ul>
+            <li><strong>Retrieve Novel Data:</strong>
+                <ul>
+                    <li>The system fetches the list of public novels from the database based on the requested context (e.g., all novels for the homepage, or filtered by a specific category).</li>
+                    <li>The system applies default sorting (e.g., newest updates first or most viewed).</li>
+                </ul>
+            </li>
+            <li><strong>Display Novels:</strong>
+                <ul>
+                    <li>The system renders the list of novels in a grid or list format.</li>
+                    <li>The system displays key information for each novel: cover image, title, author, category, latest chapter, and current status (Ongoing/Completed).</li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li><strong>Alternative Flow (Empty List)</strong>
+        <ul>
+            <li>If there are no novels available (e.g., in a new category):
+                <ul>
+                    <li>The system displays a descriptive message indicating that no novels are currently available in this section.</li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li><strong>Postconditions</strong>
+        <ul>
+            <li>The user views the list of novels and can proceed to click on a novel to view its details.</li>
+        </ul>
+    </li>
+    <li><strong>Error Handling</strong>
+        <ul>
+            <li><strong>Database Error:</strong> The system displays a generic error message indicating that content could not be loaded at this time.</li>
+        </ul>
+    </li>
+    <li><strong>Security Measures</strong>
+        <ul>
+            <li>Only novels with public or published statuses (not archived or deleted) are retrieved and displayed to the user.</li>
+        </ul>
+    </li>
+</ul>
+
+</body>
+</html>
