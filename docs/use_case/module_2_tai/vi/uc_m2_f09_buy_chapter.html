@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>UC-09 Mở Khóa (Mua) Chương</title>
+</head>
+<body>
+<div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">
+    <style>
+        .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
+            font-family: 'Times New Roman', serif !important;
+            font-size: 12pt !important;
+            color: black !important;
+        }
+    </style>
+    <p><b>Functional Description Template</b></p>
+    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Mã và Tên UC:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-09 Mở Khóa (Mua) Chương</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Người tạo:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Tài</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Ngày tạo:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-18</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân chính:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Member</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân phụ:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Không có</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Kích hoạt (Trigger):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Member nhấn nút "Mở khóa với X Coin" trên lớp phủ của một chương VIP đang bị khóa.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mô tả (Description):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Xử lý logic giao dịch để mua quyền truy cập vĩnh viễn vào một chương VIP bằng số dư Coin của thành viên. Sử dụng khóa cơ sở dữ liệu nghiêm ngặt để ngăn chặn tình trạng tương tranh (race conditions) và tiêu tiền hai lần.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện tiên quyết:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> Chương phải được đánh dấu là PUBLISHED_VIP.</p><p><b>PRE-2.</b> Người dùng phải đăng nhập với vai trò Member.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện hậu quyết:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> Số dư Coin bị trừ và chương được mở khóa vĩnh viễn cho thành viên.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng cơ bản:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Mua chương thành công</b></p><ol><li>Member nhấn "Mở khóa" trên một chương VIP.</li><li>Hệ thống khởi tạo một giao dịch (transaction) cơ sở dữ liệu với khóa ghi bi quan (pessimistic write lock) trên bản ghi ví của người dùng.</li><li>Hệ thống lấy số dư Coin hiện tại của thành viên.</li><li>Hệ thống xác định số dư Coin lớn hơn hoặc bằng giá của chương.</li><li>Hệ thống trừ giá của chương khỏi ví của thành viên.</li><li>Hệ thống tạo một mục nhật ký giao dịch mới ánh xạ việc mua với chương đó.</li><li>Hệ thống tạo một bản ghi mở khóa cấp cho thành viên quyền truy cập vĩnh viễn vào chương.</li><li>Hệ thống xác nhận (commit) giao dịch và giải phóng khóa.</li><li>Hệ thống làm mới trang và kết xuất giao diện đọc đã mở khóa (chuyển tiếp sang UC-03).</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng thay thế:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.4 Alt Số dư không đủ</b></p><ol><li>Hệ thống xác định số dư Coin của thành viên thấp hơn giá của chương.</li><li>Hệ thống hoàn tác (rollback) giao dịch (giải phóng khóa).</li><li>Hệ thống hiển thị thông báo lỗi: "Số dư Coin không đủ."</li><li>Hệ thống hiển thị nút "Nạp ngay" liên kết đến trang thanh toán.</li><li>Quay lại bước 1.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Ngoại lệ (Exceptions):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-2 Lỗi tương tranh (Concurrency Error)</b></p><ol><li>Hệ thống gặp lỗi hết thời gian chờ (timeout) cơ sở dữ liệu khi cố gắng lấy khóa (ví dụ: do nhiều cú click đồng thời).</li><li>Hệ thống hoàn tác mọi thay đổi đang chờ xử lý.</li><li>Hệ thống hiển thị thông báo "Hệ thống bận, vui lòng thử lại sau".</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mức độ ưu tiên:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Critical, Must Have</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tần suất sử dụng:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cao</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Quy tắc nghiệp vụ:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Tất cả các khoản trừ số dư PHẢI diễn ra trong một giao dịch cơ sở dữ liệu tuân thủ ACID nghiêm ngặt, sử dụng khóa bi quan (pessimistic locking) để ngăn chặn lỗi tương tranh (race conditions).</li><li>Khi đã mở khóa, một chương sẽ có thể truy cập vĩnh viễn cho ID người dùng đó.</li></ul></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Thông tin khác:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Không có.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Giả định:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Thành viên có kết nối internet ổn định.</li></ul></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

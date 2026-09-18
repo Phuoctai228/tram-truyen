@@ -4,7 +4,7 @@ Dưới đây là danh sách 54 chức năng được sắp xếp theo từng Ac
 
 ## 1. GUEST (Khách vãng lai chưa đăng nhập)
 *Các chức năng mang tính chất xem công khai hoặc thao tác định danh bước đầu.*
-- [ ] M2-F01: Xem danh sách truyện (View Novels)
+- [ ] M2-F01: Xem danh sách truyện (View Novel List)
 - [ ] M2-F02: Xem chi tiết truyện (View Novel Details)
 - [ ] M2-F03: Đọc chương (Read Chapter)
 - [ ] M3-F01: Đăng ký tài khoản (Register Account)
@@ -23,7 +23,7 @@ Dưới đây là danh sách 54 chức năng được sắp xếp theo từng Ac
 - [ ] M2-F06: Thêm truyện vào tủ sách (Add Novel to Bookshelf)
 - [ ] M2-F07: Xem tủ sách (View Bookshelf)
 - [ ] M2-F08: Xóa truyện khỏi tủ sách (Remove Novel from Bookshelf)
-- [ ] M2-F09: Mở khóa (mua) chương (Buy Chapter)
+- [ ] M2-F09: Mở khóa (mua) chương (Lock Paid Chapter)
 - [ ] M2-F10: Xem lịch sử đọc truyện (View Reading History)
 - [ ] M2-F11: Điểm danh hàng ngày (Daily Check-in)
 - [ ] M3-F05: Đăng xuất (Logout)

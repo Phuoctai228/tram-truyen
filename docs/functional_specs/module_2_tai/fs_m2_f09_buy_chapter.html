@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Functional Specification: Buy Chapter</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', serif;
+            color: #000000;
+            font-size: 12pt;
+            line-height: 1.5;
+            margin: 0;
+            padding: 20px;
+        }
+        p { margin: 8px 0; }
+        strong { font-weight: bold; }
+        hr { border: none; border-top: 1px solid #ccc; margin: 20px 0; }
+        ul, ol { margin: 8px 0; padding-left: 20px; }
+        li { margin-bottom: 4px; }
+        h4 { font-family: 'Times New Roman', serif; font-weight: bold; font-size: 12pt; margin: 8px 0; }
+    </style>
+</head>
+<body>
+
+<h4>M2-F09. Buy Chapter</h4>
+
+<p><strong>Function Trigger:</strong> A logged-in Member attempts to read a locked VIP chapter and clicks the "Unlock with Coin" button on the prompt overlay.</p>
+
+<p><strong>Function Description:</strong> Facilitates the unlocking of premium (VIP) content by deducting the specified amount of Coin from the user's wallet. Ensures secure concurrent transaction handling so that users do not spend Coin multiple times for the same chapter.</p>
+
+<p><strong>Screen Layout:</strong><br>[Placeholder for UI mockups: VIP Chapter Unlock Overlay / Modal]</p>
+
+<p><strong>Function Details</strong></p>
+
+<ul>
+    <li><strong>Preconditions</strong>
+        <ul>
+            <li>The user must be logged in as a Member.</li>
+            <li>The chapter must be published and marked as VIP.</li>
+            <li>The user must have a Coin balance greater than or equal to the chapter's price.</li>
+        </ul>
+    </li>
+    <li><strong>Process</strong>
+        <ul>
+            <li><strong>Initiate Transaction:</strong>
+                <ul>
+                    <li>The system receives the unlock request for a specific chapter ID.</li>
+                </ul>
+            </li>
+            <li><strong>Concurrency and Verification Check:</strong>
+                <ul>
+                    <li>The system acquires a lock or uses optimistic locking on the user's wallet to prevent concurrent race conditions.</li>
+                    <li>The system verifies the user has not already unlocked this chapter.</li>
+                    <li>The system checks if the user's current Coin balance is sufficient.</li>
+                </ul>
+            </li>
+            <li><strong>Deduct Balance and Record:</strong>
+                <ul>
+                    <li>The system deducts the specified Coin amount from the user's wallet.</li>
+                    <li>The system creates a transaction record representing the usage of Coin for this specific chapter.</li>
+                    <li>The system creates an unlock record granting the user permanent reading access to the chapter.</li>
+                </ul>
+            </li>
+            <li><strong>Provide Access:</strong>
+                <ul>
+                    <li>The system automatically reloads or fetches the chapter's full text content and displays it to the user.</li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li><strong>Alternative Flow (Insufficient Balance)</strong>
+        <ul>
+            <li>If the user does not have enough Coin:
+                <ul>
+                    <li>The system halts the transaction.</li>
+                    <li>The system displays an "Insufficient Balance" message and provides a button linking to the Top-up Coin (M3-F11) page.</li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li><strong>Postconditions</strong>
+        <ul>
+            <li>The user's Coin balance is reduced, and they gain permanent access to read the VIP chapter.</li>
+        </ul>
+    </li>
+    <li><strong>Error Handling</strong>
+        <ul>
+            <li><strong>Concurrency/Timeout Error:</strong> If the transaction cannot be safely completed due to server load or lock contention, the system aborts the process, does not deduct any Coin, and asks the user to try again.</li>
+        </ul>
+    </li>
+    <li><strong>Security Measures</strong>
+        <ul>
+            <li>Transactions must be processed within an ACID-compliant database transaction block to prevent data corruption or double-spending.</li>
+        </ul>
+    </li>
+</ul>
+
+</body>
+</html>

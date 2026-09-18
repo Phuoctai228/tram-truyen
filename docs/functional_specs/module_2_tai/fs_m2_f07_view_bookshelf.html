@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Functional Specification: View Bookshelf</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', serif;
+            color: #000000;
+            font-size: 12pt;
+            line-height: 1.5;
+            margin: 0;
+            padding: 20px;
+        }
+        p { margin: 8px 0; }
+        strong { font-weight: bold; }
+        hr { border: none; border-top: 1px solid #ccc; margin: 20px 0; }
+        ul, ol { margin: 8px 0; padding-left: 20px; }
+        li { margin-bottom: 4px; }
+        h4 { font-family: 'Times New Roman', serif; font-weight: bold; font-size: 12pt; margin: 8px 0; }
+    </style>
+</head>
+<body>
+
+<h4>M2-F07. View Bookshelf</h4>
+
+<p><strong>Function Trigger:</strong> A logged-in Member navigates to the "My Bookshelf" section via the main navigation menu or user profile dropdown.</p>
+
+<p><strong>Function Description:</strong> Displays a personalized list of all novels the user is currently following, indicating their reading progress and providing quick access to resume reading.</p>
+
+<p><strong>Screen Layout:</strong><br>[Placeholder for UI mockups: Bookshelf Dashboard Page]</p>
+
+<p><strong>Function Details</strong></p>
+
+<ul>
+    <li><strong>Preconditions</strong>
+        <ul>
+            <li>The user must be logged in as a Member.</li>
+        </ul>
+    </li>
+    <li><strong>Process</strong>
+        <ul>
+            <li><strong>Retrieve Data:</strong>
+                <ul>
+                    <li>The system fetches the list of novels associated with the user's bookshelf from the database.</li>
+                    <li>For each novel, the system retrieves the user's latest reading progress (percentage completed and last read chapter ID).</li>
+                    <li>The system checks for any new published chapters since the user's last reading session.</li>
+                </ul>
+            </li>
+            <li><strong>Render Bookshelf:</strong>
+                <ul>
+                    <li>The system displays the followed novels in a grid or list format.</li>
+                    <li>For each entry, the system shows the novel cover, title, reading progress bar (%), and a "Continue Reading" button linked to the bookmarked chapter.</li>
+                    <li>If new chapters are available, the system displays a "New Updates" badge on the novel card.</li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li><strong>Alternative Flow (Empty Bookshelf)</strong>
+        <ul>
+            <li>If the user has not added any novels to their bookshelf:
+                <ul>
+                    <li>The system displays a friendly empty state message suggesting they browse and add novels.</li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li><strong>Postconditions</strong>
+        <ul>
+            <li>The user views their curated list of novels and can easily resume reading or manage the list.</li>
+        </ul>
+    </li>
+    <li><strong>Error Handling</strong>
+        <ul>
+            <li><strong>Data Load Failure:</strong> The system displays an error message asking the user to refresh the page.</li>
+        </ul>
+    </li>
+    <li><strong>Security Measures</strong>
+        <ul>
+            <li>The system enforces strict access control, ensuring users can only view their own bookshelf based on their session token.</li>
+        </ul>
+    </li>
+</ul>
+
+</body>
+</html>

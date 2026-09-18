@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Functional Specification: Save Reading Progress</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', serif;
+            color: #000000;
+            font-size: 12pt;
+            line-height: 1.5;
+            margin: 0;
+            padding: 20px;
+        }
+        p { margin: 8px 0; }
+        strong { font-weight: bold; }
+        hr { border: none; border-top: 1px solid #ccc; margin: 20px 0; }
+        ul, ol { margin: 8px 0; padding-left: 20px; }
+        li { margin-bottom: 4px; }
+        h4 { font-family: 'Times New Roman', serif; font-weight: bold; font-size: 12pt; margin: 8px 0; }
+    </style>
+</head>
+<body>
+
+<h4>M2-F05. Save Reading Progress</h4>
+
+<p><strong>Function Trigger:</strong> Automatically triggered when a Member scrolls through or finishes reading a chapter.</p>
+
+<p><strong>Function Description:</strong> Automatically calculates the percentage of the novel completed based on the current chapter versus total chapters, and updates the bookmark so the user can easily resume reading later via a "Continue Reading" button.</p>
+
+<p><strong>Screen Layout:</strong><br>[Placeholder for UI mockups: Background process / visible progress bar in Bookshelf]</p>
+
+<p><strong>Function Details</strong></p>
+
+<ul>
+    <li><strong>Preconditions</strong>
+        <ul>
+            <li>The user is logged in as a Member.</li>
+            <li>The user is actively on the reading interface of a chapter.</li>
+        </ul>
+    </li>
+    <li><strong>Process</strong>
+        <ul>
+            <li><strong>Calculate Progress:</strong>
+                <ul>
+                    <li>The system determines the index of the current chapter being read relative to the total number of published chapters for the novel.</li>
+                    <li>The system calculates the overall completion percentage (e.g., Chapter 10 / 100 total = 10%).</li>
+                </ul>
+            </li>
+            <li><strong>Update Database:</strong>
+                <ul>
+                    <li>The system sends a background request to save the current chapter ID as the user's latest bookmark for this specific novel.</li>
+                    <li>The system updates the reading progress percentage associated with the user's interaction record for this novel.</li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li><strong>Alternative Flow (Offline Mode)</strong>
+        <ul>
+            <li>If the user's device temporarily loses internet connection:
+                <ul>
+                    <li>The system queues the progress update in local storage and attempts to sync it once the connection is restored.</li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li><strong>Postconditions</strong>
+        <ul>
+            <li>The user's reading position is saved. When viewing the novel details or bookshelf later, the "Continue Reading" action will lead directly to this chapter.</li>
+        </ul>
+    </li>
+    <li><strong>Error Handling</strong>
+        <ul>
+            <li><strong>Save Failure:</strong> The system logs the failure internally without disrupting the user's reading experience. Retries may occur on subsequent page loads.</li>
+        </ul>
+    </li>
+    <li><strong>Security Measures</strong>
+        <ul>
+            <li>Progress updates are linked strictly to the authenticated user's ID to prevent unauthorized modification of other users' bookmarks.</li>
+        </ul>
+    </li>
+</ul>
+
+</body>
+</html>

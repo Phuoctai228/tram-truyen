@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Functional Specification: View Reading History</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', serif;
+            color: #000000;
+            font-size: 12pt;
+            line-height: 1.5;
+            margin: 0;
+            padding: 20px;
+        }
+        p { margin: 8px 0; }
+        strong { font-weight: bold; }
+        hr { border: none; border-top: 1px solid #ccc; margin: 20px 0; }
+        ul, ol { margin: 8px 0; padding-left: 20px; }
+        li { margin-bottom: 4px; }
+        h4 { font-family: 'Times New Roman', serif; font-weight: bold; font-size: 12pt; margin: 8px 0; }
+    </style>
+</head>
+<body>
+
+<h4>M2-F10. View Reading History</h4>
+
+<p><strong>Function Trigger:</strong> A logged-in Member navigates to the "History" tab within their user profile or dashboard.</p>
+
+<p><strong>Function Description:</strong> Displays a chronological log of all chapters and novels the user has recently read, allowing them to easily re-visit past reads even if they were not explicitly added to the Bookshelf.</p>
+
+<p><strong>Screen Layout:</strong><br>[Placeholder for UI mockups: Reading History List Page]</p>
+
+<p><strong>Function Details</strong></p>
+
+<ul>
+    <li><strong>Preconditions</strong>
+        <ul>
+            <li>The user must be logged in as a Member.</li>
+        </ul>
+    </li>
+    <li><strong>Process</strong>
+        <ul>
+            <li><strong>Retrieve History Logs:</strong>
+                <ul>
+                    <li>The system queries the reading history logs associated with the user's ID, sorted by the most recent access time.</li>
+                </ul>
+            </li>
+            <li><strong>Render History List:</strong>
+                <ul>
+                    <li>The system displays a list showing the novel title, the specific chapter read, and the timestamp (e.g., "Read 2 hours ago").</li>
+                    <li>The system provides a link for each entry to directly navigate back to that specific chapter.</li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li><strong>Alternative Flow (Empty History)</strong>
+        <ul>
+            <li>If the user has not read any chapters yet:
+                <ul>
+                    <li>The system displays a message stating that the reading history is empty.</li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li><strong>Postconditions</strong>
+        <ul>
+            <li>The user views their past reading activity and can quickly jump back into previously accessed content.</li>
+        </ul>
+    </li>
+    <li><strong>Error Handling</strong>
+        <ul>
+            <li><strong>Fetch Error:</strong> The system displays a generic message asking the user to try again later if the history fails to load.</li>
+        </ul>
+    </li>
+    <li><strong>Security Measures</strong>
+        <ul>
+            <li>Reading history is private and strictly accessible only to the authenticated owner of the account.</li>
+        </ul>
+    </li>
+</ul>
+
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Functional Specification: Read Chapter</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', serif;
+            color: #000000;
+            font-size: 12pt;
+            line-height: 1.5;
+            margin: 0;
+            padding: 20px;
+        }
+        p { margin: 8px 0; }
+        strong { font-weight: bold; }
+        hr { border: none; border-top: 1px solid #ccc; margin: 20px 0; }
+        ul, ol { margin: 8px 0; padding-left: 20px; }
+        li { margin-bottom: 4px; }
+        h4 { font-family: 'Times New Roman', serif; font-weight: bold; font-size: 12pt; margin: 8px 0; }
+    </style>
+</head>
+<body>
+
+<h4>M2-F03. Read Chapter</h4>
+
+<p><strong>Function Trigger:</strong> The user clicks on a specific chapter link from the novel details page or their reading history/bookshelf.</p>
+
+<p><strong>Function Description:</strong> Provides the text reading interface for a chapter, featuring customizable reading settings (font, size, background) and automatically tracking reading progress for logged-in members.</p>
+
+<p><strong>Screen Layout:</strong><br>[Placeholder for UI mockups: Reading Interface Page]</p>
+
+<p><strong>Function Details</strong></p>
+
+<ul>
+    <li><strong>Preconditions</strong>
+        <ul>
+            <li>The requested chapter must be published.</li>
+            <li>If the chapter is VIP, the user must be logged in and have previously unlocked it.</li>
+        </ul>
+    </li>
+    <li><strong>Process</strong>
+        <ul>
+            <li><strong>Validate Access Rights:</strong>
+                <ul>
+                    <li>The system checks if the chapter is Free. If yes, it proceeds.</li>
+                    <li>If the chapter is VIP, the system verifies if the current user has unlocked access to it.</li>
+                </ul>
+            </li>
+            <li><strong>Load Chapter Content:</strong>
+                <ul>
+                    <li>The system retrieves the chapter's textual content and titles from the database.</li>
+                </ul>
+            </li>
+            <li><strong>Apply User Preferences:</strong>
+                <ul>
+                    <li>The system retrieves any previously saved reading settings (font size, background color) from local storage or database and applies them to the interface.</li>
+                </ul>
+            </li>
+            <li><strong>Render Reading Interface:</strong>
+                <ul>
+                    <li>The system displays the formatted text.</li>
+                    <li>The system renders navigation controls (Previous Chapter, Next Chapter, Chapter Index).</li>
+                </ul>
+            </li>
+            <li><strong>Record Progress (Member Only):</strong>
+                <ul>
+                    <li>If the user is logged in, the system records this chapter as "read" and updates the latest reading progress for this novel in the background.</li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li><strong>Alternative Flow (Locked VIP Chapter)</strong>
+        <ul>
+            <li>If a user attempts to access a VIP chapter they have not unlocked:
+                <ul>
+                    <li>The system redirects the user to the "Buy Chapter" interface (M2-F09), prompting them to unlock it with Coin.</li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li><strong>Postconditions</strong>
+        <ul>
+            <li>The user can read the chapter content. Their progress is saved if they are authenticated.</li>
+        </ul>
+    </li>
+    <li><strong>Error Handling</strong>
+        <ul>
+            <li><strong>Chapter Not Found:</strong> The system displays a "Chapter not found" message and provides a link back to the novel's detail page.</li>
+        </ul>
+    </li>
+    <li><strong>Security Measures</strong>
+        <ul>
+            <li>Content is served securely. The backend strictly validates chapter unlocking status before returning the text content of VIP chapters.</li>
+        </ul>
+    </li>
+</ul>
+
+</body>
+</html>

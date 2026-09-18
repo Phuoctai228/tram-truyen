@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Functional Specification: Audio Reader</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', serif;
+            color: #000000;
+            font-size: 12pt;
+            line-height: 1.5;
+            margin: 0;
+            padding: 20px;
+        }
+        p { margin: 8px 0; }
+        strong { font-weight: bold; }
+        hr { border: none; border-top: 1px solid #ccc; margin: 20px 0; }
+        ul, ol { margin: 8px 0; padding-left: 20px; }
+        li { margin-bottom: 4px; }
+        h4 { font-family: 'Times New Roman', serif; font-weight: bold; font-size: 12pt; margin: 8px 0; }
+    </style>
+</head>
+<body>
+
+<h4>M2-F04. Audio Reader</h4>
+
+<p><strong>Function Trigger:</strong> A logged-in Member clicks the "Listen" (Audio) icon/button while on the Read Chapter interface.</p>
+
+<p><strong>Function Description:</strong> Converts the textual content of the current chapter into spoken audio using Text-to-Speech (TTS), allowing the user to listen to the novel. Features basic playback controls and reading speed adjustments.</p>
+
+<p><strong>Screen Layout:</strong><br>[Placeholder for UI mockups: Audio Player overlay/bar on Read Chapter page]</p>
+
+<p><strong>Function Details</strong></p>
+
+<ul>
+    <li><strong>Preconditions</strong>
+        <ul>
+            <li>The user must be logged in as a Member.</li>
+            <li>The chapter text must be successfully loaded on the screen.</li>
+        </ul>
+    </li>
+    <li><strong>Process</strong>
+        <ul>
+            <li><strong>Initialize Audio Player:</strong>
+                <ul>
+                    <li>The system displays the audio player controls (Play/Pause, Timeline, Speed Adjustment).</li>
+                </ul>
+            </li>
+            <li><strong>Text-to-Speech Conversion:</strong>
+                <ul>
+                    <li>The system extracts the text content of the chapter and processes it through the TTS engine.</li>
+                </ul>
+            </li>
+            <li><strong>Playback Control:</strong>
+                <ul>
+                    <li>The system begins playing the audio.</li>
+                    <li>The system responds to user interactions with the player (e.g., pausing, changing speed to 1.25x or 1.5x).</li>
+                </ul>
+            </li>
+            <li><strong>Auto-Advance (Optional):</strong>
+                <ul>
+                    <li>If the user reaches the end of the chapter audio, the system may prompt or auto-play the next chapter if available and unlocked.</li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li><strong>Alternative Flow (Unsupported Browser)</strong>
+        <ul>
+            <li>If the user's browser does not support the required Web Speech API / Audio playback:
+                <ul>
+                    <li>The system displays a warning message that the audio feature is not supported on this device.</li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li><strong>Postconditions</strong>
+        <ul>
+            <li>The user listens to the chapter audio instead of or while reading the text.</li>
+        </ul>
+    </li>
+    <li><strong>Error Handling</strong>
+        <ul>
+            <li><strong>TTS Engine Failure:</strong> The system displays an error message stating that the audio could not be generated and suggests refreshing the page.</li>
+        </ul>
+    </li>
+    <li><strong>Security Measures</strong>
+        <ul>
+            <li>Only accessible to authenticated Members. Audio generation applies only to chapters the user is authorized to read (including unlocked VIP chapters).</li>
+        </ul>
+    </li>
+</ul>
+
+</body>
+</html>
