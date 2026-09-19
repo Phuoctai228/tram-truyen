@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>UC-01 Đăng Ký Tài Khoản</title>
+</head>
+<body>
+<div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">
+    <style>
+        .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
+            font-family: 'Times New Roman', serif !important;
+            font-size: 12pt !important;
+            color: black !important;
+        }
+    </style>
+    <p><b>Functional Description Template</b></p>
+    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Mã và Tên UC:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-01 Đăng Ký Tài Khoản</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Người tạo:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Nguyễn Ngọc</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Ngày tạo:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-19</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân chính:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Guest</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân phụ:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Không có</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Kích hoạt (Trigger):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Tác nhân nhấn nút "Đăng ký" trên thanh điều hướng hoặc hộp thoại đăng nhập.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mô tả (Description):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cho phép khách (Guest) tạo tài khoản mới bằng email và mật khẩu. Mật khẩu được mã hóa bằng BCrypt, và tài khoản được tạo với trạng thái chờ cho đến khi hoàn tất xác minh email.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện tiên quyết:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> Khách hiện không đăng nhập vào bất kỳ tài khoản nào.</p><p><b>PRE-2.</b> Dịch vụ gửi email của hệ thống đang hoạt động bình thường.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện hậu quyết:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> Một bản ghi người dùng mới được tạo trong cơ sở dữ liệu với trạng thái PENDING_VERIFICATION.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng cơ bản:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Đăng ký tài khoản thành công</b></p><ol><li>Tác nhân nhấn nút "Đăng ký".</li><li>Hệ thống hiển thị biểu mẫu đăng ký, yêu cầu Email, Tên hiển thị (Username), Mật khẩu và Xác nhận Mật khẩu.</li><li>Tác nhân nhập các thông tin cần thiết và gửi biểu mẫu.</li><li>Hệ thống kiểm tra tính hợp lệ của dữ liệu đầu vào (ví dụ: độ mạnh của mật khẩu, mật khẩu khớp nhau).</li><li>Hệ thống truy vấn cơ sở dữ liệu để đảm bảo email được cung cấp chưa được đăng ký.</li><li>Hệ thống truy vấn cơ sở dữ liệu để đảm bảo tên hiển thị chưa bị trùng.</li><li>Hệ thống băm (hash) mật khẩu bằng thuật toán BCrypt.</li><li>Hệ thống tạo bản ghi người dùng mới với USER_STATUS được đặt thành PENDING_VERIFICATION và gán quyền mặc định ROLE_MEMBER.</li><li>Hệ thống kích hoạt một tiến trình ngầm (async) để gửi email chứa mã xác thực OTP đến địa chỉ đã cung cấp.</li><li>Hệ thống hiển thị thông báo thành công hướng dẫn tác nhân kiểm tra email.</li><li>Hệ thống chuyển hướng tác nhân đến trang Xác Thực Tài Khoản (UC-02).</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng thay thế:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.4 Alt Dữ liệu biểu mẫu không hợp lệ</b></p><ol><li>Hệ thống xác định một hoặc nhiều trường không hợp lệ (ví dụ: mật khẩu không khớp, mật khẩu yếu).</li><li>Hệ thống hiển thị các thông báo lỗi xác thực cụ thể bên dưới các trường tương ứng.</li><li>Quay lại bước 3.</li></ol><p><b>A.5 Alt Email đã tồn tại</b></p><ol><li>Hệ thống xác định email đã được liên kết với một tài khoản hiện có.</li><li>Hệ thống hiển thị thông báo lỗi: "Email đã được sử dụng."</li><li>Quay lại bước 3.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Ngoại lệ (Exceptions):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-9 Lỗi dịch vụ gửi Email</b></p><ol><li>Tiến trình ngầm không thể gửi email (ví dụ: hết thời gian chờ của máy chủ SMTP).</li><li>Hệ thống ghi log lỗi.</li><li>Hệ thống vẫn giữ bản ghi người dùng ở trạng thái chờ kích hoạt, nhưng người dùng sẽ cần yêu cầu gửi lại OTP thủ công thông qua trang xác thực.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mức độ ưu tiên:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Critical, Must Have</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tần suất sử dụng:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cao</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Quy tắc nghiệp vụ:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Mật khẩu phải được mã hóa bằng BCrypt trước khi lưu vào cơ sở dữ liệu. Không bao giờ được ghi log hoặc lưu trữ mật khẩu dưới dạng văn bản thô.</li><li>Hệ thống phải áp dụng chính sách mật khẩu mạnh (ví dụ: tối thiểu 8 ký tự).</li></ul></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Thông tin khác:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Không có.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Giả định:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Tác nhân có địa chỉ email hợp lệ và kết nối internet ổn định.</li></ul></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

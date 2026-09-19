@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>UC-02 Xác Thực Tài Khoản</title>
+</head>
+<body>
+<div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">
+    <style>
+        .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
+            font-family: 'Times New Roman', serif !important;
+            font-size: 12pt !important;
+            color: black !important;
+        }
+    </style>
+    <p><b>Functional Description Template</b></p>
+    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Mã và Tên UC:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-02 Xác Thực Tài Khoản</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Người tạo:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Nguyễn Ngọc</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Ngày tạo:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-19</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân chính:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Guest</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân phụ:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Không có</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Kích hoạt (Trigger):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Tác nhân gửi mã OTP 6 số trên trang Xác thực tài khoản.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mô tả (Description):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Hoàn tất quá trình đăng ký bằng cách xác thực mã OTP được gửi đến email của tác nhân. Khi thành công, tài khoản sẽ được kích hoạt.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện tiên quyết:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> Tác nhân phải có một tài khoản đang ở trạng thái PENDING_VERIFICATION.</p><p><b>PRE-2.</b> Một mã OTP hợp lệ đã được tạo và gửi đến email của tác nhân.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện hậu quyết:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> Trạng thái tài khoản của tác nhân được cập nhật thành ACTIVE.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng cơ bản:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Xác thực tài khoản thành công</b></p><ol><li>Tác nhân nhập mã OTP 6 số và gửi biểu mẫu xác thực.</li><li>Hệ thống lấy bản ghi người dùng đang chờ xử lý liên kết với phiên/email hiện tại.</li><li>Hệ thống đối chiếu mã OTP vừa gửi với mã OTP được lưu trữ trong cơ sở dữ liệu/cache.</li><li>Hệ thống xác minh rằng mã OTP chưa hết hạn.</li><li>Hệ thống cập nhật USER_STATUS của người dùng thành ACTIVE.</li><li>Hệ thống tiêu hủy bản ghi OTP đã sử dụng một cách an toàn.</li><li>Hệ thống hiển thị thông báo thành công cho biết tài khoản đã sẵn sàng sử dụng.</li><li>Hệ thống chuyển hướng tác nhân đến trang Đăng nhập.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng thay thế:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.3 Alt Mã OTP không hợp lệ</b></p><ol><li>Hệ thống xác định mã OTP được gửi không khớp với mã OTP được lưu trữ.</li><li>Hệ thống hiển thị thông báo lỗi: "Mã xác thực không hợp lệ."</li><li>Quay lại bước 1.</li></ol><p><b>A.4 Alt Mã OTP đã hết hạn</b></p><ol><li>Hệ thống xác định thời gian sống (TTL) của mã OTP đã kết thúc.</li><li>Hệ thống tiêu hủy bản ghi OTP hết hạn.</li><li>Hệ thống hiển thị thông báo lỗi hướng dẫn tác nhân yêu cầu mã mới.</li><li>Quay lại bước 1.</li></ol><p><b>A.4 Alt Yêu cầu mã OTP mới</b></p><ol><li>Tác nhân nhấn nút "Gửi lại mã" trên trang xác thực.</li><li>Hệ thống tạo mã OTP mới và cập nhật vào cache/cơ sở dữ liệu.</li><li>Hệ thống kích hoạt tiến trình ngầm (async) để gửi mã OTP mới qua email.</li><li>Hệ thống hiển thị thông báo xác nhận.</li><li>Quay lại bước 1.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Ngoại lệ (Exceptions):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-2 Không tìm thấy hoặc tài khoản đã kích hoạt</b></p><ol><li>Hệ thống xác định bản ghi người dùng liên quan không tồn tại hoặc đã ở trạng thái ACTIVE.</li><li>Hệ thống ngắt luồng thực thi.</li><li>Hệ thống chuyển hướng tác nhân về trang chủ kèm theo một thông báo chung.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mức độ ưu tiên:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Critical, Must Have</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tần suất sử dụng:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cao</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Quy tắc nghiệp vụ:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Mã OTP phải tuân thủ nghiêm ngặt định dạng 6 số và chỉ có giá trị trong một khoảng thời gian giới hạn (ví dụ: 5 phút).</li><li>Cơ chế gửi mã OTP phải có giới hạn tần suất (rate-limiting, ví dụ: 1 yêu cầu/phút) để tránh việc lạm dụng gửi thư rác (spam).</li></ul></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Thông tin khác:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Không có.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Giả định:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Tác nhân có quyền truy cập vào hộp thư email của họ và có kết nối internet ổn định.</li></ul></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

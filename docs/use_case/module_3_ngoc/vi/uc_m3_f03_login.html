@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>UC-03 Đăng Nhập</title>
+</head>
+<body>
+<div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">
+    <style>
+        .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
+            font-family: 'Times New Roman', serif !important;
+            font-size: 12pt !important;
+            color: black !important;
+        }
+    </style>
+    <p><b>Functional Description Template</b></p>
+    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Mã và Tên UC:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-03 Đăng Nhập</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Người tạo:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Nguyễn Ngọc</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Ngày tạo:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-19</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân chính:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Guest</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân phụ:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Không có</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Kích hoạt (Trigger):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Tác nhân nhấn nút "Đăng nhập" và gửi biểu mẫu xác thực.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mô tả (Description):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Xác thực người dùng vào hệ thống bằng email và mật khẩu của họ. Hỗ trợ chức năng Ghi nhớ đăng nhập (Remember-Me) và kiểm tra tính hợp lệ của tài khoản trước khi tạo phiên (session).</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện tiên quyết:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> Tác nhân hiện chưa được xác thực (chưa đăng nhập).</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện hậu quyết:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> Một phiên bảo mật được tạo và tác nhân được xác thực với vai trò tương ứng.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng cơ bản:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Đăng nhập thành công</b></p><ol><li>Tác nhân truy cập trang/hộp thoại đăng nhập.</li><li>Tác nhân nhập Email và Mật khẩu, có thể chọn "Ghi nhớ đăng nhập" và gửi biểu mẫu.</li><li>Hệ thống lấy bản ghi người dùng liên kết với email được cung cấp.</li><li>Hệ thống đối chiếu mật khẩu được cung cấp với mật khẩu đã băm (BCrypt) trong cơ sở dữ liệu.</li><li>Hệ thống kiểm tra USER_STATUS của người dùng để đảm bảo họ đang ở trạng thái ACTIVE.</li><li>Hệ thống khởi tạo một phiên người dùng an toàn (và tạo token nếu chọn "Ghi nhớ đăng nhập").</li><li>Hệ thống chuyển hướng người dùng đến trang chủ (hoặc trang trước đó họ định truy cập).</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng thay thế:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.3 Alt Sai thông tin xác thực</b></p><ol><li>Hệ thống xác định email không tồn tại hoặc mật khẩu không khớp.</li><li>Hệ thống hiển thị thông báo lỗi chung: "Email hoặc mật khẩu không hợp lệ."</li><li>Quay lại bước 2.</li></ol><p><b>A.5 Alt Tài khoản chờ xác thực</b></p><ol><li>Hệ thống xác định trạng thái người dùng là PENDING_VERIFICATION.</li><li>Hệ thống hiển thị thông báo lỗi và liên kết đến trang xác thực.</li><li>Quay lại bước 2.</li></ol><p><b>A.5 Alt Tài khoản bị khóa</b></p><ol><li>Hệ thống xác định trạng thái người dùng là BANNED.</li><li>Hệ thống hiển thị thông báo lỗi cho biết tài khoản đã bị đình chỉ.</li><li>Quay lại bước 2.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Ngoại lệ (Exceptions):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>Không có</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mức độ ưu tiên:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Critical, Must Have</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tần suất sử dụng:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Rất cao</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Quy tắc nghiệp vụ:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Để bảo mật chống lại các cuộc tấn công dò quét (enumeration attacks), thông báo lỗi cho email sai phải giống hệt với thông báo lỗi cho mật khẩu sai.</li></ul></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Thông tin khác:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Không có.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Giả định:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Tác nhân có kết nối internet ổn định.</li></ul></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

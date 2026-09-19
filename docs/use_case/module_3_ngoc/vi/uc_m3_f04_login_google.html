@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>UC-04 Đăng Nhập bằng Google</title>
+</head>
+<body>
+<div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">
+    <style>
+        .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
+            font-family: 'Times New Roman', serif !important;
+            font-size: 12pt !important;
+            color: black !important;
+        }
+    </style>
+    <p><b>Functional Description Template</b></p>
+    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Mã và Tên UC:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-04 Đăng Nhập bằng Google</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Người tạo:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Nguyễn Ngọc</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Ngày tạo:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-19</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân chính:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Guest</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân phụ:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Máy chủ Google OAuth2</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Kích hoạt (Trigger):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Tác nhân nhấn nút "Tiếp tục với Google" trên trang đăng nhập/đăng ký.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mô tả (Description):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cho phép người dùng đăng nhập hoặc tự động tạo tài khoản mới đang hoạt động (ACTIVE) bằng thông tin xác thực Google của họ thông qua giao thức OAuth2.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện tiên quyết:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> Tác nhân hiện chưa được xác thực (chưa đăng nhập).</p><p><b>PRE-2.</b> Ứng dụng đã được đăng ký hợp lệ với Google Cloud Console và sở hữu Client ID cùng Secret hợp lệ.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện hậu quyết:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> Một phiên bảo mật được tạo và tác nhân được xác thực.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng cơ bản:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Đăng nhập qua OAuth2 thành công</b></p><ol><li>Tác nhân nhấn nút "Tiếp tục với Google".</li><li>Hệ thống chuyển hướng tác nhân đến màn hình chấp thuận Google OAuth2.</li><li>Tác nhân xác thực với Google và cấp các quyền cần thiết (email, hồ sơ).</li><li>Google chuyển hướng tác nhân quay lại URL phản hồi (callback URL) của ứng dụng kèm theo một mã ủy quyền (authorization code).</li><li>Hệ thống đổi mã ủy quyền lấy token truy cập (access token) thông qua Google API.</li><li>Hệ thống lấy email và thông tin hồ sơ cơ bản của người dùng bằng token truy cập.</li><li>Hệ thống kiểm tra xem bản ghi người dùng với email này đã tồn tại trong cơ sở dữ liệu chưa.</li><li>Hệ thống xác định người dùng đã tồn tại và trạng thái của họ là ACTIVE.</li><li>Hệ thống khởi tạo một phiên an toàn cho người dùng.</li><li>Hệ thống chuyển hướng người dùng đến trang chủ.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng thay thế:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.7 Alt Tạo tài khoản mới (Đăng ký SSO)</b></p><ol><li>Hệ thống xác định không có bản ghi nào tồn tại cho email Google được cung cấp.</li><li>Hệ thống tự động tạo một bản ghi người dùng mới.</li><li>Hệ thống đặt USER_STATUS trực tiếp thành ACTIVE (bỏ qua xác minh email vì Google đã xác minh nó).</li><li>Hệ thống tạo một mật khẩu bảo mật ngẫu nhiên cho người dùng (hoặc để trống/null nếu chỉ cho phép SSO).</li><li>Hệ thống khởi tạo phiên làm việc.</li><li>Quay lại bước 10.</li></ol><p><b>A.8 Alt Tài khoản bị khóa</b></p><ol><li>Hệ thống xác định trạng thái người dùng là BANNED.</li><li>Hệ thống từ chối yêu cầu đăng nhập.</li><li>Hệ thống hiển thị thông báo lỗi cho biết tài khoản đã bị đình chỉ.</li><li>Hệ thống chuyển hướng người dùng trở lại trang đăng nhập.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Ngoại lệ (Exceptions):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-3 Từ chối chấp thuận OAuth2</b></p><ol><li>Tác nhân từ chối cấp quyền trên màn hình ủy quyền của Google.</li><li>Google chuyển hướng quay lại ứng dụng kèm theo lỗi access_denied.</li><li>Hệ thống hiển thị thông báo "Đăng nhập bị hủy".</li></ol><p><b>EX-5 Lỗi/Hết thời gian chờ API</b></p><ol><li>Hệ thống không thể giao tiếp với API của Google để đổi token hoặc lấy dữ liệu hồ sơ.</li><li>Hệ thống hiển thị thông báo lỗi chung "Xác thực bên thứ ba thất bại, vui lòng thử lại".</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mức độ ưu tiên:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High, Must Have</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tần suất sử dụng:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cao</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Quy tắc nghiệp vụ:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Các tài khoản được tạo qua Google OAuth2 không yêu cầu thực hiện bước xác minh email riêng biệt.</li></ul></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Thông tin khác:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Không có.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Giả định:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Tác nhân có một tài khoản Google đang hoạt động bình thường.</li></ul></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>
