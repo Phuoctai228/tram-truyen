@@ -86,11 +86,12 @@ If a use case has multiple primary actors listed in its metadata (e.g., `Member,
 When creating a use case specification, you MUST follow this workflow:
 1. **Initial Setup (Creator Name & Folder Structure):** Before writing any use cases, ASK the user for the creator's name.
     *   Use this name to automatically fill the "Created By:" field in the specifications.
-    *   Determine the module number `x` and generate the directory structure: `docs/use_case/module_x_creator_name/` (e.g., `module_3_ngoc` with creator name Ngọc).
-    *   Create `en` and `vi` subdirectories inside this folder: `docs/use_case/module_x_creator_name/en/` and `docs/use_case/module_x_creator_name/vi/`.
+    *   Determine the module number `x` and generate the directory structure: `docs/use_case/module_x_creator_name/` (e.g., `module_2_tai` with creator name Tài).
+    *   Create `en` and `vi` subdirectories inside this folder: `docs/use_case/module_x_creator_name`.
 2. **Preview First:** Generate the initial use case specification as a standard Markdown (`.md`) artifact. Present this to the user for review.
 3. **Export on Approval:** Once the user reviews and explicitly approves the preview, you must export the specification as an HTML file to the `docs/use_case/module_x_creator_name/[en|vi]` directory in the workspace. 
     * The HTML file MUST be structured as a 4-column bordered table to be copy-paste friendly for Google Docs.
+    * The table MUST include rows for all standard Use Case fields in this exact order: `UC ID and Name`, `Created By` / `Date Created`, `Primary Actor` / `Secondary Actors`, `Trigger`, `Description`, `Preconditions`, `Postconditions`, `Normal Flow`, `Alternative Flows`, `Exceptions`, `Priority`, `Frequency of Use`, `Business Rules`, `Other Information`, and `Assumptions`.
     * Required inline styles for the container `div` (e.g., `<div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">`).
     * You MUST include a `<style>` block immediately inside the container `div` to strictly enforce the font-family, font-size, and color for all child elements:
       ```html

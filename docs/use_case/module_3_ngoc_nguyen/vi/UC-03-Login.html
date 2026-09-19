@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>UC-03-Đăng nhập</title>
+</head>
+<body>
+<div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">
+    <style>
+        .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
+            font-family: 'Times New Roman', serif !important;
+            font-size: 12pt !important;
+            color: black !important;
+        }
+    </style>
+    <p><b>Functional Description Template</b></p>
+    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>UC ID and Name:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-03-Đăng nhập</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Created By:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Ngoc Nguyen</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Date Created:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-19</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Primary Actor:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Guest</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Secondary Actors:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Không</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Trigger:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Khách truy cập trang đăng nhập.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Description:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Khách xác thực vào hệ thống bằng email và mật khẩu.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Preconditions:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> Khách chưa đăng nhập vào hệ thống.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Postconditions:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> Phiên đăng nhập (session) của người dùng được tạo.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Normal Flow:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Đăng nhập thành công</b></p><ol><li>Khách truy cập trang đăng nhập.</li><li>Hệ thống hiển thị biểu mẫu đăng nhập.</li><li>Khách nhập email và mật khẩu.</li><li>Khách nhấp vào nút "Đăng nhập".</li><li>Hệ thống xác thực định dạng dữ liệu đầu vào.</li><li>Hệ thống kiểm tra email có tồn tại trong cơ sở dữ liệu.</li><li>Hệ thống kiểm tra mật khẩu chính xác.</li><li>Hệ thống kiểm tra tài khoản đang ở trạng thái hoạt động.</li><li>Hệ thống tạo phiên đăng nhập.</li><li>Hệ thống chuyển hướng Khách về trang chủ.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Alternative Flows:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>5.1 Định dạng dữ liệu không hợp lệ</b></p><ol><li>Hệ thống phát hiện định dạng email hoặc mật khẩu không hợp lệ.</li><li>Hệ thống hiển thị thông báo lỗi xác thực.</li><li>Quay lại bước 3.</li></ol><p><b>6.1 Không tìm thấy Email</b></p><ol><li>Hệ thống phát hiện email chưa được đăng ký.</li><li>Hệ thống hiển thị thông báo lỗi thông tin đăng nhập không hợp lệ.</li><li>Quay lại bước 3.</li></ol><p><b>7.1 Mật khẩu không chính xác</b></p><ol><li>Hệ thống phát hiện mật khẩu không khớp.</li><li>Hệ thống hiển thị thông báo lỗi thông tin đăng nhập không hợp lệ.</li><li>Quay lại bước 3.</li></ol><p><b>8.1 Tài khoản chờ xác thực</b></p><ol><li>Hệ thống phát hiện tài khoản đang chờ xác thực.</li><li>Hệ thống hiển thị thông báo lỗi yêu cầu xác thực tài khoản.</li><li>Quay lại bước 3.</li></ol><p><b>8.2 Tài khoản bị khóa</b></p><ol><li>Hệ thống phát hiện tài khoản đã bị khóa.</li><li>Hệ thống hiển thị thông báo lỗi tài khoản đã bị vô hiệu hóa.</li><li>Quay lại bước 3.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Exceptions:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-9 Lỗi kết nối cơ sở dữ liệu</b></p><ol><li>Hệ thống không thể truy vấn dữ liệu do lỗi cơ sở dữ liệu.</li><li>Hệ thống hiển thị thông báo lỗi hệ thống.</li><li>Quay lại bước 1.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Priority:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cao</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Frequency of Use:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cao</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Business Rules:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Không</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Other Information:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Tính năng "Ghi nhớ đăng nhập" cho phép tạo cookie liên tục nếu được chọn.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Assumptions:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ol><li>Khách có kết nối internet ổn định.</li></ol></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

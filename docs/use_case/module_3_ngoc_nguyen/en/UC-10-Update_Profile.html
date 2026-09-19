@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>UC-09 View Coin History</title>
+    <title>UC-10-Update Profile</title>
 </head>
 <body>
 <div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">
@@ -17,11 +17,11 @@
     <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>UC ID and Name:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-09 View Coin History</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-10-Update Profile</td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Created By:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Nguyễn Ngọc</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Ngoc Nguyen</td>
             <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Date Created:</b></td>
             <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-19</td>
         </tr>
@@ -29,39 +29,39 @@
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Primary Actor:</b></td>
             <td style="border: 1px solid black; padding: 5px; text-align: left;">Member, Staff, Admin</td>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Secondary Actors:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;">None</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Cloudinary</td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Trigger:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Actor navigates to the "Transaction History" tab in their profile.</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Actor accesses the edit profile page.</td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Description:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Displays a paginated audit log of all Coin transactions (both top-ups and expenditures like chapter unlocks or daily check-ins) associated with the actor's wallet.</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Actor updates their personal information and uploads a new avatar.</td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Preconditions:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> The actor is currently authenticated.</p></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> Actor must be logged into the system.</p></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Postconditions:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> The actor views their financial transaction records.</p></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> The profile information and avatar are updated in the database.</p></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Normal Flow:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. View History Successfully</b></p><ol><li>Actor clicks the "Transaction History" tab.</li><li>The system validates the session.</li><li>The system queries the database for transaction logs belonging to the user's wallet ID, ordered by date descending.</li><li>The system applies pagination logic (e.g., limit 20 items per page).</li><li>The system formats the transaction amounts (showing + for income, - for expenses).</li><li>The system renders the data in a table format (Date, Type, Amount, Description).</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Update Profile Successfully</b></p><ol><li>Actor accesses the edit profile page.</li><li>The system retrieves the current profile information.</li><li>The system displays the edit profile form.</li><li>Actor modifies profile fields and selects a new avatar image.</li><li>Actor clicks the "Cập nhật" button.</li><li>The system validates the input data formats.</li><li>The system uploads the new avatar image to Cloudinary.</li><li>The system updates the profile data and avatar URL in the database.</li><li>The system displays a success message.</li></ol></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Alternative Flows:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.3 Alt Empty History</b></p><ol><li>The system determines there are no transaction logs for the user.</li><li>The system renders a "No transactions found" message.</li><li>Back to step 1.</li></ol><p><b>A.4 Alt Page Navigation</b></p><ol><li>Actor clicks a pagination control (e.g., "Next Page").</li><li>The system executes the query with the corresponding offset.</li><li>The system updates the table view.</li><li>Back to step 1.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.6.1 Alt Invalid Input Format</b></p><ol><li>The system detects invalid format for profile fields.</li><li>The system displays a validation error message.</li><li>Back to step 3.</li></ol></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Exceptions:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Session Invalid (Not Logged In)</b></p><ol><li>The system determines the actor is not logged in.</li><li>The system redirects the user to the login page.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Session Invalid (Not Logged In)</b></p><ol><li>The system displays an authentication error message.</li><li>The system redirects the user to the login page.</li></ol><p><b>EX-7 Image Upload Failure</b></p><ol><li>The system fails to upload the image to Cloudinary due to a network or service error.</li><li>The system displays an error message.</li><li>Back to step 3.</li></ol></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Priority:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Medium, Should Have</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Medium</td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Frequency of Use:</b></td>
@@ -69,7 +69,7 @@
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Business Rules:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Transaction history is immutable; neither the user nor an Admin can manually delete these audit logs.</li></ul></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">None</td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Other Information:</b></td>
@@ -77,7 +77,7 @@
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Assumptions:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>None</li></ul></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Actor has stable internet connection.</li></ul></td>
         </tr>
     </table>
 </div>
