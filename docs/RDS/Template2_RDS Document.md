@@ -102,10 +102,12 @@ Contents
 
 *This part gives the description of system actors, you can follow the table form as below\]*
 
-| \# | Actor | Description |
-| ----- | :---- | :---- |
-| 1 | Admin | … |
-| 2 | … | … |
+| # | Actor | Description |
+| :---: | :---- | :---- |
+| 1 | Guest | Unregistered visitor. Can view novels, read free chapters, search, and register an account. |
+| 2 | Member | Registered user. Can save reading progress, manage personal bookshelf, top-up coins, purchase chapters, rate, and comment. |
+| 3 | Staff | Editor & moderator. Manages content (novels, chapters), categorizes novels, handles violation reports, and sends notifications. |
+| 4 | Admin | System administrator. Manages categories, audits transactions, configures the system, manages users and assigns roles. |
 
 ### 1.2 Use Cases
 
