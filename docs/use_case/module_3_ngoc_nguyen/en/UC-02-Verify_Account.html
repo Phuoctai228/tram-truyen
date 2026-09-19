@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>UC-02-Verify Account</title>
+</head>
+<body>
+<div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">
+    <style>
+        .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
+            font-family: 'Times New Roman', serif !important;
+            font-size: 12pt !important;
+            color: black !important;
+        }
+    </style>
+    <p><b>Functional Description Template</b></p>
+    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>UC ID and Name:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-02-Verify Account</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Created By:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Ngoc Nguyen</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Date Created:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-19</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Primary Actor:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Guest</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Secondary Actors:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">None</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Trigger:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Guest accesses the verification page.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Description:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Guest inputs the OTP code to activate their newly registered account.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Preconditions:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> Guest must have an account with <code>PENDING_VERIFICATION</code> status.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Postconditions:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> The account status is changed to <code>ACTIVE</code>.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Normal Flow:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Verify Account Successfully</b></p><ol><li>Guest accesses the verification page.</li><li>The system displays the OTP verification form.</li><li>Guest enters the OTP code.</li><li>Guest clicks the "Xác nhận" button.</li><li>The system validates the OTP format.</li><li>The system verifies the OTP matches the one sent and is not expired.</li><li>The system updates the account status to active.</li><li>The system displays a success message.</li><li>The system redirects Guest to the login page.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Alternative Flows:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.5.1 Alt Invalid OTP Format</b></p><ol><li>The system detects the OTP format is invalid.</li><li>The system displays a validation error message.</li><li>Back to step 3.</li></ol><p><b>A.6.1 Alt Incorrect OTP</b></p><ol><li>The system detects the OTP does not match the generated code.</li><li>The system displays an error message.</li><li>Back to step 3.</li></ol><p><b>A.6.2 Alt Expired OTP</b></p><ol><li>The system detects the OTP has expired.</li><li>The system displays an error message prompting to request a new code.</li><li>Back to step 3.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Exceptions:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-7 Database Connection Failure</b></p><ol><li>The system fails to update the account status due to a database error.</li><li>The system displays a system error message.</li><li>Back to step 1.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Priority:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Frequency of Use:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Business Rules:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">None</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Other Information:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">None</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Assumptions:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Guest has stable internet connection.</li></ul></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

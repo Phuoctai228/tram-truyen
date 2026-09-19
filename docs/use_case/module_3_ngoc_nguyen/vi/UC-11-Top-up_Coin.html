@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>UC-11-Nạp Coin</title>
+</head>
+<body>
+<div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">
+    <style>
+        .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
+            font-family: 'Times New Roman', serif !important;
+            font-size: 12pt !important;
+            color: black !important;
+        }
+    </style>
+    <p><b>Functional Description Template</b></p>
+    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>UC ID and Name:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-11-Nạp Coin</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Created By:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Ngoc Nguyen</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Date Created:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-19</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Primary Actor:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Member</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Secondary Actors:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">VNPay Gateway</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Trigger:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Member truy cập trang nạp Coin.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Description:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Member nạp Coin vào ví bằng cổng thanh toán VNPay.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Preconditions:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> Member đã đăng nhập vào hệ thống.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Postconditions:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> Số lượng Coin được cộng vào ví của Member.</p><p><b>POST-2.</b> Một bản ghi giao dịch nạp tiền được tạo.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Normal Flow:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Nạp Coin thành công</b></p><ol><li>Member truy cập trang nạp Coin.</li><li>Hệ thống hiển thị các gói nạp khả dụng.</li><li>Member chọn một gói và nhấp vào nút "Nạp ngay".</li><li>Hệ thống tạo URL thanh toán VNPay.</li><li>Hệ thống chuyển hướng Member đến cổng thanh toán VNPay.</li><li>Member hoàn tất thanh toán trên giao diện VNPay.</li><li>Hệ thống nhận phản hồi IPN webhook từ VNPay.</li><li>Hệ thống xác minh chữ ký thanh toán bằng HMAC-SHA512.</li><li>Hệ thống tạo bản ghi giao dịch nạp tiền.</li><li>Hệ thống cộng số lượng Coin tương ứng vào ví của Member.</li><li>Hệ thống chuyển hướng Member về trang kết quả và hiển thị thông báo thành công.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Alternative Flows:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>6.1 Member hủy thanh toán</b></p><ol><li>Member nhấp vào nút hủy trên cổng VNPay.</li><li>Hệ thống nhận chuyển hướng hủy từ VNPay.</li><li>Hệ thống hiển thị thông báo thanh toán đã bị hủy.</li><li>Quay lại bước 2.</li></ol><p><b>8.1 Chữ ký không hợp lệ</b></p><ol><li>Hệ thống phát hiện chữ ký thanh toán không hợp lệ trong phản hồi webhook.</li><li>Hệ thống từ chối giao dịch.</li><li>Hệ thống hiển thị thông báo lỗi thanh toán.</li><li>Quay lại bước 2.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Exceptions:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Phiên đăng nhập không hợp lệ</b></p><ol><li>Hệ thống hiển thị thông báo lỗi xác thực.</li><li>Hệ thống chuyển hướng người dùng đến trang đăng nhập.</li></ol><p><b>EX-9 Lỗi cập nhật cơ sở dữ liệu</b></p><ol><li>Hệ thống không thể lưu giao dịch hoặc cập nhật ví do lỗi cơ sở dữ liệu.</li><li>Hệ thống hiển thị thông báo lỗi hệ thống.</li><li>Quay lại bước 1.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Priority:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cao</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Frequency of Use:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Trung bình</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Business Rules:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ol><li>Thanh toán không được hoàn trả.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Other Information:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Không</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Assumptions:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ol><li>Member có kết nối internet ổn định.</li></ol></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

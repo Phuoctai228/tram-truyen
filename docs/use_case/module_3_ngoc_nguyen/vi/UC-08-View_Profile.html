@@ -1,8 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
+﻿<!DOCTYPE html>
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>UC-05 Logout</title>
+    <title>UC-08-Xem hồ sơ cá nhân</title>
 </head>
 <body>
 <div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">
@@ -17,11 +17,11 @@
     <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>UC ID and Name:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-05 Logout</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-08-Xem hồ sơ cá nhân</td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Created By:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Nguyễn Ngọc</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Ngoc Nguyen</td>
             <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Date Created:</b></td>
             <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-19</td>
         </tr>
@@ -29,55 +29,55 @@
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Primary Actor:</b></td>
             <td style="border: 1px solid black; padding: 5px; text-align: left;">Member, Staff, Admin</td>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Secondary Actors:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;">None</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Không</td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Trigger:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Actor clicks the "Logout" link/button in the user profile dropdown menu.</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Actor truy cập trang hồ sơ.</td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Description:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Safely terminates the actor's current active session and clears any persistent login cookies, converting them back to a Guest.</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Actor xem thông tin chi tiết tài khoản cá nhân và số dư ví Coin.</td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Preconditions:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> The actor is currently authenticated with an active session.</p></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> Actor đã đăng nhập vào hệ thống.</p></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Postconditions:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> The actor's session is invalidated and they revert to Guest status.</p></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Không</td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Normal Flow:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Logout Successfully</b></p><ol><li>Actor clicks the "Logout" button.</li><li>The system receives the logout request.</li><li>The system invalidates the server-side session object.</li><li>The system clears the authentication context.</li><li>The system instructs the browser to delete any session cookies and "Remember-Me" tokens.</li><li>The system redirects the actor to the public homepage or login page.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Xem hồ sơ thành công</b></p><ol><li>Actor truy cập trang hồ sơ cá nhân.</li><li>Hệ thống lấy thông tin hồ sơ của Actor.</li><li>Hệ thống lấy thông tin số dư ví Coin hiện tại của Actor.</li><li>Hệ thống hiển thị chi tiết hồ sơ và số dư Coin.</li></ol></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Alternative Flows:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>None</p></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Không</td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Exceptions:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>None</p></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Phiên đăng nhập không hợp lệ</b></p><ol><li>Hệ thống hiển thị thông báo lỗi xác thực.</li><li>Hệ thống chuyển hướng người dùng đến trang đăng nhập.</li></ol></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Priority:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High, Must Have</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cao</td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Frequency of Use:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cao</td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Business Rules:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Session invalidation must be absolute (not just clearing client-side cookies) to prevent session hijacking.</li></ul></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Không</td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Other Information:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">None</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Không</td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Assumptions:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>None</li></ul></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ol><li>Actor có kết nối internet ổn định.</li></ol></td>
         </tr>
     </table>
 </div>

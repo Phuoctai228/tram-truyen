@@ -39,6 +39,7 @@ node_modules/
 ai_models/
 **/*.pyc
 **/__pycache__
+.py
 
 ### Secret management ###
 secrets.json
