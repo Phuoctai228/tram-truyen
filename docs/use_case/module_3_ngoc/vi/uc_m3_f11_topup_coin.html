@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>UC-11 Nạp Coin (VNPay)</title>
+</head>
+<body>
+<div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">
+    <style>
+        .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
+            font-family: 'Times New Roman', serif !important;
+            font-size: 12pt !important;
+            color: black !important;
+        }
+    </style>
+    <p><b>Functional Description Template</b></p>
+    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Mã và Tên UC:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-11 Nạp Coin (VNPay)</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Người tạo:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Nguyễn Ngọc</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Ngày tạo:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-19</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân chính:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Member</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân phụ:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Cổng thanh toán VNPay</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Kích hoạt (Trigger):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Tác nhân chọn một gói Coin trên trang "Nạp tiền" và nhấn "Thanh toán qua VNPay".</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mô tả (Description):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Xử lý toàn bộ luồng thanh toán để nạp thêm Coin vào ví của thành viên, tích hợp với môi trường Sandbox của VNPay. Bao gồm tạo yêu cầu bảo mật (HMAC-SHA512) và xử lý phản hồi bất đồng bộ (IPN callback).</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện tiên quyết:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> Tác nhân hiện đang được xác thực với vai trò Member.</p><p><b>PRE-2.</b> Thông tin xác thực VNPay Sandbox (TmnCode, HashSecret) đã được cấu hình trong môi trường hệ thống.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện hậu quyết:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> Số dư Coin của người dùng tăng lên và một nhật ký giao dịch được ghi lại.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng cơ bản:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Thanh toán xử lý thành công</b></p><ol><li>Tác nhân chọn một gói Coin (ví dụ: 100,000 VNĐ cho 10,000 Coin).</li><li>Hệ thống tạo một bản ghi giao dịch trạng thái "PENDING" trong cơ sở dữ liệu kèm mã tham chiếu giao dịch duy nhất (TxnRef).</li><li>Hệ thống tạo URL thanh toán VNPay bảo mật, ký các tham số bằng thuật toán HMAC-SHA512 và chuỗi HashSecret.</li><li>Hệ thống chuyển hướng tác nhân đến cổng thanh toán VNPay Sandbox.</li><li>Tác nhân nhập thông tin thẻ thử nghiệm (ngân hàng NCB) trên cổng VNPay và hoàn tất thanh toán.</li><li>VNPay chuyển hướng tác nhân quay lại URL phản hồi của ứng dụng.</li><li>Đồng thời, VNPay gửi một yêu cầu IPN (Instant Payment Notification) bất đồng bộ từ máy chủ đến máy chủ của ứng dụng.</li><li>Hệ thống nhận yêu cầu IPN và xác minh chữ ký HMAC-SHA512.</li><li>Hệ thống xác minh mã TxnRef có tồn tại và đang ở trạng thái "PENDING".</li><li>Hệ thống kiểm tra mã phản hồi của VNPay cho biết đã thành công (ví dụ: "00").</li><li>Hệ thống khởi tạo một giao dịch cơ sở dữ liệu với khóa ghi bi quan (pessimistic write lock) trên ví của người dùng.</li><li>Hệ thống cộng số Coin đã mua vào số dư ví.</li><li>Hệ thống cập nhật trạng thái bản ghi giao dịch thành "SUCCESS".</li><li>Hệ thống xác nhận (commit) giao dịch cơ sở dữ liệu và phản hồi HTTP 200 OK cho VNPay.</li><li>Tác nhân nhìn thấy trang xác nhận "Thanh toán thành công" trên giao diện.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng thay thế:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.10 Alt Thanh toán thất bại hoặc Bị hủy</b></p><ol><li>Hệ thống nhận được yêu cầu IPN với mã phản hồi thất bại (ví dụ: thẻ không đủ tiền hoặc người dùng nhấn hủy).</li><li>Hệ thống cập nhật trạng thái bản ghi giao dịch thành "FAILED" hoặc "CANCELLED".</li><li>Hệ thống phản hồi HTTP 200 OK cho VNPay (xác nhận đã nhận).</li><li>Tác nhân nhìn thấy trang "Thanh toán thất bại".</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Ngoại lệ (Exceptions):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-8 Chữ ký IPN không hợp lệ</b></p><ol><li>Hệ thống xác định chữ ký HMAC đính kèm yêu cầu IPN không khớp với chữ ký được tính toán.</li><li>Hệ thống từ chối yêu cầu (khả năng giả mạo).</li><li>Hệ thống ghi log sự cố bảo mật.</li><li>Hệ thống phản hồi lại VNPay mã lỗi "Invalid Checksum".</li></ol><p><b>EX-9 Yêu cầu IPN trùng lặp</b></p><ol><li>Hệ thống xác định TxnRef đã được đánh dấu là "SUCCESS".</li><li>Hệ thống bỏ qua yêu cầu trùng lặp và phản hồi VNPay với mã lỗi "Order already confirmed" để dừng việc thử lại.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mức độ ưu tiên:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Critical, Must Have</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tần suất sử dụng:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Trung bình</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Quy tắc nghiệp vụ:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Tất cả các xác nhận thanh toán PHẢI hoàn toàn dựa vào webhook IPN từ VNPay, tuyệt đối không được dựa vào URL trả về (return URL) trên frontend, để tránh việc thao túng từ phía client.</li><li>PHẢI sử dụng khóa bi quan (pessimistic lock) khi cập nhật số dư ví trong quá trình xử lý IPN để tránh các lỗi tương tranh nếu VNPay gửi các yêu cầu IPN trùng lặp cùng một lúc.</li></ul></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Thông tin khác:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Không có.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Giả định:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Tác nhân có kết nối internet ổn định.</li></ul></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

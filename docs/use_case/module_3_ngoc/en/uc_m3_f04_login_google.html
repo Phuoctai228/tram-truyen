@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>UC-04 Login with Google</title>
+</head>
+<body>
+<div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">
+    <style>
+        .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
+            font-family: 'Times New Roman', serif !important;
+            font-size: 12pt !important;
+            color: black !important;
+        }
+    </style>
+    <p><b>Functional Description Template</b></p>
+    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>UC ID and Name:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-04 Login with Google</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Created By:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Nguyễn Ngọc</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Date Created:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-19</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Primary Actor:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Guest</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Secondary Actors:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Google OAuth2 Server</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Trigger:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Actor clicks the "Continue with Google" button on the login/registration page.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Description:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Allows a user to log in or automatically create a new active account using their Google credentials via the OAuth2 protocol.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Preconditions:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> The actor is not currently authenticated.</p><p><b>PRE-2.</b> The application is properly registered with Google Cloud Console and possesses a valid Client ID and Secret.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Postconditions:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> A secure session is created and the actor is authenticated.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Normal Flow:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Login via OAuth2 Successfully</b></p><ol><li>Actor clicks the "Continue with Google" button.</li><li>The system redirects the actor to the Google OAuth2 consent screen.</li><li>Actor authenticates with Google and grants the necessary permissions (email, profile).</li><li>Google redirects the actor back to the application's callback URL with an authorization code.</li><li>The system exchanges the authorization code for an access token via Google API.</li><li>The system retrieves the user's email and basic profile information using the access token.</li><li>The system checks if a user record with this email already exists in the database.</li><li>The system determines the user exists and their status is ACTIVE.</li><li>The system initializes a secure session for the user.</li><li>The system redirects the user to the homepage.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Alternative Flows:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.7 Alt Create New Account (SSO Registration)</b></p><ol><li>The system determines no user record exists for the provided Google email.</li><li>The system automatically creates a new user record.</li><li>The system sets the USER_STATUS directly to ACTIVE (bypassing email verification since Google already verified it).</li><li>The system generates a random secure password for the user (or leaves the password field empty/null if only SSO is allowed).</li><li>The system initializes the session.</li><li>Back to step 10.</li></ol><p><b>A.8 Alt Banned Account</b></p><ol><li>The system determines the user's status is BANNED.</li><li>The system rejects the login attempt.</li><li>The system displays an error message indicating the account is suspended.</li><li>The system redirects the user to the login page.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Exceptions:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-3 OAuth2 Consent Denied</b></p><ol><li>The actor denies consent on the Google authorization screen.</li><li>Google redirects back to the application with an access_denied error.</li><li>The system displays a "Login cancelled" message.</li></ol><p><b>EX-5 API Timeout/Failure</b></p><ol><li>The system fails to communicate with Google's API to exchange the token or fetch profile data.</li><li>The system displays a generic "Third-party authentication failed, please try again" message.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Priority:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High, Must Have</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Frequency of Use:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Business Rules:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Accounts created via Google OAuth2 do not require a separate email verification step.</li></ul></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Other Information:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">None</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Assumptions:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Actor has an active Google account.</li></ul></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

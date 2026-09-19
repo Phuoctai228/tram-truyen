@@ -84,14 +84,18 @@ If a use case has multiple primary actors listed in its metadata (e.g., `Member,
 
 ## 9. Output & Export Workflow
 When creating a use case specification, you MUST follow this workflow:
-1. **Preview First:** Generate the initial use case specification as a standard Markdown (`.md`) artifact. Present this to the user for review.
-2. **Export on Approval:** Once the user reviews and explicitly approves the preview, you must export the specification as an HTML file to the `docs/uc_spec` directory in the workspace. 
+1. **Initial Setup (Creator Name & Folder Structure):** Before writing any use cases, ASK the user for the creator's name.
+    *   Use this name to automatically fill the "Created By:" field in the specifications.
+    *   Determine the module number `x` and generate the directory structure: `docs/use_case/module_x_creator_name/` (e.g., `module_3_ngoc` with creator name Ngọc).
+    *   Create `en` and `vi` subdirectories inside this folder: `docs/use_case/module_x_creator_name/en/` and `docs/use_case/module_x_creator_name/vi/`.
+2. **Preview First:** Generate the initial use case specification as a standard Markdown (`.md`) artifact. Present this to the user for review.
+3. **Export on Approval:** Once the user reviews and explicitly approves the preview, you must export the specification as an HTML file to the `docs/use_case/module_x_creator_name/[en|vi]` directory in the workspace. 
     * The HTML file MUST be structured as a 4-column bordered table to be copy-paste friendly for Google Docs.
     * Required inline styles for the container `div` (e.g., `<div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">`).
     * You MUST include a `<style>` block immediately inside the container `div` to strictly enforce the font-family, font-size, and color for all child elements:
       ```html
       <style>
-          .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
+          .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
               font-family: 'Times New Roman', serif !important;
               font-size: 12pt !important;
               color: black !important;
