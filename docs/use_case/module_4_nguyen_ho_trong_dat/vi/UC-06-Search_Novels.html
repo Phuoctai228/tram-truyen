@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>UC-06 Tìm Kiếm Truyện</title>
+</head>
+<body>
+<div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">
+    <style>
+        .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
+            font-family: 'Times New Roman', serif !important;
+            font-size: 12pt !important;
+            color: black !important;
+        }
+    </style>
+    <p><b>Functional Description Template</b></p>
+    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Mã và Tên UC:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-06 Tìm Kiếm Truyện</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Người tạo:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Nguyen Ho Trong Dat</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Ngày tạo:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-20</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân chính:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Guest, Member</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân phụ:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Không có</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Kích hoạt (Trigger):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Actor nhập từ khóa vào ô tìm kiếm hoặc nhấn nút "Tìm kiếm".</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mô tả (Description):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cung cấp công cụ tra cứu truyện chữ đa năng (Search Engine), cho phép tìm kiếm theo từ khóa tên truyện, tác giả, kết hợp gợi ý nhanh (Auto-suggest) và tìm kiếm nâng cao.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện tiên quyết:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> Hệ thống đang hoạt động và dịch vụ tìm kiếm sẵn sàng.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện hậu quyết:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> Kết quả danh sách các bộ truyện phù hợp với tiêu chí tìm kiếm được hiển thị.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng cơ bản:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Tìm kiếm truyện thành công</b></p><ol><li>Actor nhập chuỗi từ khóa vào ô tìm kiếm trên thanh tiêu đề.</li><li>Hệ thống thực hiện gợi ý nhanh (Auto-suggest) danh sách 5 truyện khớp nhất dưới dạng dropdown.</li><li>Actor nhấn nút "Tìm kiếm" hoặc nhấn phím Enter.</li><li>Hệ thống trích xuất từ khóa tìm kiếm và làm sạch dữ liệu đầu vào.</li><li>Hệ thống thực hiện truy vấn động (Dynamic SQL Specification) tra cứu khớp từ khóa với tiêu đề truyện, tên tác giả.</li><li>Hệ thống lọc loại bỏ các truyện đang bị ẩn hoặc xóa mềm.</li><li>Hệ thống tính toán phân trang cho tập kết quả tìm kiếm.</li><li>Hệ thống kết xuất và hiển thị danh sách các truyện khớp với từ khóa tìm kiếm kèm thông tin từ khóa và tổng số kết quả.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng thay thế:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.2 Alt Chọn trực tiếp từ gợi ý</b></p><ol><li>Actor nhấn chọn một truyện trong danh sách gợi ý tự động (Auto-suggest).</li><li>Hệ thống chuyển hướng Actor trực tiếp đến trang chi tiết của bộ truyện đó.</li></ol><p><b>A.8 Alt Không tìm thấy kết quả</b></p><ol><li>Hệ thống xác định không có truyện nào thỏa mãn từ khóa tìm kiếm.</li><li>Hệ thống hiển thị giao diện thông báo không tìm thấy kết quả và gợi ý từ khóa khác hoặc tìm theo thể loại.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Ngoại lệ (Exceptions):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-5 Từ khóa chứa ký tự độc hại</b></p><ol><li>Hệ thống phát hiện chuỗi từ khóa chứa ký tự script hoặc injection.</li><li>Hệ thống loại bỏ các ký tự nguy hiểm trước khi truy vấn.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mức độ ưu tiên:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High, Must Have</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tần suất sử dụng:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Rất cao</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Quy tắc nghiệp vụ:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Tìm kiếm không phân biệt chữ hoa chữ thường (Case-insensitive) và hỗ trợ tìm kiếm tiếng Việt có dấu / không dấu.</li><li>Chỉ hiển thị truyện công khai có trạng thái ONGOING hoặc COMPLETED.</li></ul></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Thông tin khác:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Tích hợp debounce 300ms cho tính năng gợi ý từ khóa (Auto-suggest).</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Giả định:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Actor có kết nối internet ổn định.</li></ul></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

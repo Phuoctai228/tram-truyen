@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>UC-10 Đánh Giá Truyện</title>
+</head>
+<body>
+<div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">
+    <style>
+        .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
+            font-family: 'Times New Roman', serif !important;
+            font-size: 12pt !important;
+            color: black !important;
+        }
+    </style>
+    <p><b>Functional Description Template</b></p>
+    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Mã và Tên UC:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-10 Đánh Giá Truyện</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Người tạo:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Nguyen Ho Trong Dat</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Ngày tạo:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-20</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân chính:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Member</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân phụ:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Không có</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Kích hoạt (Trigger):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Member nhấn vào nút "Viết đánh giá" hoặc chọn số sao tại trang chi tiết truyện.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mô tả (Description):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cho phép Member chấm điểm sao (1-5 sao) và gửi nhận xét cảm nghĩ về bộ truyện; hệ thống tự động tính toán lại điểm trung bình (average_rating) của truyện.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện tiên quyết:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> Member đã đăng nhập tài khoản hợp lệ.</p><p><b>PRE-2.</b> Bộ truyện đang ở trạng thái công khai.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện hậu quyết:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> Đánh giá của Member được ghi nhận và điểm trung bình của truyện được cập nhật.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng cơ bản:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Đánh giá truyện thành công</b></p><ol><li>Member truy cập trang chi tiết truyện.</li><li>Member nhấn vào nút "Viết đánh giá".</li><li>Hệ thống hiển thị biểu mẫu đánh giá gồm chọn số sao (1 đến 5 sao) và ô nhập nội dung nhận xét.</li><li>Member chọn số sao đánh giá.</li><li>Member nhập văn bản nhận xét.</li><li>Member nhấn vào nút "Gửi đánh giá".</li><li>Hệ thống kiểm tra số sao hợp lệ (từ 1 đến 5).</li><li>Hệ thống truy vấn cơ sở dữ liệu kiểm tra xem Member đã từng đánh giá bộ truyện này chưa.</li><li>Hệ thống xác nhận đây là lượt đánh giá mới.</li><li>Hệ thống lưu bản ghi đánh giá vào cơ sở dữ liệu.</li><li>Hệ thống tính toán lại điểm đánh giá trung bình và tổng số lượt đánh giá của bộ truyện.</li><li>Hệ thống cập nhật bảng thông tin truyện trong cơ sở dữ liệu.</li><li>Hệ thống hiển thị thông báo gửi đánh giá thành công.</li><li>Hệ thống cập nhật điểm sao trung bình và danh sách nhận xét hiển thị trên giao diện.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng thay thế:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.6 Alt Hủy đánh giá</b></p><ol><li>Member nhấn vào nút "Hủy".</li><li>Hệ thống đóng biểu mẫu đánh giá.</li><li>Quay lại bước 1.</li></ol><p><b>A.9 Alt Đã đánh giá trước đó (Cập nhật đánh giá)</b></p><ol><li>Hệ thống xác định Member đã có bản ghi đánh giá bộ truyện này trong cơ sở dữ liệu.</li><li>Hệ thống cập nhật bản ghi đánh giá cũ bằng số sao và nhận xét mới.</li><li>Chuyển đến bước 11.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Ngoại lệ (Exceptions):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Session Invalid (Chưa đăng nhập)</b></p><ol><li>Hệ thống hiển thị thông báo lỗi xác thực yêu cầu đăng nhập.</li><li>Hệ thống chuyển hướng người dùng đến trang đăng nhập.</li></ol><p><b>EX-7 Chưa chọn số sao</b></p><ol><li>Member không chọn số sao mà nhấn gửi.</li><li>Hệ thống hiển thị thông báo lỗi yêu cầu chọn số sao đánh giá.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mức độ ưu tiên:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High, Must Have</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tần suất sử dụng:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Trung bình</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Quy tắc nghiệp vụ:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Mỗi Member chỉ được tính 1 lượt đánh giá duy nhất cho 1 bộ truyện (chống spam rating). Đánh giá lần sau sẽ đè lên đánh giá trước.</li><li>Điểm trung bình được tính theo công thức tổng số sao chia cho tổng lượt đánh giá và làm tròn 1 chữ số thập phân.</li></ul></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Thông tin khác:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Không có.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Giả định:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Member có kết nối internet ổn định.</li></ul></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>
