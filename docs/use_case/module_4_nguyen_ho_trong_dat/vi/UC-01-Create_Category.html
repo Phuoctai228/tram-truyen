@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>UC-01 Thêm Thể Loại</title>
+</head>
+<body>
+<div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">
+    <style>
+        .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
+            font-family: 'Times New Roman', serif !important;
+            font-size: 12pt !important;
+            color: black !important;
+        }
+    </style>
+    <p><b>Functional Description Template</b></p>
+    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Mã và Tên UC:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-01 Thêm Thể Loại</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Người tạo:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Nguyen Ho Trong Dat</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Ngày tạo:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-20</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân chính:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Admin</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân phụ:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Không có</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Kích hoạt (Trigger):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Admin nhấn vào nút "Thêm thể loại" trên trang quản lý thể loại.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mô tả (Description):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cho phép Admin khởi tạo một thể loại truyện mới vào hệ thống (tên thể loại, đường dẫn slug, mô tả) nhằm phục vụ việc phân loại tác phẩm.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện tiên quyết:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> Admin đã đăng nhập vào hệ thống với phiên làm việc hợp lệ.</p><p><b>PRE-2.</b> Admin có quyền quản trị thể loại (ROLE_ADMIN).</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện hậu quyết:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> Thể loại mới được lưu thành công vào cơ sở dữ liệu và hiển thị trong danh sách thể loại.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng cơ bản:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Thêm thể loại thành công</b></p><ol><li>Admin truy cập trang quản lý thể loại trong giao diện Admin.</li><li>Admin nhấn vào nút "Thêm thể loại".</li><li>Hệ thống hiển thị biểu mẫu thêm thể loại.</li><li>Admin nhập tên thể loại, đường dẫn slug và mô tả.</li><li>Admin nhấn vào nút "Lưu".</li><li>Hệ thống kiểm tra dữ liệu đầu vào của biểu mẫu.</li><li>Hệ thống truy vấn cơ sở dữ liệu để kiểm tra sự tồn tại của tên thể loại và slug.</li><li>Hệ thống xác nhận tên thể loại và slug là duy nhất.</li><li>Hệ thống lưu thông tin thể loại mới vào cơ sở dữ liệu.</li><li>Hệ thống hiển thị thông báo thêm thể loại thành công.</li><li>Hệ thống cập nhật danh sách thể loại hiển thị.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng thay thế:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.4 Alt Hủy thao tác</b></p><ol><li>Admin nhấn vào nút "Hủy".</li><li>Hệ thống đóng biểu mẫu thêm thể loại mà không lưu dữ liệu.</li><li>Quay lại bước 1.</li></ol><p><b>A.6 Alt Dữ liệu đầu vào không hợp lệ</b></p><ol><li>Hệ thống xác định dữ liệu tên thể loại hoặc slug bị trống hoặc vượt quá độ dài quy định.</li><li>Hệ thống hiển thị thông báo lỗi dữ liệu nhập không hợp lệ tại các trường tương ứng.</li><li>Quay lại bước 4.</li></ol><p><b>A.8 Alt Trùng lặp tên hoặc Slug</b></p><ol><li>Hệ thống xác định tên thể loại hoặc slug đã tồn tại trong cơ sở dữ liệu.</li><li>Hệ thống hiển thị thông báo lỗi trùng lặp dữ liệu thể loại.</li><li>Quay lại bước 4.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Ngoại lệ (Exceptions):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Session Invalid (Chưa đăng nhập)</b></p><ol><li>Hệ thống hiển thị thông báo lỗi xác thực.</li><li>Hệ thống chuyển hướng người dùng đến trang đăng nhập.</li></ol><p><b>EX-9 Lỗi lưu cơ sở dữ liệu</b></p><ol><li>Hệ thống gặp lỗi kết nối hoặc gián đoạn khi ghi dữ liệu vào cơ sở dữ liệu.</li><li>Hệ thống ghi log sự cố hệ thống.</li><li>Hệ thống hiển thị thông báo lỗi thao tác thất bại.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mức độ ưu tiên:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High, Must Have</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tần suất sử dụng:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Thấp</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Quy tắc nghiệp vụ:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Tên thể loại và đường dẫn slug phải là duy nhất (Unique) trong toàn hệ thống.</li><li>Slug phải tuân thủ định dạng chuẩn URL (chữ cái thường, số, dấu gạch ngang, không chứa khoảng trắng hay ký tự đặc biệt).</li></ul></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Thông tin khác:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Không có.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Giả định:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Admin có kết nối internet ổn định.</li></ul></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

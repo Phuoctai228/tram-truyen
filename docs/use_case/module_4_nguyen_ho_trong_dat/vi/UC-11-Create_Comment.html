@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>UC-11 Viết Bình Luận</title>
+</head>
+<body>
+<div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">
+    <style>
+        .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
+            font-family: 'Times New Roman', serif !important;
+            font-size: 12pt !important;
+            color: black !important;
+        }
+    </style>
+    <p><b>Functional Description Template</b></p>
+    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Mã và Tên UC:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-11 Viết Bình Luận</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Người tạo:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Nguyen Ho Trong Dat</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Ngày tạo:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-20</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân chính:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Member</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân phụ:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Không có</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Kích hoạt (Trigger):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Member nhập nội dung vào ô bình luận và nhấn nút "Gửi bình luận".</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mô tả (Description):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cho phép Member đăng bình luận thảo luận, chia sẻ cảm tưởng tại trang chi tiết truyện hoặc ngay dưới trang đọc chương.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện tiên quyết:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> Member đã đăng nhập tài khoản hợp lệ.</p><p><b>PRE-2.</b> Màn hình hiển thị truyện hoặc chương truyện đang mở.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện hậu quyết:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> Bình luận mới được lưu vào cơ sở dữ liệu và hiển thị ngay trên danh sách bình luận.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng cơ bản:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Viết bình luận thành công</b></p><ol><li>Member truy cập trang chi tiết truyện hoặc trang đọc chương.</li><li>Member cuộn xuống khu vực bình luận.</li><li>Member nhập nội dung văn bản vào ô bình luận.</li><li>Member nhấn vào nút "Gửi bình luận".</li><li>Hệ thống kiểm tra độ dài và tính hợp lệ của nội dung bình luận.</li><li>Hệ thống thực hiện lọc từ ngữ thô tục/vi phạm (Spam/Profanity Filter).</li><li>Hệ thống xác nhận bình luận hợp lệ.</li><li>Hệ thống lưu bình luận mới vào cơ sở dữ liệu liên kết với Member và truyện/chương tương ứng.</li><li>Hệ thống hiển thị thông báo đăng bình luận thành công.</li><li>Hệ thống cập nhật danh sách bình luận trên giao diện để hiển thị bình luận vừa tạo ở đầu danh sách.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng thay thế:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.5 Alt Nội dung bình luận trống</b></p><ol><li>Hệ thống xác định ô nội dung bình luận bị trống hoặc chỉ chứa khoảng trắng.</li><li>Hệ thống hiển thị thông báo yêu cầu nhập nội dung bình luận.</li><li>Quay lại bước 3.</li></ol><p><b>A.6 Alt Phát hiện từ ngữ vi phạm</b></p><ol><li>Hệ thống xác định bình luận chứa các từ ngữ nằm trong danh sách cấm/thô tục.</li><li>Hệ thống hiển thị thông báo lỗi yêu cầu chỉnh sửa lại từ ngữ.</li><li>Quay lại bước 3.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Ngoại lệ (Exceptions):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Session Invalid (Chưa đăng nhập)</b></p><ol><li>Hệ thống hiển thị thông báo lỗi xác thực.</li><li>Hệ thống chuyển hướng người dùng đến trang đăng nhập.</li></ol><p><b>EX-8 Tài khoản bị khóa quyền bình luận</b></p><ol><li>Hệ thống kiểm tra tài khoản Member đang bị hạn chế tương tác do vi phạm.</li><li>Hệ thống hiển thị thông báo tài khoản tạm thời bị khóa tính năng bình luận.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mức độ ưu tiên:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High, Must Have</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tần suất sử dụng:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Rất cao</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Quy tắc nghiệp vụ:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Độ dài bình luận tối thiểu 5 ký tự và tối đa 1000 ký tự.</li><li>Giới hạn tần suất đăng bình luận (Rate limiting: tối đa 1 bình luận / 10 giây) để chống bot/spam.</li></ul></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Thông tin khác:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Hỗ trợ phản hồi (Reply) theo dạng phân nhánh 2 cấp.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Giả định:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Member có kết nối internet ổn định.</li></ul></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

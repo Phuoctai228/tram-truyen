@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>UC-05 Phân Loại Truyện</title>
+</head>
+<body>
+<div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">
+    <style>
+        .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
+            font-family: 'Times New Roman', serif !important;
+            font-size: 12pt !important;
+            color: black !important;
+        }
+    </style>
+    <p><b>Functional Description Template</b></p>
+    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Mã và Tên UC:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-05 Phân Loại Truyện</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Người tạo:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Nguyen Ho Trong Dat</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Ngày tạo:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-20</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân chính:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Staff, Admin</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân phụ:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Không có</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Kích hoạt (Trigger):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Actor nhấn vào nút "Gắn thể loại" hoặc mở phần thiết lập thể loại tại giao diện quản trị truyện.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mô tả (Description):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cho phép ban quản trị thiết lập và cập nhật các liên kết đa thể loại (Many-to-Many) cho từng tác phẩm truyện (gắn thêm thể loại hoặc bỏ bớt thể loại).</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện tiên quyết:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> Actor đã đăng nhập với vai trò Staff hoặc Admin.</p><p><b>PRE-2.</b> Tác phẩm truyện cần gán thể loại đang tồn tại trên hệ thống.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện hậu quyết:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> Danh sách thể loại liên kết với bộ truyện được cập nhật lại thành công.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng cơ bản:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Phân loại truyện thành công</b></p><ol><li>Actor truy cập trang quản lý chi tiết truyện hoặc biểu mẫu chỉnh sửa truyện.</li><li>Actor nhấn vào khu vực "Chọn thể loại".</li><li>Hệ thống truy vấn danh sách toàn bộ thể loại hiện có từ cơ sở dữ liệu.</li><li>Hệ thống truy vấn danh sách thể loại đang gán cho truyện hiện tại.</li><li>Hệ thống hiển thị hộp chọn thể loại (multi-select checklist) đánh dấu sẵn các thể loại đã chọn.</li><li>Actor tích chọn thêm các thể loại mới hoặc bỏ chọn thể loại không phù hợp.</li><li>Actor nhấn vào nút "Lưu thể loại".</li><li>Hệ thống kiểm tra số lượng thể loại được chọn.</li><li>Hệ thống cập nhật bảng liên kết giữa truyện và thể loại (novel_categories) trong cơ sở dữ liệu.</li><li>Hệ thống hiển thị thông báo phân loại truyện thành công.</li><li>Hệ thống cập nhật danh sách nhãn thể loại trên giao diện thông tin truyện.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng thay thế:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.7 Alt Hủy phân loại</b></p><ol><li>Actor nhấn vào nút "Hủy".</li><li>Hệ thống hủy các lựa chọn vừa tích và giữ nguyên thể loại cũ.</li><li>Quay lại bước 1.</li></ol><p><b>A.8 Alt Chưa chọn thể loại nào</b></p><ol><li>Hệ thống xác định Actor đã bỏ chọn toàn bộ thể loại.</li><li>Hệ thống hiển thị thông báo cảnh báo yêu cầu bộ truyện phải thuộc ít nhất một thể loại.</li><li>Quay lại bước 6.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Ngoại lệ (Exceptions):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Session Invalid (Chưa đăng nhập)</b></p><ol><li>Hệ thống hiển thị thông báo lỗi xác thực.</li><li>Hệ thống chuyển hướng người dùng đến trang đăng nhập.</li></ol><p><b>EX-9 Lỗi cập nhật liên kết CSDL</b></p><ol><li>Hệ thống gặp sự cố khi lưu quan hệ liên kết thể loại.</li><li>Hệ thống hoàn tác (rollback) giao dịch CSDL.</li><li>Hệ thống hiển thị thông báo lỗi cập nhật phân loại.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mức độ ưu tiên:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High, Must Have</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tần suất sử dụng:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Trung bình</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Quy tắc nghiệp vụ:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Một bộ truyện phải có tối thiểu 1 thể loại và tối đa 5 thể loại.</li><li>Thao tác cập nhật liên kết thể loại phải được thực hiện trong cùng một giao dịch (Transaction) an toàn.</li></ul></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Thông tin khác:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Không có.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Giả định:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Actor có kết nối internet ổn định.</li></ul></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

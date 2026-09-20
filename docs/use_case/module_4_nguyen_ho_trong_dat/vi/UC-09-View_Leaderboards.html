@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>UC-09 Xem Bảng Xếp Hạng</title>
+</head>
+<body>
+<div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">
+    <style>
+        .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
+            font-family: 'Times New Roman', serif !important;
+            font-size: 12pt !important;
+            color: black !important;
+        }
+    </style>
+    <p><b>Functional Description Template</b></p>
+    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Mã và Tên UC:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-09 Xem Bảng Xếp Hạng</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Người tạo:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Nguyen Ho Trong Dat</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Ngày tạo:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-20</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân chính:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Guest, Member</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân phụ:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Không có</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Kích hoạt (Trigger):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Actor nhấn vào mục "Bảng xếp hạng" trên thanh điều hướng chính.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mô tả (Description):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Hiển thị các bảng xếp hạng Top truyện hot nhất theo lượt xem phân chia theo các khoảng thời gian: Top Ngày, Top Tuần, Top Tháng, Top Toàn thời gian.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện tiên quyết:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> Hệ thống đang hoạt động và có dữ liệu lượt xem truyện.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện hậu quyết:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> Actor xem được bảng xếp hạng truyện nổi bật theo đúng tab thời gian đã chọn.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng cơ bản:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Xem bảng xếp hạng thành công</b></p><ol><li>Actor truy cập vào trang chủ hoặc menu hệ thống.</li><li>Actor nhấn vào liên kết "Bảng xếp hạng".</li><li>Hệ thống mặc định chọn tab "Top Ngày".</li><li>Hệ thống truy vấn cơ sở dữ liệu lấy Top 10 hoặc Top 20 truyện có tổng lượt xem cao nhất trong khoảng thời gian tương ứng.</li><li>Hệ thống lấy thông tin chi tiết từng truyện (thứ tự xếp hạng, ảnh bìa, tiêu đề, số lượt xem, tác giả).</li><li>Hệ thống kết xuất hiển thị giao diện Bảng xếp hạng với thứ tự từ 1 đến N.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng thay thế:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.3 Alt Chuyển tab Bảng xếp hạng</b></p><ol><li>Actor nhấn chọn tab "Top Tuần", "Top Tháng" hoặc "Top Toàn thời gian".</li><li>Hệ thống trích xuất tham số mốc thời gian tương ứng.</li><li>Hệ thống truy vấn lại cơ sở dữ liệu để lấy danh sách truyện đạt lượt xem cao nhất theo tab được chọn.</li><li>Hệ thống cập nhật bảng hiển thị theo tab mới.</li><li>Quay lại bước 6.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Ngoại lệ (Exceptions):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-3 Lỗi tính toán BXH</b></p><ol><li>Hệ thống không thể thống kê lượt xem do sự cố dữ liệu ngầm.</li><li>Hệ thống hiển thị thông báo dữ liệu đang cập nhật và sử dụng bộ đệm (cache) gần nhất.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mức độ ưu tiên:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High, Must Have</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tần suất sử dụng:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Rất cao</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Quy tắc nghiệp vụ:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Bảng xếp hạng chỉ cập nhật dựa trên lượt xem hợp lệ.</li><li>Thống kê được lưu cache định kỳ (ví dụ: mỗi 15 phút) để tối ưu hiệu năng truy vấn DB.</li></ul></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Thông tin khác:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Hiển thị huy hiệu đặc biệt cho Top 1, Top 2, Top 3 trên giao diện.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Giả định:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Actor có kết nối internet ổn định.</li></ul></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

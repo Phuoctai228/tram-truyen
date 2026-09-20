@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>UC-07 Lọc Truyện</title>
+</head>
+<body>
+<div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">
+    <style>
+        .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
+            font-family: 'Times New Roman', serif !important;
+            font-size: 12pt !important;
+            color: black !important;
+        }
+    </style>
+    <p><b>Functional Description Template</b></p>
+    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Mã và Tên UC:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-07 Lọc Truyện</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Người tạo:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Nguyen Ho Trong Dat</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Ngày tạo:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-20</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân chính:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Guest, Member</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân phụ:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Không có</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Kích hoạt (Trigger):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Actor chọn các tiêu chí lọc trên bảng bộ lọc truyện và nhấn nút "Lọc truyện".</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mô tả (Description):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cho phép Actor thu hẹp danh sách truyện hiển thị dựa trên nhiều bộ lọc kết hợp như thể loại, tiến độ phát hành (Đang ra / Hoàn thành), loại chương (Miễn phí / VIP) và khoảng số lượng chương.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện tiên quyết:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> Actor đang ở trang danh mục hoặc trang tìm kiếm truyện.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện hậu quyết:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> Danh sách truyện được lọc chính xác theo tập tiêu chí đã chọn.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng cơ bản:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Lọc truyện thành công</b></p><ol><li>Actor truy cập trang lọc/danh mục truyện.</li><li>Actor chọn một hoặc nhiều thể loại cần lọc.</li><li>Actor chọn trạng thái tiến độ truyện (Tất cả, Đang ra, Hoàn thành).</li><li>Actor chọn khoảng số lượng chương hoặc hình thức thu phí (Miễn phí / VIP).</li><li>Actor nhấn nút "Lọc truyện".</li><li>Hệ thống xây dựng câu truy vấn điều kiện động dựa trên các tham số lọc được chọn.</li><li>Hệ thống thực hiện truy vấn cơ sở dữ liệu trích xuất tập truyện thỏa mãn tất cả điều kiện.</li><li>Hệ thống tính toán dữ liệu phân trang cho kết quả.</li><li>Hệ thống kết xuất hiển thị danh sách truyện thỏa mãn bộ lọc.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng thay thế:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.5 Alt Đặt lại bộ lọc</b></p><ol><li>Actor nhấn vào nút "Đặt lại".</li><li>Hệ thống xóa toàn bộ các tiêu chí đã tích chọn về trạng thái mặc định.</li><li>Hệ thống tải lại danh sách truyện mặc định ban đầu.</li></ol><p><b>A.9 Alt Không có truyện thỏa mãn bộ lọc</b></p><ol><li>Hệ thống xác định tập kết quả sau khi lọc là rỗng.</li><li>Hệ thống hiển thị màn hình thông báo không tìm thấy truyện phù hợp bộ lọc.</li><li>Quay lại bước 2.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Ngoại lệ (Exceptions):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-6 Lỗi tham số bộ lọc không hợp lệ</b></p><ol><li>Hệ thống phát hiện tham số lọc số chương âm hoặc sai định dạng trên URL.</li><li>Hệ thống tự động đặt tham số lọc về giá trị mặc định và tiếp tục xử lý.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mức độ ưu tiên:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High, Must Have</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tần suất sử dụng:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cao</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Quy tắc nghiệp vụ:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Khi chọn nhiều thể loại, mặc định áp dụng logic ghép nối điều kiện AND hoặc OR theo cấu hình hiển thị giao diện.</li><li>Tự động reset trang về Trang 1 mỗi khi thay đổi bộ lọc.</li></ul></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Thông tin khác:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Không có.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Giả định:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Actor có kết nối internet ổn định.</li></ul></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>
