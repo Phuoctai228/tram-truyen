@@ -257,7 +257,7 @@ CREATE TABLE deposit_orders (
 -- 21. PAYMENT_LOGS (Truy vết kỹ thuật IPN/Webhook từ Ngân hàng / VNPay)
 CREATE TABLE payment_logs (
     id SERIAL PRIMARY KEY,
-    order_code VARCHAR(50), -- Map với order nếu nhận diện được
+    order_code VARCHAR(50) REFERENCES deposit_orders(order_code) ON DELETE SET NULL, -- Ràng buộc khóa ngoại với đơn hàng
     raw_payload TEXT, -- Lưu toàn bộ dữ liệu trả về từ Bank/VNPay (JSON string)
     ip_address VARCHAR(50),
     status VARCHAR(50), -- SUCCESS (xử lý thành công), UNMATCHED (Không tìm thấy đơn), ERROR (Lỗi code)
@@ -282,6 +282,7 @@ CREATE TABLE system_settings (
     setting_key VARCHAR(100) PRIMARY KEY,
     setting_value TEXT NOT NULL, -- Đổi thành TEXT để có thể lưu cấu hình Theme (ví dụ: chuỗi JSON, CSS)
     description TEXT,
+    updated_by INT REFERENCES users(id) ON DELETE SET NULL, -- Liên kết với Admin đã cập nhật cấu hình
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
