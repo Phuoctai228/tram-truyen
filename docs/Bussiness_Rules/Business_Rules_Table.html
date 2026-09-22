@@ -1,0 +1,264 @@
+﻿<style>
+    table.c200 { border-collapse: collapse; width: 100%; font-family: 'Times New Roman', serif; font-size: 11pt; }
+    table.c200 td { border: 1px solid black; padding: 5px 8px; vertical-align: top; }
+    table.c200 tr:first-child td { background-color: #fbe5df; font-weight: bold; text-align: center; }
+</style>
+<table class="c200">
+    <tr class="c8">
+        <td class="c121 c183" colspan="1" rowspan="1">
+            <p class="c94 c124">
+                <span class="c14">ID</span>
+            </p>
+        </td>
+        <td class="c60 c121" colspan="1" rowspan="1">
+            <p class="c213 c94">
+                <span class="c14">Category</span>
+            </p>
+        </td>
+        <td class="c109" colspan="1" rowspan="1">
+            <p class="c94 c213">
+                <span class="c14">Rule Definition</span>
+            </p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-01</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Constraints</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Account Security: Password must be hashed using BCrypt. Reset tokens must have an expiration time.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-02</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Constraints</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Novel Titles: Duplicate novel titles by the same author are prevented.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-03</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Constraints</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Novel Status: ONGOING is the default initial status. The public interface strictly limits visibility to ONGOING and COMPLETED status.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-04</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Constraints</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Novel Deletion: A novel is never physically deleted (soft deletion). ON_HOLD novels must be strictly excluded from public lists.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-05</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Constraints</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Chapter Management: Only Staff and Admin may create, update, delete (soft delete), lock/unlock, or configure chapters.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-06</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Constraints</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">VIP Chapters: A VIP chapter must have a positive Coin price. A regular published chapter does not require a Coin price.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-07</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Constraints</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Category Uniqueness: Category name and URL slug must be unique system-wide. Slug must conform to standard URL format.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-08</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Constraints</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Category Deletion: Cannot delete a category if the associated novel count > 0. Admin must detach category from all novels before deletion.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-09</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Constraints</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Category Mapping: Each novel must have a minimum of 1 category and a maximum of 5 categories. Mapping updates must be in a single transaction block.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-10</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Computations</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Category Counts: Publicly displayed novel counts per category only include published novels (ONGOING, COMPLETED).</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-11</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Constraints</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Chapter Visibility: Draft or locked chapters are not displayed to Guests/Members. VIP chapters must be visually distinct in the chapter list.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-12</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Constraints</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">VIP Access: Guest actors cannot bypass VIP locks. Audio playback is only available for chapters the user is already authorized to access.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-13</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Computations</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Reading Progress: Progress tracking is strictly reserved for authenticated Members. The completion percentage is dynamically calculated.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-14</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Facts</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Reading History: The reading history list is capped at a maximum of 50 recent entries. Only the latest timestamp is preserved per chapter.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-15</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Facts</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Bookshelf: Bookshelf sorting defaults to the most recently read novel at the top. Removing a novel from the bookshelf also deletes its reading progress bookmark.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-16</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Computations</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Leaderboards: Leaderboard updates exclusively count valid view records. Rankings are cached periodically for query optimization.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-17</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Computations</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Ratings: Each Member is restricted to 1 rating record per novel. Subsequent submissions overwrite previous rating. Average rating score is total stars / total reviews, rounded to 1 decimal place.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-18</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Constraints</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Comments: Comment length must be between 5 and 1000 characters. Rate limiting enforced (max 1 comment per 10 seconds per user).</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-19</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Constraints</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Hidden Comments: Comments hidden or soft-deleted by Staff/Admin (is_deleted = true) are excluded from public views.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-20</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Constraints</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Transactions: Balance deductions MUST occur within an ACID-compliant transaction using pessimistic locking.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-21</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Facts</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">VIP Permanence: Once unlocked, a VIP chapter is permanently accessible to that specific user ID without repurchase.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-22</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Facts</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Daily Check-in: Check-in reset time is governed by the server's time zone. Check-in rewards cannot be withdrawn or converted to fiat currency.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-23</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Facts</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Coin Top-ups: Coin top-up payments are non-refundable and cannot be converted to fiat currency.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-24</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Facts</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Search & Filter: Search is case-insensitive. Selecting multiple categories applies combination logic. Pagination state and filters are preserved during sorting.</span></p>
+        </td>
+    </tr>
+</table>
