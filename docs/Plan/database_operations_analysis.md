@@ -53,8 +53,7 @@ Báo cáo này phân loại 28 bảng trong CSDL theo các nhóm nghiệp vụ v
 
 ---
 
-## 3. Nhóm Tương Tác & Trải Nghiệm Độc Giả (Module 2 của Tài)
-
+## 3. Nhóm Tương Tác & Trải Nghiệm Độc Giả
 ### 10. `bookshelves` (Tủ sách)
 - **Chứa dữ liệu gì:** Danh sách truyện user đang theo dõi.
 - **Cập nhật tự động:** KHÔNG.

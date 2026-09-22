@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Phân tích Luồng Dữ liệu và Thao tác Database</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; max-width: 900px; }
+        h1, h2, h3 { color: #333; margin-bottom: 10px; }
+        h1 { font-size: 24px; }
+        h2 { font-size: 20px; margin-top: 30px; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
+        h3 { font-size: 16px; margin-top: 20px; }
+        ul { list-style-type: none; padding-left: 0; }
+        li { margin-bottom: 8px; }
+        p { margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Phân tích Luồng Dữ liệu và Thao tác Database (28 Bảng)</h1>
+    <p>Dựa theo file schema novels.sql của dự án Trạm Truyện.</p>
+    <p>Báo cáo này phân loại 28 bảng trong CSDL theo các nhóm nghiệp vụ và giải thích rõ: <strong>Bảng đó chứa dữ liệu gì</strong>, <strong>Khi nào hệ thống tự động cập nhật</strong>, và <strong>Khi nào User thao tác nghiệp vụ</strong>.</p>
+    
+    <h2>1. Nhóm Người Dùng, Xác Thực & Phân Quyền (Auth & Security)</h2>
+    
+    <h3>1. roles (Vai trò)</h3>
+    <ul>
+        <li><strong>Chứa dữ liệu gì:</strong> Định nghĩa cứng các quyền (ADMIN, STAFF, MEMBER).</li>
+        <li><strong>Cập nhật tự động:</strong> KHÔNG.</li>
+        <li><strong>User thao tác:</strong> Hầu như tĩnh. Chỉ Admin (hoặc Script DB) Insert thủ công lúc khởi tạo dự án.</li>
+    </ul>
+    
+    <h3>2. users (Tài khoản)</h3>
+    <ul>
+        <li><strong>Chứa dữ liệu gì:</strong> Thông tin cá nhân, mật khẩu mã hóa, số dư ví (wallet_balance), trạng thái hoạt động.</li>
+        <li><strong>Cập nhật tự động:</strong> CÓ (Trường wallet_balance tự động thay đổi do trigger/logic từ Backend khi có giao dịch nạp tiền, mở khóa chương, nhận thưởng điểm danh).</li>
+        <li><strong>User thao tác:</strong> Khách Đăng ký (Insert). User Đổi mật khẩu/Cập nhật Profile (Update). Admin thao tác Khóa tài khoản (Update status = BANNED).</li>
+    </ul>
+
+    <h3>3. user_roles (Phân quyền User)</h3>
+    <ul>
+        <li><strong>Chứa dữ liệu gì:</strong> Nối user_id với role_id (Nhiều-Nhiều).</li>
+        <li><strong>Cập nhật tự động:</strong> CÓ. Khi khách đăng ký qua Google hoặc Email hoàn tất, hệ thống tự động gán ROLE_MEMBER cho họ.</li>
+        <li><strong>User thao tác:</strong> Admin thao tác giao diện quản trị để Update/Insert/Delete nhằm cấp hoặc tước quyền STAFF/ADMIN của 1 user.</li>
+    </ul>
+
+    <h3>4. password_reset_tokens & 5. email_verification_tokens (Tokens)</h3>
+    <ul>
+        <li><strong>Chứa dữ liệu gì:</strong> Lưu mã OTP/Link token bảo mật và thời gian hết hạn.</li>
+        <li><strong>Cập nhật tự động:</strong> CÓ. Khi user bấm "Quên mật khẩu" hoặc tạo tài khoản mới, hệ thống (Backend) tự sinh ra mã code và tự động Insert vào đây. Khi Token hết hạn, hệ thống (Cronjob) có thể tự động xóa đi.</li>
+        <li><strong>User thao tác:</strong> Nhập mã OTP vào Form.</li>
+    </ul>
+
+    <h2>2. Nhóm Quản Trị Truyện & Phân Loại (Content Management)</h2>
+    
+    <h3>6. categories (Thể loại)</h3>
+    <ul>
+        <li><strong>Chứa dữ liệu gì:</strong> Tên, slug, mô tả của các thể loại truyện (Tiên Hiệp, Huyền Huyễn...).</li>
+        <li><strong>Cập nhật tự động:</strong> KHÔNG.</li>
+        <li><strong>User thao tác:</strong> Admin chủ động quản lý (Insert, Update, Delete) trên màn hình Dashboard.</li>
+    </ul>
+
+    <h3>7. novels (Bộ truyện)</h3>
+    <ul>
+        <li><strong>Chứa dữ liệu gì:</strong> Thông tin cốt lõi (Tên, Tác giả, Avatar truyện), số lượt xem, điểm đánh giá trung bình.</li>
+        <li><strong>Cập nhật tự động:</strong> CÓ. Các trường thống kê như views, average_rating, rating_count sẽ được hệ thống (Backend) tự động tính toán và Update vào bảng này khi có độc giả xem hoặc đánh giá truyện.</li>
+        <li><strong>User thao tác:</strong> Staff/Admin chủ động đăng truyện (Insert), cập nhật mô tả (Update), tạm ẩn (Update status).</li>
+    </ul>
+
+    <h3>8. novel_categories (Truyện - Thể loại)</h3>
+    <ul>
+        <li><strong>Chứa dữ liệu gì:</strong> Lưu trữ truyện đó thuộc những thể loại nào (Nối novel_id và category_id).</li>
+        <li><strong>Cập nhật tự động:</strong> KHÔNG.</li>
+        <li><strong>User thao tác:</strong> Staff/Admin chọn thể loại (Checkboxes) lúc đăng truyện, tạo ra các lệnh Insert.</li>
+    </ul>
+
+    <h3>9. chapters (Chương truyện)</h3>
+    <ul>
+        <li><strong>Chứa dữ liệu gì:</strong> Nội dung văn bản chương, giá Coin (nếu set VIP), hẹn giờ mở khóa, trạng thái (Nháp, Đã đăng).</li>
+        <li><strong>Cập nhật tự động:</strong> CÓ. Lượt views tự động tăng. Nếu có hẹn ngày (auto_unlock_at), Cronjob hệ thống sẽ tự động Update để mở khóa miễn phí chương VIP đó.</li>
+        <li><strong>User thao tác:</strong> Staff/Admin trực tiếp đăng bài (Insert), chỉnh sửa nội dung/đặt giá tiền (Update).</li>
+    </ul>
+
+    <h2>3. Nhóm Tương Tác & Trải Nghiệm Độc Giả </h2>
+    
+    <h3>10. bookshelves (Tủ sách)</h3>
+    <ul>
+        <li><strong>Chứa dữ liệu gì:</strong> Danh sách truyện user đang theo dõi.</li>
+        <li><strong>Cập nhật tự động:</strong> KHÔNG.</li>
+        <li><strong>User thao tác:</strong> Độc giả bấm "Lưu tủ sách" (Insert) hoặc "Bỏ theo dõi" (Delete).</li>
+    </ul>
+
+    <h3>11. reading_progress (Tiến độ đọc)</h3>
+    <ul>
+        <li><strong>Chứa dữ liệu gì:</strong> Lưu Bookmark (chương gần nhất độc giả vừa đọc dở) để phục vụ cho nút "Đọc tiếp".</li>
+        <li><strong>Cập nhật tự động:</strong> CÓ (Silent Update). Hệ thống ẩn (Backend) tự động Upsert lại ID chương hiện tại vào bảng này khi user cuộn trang/đọc truyện. User không chủ động bấm nút "Lưu".</li>
+    </ul>
+
+    <h3>12. user_read_chapters (Lịch sử đọc)</h3>
+    <ul>
+        <li><strong>Chứa dữ liệu gì:</strong> Danh sách toàn bộ các chương người dùng đã đọc qua.</li>
+        <li><strong>Cập nhật tự động:</strong> CÓ. Khi user request lấy dữ liệu của 1 chương để hiển thị lên màn hình, Backend tự động sinh ra 1 dòng Insert vào bảng này để lưu vết.</li>
+    </ul>
+
+    <h3>13. unlocked_chapters (Chương VIP đã mở)</h3>
+    <ul>
+        <li><strong>Chứa dữ liệu gì:</strong> Lưu quyền truy cập của User đối với chương truyện VIP có thu phí.</li>
+        <li><strong>Cập nhật tự động:</strong> CÓ. Tuy độc giả là người bấm "Mở khóa", nhưng việc Insert vào bảng này là kết quả của 1 Chuỗi Giao Dịch Tự Động (Tự trừ Coin ở bảng users -> Ghi log vào bảng transactions -> Cấp quyền vào bảng unlocked_chapters).</li>
+        <li><strong>User thao tác:</strong> Độc giả bấm "Xác nhận mở khóa".</li>
+    </ul>
+
+    <h3>14. user_reader_settings (Cài đặt UI đọc truyện)</h3>
+    <ul>
+        <li><strong>Chứa dữ liệu gì:</strong> Sở thích giao diện cá nhân (Font chữ, màu nền Light/Dark, tốc độ Audio).</li>
+        <li><strong>Cập nhật tự động:</strong> KHÔNG.</li>
+        <li><strong>User thao tác:</strong> Thay đổi khi user tùy chỉnh (Update) trên thanh công cụ trong màn hình đọc.</li>
+    </ul>
+
+    <h3>15. user_daily_checkins (Điểm danh)</h3>
+    <ul>
+        <li><strong>Chứa dữ liệu gì:</strong> Ngày điểm danh, chuỗi ngày liên tiếp, số Coin thưởng ngẫu nhiên.</li>
+        <li><strong>Cập nhật tự động:</strong> CÓ (Trường hợp Update Ví). Hệ thống kiểm tra hợp lệ xong sẽ Tự động cộng tiền sang bảng users.</li>
+        <li><strong>User thao tác:</strong> User bấm "Điểm danh" (Insert record).</li>
+    </ul>
+
+    <h2>4. Nhóm Cộng Đồng & Báo Cáo (Community & Moderation)</h2>
+    
+    <h3>16. novel_ratings (Đánh giá sao)</h3>
+    <ul>
+        <li><strong>Chứa dữ liệu gì:</strong> Số điểm (1-5 sao) và nhận xét của độc giả.</li>
+        <li><strong>Cập nhật tự động:</strong> CÓ (Liên đới). Khi user Insert dòng này xong, Backend tự tính lại Trung bình cộng rồi Update sang bảng novels.</li>
+        <li><strong>User thao tác:</strong> Độc giả viết đánh giá và bấm Gửi (Insert).</li>
+    </ul>
+
+    <h3>17. comments (Bình luận)</h3>
+    <ul>
+        <li><strong>Chứa dữ liệu gì:</strong> Comment của user trong truyện hoặc từng chương.</li>
+        <li><strong>Cập nhật tự động:</strong> KHÔNG.</li>
+        <li><strong>User thao tác:</strong> Độc giả viết Comment (Insert). Admin quản lý (Update trạng thái HIDDEN/DELETED).</li>
+    </ul>
+
+    <h3>18. comment_reports & 19. content_reports (Báo cáo vi phạm)</h3>
+    <ul>
+        <li><strong>Chứa dữ liệu gì:</strong> Các vé (Ticket) tố cáo từ độc giả về Comment độc hại, Truyện sai lệch...</li>
+        <li><strong>Cập nhật tự động:</strong> KHÔNG.</li>
+        <li><strong>User thao tác:</strong> Độc giả gửi phiếu (Insert). Admin/Staff vào duyệt báo cáo (Update status = PROCESSED).</li>
+    </ul>
+
+    <h3>20. notifications (Thông báo)</h3>
+    <ul>
+        <li><strong>Chứa dữ liệu gì:</strong> Hộp thư chứa thông báo từ hệ thống đến User.</li>
+        <li><strong>Cập nhật tự động:</strong> CÓ. Hệ thống tự động sinh ra (Insert) gửi cho User khi kết quả Báo Cáo của họ được Admin xử lý xong.</li>
+        <li><strong>User thao tác:</strong> Admin chủ động tạo thông báo thủ công gửi nhiều người. Độc giả bấm xem thì Update is_read = true.</li>
+    </ul>
+
+    <h2>5. Nhóm Thanh Toán & Giao Dịch (Payment)</h2>
+    
+    <h3>21. coin_packages (Gói Nạp Coin)</h3>
+    <ul>
+        <li><strong>Chứa dữ liệu gì:</strong> Các mức giá (Ví dụ: Gói 10k VNĐ = 100 Coin).</li>
+        <li><strong>Cập nhật tự động:</strong> KHÔNG.</li>
+        <li><strong>User thao tác:</strong> Admin chủ động tạo ra các gói (Insert/Update).</li>
+    </ul>
+
+    <h3>22. deposit_orders (Đơn Nạp Tiền)</h3>
+    <ul>
+        <li><strong>Chứa dữ liệu gì:</strong> Thông tin đơn giao dịch (Mã TT12345, Số tiền, Trạng thái: PENDING/SUCCESS).</li>
+        <li><strong>Cập nhật tự động:</strong> CÓ. Khi Ngân hàng (Ví dụ: VNPay) gọi API (Webhook/IPN) trả kết quả giao dịch về Backend của bạn, hệ thống tự động Đổi Trạng Thái từ PENDING sang SUCCESS.</li>
+        <li><strong>User thao tác:</strong> Độc giả bấm Nạp Tiền (Khởi tạo đơn PENDING).</li>
+    </ul>
+
+    <h3>23. payment_logs (Nhật ký Bank)</h3>
+    <ul>
+        <li><strong>Chứa dữ liệu gì:</strong> Lưu nguyên cục JSON/Data thô (Raw) mà Bank gửi về server để đối soát rủi ro.</li>
+        <li><strong>Cập nhật tự động:</strong> HOÀN TOÀN TỰ ĐỘNG (Bởi Backend đón API IPN từ Bank).</li>
+    </ul>
+
+    <h3>24. transactions (Sổ cái Ví)</h3>
+    <ul>
+        <li><strong>Chứa dữ liệu gì:</strong> Dòng thời gian chi tiết (Timestamp, Số lượng cộng/trừ, Dư nợ cuối) của 1 cái ví User.</li>
+        <li><strong>Cập nhật tự động:</strong> HOÀN TOÀN TỰ ĐỘNG. Đây là bảng Không Cho Phép Xóa/Sửa. Backend tự Insert mỗi khi: Đơn Nạp Thành Công (+), Mua Chương VIP (-), Điểm Danh (+), Admin tặng tiền (+).</li>
+    </ul>
+
+    <h2>6. Nhóm Hệ Thống & Kiểm Toán (System Admin)</h2>
+    
+    <h3>25. system_settings (Cấu hình chung)</h3>
+    <ul>
+        <li><strong>Chứa dữ liệu gì:</strong> Key-Value (Tỷ giá quy đổi, Chính sách bảo mật, Link Facebook Admin).</li>
+        <li><strong>Cập nhật tự động:</strong> KHÔNG.</li>
+        <li><strong>User thao tác:</strong> Admin chỉnh sửa trên Dashboard (Update).</li>
+    </ul>
+
+    <h3>26. system_audit_logs (Nhật ký Admin)</h3>
+    <ul>
+        <li><strong>Chứa dữ liệu gì:</strong> Lưu Vết để chống lạm quyền (Admin A xóa Truyện B vào lúc nào, ID cũ là gì, ID mới là gì).</li>
+        <li><strong>Cập nhật tự động:</strong> CÓ. Các API nhạy cảm của Admin sẽ có AOP (Aspect-Oriented Programming) / Filter tự động móc vào và Insert log ẩn.</li>
+    </ul>
+
+    <h3>27. user_login_logs (Nhật ký Đăng nhập)</h3>
+    <ul>
+        <li><strong>Chứa dữ liệu gì:</strong> Lưu IP, Trình duyệt, kết quả pass/fail khi đăng nhập.</li>
+        <li><strong>Cập nhật tự động:</strong> CÓ. Security tự động Insert dòng này khi request chạy tới endpoint /login.</li>
+    </ul>
+
+    <h3>28. themes (Quản lý Giao diện)</h3>
+    <ul>
+        <li><strong>Chứa dữ liệu gì:</strong> Lưu thông tin các gói Layout (Giao diện Tết, Haloween...).</li>
+        <li><strong>Cập nhật tự động:</strong> KHÔNG.</li>
+        <li><strong>User thao tác:</strong> Admin tải lên (Upload file) và kích hoạt (Update is_active = true).</li>
+    </ul>
+</body>
+</html>
