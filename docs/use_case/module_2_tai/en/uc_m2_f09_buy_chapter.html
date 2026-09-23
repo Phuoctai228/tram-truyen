@@ -1,15 +1,15 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>UC-09 Buy Chapter</title>
 </head>
 <body>
-<div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">
+<div class="uc-container" style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
     <style>
         .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
-            font-family: 'Times New Roman', serif !important;
-            font-size: 12pt !important;
+            font-family: 'Calibri', sans-serif !important;
+            font-size: 11pt !important;
             color: black !important;
         }
     </style>
@@ -33,7 +33,7 @@
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Trigger:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Member clicks the "Unlock for X Coin" button on a locked VIP chapter overlay.</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Member clicks the `"Unlock"` button on a locked VIP chapter overlay.</td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Description:</b></td>
@@ -41,7 +41,7 @@
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Preconditions:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> The chapter must be marked as PUBLISHED_VIP.</p><p><b>PRE-2.</b> The user must be logged in as a Member.</p></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> The chapter must be marked as PUBLISHED_VIP.</p><p><b>PRE-2.</b> The user must be authenticated as a Member.</p></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Postconditions:</b></td>
@@ -49,15 +49,15 @@
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Normal Flow:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Buy Chapter Successfully</b></p><ol><li>Member clicks "Unlock" on a VIP chapter.</li><li>The system initiates a database transaction with a pessimistic write lock on the user's wallet record.</li><li>The system retrieves the current Coin balance of the member.</li><li>The system determines the Coin balance is greater than or equal to the chapter price.</li><li>The system deducts the chapter price from the member's wallet.</li><li>The system creates a new transaction log entry mapping the purchase to the chapter.</li><li>The system creates an unlock record granting the member permanent access to the chapter.</li><li>The system commits the transaction and releases the lock.</li><li>The system refreshes the page and renders the unlocked reading interface (continuing to UC-03).</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Buy Chapter Successfully</b></p><ol><li>Member clicks the `"Unlock"` button on a VIP chapter overlay.</li><li>The system retrieves the current actor's session data.</li><li>The system retrieves the current Coin balance of the member.</li><li>The system validates the Coin balance is greater than or equal to the chapter price.</li><li>The system executes a database transaction to deduct the price, create a transaction log, and create an unlock record.</li><li>The system refreshes the page and renders the unlocked reading interface.</li></ol></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Alternative Flows:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.4 Alt Insufficient Balance</b></p><ol><li>The system determines the member's Coin balance is lower than the chapter price.</li><li>The system rolls back the transaction (releasing the lock).</li><li>The system displays an error message: "Insufficient Coin balance."</li><li>The system renders a "Top-up Now" button linking to the payment page.</li><li>Back to step 1.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.4 Insufficient Balance</b></p><ol><li>The system determines the member's Coin balance is lower than the chapter price.</li><li>The system displays an error message regarding insufficient balance.</li><li>The system renders a `"Top-up Now"` button linking to the payment page.</li><li>Back to step 1.</li></ol></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Exceptions:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-2 Concurrency Error</b></p><ol><li>The system encounters a database timeout while attempting to acquire a lock (e.g., due to rapid simultaneous clicks).</li><li>The system rolls back any pending changes.</li><li>The system displays a "System busy, please try again" message.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Session Invalid (Not Logged In)</b></p><ol><li>The system displays an authentication error message.</li><li>The system redirects the user to the login page.</li></ol><p><b>EX-5 Concurrency Error</b></p><ol><li>The system encounters a database lock timeout.</li><li>The system rolls back any pending changes.</li><li>The system displays a generic busy error message.</li></ol></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Priority:</b></td>
@@ -83,4 +83,3 @@
 </div>
 </body>
 </html>
-

@@ -1,15 +1,15 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>UC-03 Read Chapter</title>
 </head>
 <body>
-<div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">
+<div class="uc-container" style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
     <style>
         .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
-            font-family: 'Times New Roman', serif !important;
-            font-size: 12pt !important;
+            font-family: 'Calibri', sans-serif !important;
+            font-size: 11pt !important;
             color: black !important;
         }
     </style>
@@ -41,7 +41,7 @@
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Preconditions:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> The requested chapter must exist and have a PUBLISHED status.</p></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> The requested chapter must exist in the system.</p></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Postconditions:</b></td>
@@ -49,15 +49,15 @@
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Normal Flow:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Read Free Chapter Successfully</b></p><ol><li>Actor accesses the reading page for a specific chapter.</li><li>The system extracts the chapter ID from the request.</li><li>The system validates the chapter's publication status.</li><li>The system determines the chapter is Free.</li><li>The system retrieves the textual content of the chapter from the database.</li><li>The system retrieves the actor's saved reading preferences (e.g., font size, background color) if available.</li><li>The system renders the reading interface, displaying the formatted text and navigation controls (Next/Previous).</li><li>The system triggers an asynchronous background job to update the novel's total view count.</li><li>(Async) If the actor is a Member, the system records the chapter in their reading history and updates their bookmark progress.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Read Free Chapter Successfully</b></p><ol><li>Actor accesses the reading page for a specific chapter.</li><li>The system extracts the chapter ID from the request.</li><li>The system retrieves the chapter data from the database.</li><li>The system validates the chapter's publication status is published.</li><li>The system determines the chapter access level is Free.</li><li>The system retrieves the textual content of the chapter from the database.</li><li>The system retrieves the actor's session data.</li><li>The system retrieves the actor's saved reading preferences (e.g., font size, background color).</li><li>The system renders the reading interface, displaying the formatted text and navigation controls (`"Previous"`, `"Next"`).</li><li>10a. The system triggers an asynchronous background job to update the novel's total view count.</li><li>11a. If the actor is a Member, the system triggers an asynchronous background job to record the chapter in their reading history and update their bookmark progress.</li></ol></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Alternative Flows:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.4 Alt Locked VIP Chapter</b></p><ol><li>The system determines the chapter is a VIP chapter.</li><li>The system checks the actor's session and unlock records.</li><li>The system determines the actor has not unlocked this chapter.</li><li>The system interrupts the reading flow.</li><li>The system displays a prompt overlay asking the user to unlock the chapter with Coin.</li><li>Back to step 1 (triggered after the actor successfully unlocks it via UC-09).</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.5 Locked VIP Chapter</b></p><ol><li>The system determines the chapter access level is VIP.</li><li>The system checks the actor's session and unlock records.</li><li>The system validates the actor has not unlocked this chapter.</li><li>The system displays a prompt overlay asking the user to unlock the chapter, presenting an `"Unlock"` button.</li><li>Back to step 1 (triggered after the actor successfully unlocks it via UC-09).</li></ol></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Exceptions:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-3 Chapter Not Found</b></p><ol><li>The system determines the requested chapter ID does not exist or has been unpublished.</li><li>The system displays a 404 Not Found message.</li><li>The system redirects the actor to the novel's detail page.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-3 Chapter Not Found</b></p><ol><li>The system determines the requested chapter ID does not exist in the database.</li><li>The system displays a 404 error page.</li></ol><p><b>EX-4 Chapter Unpublished</b></p><ol><li>The system determines the chapter's publication status is unpublished.</li><li>The system displays an error message indicating the chapter is currently unavailable.</li></ol></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Priority:</b></td>
@@ -83,4 +83,3 @@
 </div>
 </body>
 </html>
-

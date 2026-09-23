@@ -1,15 +1,15 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <title>UC-06 Thêm Truyện Vào Tủ Sách</title>
 </head>
 <body>
-<div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">
+<div class="uc-container" style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
     <style>
         .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
-            font-family: 'Times New Roman', serif !important;
-            font-size: 12pt !important;
+            font-family: 'Calibri', sans-serif !important;
+            font-size: 11pt !important;
             color: black !important;
         }
     </style>
@@ -33,7 +33,7 @@
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Kích hoạt (Trigger):</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Member nhấn nút "Thêm vào Tủ sách" trên trang chi tiết truyện hoặc trang đọc truyện.</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Member nhấn nút `"Thêm vào Tủ sách"` trên trang chi tiết truyện hoặc trang đọc truyện.</td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mô tả (Description):</b></td>
@@ -49,7 +49,7 @@
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng cơ bản:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Thêm vào tủ sách thành công</b></p><ol><li>Member nhấn nút "Thêm vào Tủ sách".</li><li>Hệ thống xác thực phiên đăng nhập hiện tại.</li><li>Hệ thống xác minh ID truyện được yêu cầu có tồn tại.</li><li>Hệ thống truy vấn cơ sở dữ liệu để đảm bảo truyện chưa có trong tủ sách của thành viên.</li><li>Hệ thống tạo một bản ghi tủ sách mới liên kết ID Member và ID Truyện.</li><li>Hệ thống cập nhật trạng thái nút trên giao diện để biểu thị truyện đang được theo dõi (ví dụ: đổi thành "Xóa khỏi Tủ sách").</li><li>Hệ thống hiển thị một thông báo thành công.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Thêm vào tủ sách thành công</b></p><ol><li>Member nhấn nút `"Thêm vào Tủ sách"`.</li><li>Hệ thống trích xuất dữ liệu phiên làm việc của tác nhân hiện tại.</li><li>Hệ thống truy xuất thông tin truyện được yêu cầu từ cơ sở dữ liệu.</li><li>Hệ thống xác thực truyện được yêu cầu tồn tại và công khai.</li><li>Hệ thống xác thực truyện chưa có trong tủ sách của thành viên.</li><li>Hệ thống tạo một bản ghi tủ sách mới liên kết thành viên và truyện.</li><li>Hệ thống cập nhật trạng thái nút chức năng thành `"Xóa khỏi Tủ sách"`.</li><li>Hệ thống hiển thị thông báo thành công.</li></ol></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng thay thế:</b></td>
@@ -57,7 +57,7 @@
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Ngoại lệ (Exceptions):</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Phiên bản không hợp lệ (Chưa đăng nhập)</b></p><ol><li>Hệ thống xác định tác nhân chưa đăng nhập.</li><li>Hệ thống hiển thị thông báo lỗi xác thực.</li><li>Hệ thống chuyển hướng người dùng đến trang đăng nhập.</li></ol><p><b>EX-4 Đã có trong Tủ sách</b></p><ol><li>Hệ thống xác định truyện đã được đánh dấu bởi thành viên (ví dụ: do gửi yêu cầu trùng lặp).</li><li>Hệ thống bỏ qua yêu cầu thêm mới.</li><li>Hệ thống làm mới giao diện để phản ánh trạng thái chính xác.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Phiên bản không hợp lệ (Chưa đăng nhập)</b></p><ol><li>Hệ thống hiển thị thông báo lỗi xác thực.</li><li>Hệ thống chuyển hướng người dùng đến trang đăng nhập.</li></ol><p><b>EX-5 Đã có trong Tủ sách</b></p><ol><li>Hệ thống xác định truyện đã được lưu bởi thành viên.</li><li>Hệ thống bỏ qua yêu cầu thêm mới.</li><li>Hệ thống làm mới giao diện để phản ánh trạng thái chính xác.</li></ol></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mức độ ưu tiên:</b></td>
@@ -69,7 +69,7 @@
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Quy tắc nghiệp vụ:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">None</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Không có</td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Thông tin khác:</b></td>
@@ -83,4 +83,3 @@
 </div>
 </body>
 </html>
-

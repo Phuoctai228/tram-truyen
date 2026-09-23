@@ -1,15 +1,15 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <title>UC-02 Xem Chi Tiết Truyện</title>
 </head>
 <body>
-<div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">
+<div class="uc-container" style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
     <style>
         .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
-            font-family: 'Times New Roman', serif !important;
-            font-size: 12pt !important;
+            font-family: 'Calibri', sans-serif !important;
+            font-size: 11pt !important;
             color: black !important;
         }
     </style>
@@ -37,7 +37,7 @@
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mô tả (Description):</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Hiển thị toàn bộ siêu dữ liệu (metadata) của một bộ truyện, bao gồm phần tóm tắt, điểm đánh giá trung bình và danh sách chương phân trang. Cung cấp các nút tương tác để đọc, lưu vào tủ sách và đánh giá.</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Hiển thị toàn bộ siêu dữ liệu của một bộ truyện, bao gồm phần tóm tắt, điểm đánh giá trung bình và danh sách chương phân trang. Cung cấp các nút tương tác để đọc, lưu vào tủ sách và đánh giá.</td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện tiên quyết:</b></td>
@@ -49,15 +49,15 @@
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng cơ bản:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Xem chi tiết thành công</b></p><ol><li>Tác nhân nhấn vào một bộ truyện cụ thể.</li><li>Hệ thống trích xuất định danh duy nhất (ID/slug) của truyện từ yêu cầu (request).</li><li>Hệ thống lấy dữ liệu cốt lõi của truyện (tiêu đề, tác giả, tóm tắt, ảnh bìa).</li><li>Hệ thống tính toán điểm đánh giá trung bình và tổng lượt xem của truyện.</li><li>Hệ thống lấy danh sách các chương đã xuất bản của truyện (có phân trang).</li><li>Hệ thống xác định trạng thái truy cập (Miễn phí hay VIP) cho từng chương vừa lấy được.</li><li>Hệ thống kích hoạt một tiến trình ngầm (async) để tăng tổng lượt xem của truyện.</li><li>Hệ thống kiểm tra xem tác nhân hiện tại có phải là Member đã đăng nhập và đã lưu truyện này vào tủ sách hay chưa.</li><li>Hệ thống kết xuất (render) trang chi tiết truyện, hiển thị siêu dữ liệu, danh sách chương và các nút chức năng ("Đọc chương đầu", "Thêm vào Tủ sách").</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Xem chi tiết thành công</b></p><ol><li>Tác nhân truy cập trang chi tiết truyện.</li><li>Hệ thống trích xuất định danh duy nhất của truyện từ yêu cầu.</li><li>Hệ thống truy xuất dữ liệu cốt lõi của truyện.</li><li>Hệ thống tính toán điểm đánh giá trung bình và tổng lượt xem của truyện.</li><li>Hệ thống lấy danh sách các chương đã xuất bản của truyện.</li><li>Hệ thống xác định trạng thái truy cập cho từng chương.</li><li>7a. Hệ thống kích hoạt tiến trình ngầm để tăng tổng lượt xem của truyện.</li><li>Hệ thống trích xuất dữ liệu phiên làm việc của tác nhân hiện tại.</li><li>Hệ thống kiểm tra tác nhân đã lưu truyện vào tủ sách.</li><li>Hệ thống hiển thị trang chi tiết truyện, bao gồm thông tin mô tả, danh sách chương và các nút chức năng (`"Đọc chương đầu"`, `"Thêm vào Tủ sách"`).</li></ol></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng thay thế:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.8 Alt Đã lưu tủ sách</b></p><ol><li>Hệ thống xác định Member hiện tại đã lưu truyện này vào tủ sách.</li><li>Hệ thống đổi trạng thái của nút chức năng thành "Xóa khỏi Tủ sách".</li><li>Chuyển tới bước 9.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.9 Đã lưu tủ sách</b></p><ol><li>Hệ thống xác định tác nhân là Member đã đăng nhập và đã lưu truyện vào tủ sách.</li><li>Hệ thống chuẩn bị trạng thái nút chức năng là `"Xóa khỏi Tủ sách"`.</li><li>Quay lại bước 10.</li></ol></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Ngoại lệ (Exceptions):</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-3 Không tìm thấy truyện</b></p><ol><li>Hệ thống xác định ID truyện được yêu cầu không tồn tại, đã bị xóa hoặc đang ở trạng thái chưa xuất bản.</li><li>Hệ thống hiển thị trang lỗi 404 Không Tìm Thấy (Not Found).</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-3 Không tìm thấy truyện</b></p><ol><li>Hệ thống xác định ID truyện được yêu cầu không tồn tại, đã bị xóa hoặc đang ở trạng thái chưa xuất bản.</li><li>Hệ thống hiển thị trang lỗi 404.</li></ol></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mức độ ưu tiên:</b></td>
@@ -83,4 +83,3 @@
 </div>
 </body>
 </html>
-
