@@ -1,15 +1,15 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <title>UC-05 Lưu Tiến Độ Đọc</title>
 </head>
 <body>
-<div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">
+<div class="uc-container" style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
     <style>
         .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
-            font-family: 'Times New Roman', serif !important;
-            font-size: 12pt !important;
+            font-family: 'Calibri', sans-serif !important;
+            font-size: 11pt !important;
             color: black !important;
         }
     </style>
@@ -49,7 +49,7 @@
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng cơ bản:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Lưu tiến độ thành công</b></p><ol><li>Member đọc một chương trên giao diện đọc.</li><li>Hệ thống xác định vị trí (index) của chương hiện tại so với tổng số chương đã xuất bản của truyện.</li><li>Hệ thống tính toán tỷ lệ phần trăm hoàn thành tổng thể.</li><li>Hệ thống tạo ra một gói dữ liệu (payload) chứa ID chương và tỷ lệ phần trăm vừa tính.</li><li>Hệ thống gửi một yêu cầu ngầm (async) để cập nhật bản ghi bookmark cho truyện này.</li><li>Hệ thống lưu thành công tiến độ vào cơ sở dữ liệu.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Lưu tiến độ thành công</b></p><ol><li>Member đọc một chương trên giao diện đọc.</li><li>Hệ thống trích xuất dữ liệu phiên làm việc của tác nhân hiện tại.</li><li>Hệ thống xác định vị trí của chương hiện tại so với tổng số chương đã xuất bản.</li><li>Hệ thống tính toán tỷ lệ phần trăm tiến độ đọc tổng thể.</li><li>Hệ thống thực thi tiến trình ngầm để cập nhật bản ghi lưu truyện trong cơ sở dữ liệu với dữ liệu tiến độ mới.</li></ol></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng thay thế:</b></td>
@@ -57,7 +57,7 @@
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Ngoại lệ (Exceptions):</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Phiên bản không hợp lệ (Chưa đăng nhập)</b></p><ol><li>Hệ thống nhận được phản hồi không có quyền truy cập (unauthorized) trong khi gửi yêu cầu ngầm.</li><li>Hệ thống âm thầm hủy bỏ bản cập nhật tiến độ (không làm gián đoạn việc đọc, nhưng tiến độ không được lưu).</li></ol><p><b>EX-5 Lỗi mạng</b></p><ol><li>Hệ thống gặp sự cố mạng tạm thời khi đang lưu tiến độ.</li><li>Hệ thống đưa bản cập nhật vào hàng đợi cục bộ.</li><li>Hệ thống thử đồng bộ lại vào lần tương tác mạng thành công tiếp theo (ví dụ: chuyển sang chương sau).</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Phiên bản không hợp lệ (Chưa đăng nhập)</b></p><ol><li>Hệ thống nhận được phản hồi không có quyền truy cập khi thực thi tiến trình ngầm.</li><li>Hệ thống hủy bỏ việc cập nhật tiến độ mà không làm gián đoạn trải nghiệm đọc.</li></ol><p><b>EX-5 Lỗi mạng</b></p><ol><li>Hệ thống gặp sự cố mạng khi cập nhật tiến độ ngầm.</li><li>Hệ thống lưu dữ liệu cập nhật vào hàng đợi cục bộ.</li><li>Hệ thống thử đồng bộ lại vào lần tương tác tiếp theo.</li></ol></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mức độ ưu tiên:</b></td>
@@ -73,7 +73,7 @@
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Thông tin khác:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Quá trình diễn ra hoàn toàn không đồng bộ ở chế độ nền (background).</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Quá trình diễn ra hoàn toàn không đồng bộ ở chế độ nền.</td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Giả định:</b></td>
@@ -83,4 +83,3 @@
 </div>
 </body>
 </html>
-

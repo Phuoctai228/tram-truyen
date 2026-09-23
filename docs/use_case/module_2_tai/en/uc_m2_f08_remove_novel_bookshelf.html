@@ -1,15 +1,15 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>UC-08 Remove Novel from Bookshelf</title>
 </head>
 <body>
-<div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">
+<div class="uc-container" style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
     <style>
         .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
-            font-family: 'Times New Roman', serif !important;
-            font-size: 12pt !important;
+            font-family: 'Calibri', sans-serif !important;
+            font-size: 11pt !important;
             color: black !important;
         }
     </style>
@@ -33,7 +33,7 @@
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Trigger:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Member clicks the "Remove from Bookshelf" button or icon on a novel item.</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Member clicks the `"Remove from Bookshelf"` button or trash icon on a novel item.</td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Description:</b></td>
@@ -49,15 +49,15 @@
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Normal Flow:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Remove Successfully</b></p><ol><li>Member clicks the "Remove from Bookshelf" or trash icon.</li><li>The system validates the current session.</li><li>The system asks for a confirmation via a popup modal.</li><li>Member confirms the deletion.</li><li>The system executes a delete query for the corresponding bookmark record.</li><li>The system removes the novel item from the UI dynamically.</li><li>The system displays a brief success toast notification.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Remove Successfully</b></p><ol><li>Member clicks the `"Remove from Bookshelf"` button or trash icon.</li><li>The system retrieves the current actor's session data.</li><li>The system renders a confirmation modal.</li><li>Member clicks the `"Confirm"` button.</li><li>The system deletes the corresponding bookmark record from the database.</li><li>The system removes the novel item from the UI dynamically.</li><li>The system displays a success notification message.</li></ol></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Alternative Flows:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.4 Alt Cancel Deletion</b></p><ol><li>Member clicks "Cancel" on the confirmation modal.</li><li>The system closes the modal without making any changes.</li><li>Back to step 1.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.4 Cancel Deletion</b></p><ol><li>Member clicks the `"Cancel"` button on the confirmation modal.</li><li>The system closes the modal without making any changes.</li><li>Back to step 1.</li></ol></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Exceptions:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Session Invalid (Not Logged In)</b></p><ol><li>The system determines the actor is not logged in.</li><li>The system displays an authentication error message.</li><li>The system redirects the user to the login page.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Session Invalid (Not Logged In)</b></p><ol><li>The system displays an authentication error message.</li><li>The system redirects the user to the login page.</li></ol></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Priority:</b></td>
@@ -83,4 +83,3 @@
 </div>
 </body>
 </html>
-

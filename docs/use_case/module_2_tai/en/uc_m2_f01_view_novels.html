@@ -1,15 +1,15 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>UC-01 View Novel List</title>
 </head>
 <body>
-<div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">
+<div class="uc-container" style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
     <style>
         .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
-            font-family: 'Times New Roman', serif !important;
-            font-size: 12pt !important;
+            font-family: 'Calibri', sans-serif !important;
+            font-size: 11pt !important;
             color: black !important;
         }
     </style>
@@ -49,11 +49,11 @@
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Normal Flow:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. View Novel List Successfully</b></p><ol><li>Actor accesses the homepage or a specific category page.</li><li>The system retrieves the current actor's session data (if any).</li><li>The system queries the database for publicly available novels based on the requested path.</li><li>The system applies default sorting rules (e.g., newest updates first).</li><li>The system calculates pagination data based on the total result count.</li><li>The system displays the list of novels, rendering titles, cover images, authors, and summary snippets.</li><li>The system renders the pagination controls at the bottom of the list.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. View Novel List Successfully</b></p><ol><li>Actor accesses the homepage or a specific category page.</li><li>The system retrieves the current actor's session data.</li><li>The system retrieves publicly available novels based on the requested path.</li><li>The system sorts the retrieved novels applying default sorting rules.</li><li>The system calculates pagination data based on the total result count.</li><li>The system displays the list of novels, rendering descriptive elements such as titles, cover images, authors, and summary snippets.</li><li>The system renders the pagination controls at the bottom of the list.</li></ol></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Alternative Flows:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.3 Alt Empty Category</b></p><ol><li>The system determines there are no published novels matching the current category or filter.</li><li>The system renders an empty state illustration and a descriptive message.</li><li>Back to step 1.</li></ol><p><b>A.7 Alt Change Page</b></p><ol><li>Actor clicks a specific page number or the "Next" button on the pagination controls.</li><li>The system calculates the offset for the requested page.</li><li>The system queries the database for the novel records on the requested page.</li><li>The system updates the UI to display the new set of novels.</li><li>Back to step 7.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.3 Empty Category</b></p><ol><li>The system determines there are no published novels matching the current category or filter.</li><li>The system renders an empty state illustration and a descriptive message.</li><li>Back to step 1.</li></ol><p><b>A.7 Change Page</b></p><ol><li>Actor clicks a specific page number, `"Previous"`, or `"Next"` button on the pagination controls.</li><li>The system calculates the offset for the requested page.</li><li>The system queries the database for the novel records on the requested page.</li><li>The system updates the UI to display the new set of novels.</li><li>Back to step 7.</li></ol></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Exceptions:</b></td>
@@ -83,4 +83,3 @@
 </div>
 </body>
 </html>
-

@@ -92,13 +92,13 @@ When creating a use case specification, you MUST follow this workflow:
 3. **Export on Approval:** Once the user reviews and explicitly approves the preview, you must export the specification as an HTML file to the `docs/use_case/module_x_creator_name/[en|vi]` directory in the workspace. 
     * The HTML file MUST be structured as a 4-column bordered table to be copy-paste friendly for Google Docs.
     * The table MUST include rows for all standard Use Case fields in this exact order: `UC ID and Name`, `Created By` / `Date Created`, `Primary Actor` / `Secondary Actors`, `Trigger`, `Description`, `Preconditions`, `Postconditions`, `Normal Flow`, `Alternative Flows`, `Exceptions`, `Priority`, `Frequency of Use`, `Business Rules`, `Other Information`, and `Assumptions`.
-    * Required inline styles for the container `div` (e.g., `<div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">`).
+    * Required inline styles for the container `div` (e.g., `<div class="uc-container" style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">`).
     * You MUST include a `<style>` block immediately inside the container `div` to strictly enforce the font-family, font-size, and color for all child elements:
       ```html
       <style>
           .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
-              font-family: 'Times New Roman', serif !important;
-              font-size: 12pt !important;
+              font-family: 'Calibri', sans-serif !important;
+              font-size: 11pt !important;
               color: black !important;
           }
       </style>

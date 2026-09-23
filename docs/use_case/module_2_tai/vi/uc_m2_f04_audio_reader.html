@@ -1,15 +1,15 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <title>UC-04 Nghe Đọc Truyện (Audio Reader)</title>
 </head>
 <body>
-<div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">
+<div class="uc-container" style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
     <style>
         .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
-            font-family: 'Times New Roman', serif !important;
-            font-size: 12pt !important;
+            font-family: 'Calibri', sans-serif !important;
+            font-size: 11pt !important;
             color: black !important;
         }
     </style>
@@ -33,7 +33,7 @@
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Kích hoạt (Trigger):</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Member nhấn vào biểu tượng "Nghe" (Listen) trên giao diện đọc của một chương.</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Member nhấn vào biểu tượng `"Nghe"` trên giao diện đọc của một chương.</td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mô tả (Description):</b></td>
@@ -49,15 +49,15 @@
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng cơ bản:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Nghe đọc thành công</b></p><ol><li>Member nhấn vào biểu tượng "Nghe" trên giao diện đọc.</li><li>Hệ thống hiển thị bảng điều khiển trình phát âm thanh (Phát, Tạm dừng, Tốc độ).</li><li>Hệ thống trích xuất nội dung văn bản thuần túy của chương, loại bỏ các thẻ HTML.</li><li>Hệ thống khởi tạo bộ máy text-to-speech có sẵn của trình duyệt.</li><li>Hệ thống nạp văn bản đã trích xuất vào hàng đợi tổng hợp giọng nói.</li><li>Hệ thống tự động bắt đầu phát âm thanh.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Nghe đọc thành công</b></p><ol><li>Member nhấn vào biểu tượng `"Nghe"` trên giao diện đọc.</li><li>Hệ thống trích xuất dữ liệu phiên làm việc của tác nhân hiện tại.</li><li>Hệ thống hiển thị bảng điều khiển trình phát âm thanh.</li><li>Hệ thống trích xuất nội dung văn bản thuần túy của chương.</li><li>Hệ thống khởi tạo bộ máy text-to-speech có sẵn của trình duyệt.</li><li>Hệ thống nạp văn bản đã trích xuất vào hàng đợi tổng hợp giọng nói.</li><li>Hệ thống tự động bắt đầu phát âm thanh.</li></ol></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng thay thế:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.4 Alt Trình duyệt không hỗ trợ</b></p><ol><li>Hệ thống xác định trình duyệt của thành viên không hỗ trợ Web Speech API.</li><li>Hệ thống hiển thị thông báo cảnh báo về sự không tương thích.</li><li>Quay lại bước 1.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.4 Trình duyệt không hỗ trợ</b></p><ol><li>Hệ thống xác định trình duyệt của thành viên không hỗ trợ Web Speech API.</li><li>Hệ thống hiển thị thông báo cảnh báo về sự không tương thích.</li><li>Quay lại bước 1.</li></ol></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Ngoại lệ (Exceptions):</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Phiên bản không hợp lệ (Chưa đăng nhập)</b></p><ol><li>Hệ thống hiển thị thông báo lỗi xác thực.</li><li>Hệ thống chuyển hướng người dùng đến trang đăng nhập.</li></ol><p><b>EX-4 Lỗi bộ máy TTS</b></p><ol><li>Bộ máy text-to-speech không thể tạo ra âm thanh hoặc bị lỗi (crash).</li><li>Hệ thống hiển thị thông báo lỗi và đề xuất tải lại trang.</li><li>Hệ thống ẩn bảng điều khiển trình phát âm thanh.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Phiên bản không hợp lệ (Chưa đăng nhập)</b></p><ol><li>Hệ thống hiển thị thông báo lỗi xác thực.</li><li>Hệ thống chuyển hướng người dùng đến trang đăng nhập.</li></ol><p><b>EX-4 Lỗi bộ máy TTS</b></p><ol><li>Bộ máy text-to-speech không thể tạo ra âm thanh hoặc bị lỗi.</li><li>Hệ thống hiển thị thông báo lỗi và đề xuất tải lại trang.</li><li>Hệ thống ẩn bảng điều khiển trình phát âm thanh.</li></ol></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mức độ ưu tiên:</b></td>
@@ -83,4 +83,3 @@
 </div>
 </body>
 </html>
-
