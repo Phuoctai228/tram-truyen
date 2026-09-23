@@ -1,85 +1,169 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>UC-06 Audit Transactions</title>
 </head>
+
 <body>
-<div class="uc-container" style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
-    <style>
-        .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
-            font-family: 'Calibri', sans-serif !important;
-            font-size: 11pt !important;
-            color: black !important;
-        }
-    </style>
-    <p><b>Functional Description Template</b></p>
-    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>UC ID and Name:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-06 Audit Transactions</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Created By:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Khánh</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Date Created:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-23</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Primary Actor:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;">Admin</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Secondary Actors:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;">None</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Trigger:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Admin selects `"Audit Transactions"` under the financial management section.</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Description:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Empowers Admin to inspect, reconcile, and audit the complete ledger of Coin balance movements across the entire platform (deposit orders via VNPay sandbox and Coin deductions for VIP chapter unlocks), matching external bank transaction IDs with IPN webhook logs to ensure financial integrity.</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Preconditions:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> The user is authenticated with the Admin role.</p></td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Postconditions:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> Admin views financial summary metrics and paginated transaction audit records.</p></td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Normal Flow:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Audit Transactions Successfully</b></p><ol><li>Admin navigates to the transaction audit page.</li><li>The system verifies the actor's Admin authorization.</li><li>The system calculates high-level financial metrics (total VNĐ deposited, total Coin issued, and total Coin consumed).</li><li>The system queries deposit orders and transaction ledger records applying default pagination.</li><li>The system renders summary metric cards and the audit data table (Order Code, User, Type, Amount/Coin, Status, Bank Transaction Code, Timestamp).</li><li>Admin inputs search criteria or selects filter parameters (date range, transaction type, order code, user email).</li><li>Admin clicks `"Search"` button.</li><li>The system queries database records satisfying the filter criteria.</li><li>The system updates the audit table with paginated filtered results.</li></ol></td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Alternative Flows:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.5 View Raw IPN Log</b></p><ol><li>Admin clicks `"View IPN Log"` button on a specific VNPay deposit record.</li><li>The system queries matching raw payload records from the payment_logs table by order code.</li><li>The system displays a modal containing raw JSON response, gateway IP address, and verification status.</li><li>Admin inspects audit details and clicks `"Close"` button.</li><li>Back to step 5.</li></ol><p><b>A.8 No Matching Transactions</b></p><ol><li>The system determines no records match the specified search filters.</li><li>The system renders an empty results notification.</li><li>Back to step 6.</li></ol><p><b>A.9 Change Page</b></p><ol><li>Admin clicks a page number or `"Next"`, `"Previous"` button on pagination controls.</li><li>The system calculates page offset and retrieves the requested records.</li><li>The system refreshes the transaction audit table.</li><li>Back to step 9.</li></ol></td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Exceptions:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Session Invalid (Not Logged In)</b></p><ol><li>The system displays an authentication error message.</li><li>The system redirects the user to the login page.</li></ol><p><b>EX-2 Access Denied</b></p><ol><li>The system determines the user lacks Admin privileges.</li><li>The system displays a 403 Forbidden page.</li></ol></td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Priority:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High, Must Have</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Frequency of Use:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Periodic (Daily / Weekly)</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Business Rules:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">BR-01, BR-03</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Other Information:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cash refunds or balance withdrawals are strictly unsupported per platform rules.</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Assumptions:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Admin has a stable internet connection.</li></ul></td>
-        </tr>
-    </table>
-</div>
+    <div class="uc-container"
+        style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
+        <style>
+            .uc-container,
+            .uc-container table,
+            .uc-container tr,
+            .uc-container td,
+            .uc-container th,
+            .uc-container p,
+            .uc-container ol,
+            .uc-container ul,
+            .uc-container li,
+            .uc-container span,
+            .uc-container strong,
+            .uc-container b {
+                font-family: 'Calibri', sans-serif !important;
+                font-size: 11pt !important;
+                color: black !important;
+            }
+        </style>
+        <p><b>Functional Description Template</b></p>
+        <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>UC ID and Name:</b>
+                </td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-06 Audit
+                    Transactions</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Created By:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">KhanhND</td>
+                <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Date Created:</b>
+                </td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-23</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Primary Actor:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;">Admin</td>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Secondary Actors:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;">None</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Trigger:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Admin selects "Audit
+                    Transactions" under the financial management section.</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Description:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Empowers Admin to
+                    inspect, reconcile, and audit the complete ledger of Coin balance movements across the entire
+                    platform (deposit orders via VNPay sandbox and Coin deductions for VIP chapter unlocks), matching
+                    external bank transaction IDs with IPN webhook logs to ensure financial integrity.</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Preconditions:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>PRE-1.</b> The user is authenticated with the Admin role.</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Postconditions:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>POST-1.</b> Admin views financial summary metrics and paginated transaction audit records.</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Normal Flow:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>A. Audit Transactions Successfully</b></p>
+                    <ol>
+                        <li>Admin navigates to the transaction audit page.</li>
+                        <li>The system verifies the actor's Admin authorization.</li>
+                        <li>The system calculates high-level financial metrics (total VNĐ deposited, total Coin issued,
+                            and total Coin consumed).</li>
+                        <li>The system queries deposit orders and transaction ledger records applying default
+                            pagination.</li>
+                        <li>The system renders summary metric cards and the audit data table (Order Code, User, Type,
+                            Amount/Coin, Status, Bank Transaction Code, Timestamp).</li>
+                        <li>Admin inputs search criteria or selects filter parameters (date range, transaction type,
+                            order code, user email).</li>
+                        <li>Admin clicks "Search" button.</li>
+                        <li>The system queries database records satisfying the filter criteria.</li>
+                        <li>The system updates the audit table with paginated filtered results.</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Alternative Flows:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>A.5 View Raw IPN Log</b></p>
+                    <ol>
+                        <li>Admin clicks "View IPN Log" button on a specific VNPay deposit record.</li>
+                        <li>The system queries matching raw payload records from the payment_logs table by order code.
+                        </li>
+                        <li>The system displays a modal containing raw JSON response, gateway IP address, and
+                            verification status.</li>
+                        <li>Admin inspects audit details and clicks "Close" button.</li>
+                        <li>Back to step 5.</li>
+                    </ol>
+                    <p><b>A.8 No Matching Transactions</b></p>
+                    <ol>
+                        <li>The system determines no records match the specified search filters.</li>
+                        <li>The system renders an empty results notification.</li>
+                        <li>Back to step 6.</li>
+                    </ol>
+                    <p><b>A.9 Change Page</b></p>
+                    <ol>
+                        <li>Admin clicks a page number or "Next" , "Previous" button on pagination controls.</li>
+                        <li>The system calculates page offset and retrieves the requested records.</li>
+                        <li>The system refreshes the transaction audit table.</li>
+                        <li>Back to step 9.</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Exceptions:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>EX-1 Session Invalid (Not Logged In)</b></p>
+                    <ol>
+                        <li>The system displays an authentication error message.</li>
+                        <li>The system redirects the user to the login page.</li>
+                    </ol>
+                    <p><b>EX-2 Access Denied</b></p>
+                    <ol>
+                        <li>The system determines the user lacks Admin privileges.</li>
+                        <li>The system displays a 403 Forbidden page.</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Priority:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High, Must Have</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Frequency of Use:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Periodic (Daily /
+                    Weekly)</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Business Rules:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">BR-01, BR-03</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Other Information:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cash refunds or balance
+                    withdrawals are strictly unsupported per platform rules.</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Assumptions:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <ul>
+                        <li>Admin has a stable internet connection.</li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+    </div>
 </body>
+
 </html>

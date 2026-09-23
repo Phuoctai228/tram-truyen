@@ -1,85 +1,161 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <title>UC-04 Gửi Thông Báo</title>
 </head>
+
 <body>
-<div class="uc-container" style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
-    <style>
-        .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
-            font-family: 'Calibri', sans-serif !important;
-            font-size: 11pt !important;
-            color: black !important;
-        }
-    </style>
-    <p><b>Functional Description Template</b></p>
-    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Mã và Tên UC:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-04 Gửi Thông Báo</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Người tạo:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Khánh</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Ngày tạo:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-23</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân chính:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;">Staff, Admin</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân phụ:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;">Không có</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Kích hoạt (Trigger):</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Actor truy cập chức năng `"Gửi thông báo"` trong bảng điều khiển quản trị.</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mô tả (Description):</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cho phép Staff hoặc Admin chủ động soạn thảo và phát đi thông báo hệ thống đến toàn bộ người dùng (Toàn hệ thống / Broadcast) hoặc gửi thông báo riêng biệt đến một tài khoản người dùng cụ thể.</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện tiên quyết:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> Actor đã đăng nhập hệ thống với vai trò Staff hoặc Admin.</p></td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện hậu quyết:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> Bản ghi thông báo được lưu trữ vào bảng notifications để người nhận có thể đọc trong hòm thư cá nhân.</p></td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng cơ bản:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Gửi thông báo thành công</b></p><ol><li>Actor truy cập trang soạn thông báo hệ thống.</li><li>Hệ thống kiểm tra quyền hạn của tác nhân.</li><li>Hệ thống hiển thị biểu mẫu soạn thông báo với các trường: phạm vi gửi (Toàn hệ thống / Người dùng cụ thể), ô chọn người nhận, tiêu đề và nội dung thông báo.</li><li>Actor chọn phạm vi gửi là `"Toàn hệ thống"`.</li><li>Actor nhập tiêu đề thông báo.</li><li>Actor nhập nội dung chi tiết của thông báo.</li><li>Actor nhấn nút `"Gửi thông báo"`.</li><li>Hệ thống xác thực tiêu đề và nội dung thông báo không được để trống.</li><li>Hệ thống lưu bản ghi thông báo toàn hệ thống vào cơ sở dữ liệu với mã người nhận là NULL.</li><li>Hệ thống hiển thị thông báo gửi thông điệp toàn hệ thống thành công và làm mới biểu mẫu.</li></ol></td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng thay thế:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.4 Gửi cho người dùng cụ thể</b></p><ol><li>Actor chọn phạm vi gửi là `"Người dùng cụ thể"`.</li><li>Actor nhập email hoặc tên tài khoản để tìm kiếm người nhận.</li><li>Hệ thống hiển thị danh sách gợi ý người dùng khớp với từ khóa tìm kiếm.</li><li>Actor chọn người nhận từ danh sách gợi ý.</li><li>Tiếp tục thực hiện các bước 5, 6, 7.</li><li>Hệ thống lưu bản ghi thông báo kèm mã ID định danh của người nhận vào cơ sở dữ liệu.</li><li>Hệ thống hiển thị thông báo gửi thư thành công đến người dùng.</li></ol><p><b>A.8 Nội dung bị để trống</b></p><ol><li>Hệ thống xác định tiêu đề hoặc nội dung thông báo bị để trống.</li><li>Hệ thống hiển thị thông báo lỗi yêu cầu nhập đầy đủ tiêu đề và nội dung.</li><li>Quay lại bước 5.</li></ol></td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Ngoại lệ (Exceptions):</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Phiên đăng nhập không hợp lệ</b></p><ol><li>Hệ thống hiển thị thông báo lỗi xác thực phiên làm việc.</li><li>Hệ thống chuyển hướng người dùng đến trang đăng nhập.</li></ol><p><b>EX-2 Quyền hạn không hợp lệ</b></p><ol><li>Hệ thống xác định tài khoản không có quyền truy cập chức năng này.</li><li>Hệ thống hiển thị trang thông báo lỗi 403.</li></ol></td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mức độ ưu tiên:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Medium, Should Have</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tần suất sử dụng:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Trung bình</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Quy tắc nghiệp vụ:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">BR-05</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Thông tin khác:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Thông báo toàn hệ thống (user_id = NULL) sẽ tự động hiển thị trong hòm thư của tất cả người dùng.</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Giả định:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Actor có kết nối internet ổn định.</li></ul></td>
-        </tr>
-    </table>
-</div>
+    <div class="uc-container"
+        style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
+        <style>
+            .uc-container,
+            .uc-container table,
+            .uc-container tr,
+            .uc-container td,
+            .uc-container th,
+            .uc-container p,
+            .uc-container ol,
+            .uc-container ul,
+            .uc-container li,
+            .uc-container span,
+            .uc-container strong,
+            .uc-container b {
+                font-family: 'Calibri', sans-serif !important;
+                font-size: 11pt !important;
+                color: black !important;
+            }
+        </style>
+        <p><b>Functional Description Template</b></p>
+        <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Mã và Tên UC:</b>
+                </td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-04 Gửi Thông Báo
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Người tạo:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Khánh</td>
+                <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Ngày tạo:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-23</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân chính:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;">Staff, Admin</td>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân phụ:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;">Không có</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Kích hoạt (Trigger):</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Actor truy cập chức
+                    năng "Gửi thông báo" trong bảng điều khiển quản trị.</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mô tả (Description):</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cho phép Staff hoặc
+                    Admin chủ động soạn thảo và phát đi thông báo hệ thống đến toàn bộ người dùng (Toàn hệ thống /
+                    Broadcast) hoặc gửi thông báo riêng biệt đến một tài khoản người dùng cụ thể.</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện tiên quyết:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>PRE-1.</b> Actor đã đăng nhập hệ thống với vai trò Staff hoặc Admin.</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện hậu quyết:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>POST-1.</b> Bản ghi thông báo được lưu trữ vào bảng notifications để người nhận có thể đọc
+                        trong hòm thư cá nhân.</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng cơ bản:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>A. Gửi thông báo thành công</b></p>
+                    <ol>
+                        <li>Actor truy cập trang soạn thông báo hệ thống.</li>
+                        <li>Hệ thống kiểm tra quyền hạn của tác nhân.</li>
+                        <li>Hệ thống hiển thị biểu mẫu soạn thông báo với các trường: phạm vi gửi (Toàn hệ thống / Người
+                            dùng cụ thể), ô chọn người nhận, tiêu đề và nội dung thông báo.</li>
+                        <li>Actor chọn phạm vi gửi là "Toàn hệ thống" .</li>
+                        <li>Actor nhập tiêu đề thông báo.</li>
+                        <li>Actor nhập nội dung chi tiết của thông báo.</li>
+                        <li>Actor nhấn nút "Gửi thông báo" .</li>
+                        <li>Hệ thống xác thực tiêu đề và nội dung thông báo không được để trống.</li>
+                        <li>Hệ thống lưu bản ghi thông báo toàn hệ thống vào cơ sở dữ liệu với mã người nhận là NULL.
+                        </li>
+                        <li>Hệ thống hiển thị thông báo gửi thông điệp toàn hệ thống thành công và làm mới biểu mẫu.
+                        </li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng thay thế:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>A.4 Gửi cho người dùng cụ thể</b></p>
+                    <ol>
+                        <li>Actor chọn phạm vi gửi là "Người dùng cụ thể" .</li>
+                        <li>Actor nhập email hoặc tên tài khoản để tìm kiếm người nhận.</li>
+                        <li>Hệ thống hiển thị danh sách gợi ý người dùng khớp với từ khóa tìm kiếm.</li>
+                        <li>Actor chọn người nhận từ danh sách gợi ý.</li>
+                        <li>Tiếp tục thực hiện các bước 5, 6, 7.</li>
+                        <li>Hệ thống lưu bản ghi thông báo kèm mã ID định danh của người nhận vào cơ sở dữ liệu.</li>
+                        <li>Hệ thống hiển thị thông báo gửi thư thành công đến người dùng.</li>
+                    </ol>
+                    <p><b>A.8 Nội dung bị để trống</b></p>
+                    <ol>
+                        <li>Hệ thống xác định tiêu đề hoặc nội dung thông báo bị để trống.</li>
+                        <li>Hệ thống hiển thị thông báo lỗi yêu cầu nhập đầy đủ tiêu đề và nội dung.</li>
+                        <li>Quay lại bước 5.</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Ngoại lệ (Exceptions):</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>EX-1 Phiên đăng nhập không hợp lệ</b></p>
+                    <ol>
+                        <li>Hệ thống hiển thị thông báo lỗi xác thực phiên làm việc.</li>
+                        <li>Hệ thống chuyển hướng người dùng đến trang đăng nhập.</li>
+                    </ol>
+                    <p><b>EX-2 Quyền hạn không hợp lệ</b></p>
+                    <ol>
+                        <li>Hệ thống xác định tài khoản không có quyền truy cập chức năng này.</li>
+                        <li>Hệ thống hiển thị trang thông báo lỗi 403.</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mức độ ưu tiên:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Medium, Should Have
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tần suất sử dụng:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Trung bình</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Quy tắc nghiệp vụ:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">BR-05</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Thông tin khác:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Thông báo toàn hệ thống
+                    (user_id = NULL) sẽ tự động hiển thị trong hòm thư của tất cả người dùng.</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Giả định:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <ul>
+                        <li>Actor có kết nối internet ổn định.</li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+    </div>
 </body>
+
 </html>

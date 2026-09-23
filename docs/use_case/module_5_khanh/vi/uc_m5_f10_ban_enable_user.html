@@ -1,85 +1,179 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <title>UC-10 Khóa/Mở Khóa Tài Khoản</title>
 </head>
+
 <body>
-<div class="uc-container" style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
-    <style>
-        .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
-            font-family: 'Calibri', sans-serif !important;
-            font-size: 11pt !important;
-            color: black !important;
-        }
-    </style>
-    <p><b>Functional Description Template</b></p>
-    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Mã và Tên UC:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-10 Khóa/Mở Khóa Tài Khoản</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Người tạo:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Khánh</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Ngày tạo:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-23</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân chính:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;">Admin</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân phụ:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;">Không có</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Kích hoạt (Trigger):</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Admin nhấn nút `"Khóa tài khoản"` hoặc `"Mở khóa"` tại một dòng người dùng trong danh sách người dùng.</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mô tả (Description):</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cho phép Admin vô hiệu hóa quyền truy cập (chuyển trạng thái sang BANNED) đối với tài khoản vi phạm chính sách cộng đồng, áp dụng thời gian khóa lũy tiến tự động và thu hồi phiên đăng nhập hiện tại; hoặc chủ động kích hoạt lại (chuyển trạng thái sang ACTIVE) trước thời hạn cho người dùng.</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện tiên quyết:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> Người dùng đã đăng nhập hệ thống với vai trò Admin.</p><p><b>PRE-2.</b> Tài khoản mục tiêu phải tồn tại trong cơ sở dữ liệu.</p></td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện hậu quyết:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> Trạng thái tài khoản người dùng được cập nhật thành BANNED hoặc ACTIVE.</p><p><b>POST-2.</b> Phiên làm việc hiện tại của tài khoản bị khóa bị vô hiệu hóa ngay lập tức.</p><p><b>POST-3.</b> Hệ thống ghi nhận nhật ký kiểm toán hành động khóa hoặc mở khóa tài khoản.</p></td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng cơ bản:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Khóa tài khoản thành công</b></p><ol><li>Admin nhấn nút `"Khóa tài khoản"` tại người dùng vi phạm trong danh sách.</li><li>Hệ thống trích xuất dữ liệu phiên làm việc của tác nhân hiện tại.</li><li>Hệ thống kiểm tra ràng buộc an toàn: Admin không được phép tự khóa tài khoản của chính mình.</li><li>Hệ thống truy xuất lịch sử vi phạm và số lần bị khóa trước đó của tài khoản mục tiêu.</li><li>Hệ thống tính toán thời hạn khóa lũy tiến đề xuất theo quy tắc nghiệp vụ (Lần 1: 24 giờ, các lần tiếp theo gấp đôi, tối đa 1 năm).</li><li>Hệ thống hiển thị modal khóa tài khoản kèm thời hạn khóa được tính toán và trường nhập lý do bắt buộc.</li><li>Admin kiểm tra thời hạn, nhập lý do vi phạm chi tiết và nhấn nút `"Xác nhận khóa"`.</li><li>Hệ thống xác thực nội dung lý do vi phạm không được để trống.</li><li>Hệ thống thực thi giao dịch cập nhật trạng thái tài khoản mục tiêu thành BANNED và lưu thời hạn khóa.</li><li>Hệ thống vô hiệu hóa toàn bộ phiên làm việc đang hoạt động của tài khoản bị khóa.</li><li>Hệ thống ghi nhật ký kiểm toán quản trị ghi nhận lý do và thời gian khóa tài khoản.</li><li>Hệ thống đóng modal và hiển thị thông báo khóa tài khoản thành công.</li></ol></td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng thay thế:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.1 Mở khóa tài khoản trước thời hạn</b></p><ol><li>Admin nhấn nút `"Mở khóa"` tại tài khoản đang ở trạng thái BANNED.</li><li>Hệ thống hiển thị modal xác nhận mở khóa tài khoản kèm ô nhập lý do mở khóa.</li><li>Admin nhập lý do mở khóa và nhấn nút `"Xác nhận mở khóa"`.</li><li>Hệ thống cập nhật trạng thái tài khoản sang ACTIVE và xóa thời hạn khóa còn lại.</li><li>Hệ thống ghi nhật ký kiểm toán hành động mở khóa trước hạn.</li><li>Hệ thống tạo thông báo gửi đến hòm thư tài khoản về việc đã được mở khóa.</li><li>Hệ thống làm mới giao diện và thông báo mở khóa tài khoản thành công.</li></ol><p><b>A.3 Tự khóa tài khoản của chính mình</b></p><ol><li>Hệ thống phát hiện tài khoản mục tiêu trùng với tài khoản Admin đang thực hiện thao tác.</li><li>Hệ thống hiển thị thông báo cảnh báo bạn không thể tự khóa tài khoản của chính mình.</li><li>Hủy bỏ thao tác khóa.</li></ol><p><b>A.8 Lý do khóa bị bỏ trống</b></p><ol><li>Hệ thống xác định trường lý do vi phạm chưa được nhập dữ liệu.</li><li>Hệ thống hiển thị thông báo lỗi yêu cầu nhập lý do vi phạm cụ thể.</li><li>Quay lại bước 7.</li></ol></td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Ngoại lệ (Exceptions):</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Phiên đăng nhập không hợp lệ</b></p><ol><li>Hệ thống hiển thị thông báo lỗi xác thực phiên làm việc.</li><li>Hệ thống chuyển hướng người dùng đến trang đăng nhập.</li></ol><p><b>EX-2 Quyền hạn không hợp lệ</b></p><ol><li>Hệ thống xác định tài khoản không có quyền Admin.</li><li>Hệ thống hiển thị trang lỗi 403.</li></ol><p><b>EX-3 Tài khoản không tồn tại</b></p><ol><li>Hệ thống xác định tài khoản mục tiêu không còn tồn tại trong cơ sở dữ liệu.</li><li>Hệ thống hiển thị thông báo lỗi và làm mới danh sách người dùng.</li></ol></td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mức độ ưu tiên:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High, Must Have</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tần suất sử dụng:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Trung bình (Khi phát hiện tài khoản vi phạm)</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Quy tắc nghiệp vụ:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">BR-04</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Thông tin khác:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Tuân thủ thời gian khóa lũy tiến và quyền mở khóa trước thời hạn của Admin.</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Giả định:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Admin có kết nối internet ổn định.</li></ul></td>
-        </tr>
-    </table>
-</div>
+    <div class="uc-container"
+        style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
+        <style>
+            .uc-container,
+            .uc-container table,
+            .uc-container tr,
+            .uc-container td,
+            .uc-container th,
+            .uc-container p,
+            .uc-container ol,
+            .uc-container ul,
+            .uc-container li,
+            .uc-container span,
+            .uc-container strong,
+            .uc-container b {
+                font-family: 'Calibri', sans-serif !important;
+                font-size: 11pt !important;
+                color: black !important;
+            }
+        </style>
+        <p><b>Functional Description Template</b></p>
+        <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Mã và Tên UC:</b>
+                </td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-10 Khóa/Mở Khóa Tài
+                    Khoản</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Người tạo:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Khánh</td>
+                <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Ngày tạo:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-23</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân chính:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;">Admin</td>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân phụ:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;">Không có</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Kích hoạt (Trigger):</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Admin nhấn nút "Khóa
+                    tài khoản" hoặc "Mở khóa" tại một dòng người dùng trong danh sách người dùng.</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mô tả (Description):</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cho phép Admin vô hiệu
+                    hóa quyền truy cập (chuyển trạng thái sang BANNED) đối với tài khoản vi phạm chính sách cộng đồng,
+                    áp dụng thời gian khóa lũy tiến tự động và thu hồi phiên đăng nhập hiện tại; hoặc chủ động kích hoạt
+                    lại (chuyển trạng thái sang ACTIVE) trước thời hạn cho người dùng.</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện tiên quyết:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>PRE-1.</b> Người dùng đã đăng nhập hệ thống với vai trò Admin.</p>
+                    <p><b>PRE-2.</b> Tài khoản mục tiêu phải tồn tại trong cơ sở dữ liệu.</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện hậu quyết:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>POST-1.</b> Trạng thái tài khoản người dùng được cập nhật thành BANNED hoặc ACTIVE.</p>
+                    <p><b>POST-2.</b> Phiên làm việc hiện tại của tài khoản bị khóa bị vô hiệu hóa ngay lập tức.</p>
+                    <p><b>POST-3.</b> Hệ thống ghi nhận nhật ký kiểm toán hành động khóa hoặc mở khóa tài khoản.</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng cơ bản:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>A. Khóa tài khoản thành công</b></p>
+                    <ol>
+                        <li>Admin nhấn nút "Khóa tài khoản" tại người dùng vi phạm trong danh sách.</li>
+                        <li>Hệ thống trích xuất dữ liệu phiên làm việc của tác nhân hiện tại.</li>
+                        <li>Hệ thống kiểm tra ràng buộc an toàn: Admin không được phép tự khóa tài khoản của chính mình.
+                        </li>
+                        <li>Hệ thống truy xuất lịch sử vi phạm và số lần bị khóa trước đó của tài khoản mục tiêu.</li>
+                        <li>Hệ thống tính toán thời hạn khóa lũy tiến đề xuất theo quy tắc nghiệp vụ (Lần 1: 24 giờ, các
+                            lần tiếp theo gấp đôi, tối đa 1 năm).</li>
+                        <li>Hệ thống hiển thị modal khóa tài khoản kèm thời hạn khóa được tính toán và trường nhập lý do
+                            bắt buộc.</li>
+                        <li>Admin kiểm tra thời hạn, nhập lý do vi phạm chi tiết và nhấn nút "Xác nhận khóa" .</li>
+                        <li>Hệ thống xác thực nội dung lý do vi phạm không được để trống.</li>
+                        <li>Hệ thống thực thi giao dịch cập nhật trạng thái tài khoản mục tiêu thành BANNED và lưu thời
+                            hạn khóa.</li>
+                        <li>Hệ thống vô hiệu hóa toàn bộ phiên làm việc đang hoạt động của tài khoản bị khóa.</li>
+                        <li>Hệ thống ghi nhật ký kiểm toán quản trị ghi nhận lý do và thời gian khóa tài khoản.</li>
+                        <li>Hệ thống đóng modal và hiển thị thông báo khóa tài khoản thành công.</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng thay thế:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>A.1 Mở khóa tài khoản trước thời hạn</b></p>
+                    <ol>
+                        <li>Admin nhấn nút "Mở khóa" tại tài khoản đang ở trạng thái BANNED.</li>
+                        <li>Hệ thống hiển thị modal xác nhận mở khóa tài khoản kèm ô nhập lý do mở khóa.</li>
+                        <li>Admin nhập lý do mở khóa và nhấn nút "Xác nhận mở khóa" .</li>
+                        <li>Hệ thống cập nhật trạng thái tài khoản sang ACTIVE và xóa thời hạn khóa còn lại.</li>
+                        <li>Hệ thống ghi nhật ký kiểm toán hành động mở khóa trước hạn.</li>
+                        <li>Hệ thống tạo thông báo gửi đến hòm thư tài khoản về việc đã được mở khóa.</li>
+                        <li>Hệ thống làm mới giao diện và thông báo mở khóa tài khoản thành công.</li>
+                    </ol>
+                    <p><b>A.3 Tự khóa tài khoản của chính mình</b></p>
+                    <ol>
+                        <li>Hệ thống phát hiện tài khoản mục tiêu trùng với tài khoản Admin đang thực hiện thao tác.
+                        </li>
+                        <li>Hệ thống hiển thị thông báo cảnh báo bạn không thể tự khóa tài khoản của chính mình.</li>
+                        <li>Hủy bỏ thao tác khóa.</li>
+                    </ol>
+                    <p><b>A.8 Lý do khóa bị bỏ trống</b></p>
+                    <ol>
+                        <li>Hệ thống xác định trường lý do vi phạm chưa được nhập dữ liệu.</li>
+                        <li>Hệ thống hiển thị thông báo lỗi yêu cầu nhập lý do vi phạm cụ thể.</li>
+                        <li>Quay lại bước 7.</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Ngoại lệ (Exceptions):</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>EX-1 Phiên đăng nhập không hợp lệ</b></p>
+                    <ol>
+                        <li>Hệ thống hiển thị thông báo lỗi xác thực phiên làm việc.</li>
+                        <li>Hệ thống chuyển hướng người dùng đến trang đăng nhập.</li>
+                    </ol>
+                    <p><b>EX-2 Quyền hạn không hợp lệ</b></p>
+                    <ol>
+                        <li>Hệ thống xác định tài khoản không có quyền Admin.</li>
+                        <li>Hệ thống hiển thị trang lỗi 403.</li>
+                    </ol>
+                    <p><b>EX-3 Tài khoản không tồn tại</b></p>
+                    <ol>
+                        <li>Hệ thống xác định tài khoản mục tiêu không còn tồn tại trong cơ sở dữ liệu.</li>
+                        <li>Hệ thống hiển thị thông báo lỗi và làm mới danh sách người dùng.</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mức độ ưu tiên:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High, Must Have</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tần suất sử dụng:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Trung bình (Khi phát
+                    hiện tài khoản vi phạm)</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Quy tắc nghiệp vụ:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">BR-04</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Thông tin khác:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Tuân thủ thời gian khóa
+                    lũy tiến và quyền mở khóa trước thời hạn của Admin.</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Giả định:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <ul>
+                        <li>Admin có kết nối internet ổn định.</li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+    </div>
 </body>
+
 </html>

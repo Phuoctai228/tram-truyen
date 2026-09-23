@@ -1,85 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>UC-04 Send Notification</title>
 </head>
+
 <body>
-<div class="uc-container" style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
-    <style>
-        .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
-            font-family: 'Calibri', sans-serif !important;
-            font-size: 11pt !important;
-            color: black !important;
-        }
-    </style>
-    <p><b>Functional Description Template</b></p>
-    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>UC ID and Name:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-04 Send Notification</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Created By:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Khánh</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Date Created:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-23</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Primary Actor:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;">Staff, Admin</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Secondary Actors:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;">None</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Trigger:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Actor accesses `"Send Notification"` feature within the administrative console.</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Description:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Enables Staff or Admin to compose and broadcast system-wide announcements to all registered users or dispatch direct targeted notifications to an individual user account.</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Preconditions:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> The actor is authenticated with Staff or Admin role.</p></td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Postconditions:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> Notification records are stored in the notifications database table and accessible via users' mailboxes.</p></td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Normal Flow:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Send Notification Successfully</b></p><ol><li>Actor accesses the notification composer page.</li><li>The system verifies the actor's administrative authorization.</li><li>The system renders the notification composer form including scope selector (System-wide / Specific User), recipient selector, subject, and message content fields.</li><li>Actor selects `"System-wide"` broadcast scope.</li><li>Actor inputs the announcement subject title.</li><li>Actor inputs the announcement body message.</li><li>Actor clicks `"Send Notification"` button.</li><li>The system validates subject and body message inputs are not empty.</li><li>The system persists the broadcast notification record with user_id as NULL in the database.</li><li>The system displays a success confirmation message and resets the composer form.</li></ol></td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Alternative Flows:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.4 Send to Specific User</b></p><ol><li>Actor chooses `"Specific User"` broadcast scope.</li><li>Actor enters an email or username in the recipient search box.</li><li>The system queries and renders matching user accounts.</li><li>Actor selects the target recipient from the dropdown.</li><li>Proceed with steps 5, 6, 7.</li><li>The system saves the notification record with the recipient's user ID.</li><li>The system displays a direct notification dispatched confirmation message.</li></ol><p><b>A.8 Missing Required Fields</b></p><ol><li>The system detects either subject or body message is empty.</li><li>The system displays a validation error message prompting for missing details.</li><li>Back to step 5.</li></ol></td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Exceptions:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Session Invalid (Not Logged In)</b></p><ol><li>The system displays an authentication error message.</li><li>The system redirects the user to the login page.</li></ol><p><b>EX-2 Access Denied</b></p><ol><li>The system determines the user lacks required Staff or Admin privileges.</li><li>The system displays a 403 Forbidden page.</li></ol></td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Priority:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Medium, Should Have</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Frequency of Use:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Medium</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Business Rules:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">BR-05</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Other Information:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Broadcast notifications (user_id = NULL) are dynamically populated across all user mailbox queries.</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Assumptions:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Actor has a stable internet connection.</li></ul></td>
-        </tr>
-    </table>
-</div>
+    <div class="uc-container"
+        style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
+        <style>
+            .uc-container,
+            .uc-container table,
+            .uc-container tr,
+            .uc-container td,
+            .uc-container th,
+            .uc-container p,
+            .uc-container ol,
+            .uc-container ul,
+            .uc-container li,
+            .uc-container span,
+            .uc-container strong,
+            .uc-container b {
+                font-family: 'Calibri', sans-serif !important;
+                font-size: 11pt !important;
+                color: black !important;
+            }
+        </style>
+        <p><b>Functional Description Template</b></p>
+        <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>UC ID and Name:</b>
+                </td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-04 Send Notification
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Created By:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">KhanhND</td>
+                <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Date Created:</b>
+                </td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-23</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Primary Actor:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;">Staff, Admin</td>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Secondary Actors:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;">None</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Trigger:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Actor accesses "Send
+                    Notification" feature within the administrative console.</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Description:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Enables Staff or Admin
+                    to compose and broadcast system-wide announcements to all registered users or dispatch direct
+                    targeted notifications to an individual user account.</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Preconditions:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>PRE-1.</b> The actor is authenticated with Staff or Admin role.</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Postconditions:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>POST-1.</b> Notification records are stored in the notifications database table and accessible
+                        via users' mailboxes.</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Normal Flow:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>A. Send Notification Successfully</b></p>
+                    <ol>
+                        <li>Actor accesses the notification composer page.</li>
+                        <li>The system verifies the actor's administrative authorization.</li>
+                        <li>The system renders the notification composer form including scope selector (System-wide /
+                            Specific User), recipient selector, subject, and message content fields.</li>
+                        <li>Actor selects "System-wide" broadcast scope.</li>
+                        <li>Actor inputs the announcement subject title.</li>
+                        <li>Actor inputs the announcement body message.</li>
+                        <li>Actor clicks "Send Notification" button.</li>
+                        <li>The system validates subject and body message inputs are not empty.</li>
+                        <li>The system persists the broadcast notification record with user_id as NULL in the database.
+                        </li>
+                        <li>The system displays a success confirmation message and resets the composer form.</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Alternative Flows:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>A.4 Send to Specific User</b></p>
+                    <ol>
+                        <li>Actor chooses "Specific User" broadcast scope.</li>
+                        <li>Actor enters an email or username in the recipient search box.</li>
+                        <li>The system queries and renders matching user accounts.</li>
+                        <li>Actor selects the target recipient from the dropdown.</li>
+                        <li>Proceed with steps 5, 6, 7.</li>
+                        <li>The system saves the notification record with the recipient's user ID.</li>
+                        <li>The system displays a direct notification dispatched confirmation message.</li>
+                    </ol>
+                    <p><b>A.8 Missing Required Fields</b></p>
+                    <ol>
+                        <li>The system detects either subject or body message is empty.</li>
+                        <li>The system displays a validation error message prompting for missing details.</li>
+                        <li>Back to step 5.</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Exceptions:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>EX-1 Session Invalid (Not Logged In)</b></p>
+                    <ol>
+                        <li>The system displays an authentication error message.</li>
+                        <li>The system redirects the user to the login page.</li>
+                    </ol>
+                    <p><b>EX-2 Access Denied</b></p>
+                    <ol>
+                        <li>The system determines the user lacks required Staff or Admin privileges.</li>
+                        <li>The system displays a 403 Forbidden page.</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Priority:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Medium, Should Have
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Frequency of Use:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Medium</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Business Rules:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">BR-05</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Other Information:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Broadcast notifications
+                    (user_id = NULL) are dynamically populated across all user mailbox queries.</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Assumptions:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <ul>
+                        <li>Actor has a stable internet connection.</li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+    </div>
 </body>
+
 </html>

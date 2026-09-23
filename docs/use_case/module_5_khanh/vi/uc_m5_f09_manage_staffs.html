@@ -1,85 +1,172 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <title>UC-09 Quản Lý Nhân Viên</title>
 </head>
+
 <body>
-<div class="uc-container" style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
-    <style>
-        .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
-            font-family: 'Calibri', sans-serif !important;
-            font-size: 11pt !important;
-            color: black !important;
-        }
-    </style>
-    <p><b>Functional Description Template</b></p>
-    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Mã và Tên UC:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-09 Quản Lý Nhân Viên</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Người tạo:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Khánh</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Ngày tạo:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-23</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân chính:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;">Admin</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân phụ:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;">Không có</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Kích hoạt (Trigger):</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Admin nhấn nút `"Đổi quyền"` hoặc `"Phân quyền"` tại một tài khoản người dùng trong danh sách người dùng.</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mô tả (Description):</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cho phép Admin gán hoặc thu hồi vai trò nhân viên biên tập & kiểm duyệt (ROLE_STAFF) hoặc nâng cấp quyền quản trị (ROLE_ADMIN) cho người dùng, đảm bảo cơ chế an toàn chống tự tước quyền của chính mình và ghi nhật ký kiểm toán.</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện tiên quyết:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> Người dùng đã đăng nhập hệ thống với vai trò Admin.</p><p><b>PRE-2.</b> Tài khoản mục tiêu phải tồn tại và đang ở trạng thái hoạt động (ACTIVE).</p></td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện hậu quyết:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> Vai trò mới của tài khoản mục tiêu được cập nhật vào bảng user_roles.</p><p><b>POST-2.</b> Hệ thống ghi nhận nhật ký kiểm toán thao tác phân quyền của Admin.</p><p><b>POST-3.</b> Hệ thống gửi thông báo thay đổi quyền hạn đến hòm thư của người dùng được phân quyền.</p></td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng cơ bản:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Phân quyền nhân viên thành công</b></p><ol><li>Admin nhấn nút `"Đổi quyền"` tại một dòng tài khoản người dùng.</li><li>Hệ thống trích xuất dữ liệu phiên làm việc của tác nhân hiện tại.</li><li>Hệ thống truy xuất vai trò hiện tại của tài khoản mục tiêu và danh sách các vai trò khả dụng trong hệ thống.</li><li>Hệ thống hiển thị modal phân quyền chứa thông tin người dùng và danh sách lựa chọn vai trò (ROLE_MEMBER, ROLE_STAFF, ROLE_ADMIN).</li><li>Admin chọn vai trò mới muốn gán cho tài khoản.</li><li>Admin nhấn nút `"Lưu thay đổi"`.</li><li>Hệ thống kiểm tra ràng buộc an toàn: Admin không được phép tự tước quyền ROLE_ADMIN của chính tài khoản mình đang đăng nhập.</li><li>Hệ thống hiển thị hộp thoại yêu cầu xác nhận thay đổi phân quyền người dùng.</li><li>Admin nhấn nút `"Xác nhận"`.</li><li>Hệ thống thực thi giao dịch cập nhật liên kết vai trò của tài khoản trong cơ sở dữ liệu.</li><li>Hệ thống ghi nhật ký kiểm toán quản trị ghi nhận thông tin thay đổi vai trò.</li><li>Hệ thống tạo thông báo thông tin phân quyền mới gửi vào hòm thư tài khoản mục tiêu.</li><li>Hệ thống đóng modal và hiển thị thông báo cập nhật quyền thành công.</li></ol></td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng thay thế:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.7 Tự tước quyền quản trị của bản thân</b></p><ol><li>Hệ thống phát hiện tài khoản mục tiêu chính là tài khoản Admin hiện tại và vai trò ROLE_ADMIN bị bỏ chọn.</li><li>Hệ thống hiển thị cảnh báo không thể tự thu hồi quyền Quản trị của chính mình để tránh mất quyền điều hành.</li><li>Quay lại bước 4.</li></ol><p><b>A.9 Hủy xác nhận</b></p><ol><li>Admin nhấn nút `"Hủy"` trên hộp thoại xác nhận.</li><li>Hệ thống hủy thao tác và đóng hộp thoại xác nhận.</li><li>Quay lại bước 4.</li></ol></td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Ngoại lệ (Exceptions):</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Phiên đăng nhập không hợp lệ</b></p><ol><li>Hệ thống hiển thị thông báo lỗi xác thực phiên làm việc.</li><li>Hệ thống chuyển hướng người dùng đến trang đăng nhập.</li></ol><p><b>EX-2 Quyền hạn không hợp lệ</b></p><ol><li>Hệ thống xác định tài khoản thao tác không có quyền Admin.</li><li>Hệ thống hiển thị trang lỗi 403.</li></ol><p><b>EX-3 Tài khoản không tồn tại</b></p><ol><li>Hệ thống xác định tài khoản mục tiêu không tồn tại hoặc đã bị khóa.</li><li>Hệ thống hiển thị thông báo lỗi tài khoản không hợp lệ.</li></ol></td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mức độ ưu tiên:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Medium, Should Have</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tần suất sử dụng:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Thấp (Khi có thay đổi nhân sự)</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Quy tắc nghiệp vụ:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">BR-06</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Thông tin khác:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Không có.</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Giả định:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Admin có kết nối internet ổn định.</li></ul></td>
-        </tr>
-    </table>
-</div>
+    <div class="uc-container"
+        style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
+        <style>
+            .uc-container,
+            .uc-container table,
+            .uc-container tr,
+            .uc-container td,
+            .uc-container th,
+            .uc-container p,
+            .uc-container ol,
+            .uc-container ul,
+            .uc-container li,
+            .uc-container span,
+            .uc-container strong,
+            .uc-container b {
+                font-family: 'Calibri', sans-serif !important;
+                font-size: 11pt !important;
+                color: black !important;
+            }
+        </style>
+        <p><b>Functional Description Template</b></p>
+        <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Mã và Tên UC:</b>
+                </td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-09 Quản Lý Nhân Viên
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Người tạo:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Khánh</td>
+                <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Ngày tạo:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-23</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân chính:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;">Admin</td>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân phụ:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;">Không có</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Kích hoạt (Trigger):</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Admin nhấn nút "Đổi
+                    quyền" hoặc "Phân quyền" tại một tài khoản người dùng trong danh sách người dùng.</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mô tả (Description):</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cho phép Admin gán hoặc
+                    thu hồi vai trò nhân viên biên tập & kiểm duyệt (ROLE_STAFF) hoặc nâng cấp quyền quản trị
+                    (ROLE_ADMIN) cho người dùng, đảm bảo cơ chế an toàn chống tự tước quyền của chính mình và ghi nhật
+                    ký kiểm toán.</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện tiên quyết:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>PRE-1.</b> Người dùng đã đăng nhập hệ thống với vai trò Admin.</p>
+                    <p><b>PRE-2.</b> Tài khoản mục tiêu phải tồn tại và đang ở trạng thái hoạt động (ACTIVE).</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện hậu quyết:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>POST-1.</b> Vai trò mới của tài khoản mục tiêu được cập nhật vào bảng user_roles.</p>
+                    <p><b>POST-2.</b> Hệ thống ghi nhận nhật ký kiểm toán thao tác phân quyền của Admin.</p>
+                    <p><b>POST-3.</b> Hệ thống gửi thông báo thay đổi quyền hạn đến hòm thư của người dùng được phân
+                        quyền.</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng cơ bản:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>A. Phân quyền nhân viên thành công</b></p>
+                    <ol>
+                        <li>Admin nhấn nút "Đổi quyền" tại một dòng tài khoản người dùng.</li>
+                        <li>Hệ thống trích xuất dữ liệu phiên làm việc của tác nhân hiện tại.</li>
+                        <li>Hệ thống truy xuất vai trò hiện tại của tài khoản mục tiêu và danh sách các vai trò khả dụng
+                            trong hệ thống.</li>
+                        <li>Hệ thống hiển thị modal phân quyền chứa thông tin người dùng và danh sách lựa chọn vai trò
+                            (ROLE_MEMBER, ROLE_STAFF, ROLE_ADMIN).</li>
+                        <li>Admin chọn vai trò mới muốn gán cho tài khoản.</li>
+                        <li>Admin nhấn nút "Lưu thay đổi" .</li>
+                        <li>Hệ thống kiểm tra ràng buộc an toàn: Admin không được phép tự tước quyền ROLE_ADMIN của
+                            chính tài khoản mình đang đăng nhập.</li>
+                        <li>Hệ thống hiển thị hộp thoại yêu cầu xác nhận thay đổi phân quyền người dùng.</li>
+                        <li>Admin nhấn nút "Xác nhận" .</li>
+                        <li>Hệ thống thực thi giao dịch cập nhật liên kết vai trò của tài khoản trong cơ sở dữ liệu.
+                        </li>
+                        <li>Hệ thống ghi nhật ký kiểm toán quản trị ghi nhận thông tin thay đổi vai trò.</li>
+                        <li>Hệ thống tạo thông báo thông tin phân quyền mới gửi vào hòm thư tài khoản mục tiêu.</li>
+                        <li>Hệ thống đóng modal và hiển thị thông báo cập nhật quyền thành công.</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng thay thế:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>A.7 Tự tước quyền quản trị của bản thân</b></p>
+                    <ol>
+                        <li>Hệ thống phát hiện tài khoản mục tiêu chính là tài khoản Admin hiện tại và vai trò
+                            ROLE_ADMIN bị bỏ chọn.</li>
+                        <li>Hệ thống hiển thị cảnh báo không thể tự thu hồi quyền Quản trị của chính mình để tránh mất
+                            quyền điều hành.</li>
+                        <li>Quay lại bước 4.</li>
+                    </ol>
+                    <p><b>A.9 Hủy xác nhận</b></p>
+                    <ol>
+                        <li>Admin nhấn nút "Hủy" trên hộp thoại xác nhận.</li>
+                        <li>Hệ thống hủy thao tác và đóng hộp thoại xác nhận.</li>
+                        <li>Quay lại bước 4.</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Ngoại lệ (Exceptions):</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>EX-1 Phiên đăng nhập không hợp lệ</b></p>
+                    <ol>
+                        <li>Hệ thống hiển thị thông báo lỗi xác thực phiên làm việc.</li>
+                        <li>Hệ thống chuyển hướng người dùng đến trang đăng nhập.</li>
+                    </ol>
+                    <p><b>EX-2 Quyền hạn không hợp lệ</b></p>
+                    <ol>
+                        <li>Hệ thống xác định tài khoản thao tác không có quyền Admin.</li>
+                        <li>Hệ thống hiển thị trang lỗi 403.</li>
+                    </ol>
+                    <p><b>EX-3 Tài khoản không tồn tại</b></p>
+                    <ol>
+                        <li>Hệ thống xác định tài khoản mục tiêu không tồn tại hoặc đã bị khóa.</li>
+                        <li>Hệ thống hiển thị thông báo lỗi tài khoản không hợp lệ.</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mức độ ưu tiên:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Medium, Should Have
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tần suất sử dụng:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Thấp (Khi có thay đổi
+                    nhân sự)</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Quy tắc nghiệp vụ:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">BR-06</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Thông tin khác:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Không có.</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Giả định:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <ul>
+                        <li>Admin có kết nối internet ổn định.</li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+    </div>
 </body>
+
 </html>

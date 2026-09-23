@@ -1,85 +1,169 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>UC-07 Configure System</title>
 </head>
+
 <body>
-<div class="uc-container" style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
-    <style>
-        .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
-            font-family: 'Calibri', sans-serif !important;
-            font-size: 11pt !important;
-            color: black !important;
-        }
-    </style>
-    <p><b>Functional Description Template</b></p>
-    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>UC ID and Name:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-07 Configure System</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Created By:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Khánh</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Date Created:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-23</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Primary Actor:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;">Admin</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Secondary Actors:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;">None</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Trigger:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Admin clicks `"System Configuration"` in the administrative navigation sidebar.</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Description:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Enables Admin to review and adjust global operational parameters, including VNĐ-to-Coin exchange rates, official administrative contact details (hotline, support email), terms of service, privacy policy, and theme activation.</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Preconditions:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> The user is authenticated with the Admin role.</p></td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Postconditions:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> New system configuration values are updated in the database and become active immediately.</p><p><b>POST-2.</b> System audit log records Admin identity, modified keys, and old vs new values.</p></td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Normal Flow:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Configure System Successfully</b></p><ol><li>Admin navigates to the system configuration page.</li><li>The system verifies the actor's Admin authorization.</li><li>The system retrieves current configuration key-value pairs from the database.</li><li>The system queries available UI themes from the themes repository.</li><li>The system renders the configuration form with settings (Exchange Rate, Support Email, Hotline, Terms of Service, Active Theme).</li><li>Admin modifies the exchange rate value or updates support information in the form fields.</li><li>Admin clicks `"Save Settings"` button.</li><li>The system validates input data types (exchange rate must be a positive integer greater than zero, email format valid).</li><li>The system executes a database update modifying entries in system_settings table.</li><li>The system records an administrative audit log capturing previous and new configuration values.</li><li>The system displays a configuration updated successfully confirmation message.</li></ol></td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Alternative Flows:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.8 Invalid Setting Value</b></p><ol><li>The system identifies that the exchange rate is non-positive or email format is invalid.</li><li>The system highlights offending fields with descriptive error notifications.</li><li>Back to step 6.</li></ol><p><b>A.6 Switch Web Theme</b></p><ol><li>Admin selects a different theme card and clicks `"Activate Theme"` button.</li><li>The system confirms and updates the is_active flag in the themes table.</li><li>The system applies the selected theme styles platform-wide.</li><li>Back to step 5.</li></ol></td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Exceptions:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Session Invalid (Not Logged In)</b></p><ol><li>The system displays an authentication error message.</li><li>The system redirects the user to the login page.</li></ol><p><b>EX-2 Access Denied</b></p><ol><li>The system determines the user lacks Admin privileges.</li><li>The system displays a 403 Forbidden page.</li></ol><p><b>EX-9 Configuration Persistence Failure</b></p><ol><li>The system encounters a database write error during transaction execution.</li><li>The system rolls back pending changes and renders an error notification.</li></ol></td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Priority:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High, Must Have</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Frequency of Use:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Low (When policy or branding updates occur)</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Business Rules:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">BR-03</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Other Information:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Adjusted exchange rates apply exclusively to newly initiated deposit orders.</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Assumptions:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Admin has a stable internet connection.</li></ul></td>
-        </tr>
-    </table>
-</div>
+    <div class="uc-container"
+        style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
+        <style>
+            .uc-container,
+            .uc-container table,
+            .uc-container tr,
+            .uc-container td,
+            .uc-container th,
+            .uc-container p,
+            .uc-container ol,
+            .uc-container ul,
+            .uc-container li,
+            .uc-container span,
+            .uc-container strong,
+            .uc-container b {
+                font-family: 'Calibri', sans-serif !important;
+                font-size: 11pt !important;
+                color: black !important;
+            }
+        </style>
+        <p><b>Functional Description Template</b></p>
+        <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>UC ID and Name:</b>
+                </td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-07 Configure System
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Created By:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">KhanhND</td>
+                <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Date Created:</b>
+                </td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-23</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Primary Actor:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;">Admin</td>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Secondary Actors:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;">None</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Trigger:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Admin clicks "System
+                    Configuration" in the administrative navigation sidebar.</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Description:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Enables Admin to review
+                    and adjust global operational parameters, including VNĐ-to-Coin exchange rates, official
+                    administrative contact details (hotline, support email), terms of service, privacy policy, and theme
+                    activation.</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Preconditions:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>PRE-1.</b> The user is authenticated with the Admin role.</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Postconditions:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>POST-1.</b> New system configuration values are updated in the database and become active
+                        immediately.</p>
+                    <p><b>POST-2.</b> System audit log records Admin identity, modified keys, and old vs new values.</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Normal Flow:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>A. Configure System Successfully</b></p>
+                    <ol>
+                        <li>Admin navigates to the system configuration page.</li>
+                        <li>The system verifies the actor's Admin authorization.</li>
+                        <li>The system retrieves current configuration key-value pairs from the database.</li>
+                        <li>The system queries available UI themes from the themes repository.</li>
+                        <li>The system renders the configuration form with settings (Exchange Rate, Support Email,
+                            Hotline, Terms of Service, Active Theme).</li>
+                        <li>Admin modifies the exchange rate value or updates support information in the form fields.
+                        </li>
+                        <li>Admin clicks "Save Settings" button.</li>
+                        <li>The system validates input data types (exchange rate must be a positive integer greater than
+                            zero, email format valid).</li>
+                        <li>The system executes a database update modifying entries in system_settings table.</li>
+                        <li>The system records an administrative audit log capturing previous and new configuration
+                            values.</li>
+                        <li>The system displays a configuration updated successfully confirmation message.</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Alternative Flows:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>A.8 Invalid Setting Value</b></p>
+                    <ol>
+                        <li>The system identifies that the exchange rate is non-positive or email format is invalid.
+                        </li>
+                        <li>The system highlights offending fields with descriptive error notifications.</li>
+                        <li>Back to step 6.</li>
+                    </ol>
+                    <p><b>A.6 Switch Web Theme</b></p>
+                    <ol>
+                        <li>Admin selects a different theme card and clicks "Activate Theme" button.</li>
+                        <li>The system confirms and updates the is_active flag in the themes table.</li>
+                        <li>The system applies the selected theme styles platform-wide.</li>
+                        <li>Back to step 5.</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Exceptions:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>EX-1 Session Invalid (Not Logged In)</b></p>
+                    <ol>
+                        <li>The system displays an authentication error message.</li>
+                        <li>The system redirects the user to the login page.</li>
+                    </ol>
+                    <p><b>EX-2 Access Denied</b></p>
+                    <ol>
+                        <li>The system determines the user lacks Admin privileges.</li>
+                        <li>The system displays a 403 Forbidden page.</li>
+                    </ol>
+                    <p><b>EX-9 Configuration Persistence Failure</b></p>
+                    <ol>
+                        <li>The system encounters a database write error during transaction execution.</li>
+                        <li>The system rolls back pending changes and renders an error notification.</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Priority:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High, Must Have</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Frequency of Use:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Low (When policy or
+                    branding updates occur)</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Business Rules:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">BR-03</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Other Information:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Adjusted exchange rates
+                    apply exclusively to newly initiated deposit orders.</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Assumptions:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <ul>
+                        <li>Admin has a stable internet connection.</li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+    </div>
 </body>
+
 </html>
