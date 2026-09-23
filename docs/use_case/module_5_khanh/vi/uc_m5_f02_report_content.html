@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>UC-02 Báo Cáo Vi Phạm</title>
+</head>
+<body>
+<div class="uc-container" style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
+    <style>
+        .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
+            font-family: 'Calibri', sans-serif !important;
+            font-size: 11pt !important;
+            color: black !important;
+        }
+    </style>
+    <p><b>Functional Description Template</b></p>
+    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Mã và Tên UC:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-02 Báo Cáo Vi Phạm</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Người tạo:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Khánh</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Ngày tạo:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-23</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân chính:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Member</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân phụ:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Không có</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Kích hoạt (Trigger):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Member nhấn nút `"Báo lỗi"` hoặc `"Báo cáo vi phạm"` tại trang chi tiết truyện hoặc thanh công cụ đọc chương.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mô tả (Description):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cho phép Member gửi phiếu báo cáo khi phát hiện tác phẩm truyện hoặc chương truyện cụ thể bị lỗi hiển thị, sai chính tả, mất chữ, trùng chương hoặc vi phạm bản quyền và chính sách xuất bản.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện tiên quyết:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> Người dùng đã đăng nhập hệ thống với vai trò Member.</p><p><b>PRE-2.</b> Truyện hoặc chương được báo cáo phải tồn tại trên hệ thống.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện hậu quyết:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> Phiếu báo cáo nội dung truyện hoặc chương được ghi nhận vào cơ sở dữ liệu với trạng thái chờ xử lý.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng cơ bản:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Báo cáo vi phạm thành công</b></p><ol><li>Member nhấn nút `"Báo cáo vi phạm"` trên trang chi tiết truyện hoặc trang đọc chương.</li><li>Hệ thống trích xuất dữ liệu phiên làm việc của tác nhân hiện tại.</li><li>Hệ thống xác định ngữ cảnh báo cáo (báo cáo cấp truyện hay cấp chương cụ thể).</li><li>Hệ thống hiển thị biểu mẫu báo cáo vi phạm kèm danh sách phân loại lỗi (Lỗi văn bản/chương ảnh, Sai thứ tự chương, Vi phạm bản quyền, Nội dung phản cảm, Khác) và trường nhập mô tả chi tiết.</li><li>Member chọn phân loại lỗi và nhập mô tả chi tiết.</li><li>Member nhấn nút `"Gửi báo cáo"`.</li><li>Hệ thống xác thực dữ liệu mô tả báo cáo hợp lệ.</li><li>Hệ thống kiểm tra Member chưa gửi báo cáo trùng lặp đang chờ xử lý cho mục tiêu này.</li><li>Hệ thống lưu bản ghi báo cáo nội dung vào cơ sở dữ liệu.</li><li>Hệ thống đóng biểu mẫu và hiển thị thông báo gửi báo cáo thành công.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng thay thế:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.7 Nội dung mô tả không hợp lệ</b></p><ol><li>Hệ thống xác định thông tin mô tả chi tiết bị để trống.</li><li>Hệ thống hiển thị thông báo lỗi yêu cầu cung cấp chi tiết về lỗi vi phạm.</li><li>Quay lại bước 5.</li></ol><p><b>A.8 Báo cáo trùng lặp</b></p><ol><li>Hệ thống phát hiện Member đã gửi báo cáo cho truyện/chương này và đang chờ nhân viên kiểm duyệt.</li><li>Hệ thống hiển thị thông báo báo cáo của bạn đang được tiếp nhận xử lý.</li><li>Quay lại bước 5.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Ngoại lệ (Exceptions):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Phiên đăng nhập không hợp lệ</b></p><ol><li>Hệ thống hiển thị thông báo lỗi xác thực phiên làm việc.</li><li>Hệ thống chuyển hướng người dùng đến trang đăng nhập.</li></ol><p><b>EX-3 Truyện hoặc chương không tồn tại</b></p><ol><li>Hệ thống xác định ID truyện hoặc ID chương không tồn tại trong cơ sở dữ liệu hoặc đã bị xóa mềm.</li><li>Hệ thống hiển thị thông báo lỗi không tìm thấy nội dung.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mức độ ưu tiên:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Medium, Should Have</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tần suất sử dụng:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Trung bình (Khi phát hiện nội dung lỗi)</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Quy tắc nghiệp vụ:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">BR-05</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Thông tin khác:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Báo cáo chương sẽ tự động ghi kèm số thứ tự chương và ID chương tương ứng.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Giả định:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Member có kết nối internet ổn định.</li></ul></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

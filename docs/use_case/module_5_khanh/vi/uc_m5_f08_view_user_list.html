@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>UC-08 Xem Danh Sách Người Dùng</title>
+</head>
+<body>
+<div class="uc-container" style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
+    <style>
+        .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
+            font-family: 'Calibri', sans-serif !important;
+            font-size: 11pt !important;
+            color: black !important;
+        }
+    </style>
+    <p><b>Functional Description Template</b></p>
+    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Mã và Tên UC:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-08 Xem Danh Sách Người Dùng</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Người tạo:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Khánh</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Ngày tạo:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-23</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân chính:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Admin</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân phụ:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Không có</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Kích hoạt (Trigger):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Admin nhấn chọn mục `"Quản lý người dùng"` trên menu quản trị.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mô tả (Description):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cung cấp giao diện tra cứu danh sách toàn bộ tài khoản người dùng trên hệ thống, tìm kiếm theo tên hoặc email, lọc theo vai trò (ROLE_MEMBER, ROLE_STAFF, ROLE_ADMIN) hoặc trạng thái (ACTIVE, BANNED, PENDING_VERIFICATION) và xem thông tin tóm tắt số dư Coin.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện tiên quyết:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> Người dùng đã đăng nhập hệ thống với vai trò Admin.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện hậu quyết:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> Admin xem được danh sách tài khoản người dùng phân trang kèm bộ lọc chi tiết.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng cơ bản:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Xem danh sách người dùng thành công</b></p><ol><li>Admin truy cập trang danh sách người dùng.</li><li>Hệ thống kiểm tra quyền hạn Admin của tác nhân.</li><li>Hệ thống truy xuất danh sách người dùng từ cơ sở dữ liệu theo phân trang mặc định.</li><li>Hệ thống tính toán tổng số người dùng và dữ liệu phân trang.</li><li>Hệ thống hiển thị bảng danh sách người dùng (Mã ID, Tên hiển thị, Email, Vai trò, Số dư Coin, Trạng thái tài khoản, Ngày đăng ký) và các nút thao tác (`"Chi tiết"`, `"Đổi quyền"`, `"Khóa/Mở"`).</li><li>Admin nhập từ khóa tìm kiếm (email hoặc họ tên) hoặc chọn bộ lọc vai trò/trạng thái.</li><li>Admin nhấn nút `"Tìm kiếm"`.</li><li>Hệ thống truy vấn danh sách người dùng khớp với điều kiện lọc.</li><li>Hệ thống cập nhật bảng dữ liệu danh sách người dùng hiển thị.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng thay thế:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.5 Xem chi tiết người dùng</b></p><ol><li>Admin nhấn nút `"Chi tiết"` tại một dòng người dùng cụ thể.</li><li>Hệ thống truy xuất dữ liệu mở rộng (lịch sử đăng nhập, tổng Coin đã nạp, tổng chương đã mở khóa).</li><li>Hệ thống hiển thị modal thông tin chi tiết của người dùng.</li><li>Admin kiểm tra thông tin và nhấn nút `"Đóng"`.</li><li>Quay lại bước 5.</li></ol><p><b>A.8 Không tìm thấy người dùng</b></p><ol><li>Hệ thống xác định không có người dùng nào khớp với tiêu chí tìm kiếm.</li><li>Hệ thống hiển thị thông báo không có kết quả phù hợp.</li><li>Quay lại bước 6.</li></ol><p><b>A.5 Chuyển trang</b></p><ol><li>Admin nhấn chọn số trang hoặc các nút `"Trang trước"`, `"Tiếp theo"`.</li><li>Hệ thống truy vấn danh sách người dùng của trang tương ứng.</li><li>Hệ thống làm mới bảng dữ liệu người dùng.</li><li>Quay lại bước 5.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Ngoại lệ (Exceptions):</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Phiên đăng nhập không hợp lệ</b></p><ol><li>Hệ thống hiển thị thông báo lỗi xác thực phiên làm việc.</li><li>Hệ thống chuyển hướng người dùng đến trang đăng nhập.</li></ol><p><b>EX-2 Quyền hạn không hợp lệ</b></p><ol><li>Hệ thống xác định tài khoản không có quyền Admin.</li><li>Hệ thống hiển thị trang lỗi 403.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mức độ ưu tiên:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High, Must Have</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tần suất sử dụng:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cao (Hàng ngày)</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Quy tắc nghiệp vụ:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">BR-04</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Thông tin khác:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Mặc định phân trang 20 tài khoản mỗi trang.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Giả định:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Admin có kết nối internet ổn định.</li></ul></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>
