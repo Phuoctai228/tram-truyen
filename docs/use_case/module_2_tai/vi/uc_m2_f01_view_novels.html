@@ -1,15 +1,15 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <title>UC-01 Xem Danh Sách Truyện</title>
 </head>
 <body>
-<div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">
+<div class="uc-container" style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
     <style>
         .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
-            font-family: 'Times New Roman', serif !important;
-            font-size: 12pt !important;
+            font-family: 'Calibri', sans-serif !important;
+            font-size: 11pt !important;
             color: black !important;
         }
     </style>
@@ -49,15 +49,15 @@
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng cơ bản:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Xem danh sách thành công</b></p><ol><li>Tác nhân truy cập vào trang chủ hoặc trang danh mục cụ thể.</li><li>Hệ thống trích xuất dữ liệu phiên làm việc (session) của tác nhân hiện tại (nếu có).</li><li>Hệ thống truy vấn cơ sở dữ liệu để lấy danh sách truyện công khai dựa trên đường dẫn hiện tại.</li><li>Hệ thống áp dụng quy tắc sắp xếp mặc định (ví dụ: mới cập nhật nhất).</li><li>Hệ thống tính toán dữ liệu phân trang (pagination) dựa trên tổng số kết quả.</li><li>Hệ thống hiển thị danh sách truyện, bao gồm: tiêu đề, ảnh bìa, tác giả và đoạn trích tóm tắt.</li><li>Hệ thống hiển thị các nút điều hướng phân trang ở cuối danh sách.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Xem danh sách thành công</b></p><ol><li>Tác nhân truy cập vào trang chủ hoặc trang danh mục cụ thể.</li><li>Hệ thống trích xuất dữ liệu phiên làm việc của tác nhân hiện tại.</li><li>Hệ thống truy xuất danh sách truyện công khai từ cơ sở dữ liệu dựa trên đường dẫn hiện tại.</li><li>Hệ thống sắp xếp danh sách truyện theo quy tắc mặc định.</li><li>Hệ thống tính toán dữ liệu phân trang dựa trên tổng số kết quả.</li><li>Hệ thống hiển thị danh sách truyện cùng các thông tin mô tả (tiêu đề, ảnh bìa, tác giả, tóm tắt).</li><li>Hệ thống hiển thị các nút điều hướng phân trang ở cuối danh sách.</li></ol></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng thay thế:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.3 Alt Danh mục trống</b></p><ol><li>Hệ thống xác định không có truyện nào khớp với danh mục hoặc bộ lọc hiện tại.</li><li>Hệ thống hiển thị hình ảnh minh họa trạng thái trống và một thông báo mô tả phù hợp.</li><li>Quay lại bước 1.</li></ol><p><b>A.7 Alt Chuyển trang</b></p><ol><li>Tác nhân nhấn vào một số trang cụ thể hoặc nút "Tiếp theo" trên thanh điều hướng phân trang.</li><li>Hệ thống tính toán độ lệch (offset) cho trang được yêu cầu.</li><li>Hệ thống truy vấn cơ sở dữ liệu để lấy danh sách bản ghi truyện của trang đó.</li><li>Hệ thống cập nhật giao diện người dùng để hiển thị tập truyện mới.</li><li>Quay lại bước 7.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.3 Danh mục trống</b></p><ol><li>Hệ thống xác định không có truyện nào khớp với danh mục hoặc bộ lọc hiện tại.</li><li>Hệ thống hiển thị hình ảnh minh họa trạng thái trống và một thông báo mô tả phù hợp.</li><li>Quay lại bước 1.</li></ol><p><b>A.7 Chuyển trang</b></p><ol><li>Tác nhân nhấn vào một số trang cụ thể hoặc nút `"Tiếp theo"`, `"Trang trước"` trên thanh điều hướng phân trang.</li><li>Hệ thống tính toán độ lệch cho trang được yêu cầu.</li><li>Hệ thống truy vấn cơ sở dữ liệu để lấy danh sách bản ghi truyện của trang đó.</li><li>Hệ thống cập nhật giao diện để hiển thị tập truyện mới.</li><li>Quay lại bước 7.</li></ol></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Ngoại lệ (Exceptions):</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-3 Hết hạn kết nối DB</b></p><ol><li>Hệ thống không thể truy vấn cơ sở dữ liệu trong thời gian cho phép.</li><li>Hệ thống ghi nhận (log) lỗi quá thời gian.</li><li>Hệ thống hiển thị một thông báo lỗi chung cho biết dịch vụ đang gián đoạn tạm thời.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-3 Hết hạn kết nối DB</b></p><ol><li>Hệ thống không thể truy vấn cơ sở dữ liệu trong thời gian cho phép.</li><li>Hệ thống ghi nhận lỗi.</li><li>Hệ thống hiển thị một thông báo lỗi chung cho biết dịch vụ đang gián đoạn tạm thời.</li></ol></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mức độ ưu tiên:</b></td>
@@ -83,4 +83,3 @@
 </div>
 </body>
 </html>
-

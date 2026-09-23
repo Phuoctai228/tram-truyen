@@ -1,15 +1,15 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <title>UC-10 Xem Lịch Sử Đọc Truyện</title>
 </head>
 <body>
-<div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">
+<div class="uc-container" style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
     <style>
         .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
-            font-family: 'Times New Roman', serif !important;
-            font-size: 12pt !important;
+            font-family: 'Calibri', sans-serif !important;
+            font-size: 11pt !important;
             color: black !important;
         }
     </style>
@@ -33,7 +33,7 @@
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Kích hoạt (Trigger):</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Member điều hướng đến phần "Lịch sử đọc" từ menu hồ sơ.</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Member điều hướng đến phần `"Lịch sử đọc"` từ menu hồ sơ.</td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mô tả (Description):</b></td>
@@ -49,15 +49,15 @@
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng cơ bản:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Xem lịch sử thành công</b></p><ol><li>Member nhấn vào liên kết "Lịch sử đọc".</li><li>Hệ thống xác thực phiên người dùng.</li><li>Hệ thống truy vấn cơ sở dữ liệu để lấy 50 bản ghi lịch sử gần nhất liên kết với thành viên.</li><li>Hệ thống lấy siêu dữ liệu về truyện và chương tương ứng (tiêu đề, thời gian) cho các bản ghi đó.</li><li>Hệ thống định dạng lại thời gian tương đối so với thời điểm hiện tại (ví dụ: "2 giờ trước").</li><li>Hệ thống kết xuất trang lịch sử hiển thị danh sách các chương đã đọc gần đây.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Xem lịch sử thành công</b></p><ol><li>Member nhấn vào liên kết `"Lịch sử đọc"`.</li><li>Hệ thống trích xuất dữ liệu phiên làm việc của tác nhân hiện tại.</li><li>Hệ thống truy xuất 50 bản ghi lịch sử đọc gần nhất của thành viên.</li><li>Hệ thống truy xuất thông tin mô tả truyện và chương tương ứng cho các bản ghi đó.</li><li>Hệ thống định dạng lại thời gian tương đối so với thời điểm hiện tại.</li><li>Hệ thống kết xuất trang lịch sử hiển thị danh sách các chương đã đọc gần đây.</li></ol></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng thay thế:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.3 Alt Lịch sử trống</b></p><ol><li>Hệ thống xác định thành viên không có bản ghi lịch sử đọc nào.</li><li>Hệ thống hiển thị hình ảnh minh họa trạng thái trống với một thông báo.</li><li>Quay lại bước 1.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.3 Lịch sử trống</b></p><ol><li>Hệ thống xác định thành viên không có bản ghi lịch sử đọc nào.</li><li>Hệ thống hiển thị hình ảnh minh họa trạng thái trống với một thông báo mô tả phù hợp.</li><li>Quay lại bước 1.</li></ol></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Ngoại lệ (Exceptions):</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Phiên bản không hợp lệ (Chưa đăng nhập)</b></p><ol><li>Hệ thống xác định tác nhân chưa đăng nhập.</li><li>Hệ thống hiển thị thông báo lỗi xác thực.</li><li>Hệ thống chuyển hướng người dùng đến trang đăng nhập.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Phiên đăng nhập không hợp lệ</b></p><ol><li>Hệ thống hiển thị thông báo lỗi xác thực.</li><li>Hệ thống chuyển hướng người dùng đến trang đăng nhập.</li></ol></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mức độ ưu tiên:</b></td>
@@ -72,7 +72,7 @@
             <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">BR-14</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Thông phức khác:</b></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Thông tin khác:</b></td>
             <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Không có.</td>
         </tr>
         <tr>
@@ -83,4 +83,3 @@
 </div>
 </body>
 </html>
-

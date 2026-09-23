@@ -1,15 +1,15 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>UC-10 View Reading History</title>
 </head>
 <body>
-<div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">
+<div class="uc-container" style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
     <style>
         .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
-            font-family: 'Times New Roman', serif !important;
-            font-size: 12pt !important;
+            font-family: 'Calibri', sans-serif !important;
+            font-size: 11pt !important;
             color: black !important;
         }
     </style>
@@ -33,7 +33,7 @@
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Trigger:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Member navigates to the "Reading History" section from the profile menu.</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Member navigates to the `"Reading History"` section from the profile menu.</td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Description:</b></td>
@@ -49,15 +49,15 @@
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Normal Flow:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. View History Successfully</b></p><ol><li>Member clicks on the "Reading History" link.</li><li>The system validates the user session.</li><li>The system queries the database for the 50 most recent history records associated with the member.</li><li>The system retrieves the associated novel and chapter metadata (titles, timestamps) for those records.</li><li>The system formats the timestamps relative to the current time (e.g., "2 hours ago").</li><li>The system renders the history page displaying the list of recently read chapters.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. View History Successfully</b></p><ol><li>Member clicks on the `"Reading History"` link.</li><li>The system retrieves the current actor's session data.</li><li>The system retrieves the 50 most recent reading history records associated with the member.</li><li>The system retrieves the associated novel and chapter metadata for those records.</li><li>The system formats the timestamps relative to the current time.</li><li>The system renders the history page displaying the list of recently read chapters.</li></ol></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Alternative Flows:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.3 Alt Empty History</b></p><ol><li>The system determines the member has no reading history records.</li><li>The system renders an empty state illustration with a message.</li><li>Back to step 1.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.3 Empty History</b></p><ol><li>The system determines the member has no reading history records.</li><li>The system renders an empty state illustration with a descriptive message.</li><li>Back to step 1.</li></ol></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Exceptions:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Session Invalid (Not Logged In)</b></p><ol><li>The system determines the actor is not logged in.</li><li>The system displays an authentication error message.</li><li>The system redirects the user to the login page.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Session Invalid (Not Logged In)</b></p><ol><li>The system displays an authentication error message.</li><li>The system redirects the user to the login page.</li></ol></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Priority:</b></td>
@@ -83,4 +83,3 @@
 </div>
 </body>
 </html>
-

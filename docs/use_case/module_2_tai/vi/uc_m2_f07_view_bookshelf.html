@@ -1,15 +1,15 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <title>UC-07 Xem Tủ Sách</title>
 </head>
 <body>
-<div class="uc-container" style="font-family: 'Times New Roman', serif; font-size: 12pt; background-color: transparent; color: black;">
+<div class="uc-container" style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
     <style>
         .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
-            font-family: 'Times New Roman', serif !important;
-            font-size: 12pt !important;
+            font-family: 'Calibri', sans-serif !important;
+            font-size: 11pt !important;
             color: black !important;
         }
     </style>
@@ -49,15 +49,15 @@
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng cơ bản:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Xem tủ sách thành công</b></p><ol><li>Member nhấn vào liên kết "Tủ sách" trong menu điều hướng.</li><li>Hệ thống xác thực phiên người dùng.</li><li>Hệ thống truy vấn cơ sở dữ liệu để lấy tất cả các bản ghi bookmark được liên kết với ID của thành viên hiện tại.</li><li>Hệ thống lấy siêu dữ liệu (tiêu đề, ảnh bìa, chương mới nhất) cho mỗi truyện đã lưu.</li><li>Hệ thống tính toán tỷ lệ tiến độ đọc dựa trên chỉ mục chương đã lưu mới nhất so với tổng số chương đã xuất bản.</li><li>Hệ thống kết xuất trang tủ sách, hiển thị danh sách truyện với thanh tiến độ và nút "Đọc tiếp" cho từng truyện.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Xem tủ sách thành công</b></p><ol><li>Member nhấn vào liên kết `"Tủ sách"` trong menu điều hướng.</li><li>Hệ thống trích xuất dữ liệu phiên làm việc của tác nhân hiện tại.</li><li>Hệ thống truy xuất tất cả các bản ghi tủ sách của thành viên từ cơ sở dữ liệu.</li><li>Hệ thống truy xuất thông tin mô tả (tiêu đề, ảnh bìa, chương mới nhất) cho mỗi truyện đã lưu.</li><li>Hệ thống tính toán tỷ lệ tiến độ đọc dựa trên chương đã đọc so với tổng số chương.</li><li>Hệ thống kết xuất trang tủ sách, hiển thị danh sách truyện cùng thanh tiến độ và nút `"Đọc tiếp"`.</li></ol></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng thay thế:</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.3 Alt Tủ sách trống</b></p><ol><li>Hệ thống xác định thành viên không có bản ghi bookmark nào.</li><li>Hệ thống hiển thị hình ảnh minh họa trạng thái trống với thông báo khuyến khích người dùng khám phá truyện.</li><li>Quay lại bước 1.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.3 Tủ sách trống</b></p><ol><li>Hệ thống xác định thành viên không có bản ghi tủ sách nào.</li><li>Hệ thống hiển thị hình ảnh minh họa trạng thái trống với thông báo mô tả phù hợp.</li><li>Quay lại bước 1.</li></ol></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Ngoại lệ (Exceptions):</b></td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Phiên bản không hợp lệ (Chưa đăng nhập)</b></p><ol><li>Hệ thống xác định tác nhân chưa đăng nhập.</li><li>Hệ thống hiển thị thông báo lỗi xác thực.</li><li>Hệ thống chuyển hướng người dùng đến trang đăng nhập.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Phiên đăng nhập không hợp lệ</b></p><ol><li>Hệ thống hiển thị thông báo lỗi xác thực.</li><li>Hệ thống chuyển hướng người dùng đến trang đăng nhập.</li></ol></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mức độ ưu tiên:</b></td>
@@ -83,4 +83,3 @@
 </div>
 </body>
 </html>
-
