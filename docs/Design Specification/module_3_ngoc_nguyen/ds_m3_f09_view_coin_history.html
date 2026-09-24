@@ -1,0 +1,177 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Design Specification: View Coin History (M3-F09)</title>
+<style>
+    body {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 12pt;
+        line-height: 1.5;
+        color: #000000;
+        margin: 20px 30px;
+        background-color: #ffffff;
+    }
+    h2 { font-size: 16pt; font-weight: bold; margin-bottom: 6px; }
+    h3 { font-size: 14pt; font-weight: bold; margin-bottom: 6px; }
+    h4 { font-size: 13pt; font-style: italic; font-weight: bold; margin-bottom: 4px; }
+    h5 { font-size: 12pt; font-weight: bold; margin-top: 14px; margin-bottom: 4px; }
+    p { margin: 6px 0; }
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 10px 0 16px 0;
+        border: 1px solid #000000;
+    }
+    th, td {
+        border: 1px solid #000000;
+        padding: 6px 10px;
+        text-align: left;
+        vertical-align: top;
+        font-size: 12pt;
+    }
+    th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+    .group-header {
+        background-color: #fafafa;
+        font-weight: bold;
+        font-style: italic;
+    }
+    .sql-block {
+        background-color: #f9f9f9;
+        border-left: 3px solid #333333;
+        padding: 8px 12px;
+        margin: 8px 0;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 11pt;
+        white-space: pre-wrap;
+    }
+    .mockup-placeholder {
+        margin: 6px 0 12px 0;
+        font-size: 12pt;
+    }
+</style>
+</head>
+<body>
+    <h2>3. Authentication, Wallet & Payment</h2>
+    <h3>3.1 Coin & Payment</h3>
+    <h4>*a. View Coin History*</h4>
+
+    <p>This screen displays transaction history of coin top-ups and chapter unlocks.</p>
+    <p>Related use cases:</p>
+    <ul>
+        <li><a href="../../use_case/module_3_ngoc_nguyen/en/UC-09-View_Coin_History.html">UC-M3-F09_View Coin History</a></li>
+    </ul>
+
+    <h5><b>UI Design</b></h5>
+    <div class="mockup-placeholder">""</div>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">Field Name</th>
+                <th style="width: 25%;">Field Type</th>
+                <th style="width: 50%;">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="group-header">
+                <td colspan="3">***Filter Controls***</td>
+            </tr>
+            <tr>
+                <td>Transaction Type</td>
+                <td>Combo Box Single-Choice</td>
+                <td>Values: All (Default), TOPUP_COIN, UNLOCK_CHAPTER, GIFT_COIN</td>
+            </tr>
+            <tr>
+                <td>From Date</td>
+                <td>Datepicker</td>
+                <td>Filter starting date</td>
+            </tr>
+            <tr>
+                <td>To Date</td>
+                <td>Datepicker</td>
+                <td>Filter ending date</td>
+            </tr>
+            <tr>
+                <td>Filter</td>
+                <td>Button</td>
+                <td>Applies date and type filter to transaction table</td>
+            </tr>
+            <tr>
+                <td>Current Balance Card</td>
+                <td>Text</td>
+                <td>Displays user's current wallet balance (Coins)</td>
+            </tr>
+            <tr class="group-header">
+                <td colspan="3">***Data Table***</td>
+            </tr>
+            <tr>
+                <td>Transaction ID</td>
+                <td>Integer</td>
+                <td>Unique identifier of transaction</td>
+            </tr>
+            <tr>
+                <td>Date & Time</td>
+                <td>Text</td>
+                <td>Timestamp when transaction was recorded</td>
+            </tr>
+            <tr>
+                <td>Type</td>
+                <td>Text</td>
+                <td>Type category of transaction</td>
+            </tr>
+            <tr>
+                <td>Amount</td>
+                <td>Text</td>
+                <td>Fluctuating amount (+X for deposits/gifts, -X for chapter unlocks)</td>
+            </tr>
+            <tr>
+                <td>Balance After</td>
+                <td>Text</td>
+                <td>Wallet balance immediately after transaction</td>
+            </tr>
+            <tr>
+                <td>Description</td>
+                <td>Text</td>
+                <td>Details including Order Code or Chapter/Novel unlocked</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h5><b>Database Access</b></h5>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">Table</th>
+                <th style="width: 15%; text-align: center;">CRUD</th>
+                <th style="width: 60%;">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>users</td>
+                <td style="text-align: center;">R</td>
+                <td>Retrieve current wallet balance of user</td>
+            </tr>
+            <tr>
+                <td>transactions</td>
+                <td style="text-align: center;">R</td>
+                <td>Query paginated list of user's transactions matching filters</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p><b><i>SQL Commands:</i></b></p>
+    <p>1/ Retrieve current wallet balance of user</p>
+    <div class="sql-block">SELECT wallet_balance FROM users WHERE id = ?;</div>
+
+    <p>2/ Query paginated list of user's transactions matching filters</p>
+    <div class="sql-block">SELECT id, amount, balance_after, type, reference_id, description, created_at
+FROM transactions
+WHERE user_id = ? AND (type = ? OR ? IS NULL) AND created_at >= ? AND created_at <= ?
+ORDER BY created_at DESC LIMIT ? OFFSET ?;</div>
+</body>
+</html>
