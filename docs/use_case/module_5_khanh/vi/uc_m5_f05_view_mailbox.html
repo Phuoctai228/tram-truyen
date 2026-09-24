@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>UC-05 Xem Hòm Thư</title>
+</head>
+
+<body>
+    <div class="uc-container"
+        style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
+        <style>
+            .uc-container,
+            .uc-container table,
+            .uc-container tr,
+            .uc-container td,
+            .uc-container th,
+            .uc-container p,
+            .uc-container ol,
+            .uc-container ul,
+            .uc-container li,
+            .uc-container span,
+            .uc-container strong,
+            .uc-container b {
+                font-family: 'Calibri', sans-serif !important;
+                font-size: 11pt !important;
+                color: black !important;
+            }
+        </style>
+        <p><b>Functional Description Template</b></p>
+        <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Mã và Tên UC:</b>
+                </td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-05 Xem Hòm Thư</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Người tạo:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Khánh</td>
+                <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Ngày tạo:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-23</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân chính:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;">Member</td>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân phụ:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;">Không có</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Kích hoạt (Trigger):</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Member nhấn vào biểu
+                    tượng hòm thư hoặc thông báo ( "notifications" icon) trên thanh điều hướng chính.</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mô tả (Description):</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cho phép Member tiếp
+                    nhận và xem danh sách các thông báo từ hệ thống, bao gồm thông báo chung, thông báo biến động số dư
+                    Coin, và kết quả phản hồi của các phiếu báo cáo vi phạm đã gửi; hỗ trợ đánh dấu đã đọc hoặc xóa
+                    thông báo.</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện tiên quyết:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>PRE-1.</b> Người dùng đã đăng nhập hệ thống với vai trò Member.</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện hậu quyết:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>POST-1.</b> Member xem được danh sách thông báo và nội dung chi tiết.</p>
+                    <p><b>POST-2.</b> Trạng thái thông báo chuyển thành đã đọc khi Member mở xem.</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng cơ bản:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>A. Xem hòm thư thành công</b></p>
+                    <ol>
+                        <li>Member nhấn vào biểu tượng hòm thư trên thanh điều hướng.</li>
+                        <li>Hệ thống trích xuất dữ liệu phiên làm việc của tác nhân hiện tại.</li>
+                        <li>Hệ thống truy xuất danh sách các thông báo thuộc về Member (thông báo cá nhân và thông báo
+                            chung toàn hệ thống).</li>
+                        <li>Hệ thống sắp xếp danh sách thông báo theo thứ tự thời gian mới nhất.</li>
+                        <li>Hệ thống tính toán tổng số thông báo chưa đọc.</li>
+                        <li>Hệ thống hiển thị danh sách thông báo kèm huy hiệu hiển thị số lượng tin chưa đọc.</li>
+                        <li>Member nhấn chọn một thông báo cụ thể để xem chi tiết.</li>
+                        <li>Hệ thống cập nhật trạng thái thông báo thành đã đọc trong cơ sở dữ liệu.</li>
+                        <li>Hệ thống hiển thị nội dung chi tiết của thông báo.</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng thay thế:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>A.3 Hòm thư trống</b></p>
+                    <ol>
+                        <li>Hệ thống xác định tài khoản chưa có thông báo nào.</li>
+                        <li>Hệ thống hiển thị hình ảnh minh họa trạng thái trống và thông báo chưa có thư mới.</li>
+                    </ol>
+                    <p><b>A.6 Đánh dấu tất cả đã đọc</b></p>
+                    <ol>
+                        <li>Member nhấn nút "Đánh dấu tất cả đã đọc" .</li>
+                        <li>Hệ thống thực thi giao dịch cập nhật trạng thái đã đọc cho toàn bộ thông báo chưa đọc của
+                            Member.</li>
+                        <li>Hệ thống làm mới giao diện và ẩn huy hiệu tin chưa đọc.</li>
+                        <li>Quay lại bước 6.</li>
+                    </ol>
+                    <p><b>A.6 Xóa thông báo</b></p>
+                    <ol>
+                        <li>Member nhấn nút "Xóa" tại một thông báo cụ thể.</li>
+                        <li>Hệ thống xóa bản ghi thông báo khỏi danh sách của Member.</li>
+                        <li>Hệ thống làm mới danh sách hiển thị.</li>
+                        <li>Quay lại bước 6.</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Ngoại lệ (Exceptions):</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>EX-1 Phiên đăng nhập không hợp lệ</b></p>
+                    <ol>
+                        <li>Hệ thống hiển thị thông báo lỗi xác thực phiên làm việc.</li>
+                        <li>Hệ thống chuyển hướng người dùng đến trang đăng nhập.</li>
+                    </ol>
+                    <p><b>EX-7 Không tìm thấy thông báo</b></p>
+                    <ol>
+                        <li>Hệ thống xác định thông báo được yêu cầu xem chi tiết đã bị xóa.</li>
+                        <li>Hệ thống hiển thị thông báo lỗi thông báo không tồn tại.</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mức độ ưu tiên:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High, Must Have</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tần suất sử dụng:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Rất cao (Mỗi khi có
+                    thông báo mới)</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Quy tắc nghiệp vụ:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">BR-05</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Thông tin khác:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Không có.</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Giả định:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <ul>
+                        <li>Member có kết nối internet ổn định.</li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+
+</html>

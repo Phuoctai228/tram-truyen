@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>UC-10 Ban/Enable User</title>
+</head>
+
+<body>
+    <div class="uc-container"
+        style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
+        <style>
+            .uc-container,
+            .uc-container table,
+            .uc-container tr,
+            .uc-container td,
+            .uc-container th,
+            .uc-container p,
+            .uc-container ol,
+            .uc-container ul,
+            .uc-container li,
+            .uc-container span,
+            .uc-container strong,
+            .uc-container b {
+                font-family: 'Calibri', sans-serif !important;
+                font-size: 11pt !important;
+                color: black !important;
+            }
+        </style>
+        <p><b>Functional Description Template</b></p>
+        <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>UC ID and Name:</b>
+                </td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-10 Ban/Enable User
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Created By:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">KhanhND</td>
+                <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Date Created:</b>
+                </td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-23</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Primary Actor:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;">Admin</td>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Secondary Actors:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;">None</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Trigger:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Admin clicks "Ban User"
+                    or "Enable User" button on a specific account record in the user table.</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Description:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Enables Admin to
+                    suspend platform access for users violating community standards (updating status to BANNED),
+                    automatically calculating progressive ban durations and invalidating active sessions; or manually
+                    restore access (status to ACTIVE) prior to ban expiry.</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Preconditions:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>PRE-1.</b> The user is authenticated with the Admin role.</p>
+                    <p><b>PRE-2.</b> Target user account exists in the database.</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Postconditions:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>POST-1.</b> Target user account status is updated to BANNED or ACTIVE.</p>
+                    <p><b>POST-2.</b> If banned, all active user sessions are terminated immediately.</p>
+                    <p><b>POST-3.</b> An administrative audit log entry is recorded with rationale and ban expiry
+                        timestamp.</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Normal Flow:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>A. Ban User Successfully</b></p>
+                    <ol>
+                        <li>Admin clicks "Ban User" button on an offending user record.</li>
+                        <li>The system retrieves the current actor's session data.</li>
+                        <li>The system evaluates safety constraints ensuring Admin cannot ban their own account.</li>
+                        <li>The system queries previous violation history and ban counts for the target account.</li>
+                        <li>The system calculates progressive ban duration according to business rules (1st: 24h,
+                            subsequent: double previous, up to 1 year max).</li>
+                        <li>The system renders the ban confirmation modal with calculated duration and mandatory reason
+                            textarea.</li>
+                        <li>Admin reviews the duration, enters detailed violation reasons, and clicks "Confirm Ban"
+                            button.</li>
+                        <li>The system validates the violation reason field is not empty.</li>
+                        <li>The system executes a database update setting status to BANNED and recording ban expiry
+                            timestamp.</li>
+                        <li>The system revokes all active session tokens associated with the banned account.</li>
+                        <li>The system creates an audit log entry detailing the ban reason and duration.</li>
+                        <li>The system closes the modal and displays an account banned successfully message.</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Alternative Flows:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>A.1 Enable User Before Expiry</b></p>
+                    <ol>
+                        <li>Admin clicks "Enable User" button on an account currently marked as BANNED.</li>
+                        <li>The system displays an unban confirmation modal with an unban rationale input.</li>
+                        <li>Admin enters justification and clicks "Confirm Enable" button.</li>
+                        <li>The system updates user status to ACTIVE and clears remaining ban duration.</li>
+                        <li>The system logs the early unban administrative action.</li>
+                        <li>The system dispatches an account reactivated notification to the user's mailbox.</li>
+                        <li>The system refreshes the UI and displays an account restored successfully message.</li>
+                    </ol>
+                    <p><b>A.3 Self-Ban Attempt</b></p>
+                    <ol>
+                        <li>The system detects the target user is identical to the currently authenticated Admin.</li>
+                        <li>The system displays a warning message that you cannot ban your own account.</li>
+                        <li>The ban operation is aborted.</li>
+                    </ol>
+                    <p><b>A.8 Blank Ban Rationale</b></p>
+                    <ol>
+                        <li>The system detects the reason textarea is blank.</li>
+                        <li>The system displays a validation error requiring explicit justification.</li>
+                        <li>Back to step 7.</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Exceptions:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>EX-1 Session Invalid (Not Logged In)</b></p>
+                    <ol>
+                        <li>The system displays an authentication error message.</li>
+                        <li>The system redirects the user to the login page.</li>
+                    </ol>
+                    <p><b>EX-2 Access Denied</b></p>
+                    <ol>
+                        <li>The system determines the user lacks Admin privileges.</li>
+                        <li>The system renders a 403 Forbidden page.</li>
+                    </ol>
+                    <p><b>EX-3 Target Account Not Found</b></p>
+                    <ol>
+                        <li>The system determines the target record is missing from the database.</li>
+                        <li>The system displays an error message and refreshes the user table.</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Priority:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High, Must Have</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Frequency of Use:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Medium (When severe
+                    violations occur)</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Business Rules:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">BR-04</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Other Information:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Implements progressive
+                    penalty scaling and permits discretionary manual early restoration by Admin.</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Assumptions:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <ul>
+                        <li>Admin has a stable internet connection.</li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+
+</html>
