@@ -4,10 +4,10 @@
 Trạm Truyện là nền tảng đọc truyện chữ trực tuyến, được phát triển trong khuôn khổ môn học SWP391. Hệ thống cung cấp các chức năng tương tự như các website đọc truyện hiện nay, bao gồm đọc truyện, quản lý tủ sách, đăng truyện, bình luận, và kiểm duyệt.
 
 ## 2. Features
-- **Guest**:  Đọc truyện miễn phí, tìm kiếm, lọc theo thể loại, gửi khiếu nại bản quyền/liên hệ và đăng ký tài khoản.
-- **Member**: Lưu tủ sách, theo dõi tiến độ đọc, bình luận, báo lỗi chương/truyện, nạp Coin và mở khóa chương VIP.
-- **Staff**: Đăng tải truyện, cập nhật chương, đặt giá VIP, sửa lỗi nội dung và kiểm duyệt bình luận vi phạm.
-- **Admin**: Quản trị người dùng, danh mục thể loại, tiếp nhận và xử lý báo cáo khiếu nại gồm( nội dung truyện, nội dung chương, và nội dung bình luận), đối soát nạp Coin và cấu hình hệ thống. 
+- **Guest**: Xem danh sách truyện, xem chi tiết truyện, đọc chương miễn phí, tìm kiếm, lọc theo thể loại và đăng nhập/đăng ký tài khoản.
+- **Member**: Bao gồm các quyền của Guest, cộng thêm: Nghe đọc truyện audio (TTS), lưu và quản lý tủ sách cá nhân, tự động lưu tiến độ đọc, xem lịch sử đọc truyện, điểm danh hàng ngày nhận Coin miễn phí, nạp Coin, và dùng Coin để mở khóa chương VIP.
+- **Staff**: Quản lý nội dung (đăng tải truyện, quản lý thông tin truyện, cập nhật chương mới, thiết lập giá chương VIP) và kiểm duyệt (sửa lỗi nội dung, quản lý bình luận).
+- **Admin**: Toàn quyền hệ thống bao gồm: Quản trị người dùng, quản lý danh mục/thể loại, xử lý các báo cáo/khiếu nại vi phạm, đối soát giao dịch nạp/tiêu Coin và cấu hình hệ thống.
 
 ## 3. Technology Stack
 - **Backend**: Java 17/21, Spring Boot 3.x, Spring MVC, Spring Data JPA, Hibernate, Spring Security.
