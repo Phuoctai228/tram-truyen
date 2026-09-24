@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Design Specification: View Novel Details (M2-F02)</title>
+    <style>
+        body { font-family: 'Times New Roman', Times, serif; font-size: 12pt; line-height: 1.5; color: #000000; margin: 20px 30px; background-color: #ffffff; }
+        h2 { font-size: 16pt; font-weight: bold; margin-bottom: 6px; }
+        h3 { font-size: 14pt; font-weight: bold; margin-bottom: 6px; }
+        h4 { font-size: 13pt; font-style: italic; font-weight: bold; margin-bottom: 4px; }
+        h5 { font-size: 12pt; font-weight: bold; margin-top: 14px; margin-bottom: 4px; }
+        p { margin: 6px 0; }
+        table { border-collapse: collapse; width: 100%; margin: 10px 0 16px 0; border: 1px solid #000000; }
+        th, td { border: 1px solid #000000; padding: 6px 10px; text-align: left; vertical-align: top; font-size: 12pt; }
+        th { background-color: #f2f2f2; font-weight: bold; }
+        .group-header { background-color: #fafafa; font-weight: bold; font-style: italic; }
+        .sql-block { background-color: #f9f9f9; border-left: 3px solid #333333; padding: 8px 12px; margin: 8px 0; font-family: 'Courier New', Courier, monospace; font-size: 11pt; white-space: pre-wrap; }
+        .mockup-placeholder { margin: 6px 0 12px 0; font-size: 12pt; }
+    </style>
+</head>
+<body>
+    <h2>2. Reader Experience & Bookshelf</h2>
+    <h3>2.1 Novel Discovery</h3>
+    <h4>*b. View Novel Details*</h4>
+    <p>Shows novel information, summary, and chapter list.</p>
+    <p>Related use cases:</p>
+    <ul><li><a href="../../use_case/module_2_tai/en/uc_m2_f02_view_novel_details.html">UC-M2-F02_View Novel Details</a></li></ul>
+    <h5><b>UI Design</b></h5>
+    <div class="mockup-placeholder">""</div>
+    <table>
+        <thead><tr><th style="width: 25%;">Field Name</th><th style="width: 25%;">Field Type</th><th style="width: 50%;">Description</th></tr></thead>
+        <tbody>
+            <tr class="group-header"><td colspan="3">***Novel Info***</td></tr>
+            <tr><td>Title</td><td>Text</td><td>Display novel title</td></tr>
+            <tr><td>Read Button</td><td>Button</td><td>Start reading from chapter 1 or last read chapter</td></tr>
+            <tr class="group-header"><td colspan="3">***Chapter List***</td></tr>
+            <tr><td>Chapter Item</td><td>Hyperlink</td><td>Link to Read Chapter screen</td></tr>
+        </tbody>
+    </table>
+    <h5><b>Database Access</b></h5>
+    <table>
+        <thead><tr><th style="width: 25%;">Table</th><th style="width: 15%; text-align: center;">CRUD</th><th style="width: 60%;">Description</th></tr></thead>
+        <tbody>
+            <tr><td>novels</td><td style="text-align: center;">R</td><td>Read novel details</td></tr>
+            <tr><td>chapters</td><td style="text-align: center;">R</td><td>Read published chapters</td></tr>
+        </tbody>
+    </table>
+    <p><b><i>SQL Commands:</i></b></p>
+    <p>1/ Get novel info</p>
+    <div class="sql-block">SELECT id, title, author, summary, cover_url, status, views, average_rating FROM novels
+WHERE id = ? AND is_deleted = FALSE;</div>
+    <p>2/ Get chapters list</p>
+    <div class="sql-block">SELECT id, chapter_number, title, price, status, created_at FROM chapters
+WHERE novel_id = ? AND status IN ('PUBLISHED_REGULAR', 'PUBLISHED_VIP') AND is_deleted = FALSE
+ORDER BY chapter_number ASC;</div>
+</body>
+</html>

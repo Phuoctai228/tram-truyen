@@ -342,3 +342,4 @@ When instructed to generate Detailed Design Specifications:
 2. **Schema Verification**: Check `database/novels.sql` to ensure exact table names, column types, and constraints.
 3. **Directory Verification**: Ensure the target directory `docs/Design Specification/[module_folder]/` exists. Create it if missing.
 4. **HTML File Creation**: Write the standalone HTML file named `ds_[module_code]_[function_code]_[name].html` using the template above, strictly leaving mockup placeholder as `""`.
+5. **Clean Up Temporary Scripts**: If you create any temporary helper scripts (like `.py`, `.ps1`, `.bat`) to automate the batch generation process, you MUST automatically delete those temporary script files after the generation is successfully completed.
