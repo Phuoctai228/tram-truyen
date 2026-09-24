@@ -1,0 +1,173 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Design Specification: View Reading History (M2-F10)</title>
+<style>
+    body {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 12pt;
+        line-height: 1.5;
+        color: #000000;
+        margin: 20px 30px;
+        background-color: #ffffff;
+    }
+    h2 { font-size: 16pt; font-weight: bold; margin-bottom: 6px; }
+    h3 { font-size: 14pt; font-weight: bold; margin-bottom: 6px; }
+    h4 { font-size: 13pt; font-style: italic; font-weight: bold; margin-bottom: 4px; }
+    h5 { font-size: 12pt; font-weight: bold; margin-top: 14px; margin-bottom: 4px; }
+    p { margin: 6px 0; }
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 10px 0 16px 0;
+        border: 1px solid #000000;
+    }
+    th, td {
+        border: 1px solid #000000;
+        padding: 6px 10px;
+        text-align: left;
+        vertical-align: top;
+        font-size: 12pt;
+    }
+    th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+    .group-header {
+        background-color: #fafafa;
+        font-weight: bold;
+        font-style: italic;
+    }
+    .sql-block {
+        background-color: #f9f9f9;
+        border-left: 3px solid #333333;
+        padding: 8px 12px;
+        margin: 8px 0;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 11pt;
+        white-space: pre-wrap;
+    }
+    .mockup-placeholder {
+        margin: 6px 0 12px 0;
+        font-size: 12pt;
+    }
+</style>
+</head>
+<body>
+    <h2>2. Reader Experience & Bookshelf</h2>
+    <h3>2.1 Reading Progress & History</h3>
+    <h4>*b. View Reading History*</h4>
+
+    <p>This screen allows Members to search and review the list of previously read chapters.</p>
+    <p>Related use cases:</p>
+    <ul>
+        <li><a href="../../use_case/module_2_tai/en/uc_m2_f10_view_reading_history.html">UC-M2-F10_View Reading History</a></li>
+    </ul>
+
+    <h5><b>UI Design</b></h5>
+    <div class="mockup-placeholder">""</div>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">Field Name</th>
+                <th style="width: 25%;">Field Type</th>
+                <th style="width: 50%;">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="group-header">
+                <td colspan="3">***Search & Filters***</td>
+            </tr>
+            <tr>
+                <td>Search Novel</td>
+                <td>Text Box</td>
+                <td>Keyword search for read novel titles</td>
+            </tr>
+            <tr>
+                <td>Search</td>
+                <td>Button</td>
+                <td>Filters the history list</td>
+            </tr>
+            <tr>
+                <td>Clear All History</td>
+                <td>Button</td>
+                <td>Clears all reading history records</td>
+            </tr>
+            <tr class="group-header">
+                <td colspan="3">***Data Table***</td>
+            </tr>
+            <tr>
+                <td>Cover</td>
+                <td>Image</td>
+                <td>Novel cover image</td>
+            </tr>
+            <tr>
+                <td>Novel Title</td>
+                <td>Hyperlink</td>
+                <td>Title of novel; clicks to navigate to Novel Details</td>
+            </tr>
+            <tr>
+                <td>Last Read Chapter</td>
+                <td>Hyperlink</td>
+                <td>Chapter number and title; clicks to resume reading</td>
+            </tr>
+            <tr>
+                <td>Read Date</td>
+                <td>Text</td>
+                <td>Timestamp when chapter was last read</td>
+            </tr>
+            <tr class="group-header">
+                <td colspan="3">***Data Actions***</td>
+            </tr>
+            <tr>
+                <td>Continue Reading</td>
+                <td>Button</td>
+                <td>Opens reader interface at the latest read chapter</td>
+            </tr>
+            <tr>
+                <td>Remove Entry</td>
+                <td>icon</td>
+                <td>Removes selected chapter from reading history</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h5><b>Database Access</b></h5>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">Table</th>
+                <th style="width: 15%; text-align: center;">CRUD</th>
+                <th style="width: 60%;">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>user_chapter_activities, chapters, novels</td>
+                <td style="text-align: center;">R</td>
+                <td>Query member's read chapter activities with novel details</td>
+            </tr>
+            <tr>
+                <td>user_chapter_activities</td>
+                <td style="text-align: center;">D</td>
+                <td>Remove single or all reading history records for the user</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p><b><i>SQL Commands:</i></b></p>
+    <p>1/ Query member's read chapter activities with novel details</p>
+    <div class="sql-block">SELECT n.id AS novel_id, n.title AS novel_title, n.cover_url,
+       c.id AS chapter_id, c.chapter_number, c.title AS chapter_title, uca.read_at
+FROM user_chapter_activities uca
+JOIN chapters c ON uca.chapter_id = c.id
+JOIN novels n ON c.novel_id = n.id
+WHERE uca.user_id = ? AND uca.is_read = TRUE AND n.is_deleted = FALSE
+ORDER BY uca.read_at DESC LIMIT ? OFFSET ?;</div>
+
+    <p>2/ Remove single or all reading history records for the user</p>
+    <div class="sql-block">DELETE FROM user_chapter_activities WHERE user_id = ? AND chapter_id = ?;</div>
+</body>
+</html>
