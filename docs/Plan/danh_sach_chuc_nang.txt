@@ -3,7 +3,7 @@ DANH SÁCH CHI TIẾT 54 CHỨC NĂNG (THEO CHUẨN SWP391 - WEB ĐỌC TRUYỆN
 (Hệ thống tuân thủ nguyên tắc Single Responsibility: 1 chức năng chỉ đảm nhận 1 nhiệm vụ duy nhất. Quy trình liền mạch theo Workflow, Actor rõ ràng, phân bổ 10–12 chức năng/sinh viên, đảm bảo mỗi thành viên đều có chức năng COMPLEX đạt chuẩn LOC môn học).
 
 DANH SÁCH CÁC ACTORS TRONG HỆ THỐNG:
-- Guest: Khách vãng lai chưa đăng nhập (đọc truyện miễn phí, tìm kiếm, lọc, xem BXH, gửi liên hệ, đăng ký tài khoản, kích hoạt email OTP, đăng nhập Google).
+- Guest: Khách vãng lai chưa đăng nhập (đọc truyện miễn phí, tìm kiếm, lọc, xem BXH, gửi liên hệ, đăng ký tài khoản, đăng nhập Google).
 - Member: Thành viên đã đăng nhập (đọc truyện, tùy chỉnh giao diện đọc, lưu tủ sách, đánh dấu tiến độ đọc/bookmark, đánh giá truyện, bình luận, báo lỗi chương/truyện, nạp Coin qua VNPay mở khóa chương VIP - không hoàn tiền/không rút tiền).
 - Staff: Nhân viên biên tập & kiểm duyệt nội dung (tạo truyện, tạo chương, cập nhật truyện, cài đặt chương, xử lý báo cáo).
 - Admin: Quản trị viên toàn hệ thống (quản lý người dùng/role, quản lý thể loại, đối soát giao dịch, cấu hình hệ thống).
@@ -40,7 +40,6 @@ DANH SÁCH CÁC ACTORS TRONG HỆ THỐNG:
 3. MODULE XÁC THỰC, BẢO MẬT & THANH TOÁN (AUTH, SECURITY, OAUTH2 & PAYMENT - MEMBER 3 - Ngọc)
 --------------------------------------------------------------------------------
 [ ] M3-F01: Đăng ký tài khoản (Register Account) [Actor: Guest] - Người dùng tạo tài khoản mới, mật khẩu mã hóa BCrypt, trạng thái chờ kích hoạt email.
-[ ] M3-F02: Xác thực tài khoản (Verify Account) [Actor: Guest] - Gửi mã OTP xác thực qua Email bằng JavaMailSender (@Async), kiểm tra thời hạn và kích hoạt tài khoản chính thức.
 [ ] M3-F03: Đăng nhập (Login) [Actor: Guest] - Đăng nhập bằng Email và Mật khẩu, hỗ trợ Remember-Me, khởi tạo Session người dùng và kiểm tra trạng thái kích hoạt/khóa.
 [ ] M3-F04: Đăng nhập bằng Google (Login with Google) [Actor: Guest] - Tích hợp Spring Security OAuth2 Client, tự động ánh xạ hồ sơ Google, tạo tài khoản và ví Coin tự động.
 [ ] M3-F05: Đăng xuất (Logout) [Actor: Member, Staff, Admin] - Hủy phiên đăng nhập (Session Invalidation), xóa Cookie an toàn và điều hướng về trang chủ.
