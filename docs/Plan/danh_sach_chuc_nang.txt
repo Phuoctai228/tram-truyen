@@ -72,7 +72,7 @@ DANH SÁCH CÁC ACTORS TRONG HỆ THỐNG:
 [ ] M5-F02: Báo cáo vi phạm (Report Content) [Actor: Member] - Độc giả gửi phiếu báo cáo đối với truyện hoặc chương cụ thể bị lỗi, sai lệch thông tin hoặc vi phạm nội dung.
 [ ] M5-F03: Xử lý báo cáo (Resolve Reports) [Actor: Staff, Admin] - Admin/Staff xử lý tập trung mọi báo cáo (Bình luận / Truyện / Chương) chia theo tab, ghi nhận người xử lý, kết quả xử lý.
 [ ] M5-F04: Gửi thông báo (Send Notification) [Actor: Staff, Admin] - Admin/Staff chủ động soạn thông báo gửi toàn hệ thống (All) hoặc gửi tới một người dùng cụ thể.
-[ ] M5-F05: Xem hòm thư (View Mailbox) [Actor: Member] - Nơi độc giả nhận và đọc các thông báo từ hệ thống, hoặc nhận kết quả phản hồi của các báo cáo mình đã gửi.
+[ ] M5-F05: Xem hòm thư (View Notifications) [Actor: Member] - Nơi độc giả nhận và đọc các thông báo từ hệ thống, hoặc nhận kết quả phản hồi của các báo cáo mình đã gửi.
 [ ] M5-F06: Đối soát giao dịch (Audit Transactions) [Actor: Admin] - Quản trị viên tra cứu toàn bộ lịch sử biến động số dư Coin (nạp tiền qua VNPay và trừ Coin mở khóa VIP) trong hệ thống.
 [ ] M5-F07: Cấu hình hệ thống (Configure System) [Actor: Admin] - Quản trị viên thiết lập tỷ giá quy đổi VNĐ sang Coin, thông tin liên hệ ban quản trị và điều khoản sử dụng, thêm theme web.
 [ ] M5-F08: Xem danh sách người dùng (View User List) [Actor: Admin] - Quản trị viên tra cứu danh sách toàn bộ tài khoản người dùng trong hệ thống, tìm kiếm theo email/tên và lọc theo vai trò.
