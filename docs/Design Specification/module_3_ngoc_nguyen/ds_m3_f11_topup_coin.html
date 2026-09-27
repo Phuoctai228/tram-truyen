@@ -1,0 +1,194 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Design Specification: Top-up Coin (M3-F11)</title>
+<style>
+    body {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 12pt;
+        line-height: 1.5;
+        color: #000000;
+        margin: 20px 30px;
+        background-color: #ffffff;
+    }
+    h2 { font-size: 16pt; font-weight: bold; margin-bottom: 6px; }
+    h3 { font-size: 14pt; font-weight: bold; margin-bottom: 6px; }
+    h4 { font-size: 13pt; font-style: italic; font-weight: bold; margin-bottom: 4px; }
+    h5 { font-size: 12pt; font-weight: bold; margin-top: 14px; margin-bottom: 4px; }
+    p { margin: 6px 0; }
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 10px 0 16px 0;
+        border: 1px solid #000000;
+    }
+    th, td {
+        border: 1px solid #000000;
+        padding: 6px 10px;
+        text-align: left;
+        vertical-align: top;
+        font-size: 12pt;
+    }
+    th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+    .group-header {
+        background-color: #fafafa;
+        font-weight: bold;
+        font-style: italic;
+    }
+    .sql-block {
+        background-color: #f9f9f9;
+        border-left: 3px solid #333333;
+        padding: 8px 12px;
+        margin: 8px 0;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 11pt;
+        white-space: pre-wrap;
+    }
+    .mockup-placeholder {
+        margin: 6px 0 12px 0;
+        font-size: 12pt;
+    }
+</style>
+</head>
+<body>
+    <h2>3. Authentication, Wallet & Payment</h2>
+    <h3>3.1 Coin & Payment</h3>
+    <h4>*b. Top-up Coin*</h4>
+
+    <p>This screen allows Members to process payment via VNPay gateway and automatically credit coins to the wallet.</p>
+    <p>Related use cases:</p>
+    <ul>
+        <li><a href="../../use_case/module_3_ngoc_nguyen/en/UC-11-Top-up_Coin.html">UC-M3-F11_Top-up Coin</a></li>
+    </ul>
+
+    <h5><b>UI Design</b></h5>
+    <div class="mockup-placeholder">""</div>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">Field Name</th>
+                <th style="width: 25%;">Field Type</th>
+                <th style="width: 50%;">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="group-header">
+                <td colspan="3">***Package Selection***</td>
+            </tr>
+            <tr>
+                <td>Coin Packages</td>
+                <td>Radio Button Group</td>
+                <td>List of coin packages displaying Price (VND), Coin amount, and Bonus</td>
+            </tr>
+            <tr>
+                <td>Payment Gateway</td>
+                <td>Combo Box Single-Choice</td>
+                <td>Default and only gateway: VNPay Sandbox</td>
+            </tr>
+            <tr>
+                <td>Total VND Payable</td>
+                <td>Text</td>
+                <td>Summary of total VNÄ payment required</td>
+            </tr>
+            <tr class="group-header">
+                <td colspan="3">***Payment Actions***</td>
+            </tr>
+            <tr>
+                <td>Proceed to Payment</td>
+                <td>Button</td>
+                <td>Generates order code, constructs VNPay HMAC-SHA512 URL, and redirects</td>
+            </tr>
+            <tr class="group-header">
+                <td colspan="3">***Payment Result Modal***</td>
+            </tr>
+            <tr>
+                <td>Order Code</td>
+                <td>Text</td>
+                <td>Generated unique order code (e.g. TT928371)</td>
+            </tr>
+            <tr>
+                <td>Transaction Status</td>
+                <td>Text</td>
+                <td>Displays "SUCCESS" or "FAILED" from IPN response</td>
+            </tr>
+            <tr>
+                <td>Credited Coins</td>
+                <td>Text</td>
+                <td>Total coins added to user's wallet</td>
+            </tr>
+            <tr>
+                <td>Back to Profile</td>
+                <td>Button</td>
+                <td>Navigates back to user profile dashboard</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h5><b>Database Access</b></h5>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">Table</th>
+                <th style="width: 15%; text-align: center;">CRUD</th>
+                <th style="width: 60%;">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>coin_packages</td>
+                <td style="text-align: center;">R</td>
+                <td>Retrieve active coin packages list</td>
+            </tr>
+            <tr>
+                <td>topup_orders</td>
+                <td style="text-align: center;">CRU</td>
+                <td>Create pending order and update status upon receiving VNPay IPN</td>
+            </tr>
+            <tr>
+                <td>payment_logs</td>
+                <td style="text-align: center;">C</td>
+                <td>Store raw VNPay IPN response payload for debugging and verification</td>
+            </tr>
+            <tr>
+                <td>users</td>
+                <td style="text-align: center;">RU</td>
+                <td>Update wallet_balance upon successful payment verification</td>
+            </tr>
+            <tr>
+                <td>transactions</td>
+                <td style="text-align: center;">C</td>
+                <td>Record TOPUP_COIN balance fluctuation</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p><b><i>SQL Commands:</i></b></p>
+    <p>1/ Retrieve active coin packages list</p>
+    <div class="sql-block">SELECT id, name, price, coin_amount FROM coin_packages WHERE status = 'ACTIVE' ORDER BY price ASC;</div>
+
+    <p>2/ Create pending order and update status upon receiving VNPay IPN</p>
+    <div class="sql-block">INSERT INTO topup_orders (user_id, package_id, order_code, amount_vnd, coin_received, status, payment_method)
+VALUES (?, ?, ?, ?, ?, 'PENDING', 'VNPAY');
+
+UPDATE topup_orders
+SET status = 'SUCCESS', bank_transaction_code = ?, paid_at = CURRENT_TIMESTAMP, updated_at = CURRENT_TIMESTAMP
+WHERE order_code = ? AND status = 'PENDING';</div>
+
+    <p>3/ Store raw VNPay IPN response payload for debugging and verification</p>
+    <div class="sql-block">INSERT INTO payment_logs (order_code, raw_payload, ip_address, status)
+VALUES (?, ?, ?, ?);</div>
+
+    <p>4/ Update wallet_balance upon successful payment verification</p>
+    <div class="sql-block">UPDATE users SET wallet_balance = wallet_balance + ?, updated_at = CURRENT_TIMESTAMP
+WHERE id = ? RETURNING wallet_balance;</div>
+
+    <p>5/ Record TOPUP_COIN balance fluctuation</p>
+    <div class="sql-block">INSERT INTO transactions (user_id, amount, balance_after, type, reference_id, description)
+VALUES (?, ?, ?, 'TOPUP_COIN', ?, ?);</div>
+</body>
+</html>

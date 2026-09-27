@@ -1,0 +1,160 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Design Specification: Daily Check-in (M2-F11)</title>
+<style>
+    body {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 12pt;
+        line-height: 1.5;
+        color: #000000;
+        margin: 20px 30px;
+        background-color: #ffffff;
+    }
+    h2 { font-size: 16pt; font-weight: bold; margin-bottom: 6px; }
+    h3 { font-size: 14pt; font-weight: bold; margin-bottom: 6px; }
+    h4 { font-size: 13pt; font-style: italic; font-weight: bold; margin-bottom: 4px; }
+    h5 { font-size: 12pt; font-weight: bold; margin-top: 14px; margin-bottom: 4px; }
+    p { margin: 6px 0; }
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 10px 0 16px 0;
+        border: 1px solid #000000;
+    }
+    th, td {
+        border: 1px solid #000000;
+        padding: 6px 10px;
+        text-align: left;
+        vertical-align: top;
+        font-size: 12pt;
+    }
+    th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+    .group-header {
+        background-color: #fafafa;
+        font-weight: bold;
+        font-style: italic;
+    }
+    .sql-block {
+        background-color: #f9f9f9;
+        border-left: 3px solid #333333;
+        padding: 8px 12px;
+        margin: 8px 0;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 11pt;
+        white-space: pre-wrap;
+    }
+    .mockup-placeholder {
+        margin: 6px 0 12px 0;
+        font-size: 12pt;
+    }
+</style>
+</head>
+<body>
+    <h2>2. Reader Experience & Bookshelf</h2>
+    <h3>2.2 Daily Check-in & Rewards</h3>
+    <h4>*a. Daily Check-in*</h4>
+
+    <p>This screen allows Members to check-in daily to receive free bonus Coins for unlocking chapters.</p>
+    <p>Related use cases:</p>
+    <ul>
+        <li><a href="../../use_case/module_2_tai/en/uc_m2_f11_daily_checkin.html">UC-M2-F11_Daily Check-in</a></li>
+    </ul>
+
+    <h5><b>UI Design</b></h5>
+    <div class="mockup-placeholder">""</div>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">Field Name</th>
+                <th style="width: 25%;">Field Type</th>
+                <th style="width: 50%;">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="group-header">
+                <td colspan="3">***Check-in Dashboard***</td>
+            </tr>
+            <tr>
+                <td>Streak Tracker</td>
+                <td>Integer</td>
+                <td>Displays the continuous consecutive check-in streak count (e.g. 5 days)</td>
+            </tr>
+            <tr>
+                <td>Today's Status</td>
+                <td>Text</td>
+                <td>Indicates "Available" or "Checked in today"</td>
+            </tr>
+            <tr>
+                <td>Bonus Reward</td>
+                <td>Text</td>
+                <td>Coin reward amount for today's check-in</td>
+            </tr>
+            <tr class="group-header">
+                <td colspan="3">***Actions***</td>
+            </tr>
+            <tr>
+                <td>Check-in Now</td>
+                <td>Button</td>
+                <td>Triggers daily check-in and claims Coins (disabled if already claimed)</td>
+            </tr>
+            <tr>
+                <td>Reward Rules</td>
+                <td>Hyperlink</td>
+                <td>Modal displaying check-in reward schedule and streak bonuses</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h5><b>Database Access</b></h5>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">Table</th>
+                <th style="width: 15%; text-align: center;">CRUD</th>
+                <th style="width: 60%;">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>user_daily_checkins</td>
+                <td style="text-align: center;">CR</td>
+                <td>Verify user has not checked in today and record check-in date</td>
+            </tr>
+            <tr>
+                <td>users</td>
+                <td style="text-align: center;">RU</td>
+                <td>Credit bonus coin reward to member's wallet balance</td>
+            </tr>
+            <tr>
+                <td>transactions</td>
+                <td style="text-align: center;">C</td>
+                <td>Log GIFT_COIN transaction record in wallet ledger</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p><b><i>SQL Commands:</i></b></p>
+    <p>1/ Verify user has not checked in today and record check-in date</p>
+    <div class="sql-block">SELECT checkin_date, streak_count, reward_coin
+FROM user_daily_checkins
+WHERE user_id = ? ORDER BY checkin_date DESC LIMIT 1;
+
+INSERT INTO user_daily_checkins (user_id, checkin_date, reward_coin, streak_count)
+VALUES (?, CURRENT_DATE, ?, ?);</div>
+
+    <p>2/ Credit bonus coin reward to member's wallet balance</p>
+    <div class="sql-block">UPDATE users
+SET wallet_balance = wallet_balance + ?, updated_at = CURRENT_TIMESTAMP
+WHERE id = ? RETURNING wallet_balance;</div>
+
+    <p>3/ Log GIFT_COIN transaction record in wallet ledger</p>
+    <div class="sql-block">INSERT INTO transactions (user_id, amount, balance_after, type, reference_id, description)
+VALUES (?, ?, ?, 'GIFT_COIN', ?, 'Daily check-in reward');</div>
+</body>
+</html>

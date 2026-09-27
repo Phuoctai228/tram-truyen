@@ -1,0 +1,146 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Design Specification: Archive Novel (M1-F03)</title>
+<style>
+    body {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 12pt;
+        line-height: 1.5;
+        color: #000000;
+        margin: 20px 30px;
+        background-color: #ffffff;
+    }
+    h2 { font-size: 16pt; font-weight: bold; margin-bottom: 6px; }
+    h3 { font-size: 14pt; font-weight: bold; margin-bottom: 6px; }
+    h4 { font-size: 13pt; font-style: italic; font-weight: bold; margin-bottom: 4px; }
+    h5 { font-size: 12pt; font-weight: bold; margin-top: 14px; margin-bottom: 4px; }
+    p { margin: 6px 0; }
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 10px 0 16px 0;
+        border: 1px solid #000000;
+    }
+    th, td {
+        border: 1px solid #000000;
+        padding: 6px 10px;
+        text-align: left;
+        vertical-align: top;
+        font-size: 12pt;
+    }
+    th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+    .group-header {
+        background-color: #fafafa;
+        font-weight: bold;
+        font-style: italic;
+    }
+    .sql-block {
+        background-color: #f9f9f9;
+        border-left: 3px solid #333333;
+        padding: 8px 12px;
+        margin: 8px 0;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 11pt;
+        white-space: pre-wrap;
+    }
+    .mockup-placeholder {
+        margin: 6px 0 12px 0;
+        font-size: 12pt;
+    }
+</style>
+</head>
+<body>
+    <h2>1. Novel & Chapter Management</h2>
+    <h3>1.1 Novel Management</h3>
+    <h4>*c. Archive Novel*</h4>
+
+    <p>This function allows Staff and Admin to temporarily hide a novel from public view by setting its status to ARCHIVED.</p>
+    <p>Related use cases:</p>
+    <ul>
+        <li><a href="../../use_case/module_1_kiet/en/uc_m1_f03_archive_novel.html">UC-M1-F03_Archive Novel</a></li>
+    </ul>
+
+    <h5><b>UI Design</b></h5>
+    <div class="mockup-placeholder">""</div>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">Field Name</th>
+                <th style="width: 25%;">Field Type</th>
+                <th style="width: 50%;">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="group-header">
+                <td colspan="3">***Confirmation Modal***</td>
+            </tr>
+            <tr>
+                <td>Novel Title</td>
+                <td>Text</td>
+                <td>Displays the title of the novel being archived (Read-only)</td>
+            </tr>
+            <tr>
+                <td>Archive Notice</td>
+                <td>Text</td>
+                <td>Explains that the novel will be hidden from search and listings</td>
+            </tr>
+            <tr>
+                <td>Reason Note</td>
+                <td>Text Area</td>
+                <td>Reason for archiving (e.g. copyright notice, revision required)</td>
+            </tr>
+            <tr class="group-header">
+                <td colspan="3">***Modal Actions***</td>
+            </tr>
+            <tr>
+                <td>Confirm Archive</td>
+                <td>Button</td>
+                <td>Commits status change to ARCHIVED</td>
+            </tr>
+            <tr>
+                <td>Cancel</td>
+                <td>Button</td>
+                <td>Closes modal without altering novel status</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h5><b>Database Access</b></h5>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">Table</th>
+                <th style="width: 15%; text-align: center;">CRUD</th>
+                <th style="width: 60%;">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>novels</td>
+                <td style="text-align: center;">U</td>
+                <td>Update novel status to ARCHIVED</td>
+            </tr>
+            <tr>
+                <td>system_audit_logs</td>
+                <td style="text-align: center;">C</td>
+                <td>Record archive action in system audit logs</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p><b><i>SQL Commands:</i></b></p>
+    <p>1/ Update novel status to ARCHIVED</p>
+    <div class="sql-block">UPDATE novels SET status = 'ARCHIVED', updated_at = CURRENT_TIMESTAMP
+WHERE id = ? AND is_deleted = FALSE;</div>
+
+    <p>2/ Record archive action in system audit logs</p>
+    <div class="sql-block">INSERT INTO system_audit_logs (admin_id, action_type, target_entity, target_id, old_value, new_value, ip_address)
+VALUES (?, 'ARCHIVE_NOVEL', 'NOVELS', ?, ?, 'ARCHIVED', ?);</div>
+</body>
+</html>

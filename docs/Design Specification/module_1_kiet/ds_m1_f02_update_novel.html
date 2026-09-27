@@ -1,0 +1,170 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Design Specification: Update Novel (M1-F02)</title>
+<style>
+    body {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 12pt;
+        line-height: 1.5;
+        color: #000000;
+        margin: 20px 30px;
+        background-color: #ffffff;
+    }
+    h2 { font-size: 16pt; font-weight: bold; margin-bottom: 6px; }
+    h3 { font-size: 14pt; font-weight: bold; margin-bottom: 6px; }
+    h4 { font-size: 13pt; font-style: italic; font-weight: bold; margin-bottom: 4px; }
+    h5 { font-size: 12pt; font-weight: bold; margin-top: 14px; margin-bottom: 4px; }
+    p { margin: 6px 0; }
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 10px 0 16px 0;
+        border: 1px solid #000000;
+    }
+    th, td {
+        border: 1px solid #000000;
+        padding: 6px 10px;
+        text-align: left;
+        vertical-align: top;
+        font-size: 12pt;
+    }
+    th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+    .group-header {
+        background-color: #fafafa;
+        font-weight: bold;
+        font-style: italic;
+    }
+    .sql-block {
+        background-color: #f9f9f9;
+        border-left: 3px solid #333333;
+        padding: 8px 12px;
+        margin: 8px 0;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 11pt;
+        white-space: pre-wrap;
+    }
+    .mockup-placeholder {
+        margin: 6px 0 12px 0;
+        font-size: 12pt;
+    }
+</style>
+</head>
+<body>
+    <h2>1. Novel & Chapter Management</h2>
+    <h3>1.1 Novel Management</h3>
+    <h4>*b. Update Novel*</h4>
+
+    <p>This screen allows Staff and Admin to modify the details, release progress status, and cover image of an existing novel.</p>
+    <p>Related use cases:</p>
+    <ul>
+        <li><a href="../../use_case/module_1_kiet/en/uc_m1_f02_update_novel.html">UC-M1-F02_Update Novel</a></li>
+    </ul>
+
+    <h5><b>UI Design</b></h5>
+    <div class="mockup-placeholder">""</div>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">Field Name</th>
+                <th style="width: 25%;">Field Type</th>
+                <th style="width: 50%;">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="group-header">
+                <td colspan="3">***Novel Details Form***</td>
+            </tr>
+            <tr>
+                <td>Novel ID</td>
+                <td>Text</td>
+                <td>Auto-generated unique identifier of the novel (Read-only)</td>
+            </tr>
+            <tr>
+                <td>Title*</td>
+                <td>Text Box</td>
+                <td>Novel title, pre-filled with current title (String, max 255 chars)</td>
+            </tr>
+            <tr>
+                <td>Author*</td>
+                <td>Text Box</td>
+                <td>Author name, pre-filled with current author (String, max 100 chars)</td>
+            </tr>
+            <tr>
+                <td>Summary*</td>
+                <td>Text Area</td>
+                <td>Synopsis of the novel, pre-filled with current summary</td>
+            </tr>
+            <tr>
+                <td>Current Cover</td>
+                <td>Image</td>
+                <td>Displays current novel cover thumbnail</td>
+            </tr>
+            <tr>
+                <td>Upload New Cover</td>
+                <td>File Upload</td>
+                <td>Upload a replacement cover image to Cloudinary (optional)</td>
+            </tr>
+            <tr>
+                <td>Status*</td>
+                <td>Combo Box Single-Choice</td>
+                <td>Values: ONGOING, COMPLETED, ON_HOLD, ARCHIVED</td>
+            </tr>
+            <tr class="group-header">
+                <td colspan="3">***Form Actions***</td>
+            </tr>
+            <tr>
+                <td>Save Changes</td>
+                <td>Button</td>
+                <td>Submits and commits modifications to the database</td>
+            </tr>
+            <tr>
+                <td>Reset</td>
+                <td>Button</td>
+                <td>Resets all input fields back to initial values loaded from database</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h5><b>Database Access</b></h5>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">Table</th>
+                <th style="width: 15%; text-align: center;">CRUD</th>
+                <th style="width: 60%;">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>novels</td>
+                <td style="text-align: center;">RU</td>
+                <td>Retrieve existing novel details and update with modified values</td>
+            </tr>
+            <tr>
+                <td>system_audit_logs</td>
+                <td style="text-align: center;">C</td>
+                <td>Log novel update history for auditing</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p><b><i>SQL Commands:</i></b></p>
+    <p>1/ Retrieve existing novel details and update with modified values</p>
+    <div class="sql-block">SELECT id, title, author, summary, cover_url, status
+FROM novels WHERE id = ? AND is_deleted = FALSE;
+
+UPDATE novels
+SET title = ?, author = ?, summary = ?, cover_url = COALESCE(?, cover_url), status = ?, updated_at = CURRENT_TIMESTAMP
+WHERE id = ?;</div>
+
+    <p>2/ Log novel update history for auditing</p>
+    <div class="sql-block">INSERT INTO system_audit_logs (admin_id, action_type, target_entity, target_id, old_value, new_value, ip_address)
+VALUES (?, 'UPDATE_NOVEL', 'NOVELS', ?, ?, ?, ?);</div>
+</body>
+</html>
