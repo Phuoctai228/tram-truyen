@@ -29,7 +29,7 @@ DANH SÁCH CÁC ACTORS TRONG HỆ THỐNG:
 [ ] M2-F02: Xem chi tiết truyện (View Novel Details) [Actor: Guest, Member] - Xem thông tin truyện, tác giả gốc, tóm tắt, danh sách/mục lục chương, lượt xem và điểm đánh giá.
 [ ] M2-F03: Đọc chương (Read Chapter) [Actor: Guest, Member] - Giao diện đọc truyện chữ (tích hợp tùy chỉnh cỡ chữ, font, màu nền, chế độ cuộn); tự động ghi nhận chương đã đọc (is_read) đối với Member.
 [ ] M2-F04: Nghe đọc truyện (Audio Reader) [Actor: Member] - Trình phát âm thanh tự động chuyển đổi nội dung văn bản của chương thành giọng nói, có tùy chỉnh tốc độ.
-[ ] M2-F05: Lưu tiến độ đọc (Save Reading Progress) [Actor: Member] - Tự động tính tiến độ đọc (%) và lưu bookmark chương gần nhất để kích hoạt nút "Đọc tiếp".
+[ ] M2-F05: Lưu tiến độ đọc (Save Reading Progress) [Actor: Member] - Tự động tính tiến độ đọc và lưu bookmark chương gần nhất để kích hoạt nút "Đọc tiếp".
 [ ] M2-F06: Thêm truyện vào tủ sách (Add Novel to Bookshelf) [Actor: Member] - Lưu truyện yêu thích vào Tủ sách cá nhân để theo dõi cập nhật.
 [ ] M2-F07: Xem tủ sách (View Bookshelf) [Actor: Member] - Quản lý danh sách truyện đang theo dõi, hiển thị tiến độ đọc % và nút "Đọc tiếp" chuyển ngay đến chương dở.
 [ ] M2-F08: Xóa truyện khỏi tủ sách (Remove Novel from Bookshelf) [Actor: Member] - Bỏ theo dõi hoặc xóa truyện khỏi Tủ sách cá nhân.
