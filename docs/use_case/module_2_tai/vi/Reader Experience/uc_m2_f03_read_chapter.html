@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>UC-11 Đọc Chương</title>
+</head>
+<body>
+<div class="uc-container" style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
+    <style>
+        .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
+            font-family: 'Calibri', sans-serif !important;
+            font-size: 11pt !important;
+            color: black !important;
+        }
+    </style>
+    <table style="border-collapse: collapse; width: 100%; border: 1.5pt solid black;">
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 25%;">Mã và Tên UC:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-11 Đọc Chương</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;">Người tạo:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 25%;">TaiTP</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 25%;">Ngày tạo:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 25%;">2026-09-18</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;">Tác nhân chính:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Guest, Member</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;">Tác nhân phụ:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;">Không có</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;">Kích hoạt (Trigger):</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Tác nhân nhấn vào một liên kết chương cụ thể từ trang chi tiết truyện hoặc tủ sách.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;">Mô tả (Description):</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cho phép tác nhân đọc nội dung văn bản của một chương đã xuất bản. Hệ thống xác thực quyền truy cập (Miễn phí hay VIP) và tự động ghi lại lịch sử/tiến độ đọc cho các thành viên đã đăng nhập.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;">Điều kiện tiên quyết:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>PRE-1. Chương được yêu cầu phải tồn tại trong hệ thống.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;">Điều kiện hậu quyết:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>POST-1. Tác nhân đọc được nội dung chương.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;">Luồng cơ bản:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>A. Đọc chương miễn phí thành công</p><ol><li>Tác nhân truy cập vào trang đọc của một chương cụ thể.</li><li>Hệ thống trích xuất ID chương từ yêu cầu.</li><li>Hệ thống truy xuất dữ liệu chương từ cơ sở dữ liệu.</li><li>Hệ thống xác thực trạng thái của chương là đã xuất bản.</li><li>Hệ thống xác định mức độ truy cập của chương là Miễn phí.</li><li>Hệ thống truy xuất nội dung văn bản của chương.</li><li>Hệ thống trích xuất dữ liệu phiên làm việc của tác nhân.</li><li>Hệ thống lấy các tùy chọn đọc đã lưu của tác nhân (ví dụ: cỡ chữ, màu nền).</li><li>Hệ thống kết xuất giao diện đọc, hiển thị văn bản đã định dạng và các nút điều hướng ("Chương trước", "Chương sau").</li><li>10a. Hệ thống kích hoạt một tiến trình ngầm để cập nhật tổng lượt xem của truyện.</li><li>11a. Nếu tác nhân là Member, hệ thống kích hoạt một tiến trình ngầm để ghi nhận lịch sử đọc và cập nhật tiến độ lưu truyện.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;">Luồng thay thế:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>A.5 Chương VIP bị khóa</p><ol><li>Hệ thống xác định mức độ truy cập của chương là VIP.</li><li>Hệ thống kiểm tra phiên đăng nhập và hồ sơ mở khóa của tác nhân.</li><li>Hệ thống xác định tác nhân chưa mở khóa chương này.</li><li>Hệ thống hiển thị một lớp phủ yêu cầu người dùng mở khóa chương, với nút "Mở khóa".</li><li>Quay lại bước 1 (kích hoạt sau khi tác nhân mở khóa qua UC-26).</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;">Ngoại lệ (Exceptions):</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>EX-3 Không tìm thấy chương</p><ol><li>Hệ thống xác định ID chương được yêu cầu không tồn tại trong cơ sở dữ liệu.</li><li>Hệ thống hiển thị trang lỗi 404.</li></ol><p>EX-4 Chương chưa xuất bản</p><ol><li>Hệ thống xác định chương ở trạng thái chưa xuất bản.</li><li>Hệ thống hiển thị thông báo lỗi cho biết chương hiện không có sẵn.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;">Mức độ ưu tiên:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High, Must Have</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;">Tần suất sử dụng:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Rất cao</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;">Quy tắc nghiệp vụ:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">BR-12, BR-13</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;">Thông tin khác:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Không có.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right;">Giả định:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Tác nhân có kết nối internet ổn định.</li></ul></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>
