@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -78,65 +78,108 @@
         </thead>
         <tbody>
             <tr class="group-header">
-                <td colspan="3">***Filter Controls***</td>
+                <td colspan="3">***Wallet Information Card***</td>
             </tr>
             <tr>
-                <td>Transaction Type</td>
-                <td>Combo Box Single-Choice</td>
-                <td>Values: All (Default), TOPUP_COIN, UNLOCK_CHAPTER, GIFT_COIN</td>
+                <td>Wallet Status Badge</td>
+                <td>Badge</td>
+                <td>Indicates if the wallet is ready to use (e.g., Sẵn sàng sử dụng)</td>
             </tr>
             <tr>
-                <td>From Date</td>
-                <td>Datepicker</td>
-                <td>Filter starting date</td>
-            </tr>
-            <tr>
-                <td>To Date</td>
-                <td>Datepicker</td>
-                <td>Filter ending date</td>
-            </tr>
-            <tr>
-                <td>Filter</td>
-                <td>Button</td>
-                <td>Applies date and type filter to transaction table</td>
-            </tr>
-            <tr>
-                <td>Current Balance Card</td>
+                <td>Available Balance</td>
                 <td>Text</td>
-                <td>Displays user's current wallet balance (Coins)</td>
+                <td>Displays current Coin balance</td>
+            </tr>
+            <tr>
+                <td>Last Updated Time</td>
+                <td>Text</td>
+                <td>Time of the most recent balance update</td>
+            </tr>
+            <tr>
+                <td>Account Type</td>
+                <td>Text</td>
+                <td>Indicates the type of account (e.g., Tài khoản chính)</td>
+            </tr>
+            <tr>
+                <td>Wallet ID</td>
+                <td>Text</td>
+                <td>Unique identifier for the user's wallet</td>
+            </tr>
+            <tr>
+                <td>Copy Wallet ID Button</td>
+                <td>Icon Button</td>
+                <td>Click to copy the Wallet ID to clipboard</td>
+            </tr>
+            <tr>
+                <td>Top Up Coin Button</td>
+                <td>Button</td>
+                <td>Navigate to the Coin top-up page</td>
             </tr>
             <tr class="group-header">
-                <td colspan="3">***Data Table***</td>
+                <td colspan="3">***Exchange Rate & Info Card***</td>
             </tr>
             <tr>
-                <td>Transaction ID</td>
-                <td>Integer</td>
-                <td>Unique identifier of transaction</td>
-            </tr>
-            <tr>
-                <td>Date & Time</td>
+                <td>Exchange Rate Display</td>
                 <td>Text</td>
-                <td>Timestamp when transaction was recorded</td>
+                <td>Shows the standard conversion rate (e.g., 1.000đ = 10 Coin)</td>
             </tr>
             <tr>
-                <td>Type</td>
+                <td>Important Notices</td>
                 <td>Text</td>
-                <td>Type category of transaction</td>
+                <td>Displays terms of use, non-refundable policy, and validity information</td>
+            </tr>
+            <tr class="group-header">
+                <td colspan="3">***Transaction History***</td>
             </tr>
             <tr>
-                <td>Amount</td>
-                <td>Text</td>
-                <td>Fluctuating amount (+X for deposits/gifts, -X for chapter unlocks)</td>
+                <td>Search Input</td>
+                <td>Text Box</td>
+                <td>Search transactions by ID or keywords</td>
             </tr>
             <tr>
-                <td>Balance After</td>
-                <td>Text</td>
-                <td>Wallet balance immediately after transaction</td>
+                <td>Transaction Type Filter Tabs</td>
+                <td>Tab Group</td>
+                <td>Filter list by: All, Top Up Coin, Unlock Chapter</td>
             </tr>
             <tr>
-                <td>Description</td>
+                <td>View All Link</td>
+                <td>Link</td>
+                <td>Navigate to view the full list of transactions</td>
+            </tr>
+            <tr>
+                <td>Transaction Item Icon</td>
+                <td>Icon</td>
+                <td>Visual indicator of transaction type</td>
+            </tr>
+            <tr>
+                <td>Transaction Description</td>
                 <td>Text</td>
-                <td>Details including Order Code or Chapter/Novel unlocked</td>
+                <td>Details of the transaction (e.g., Nạp Coin qua VNPay, Mở khóa Chương)</td>
+            </tr>
+            <tr>
+                <td>Transaction Status Badge</td>
+                <td>Badge</td>
+                <td>Status of the transaction (e.g., Thành công, Hoàn tất)</td>
+            </tr>
+            <tr>
+                <td>Transaction Metadata</td>
+                <td>Text</td>
+                <td>Contains Transaction ID, Date, Time, and sub-category</td>
+            </tr>
+            <tr>
+                <td>Amount Change</td>
+                <td>Text</td>
+                <td>Fluctuating amount (e.g., + 500 Coin, - 15 Coin)</td>
+            </tr>
+            <tr>
+                <td>Secondary Amount Note</td>
+                <td>Text</td>
+                <td>Additional info under amount (e.g., Equivalent VND, Vĩnh viễn)</td>
+            </tr>
+            <tr>
+                <td>Load More Button</td>
+                <td>Button</td>
+                <td>Fetch and display older transactions</td>
             </tr>
         </tbody>
     </table>

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Table Description</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            margin: 20px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th {
+            background-color: #fce4d6; /* Light pink/peach header background */
+            font-weight: bold;
+        }
+        .col-no {
+            width: 5%;
+            text-align: center;
+        }
+        .col-table {
+            width: 25%;
+        }
+        .col-desc {
+            width: 70%;
+        }
+    </style>
+</head>
+<body>
+
+<table>
+    <thead>
+        <tr>
+            <th class="col-no">No</th>
+            <th class="col-table">Table</th>
+            <th class="col-desc">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="col-no">01</td>
+            <td>roles</td>
+            <td>
+                Role definitions: ROLE_ADMIN, ROLE_STAFF, ROLE_MEMBER.<br>
+                - id (PK)<br>
+                - name
+            </td>
+        </tr>
+        <tr>
+            <td class="col-no">02</td>
+            <td>users</td>
+            <td>
+                User accounts and Wallet balance.<br>
+                - id (PK)<br>
+                - email<br>
+                - password<br>
+                - full_name<br>
+                - avatar_url<br>
+                - wallet_balance<br>
+                - auth_provider<br>
+                - status<br>
+                - created_at<br>
+                - updated_at
+            </td>
+        </tr>
+        <tr>
+            <td class="col-no">03</td>
+            <td>user_roles</td>
+            <td>
+                Many-to-many relationship between users and roles.<br>
+                - user_id (PK, FK)<br>
+                - role_id (PK, FK)
+            </td>
+        </tr>
+        <tr>
+            <td class="col-no">04</td>
+            <td>email_verification_tokens</td>
+            <td>
+                OTP codes for email account activation.<br>
+                - id (PK)<br>
+                - user_id (FK)<br>
+                - otp_code<br>
+                - expiry_date<br>
+                - created_at
+            </td>
+        </tr>
+        <tr>
+            <td class="col-no">05</td>
+            <td>categories</td>
+            <td>
+                Novel categories/genres list.<br>
+                - id (PK)<br>
+                - name<br>
+                - slug<br>
+                - description
+            </td>
+        </tr>
+        <tr>
+            <td class="col-no">06</td>
+            <td>novels</td>
+            <td>
+                Information about novels managed by Staff/Admin.<br>
+                - id (PK)<br>
+                - title<br>
+                - author<br>
+                - summary<br>
+                - cover_url<br>
+                - status<br>
+                - is_deleted<br>
+                - uploader_id (FK)<br>
+                - views<br>
+                - average_rating<br>
+                - rating_count<br>
+                - created_at<br>
+                - updated_at
+            </td>
+        </tr>
+        <tr>
+            <td class="col-no">07</td>
+            <td>novel_categories</td>
+            <td>
+                Many-to-many relationship for multi-category classification of novels.<br>
+                - novel_id (PK, FK)<br>
+                - category_id (PK, FK)
+            </td>
+        </tr>
+        <tr>
+            <td class="col-no">08</td>
+            <td>novel_ratings</td>
+            <td>
+                Star rating and review system for novels.<br>
+                - id (PK)<br>
+                - novel_id (FK)<br>
+                - user_id (FK)<br>
+                - rating<br>
+                - review_text<br>
+                - created_at<br>
+                - updated_at
+            </td>
+        </tr>
+        <tr>
+            <td class="col-no">09</td>
+            <td>chapters</td>
+            <td>
+                Novel chapter content and VIP coin pricing settings.<br>
+                - id (PK)<br>
+                - novel_id (FK)<br>
+                - chapter_number<br>
+                - title<br>
+                - content<br>
+                - price<br>
+                - auto_unlock_at<br>
+                - views<br>
+                - status<br>
+                - is_deleted<br>
+                - created_at<br>
+                - updated_at
+            </td>
+        </tr>
+        <tr>
+            <td class="col-no">10</td>
+            <td>bookshelves</td>
+            <td>
+                Reader's personal bookshelf.<br>
+                - id (PK)<br>
+                - user_id (FK)<br>
+                - novel_id (FK)<br>
+                - added_at
+            </td>
+        </tr>
+        <tr>
+            <td class="col-no">11</td>
+            <td>user_chapter_activities</td>
+            <td>
+                Combines reading history, VIP unlocks, and reading progress.<br>
+                - id (PK)<br>
+                - user_id (FK)<br>
+                - chapter_id (FK)<br>
+                - is_read<br>
+                - read_at<br>
+                - is_unlocked<br>
+                - price_paid<br>
+                - unlocked_at
+            </td>
+        </tr>
+        <tr>
+            <td class="col-no">12</td>
+            <td>comments</td>
+            <td>
+                Reader comments on chapters.<br>
+                - id (PK)<br>
+                - user_id (FK)<br>
+                - chapter_id (FK)<br>
+                - content<br>
+                - status<br>
+                - created_at<br>
+                - updated_at
+            </td>
+        </tr>
+        <tr>
+            <td class="col-no">13</td>
+            <td>comment_reports</td>
+            <td>
+                Reports of toxic comments or policy violations.<br>
+                - id (PK)<br>
+                - user_id (FK)<br>
+                - comment_id (FK)<br>
+                - reason<br>
+                - status<br>
+                - admin_note<br>
+                - resolved_by (FK)<br>
+                - created_at<br>
+                - processed_at
+            </td>
+        </tr>
+        <tr>
+            <td class="col-no">14</td>
+            <td>content_reports</td>
+            <td>
+                Reports for content violations or chapter-level errors.<br>
+                - id (PK)<br>
+                - user_id (FK)<br>
+                - chapter_id (FK)<br>
+                - reason<br>
+                - status<br>
+                - admin_note<br>
+                - resolved_by (FK)<br>
+                - created_at<br>
+                - processed_at
+            </td>
+        </tr>
+        <tr>
+            <td class="col-no">15</td>
+            <td>notifications</td>
+            <td>
+                System or personal notification inbox.<br>
+                - id (PK)<br>
+                - user_id (FK)<br>
+                - title<br>
+                - content<br>
+                - is_read<br>
+                - created_at
+            </td>
+        </tr>
+        <tr>
+            <td class="col-no">16</td>
+            <td>coin_packages</td>
+            <td>
+                List of coin top-up packages.<br>
+                - id (PK)<br>
+                - name<br>
+                - price<br>
+                - coin_amount<br>
+                - status<br>
+                - created_at
+            </td>
+        </tr>
+        <tr>
+            <td class="col-no">17</td>
+            <td>topup_orders</td>
+            <td>
+                Top-up orders for coin deposit.<br>
+                - id (PK)<br>
+                - user_id (FK)<br>
+                - package_id (FK)<br>
+                - order_code<br>
+                - amount_vnd<br>
+                - coin_received<br>
+                - status<br>
+                - payment_method<br>
+                - bank_transaction_code<br>
+                - paid_at<br>
+                - created_at<br>
+                - updated_at
+            </td>
+        </tr>
+        <tr>
+            <td class="col-no">18</td>
+            <td>payment_logs</td>
+            <td>
+                Technical tracing for IPN/Webhook from banks/payment gateways.<br>
+                - id (PK)<br>
+                - order_code (FK)<br>
+                - raw_payload<br>
+                - ip_address<br>
+                - status<br>
+                - created_at
+            </td>
+        </tr>
+        <tr>
+            <td class="col-no">19</td>
+            <td>transactions</td>
+            <td>
+                Wallet ledger recording actual balance changes.<br>
+                - id (PK)<br>
+                - user_id (FK)<br>
+                - amount<br>
+                - balance_after<br>
+                - type<br>
+                - reference_id<br>
+                - description<br>
+                - created_by (FK)<br>
+                - created_at
+            </td>
+        </tr>
+        <tr>
+            <td class="col-no">20</td>
+            <td>system_settings</td>
+            <td>
+                General system configurations (exchange rates, support email, policies).<br>
+                - setting_key (PK)<br>
+                - setting_value<br>
+                - description<br>
+                - updated_by (FK)<br>
+                - updated_at
+            </td>
+        </tr>
+        <tr>
+            <td class="col-no">21</td>
+            <td>web_settings</td>
+            <td>
+                Web interface settings (themes replacement).<br>
+                - id (PK)<br>
+                - name<br>
+                - folder_path<br>
+                - thumbnail_url<br>
+                - is_active<br>
+                - uploaded_by (FK)<br>
+                - created_at<br>
+                - updated_at
+            </td>
+        </tr>
+        <tr>
+            <td class="col-no">22</td>
+            <td>system_audit_logs</td>
+            <td>
+                Activity logs for Admin/Staff to prevent power abuse.<br>
+                - id (PK)<br>
+                - admin_id (FK)<br>
+                - action_type<br>
+                - target_entity<br>
+                - target_id<br>
+                - old_value<br>
+                - new_value<br>
+                - ip_address<br>
+                - created_at
+            </td>
+        </tr>
+        <tr>
+            <td class="col-no">23</td>
+            <td>user_login_logs</td>
+            <td>
+                Member login logs for dispute resolution.<br>
+                - id (PK)<br>
+                - user_id (FK)<br>
+                - ip_address<br>
+                - user_agent<br>
+                - status<br>
+                - created_at
+            </td>
+        </tr>
+        <tr>
+            <td class="col-no">24</td>
+            <td>user_daily_checkins</td>
+            <td>
+                Daily check-in history for members.<br>
+                - id (PK)<br>
+                - user_id (FK)<br>
+                - checkin_date<br>
+                - reward_coin<br>
+                - streak_count<br>
+                - created_at
+            </td>
+        </tr>
+        <tr>
+            <td class="col-no">25</td>
+            <td>user_reader_themes</td>
+            <td>
+                Personalization settings for the reader view.<br>
+                - user_id (PK, FK)<br>
+                - font_family<br>
+                - font_size<br>
+                - theme_mode<br>
+                - audio_voice<br>
+                - audio_speed<br>
+                - updated_at
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
