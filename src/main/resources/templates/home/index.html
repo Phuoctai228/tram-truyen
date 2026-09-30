@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<html class="h-full" lang="vi" xmlns:th="http://www.thymeleaf.org">
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="vi" class="h-full">
 <head>
     <meta charset="utf-8">
@@ -8,31 +7,15 @@
     <title>Trạm Truyện - Nền Tảng Đọc Truyện Chữ Trực Tuyến</title>
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Lora:ital,wght@0,400;0,700;1,400&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <style>@layer base { html, body { margin: 0; padding: 0; } body { overscroll-behavior: none; } main > :first-child { margin-top: 0 !important; } main > :last-child { margin-bottom: 0 !important; } } ::-webkit-scrollbar { display: none; } .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }</style>
     <script src="https://cdn.tailwindcss.com"></script>
     <script id="tailwind-config">
         tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-secondary-fixed-variant": "#7e2b17", "on-primary-container": "#492a00", "primary": "#875200", "on-background": "#231a11", "surface-container-low": "#fff1e8", "secondary-fixed": "#ffdad2", "primary-fixed": "#ffddba", "secondary-fixed-dim": "#ffb4a3", "tertiary-fixed-dim": "#d8c3af", "on-error-container": "#93000a", "inverse-surface": "#392e25", "on-tertiary": "#ffffff", "on-tertiary-fixed": "#25190d", "surface-bright": "#fff8f5", "background": "#fff8f5", "on-primary": "#ffffff", "outline": "#847464", "on-surface-variant": "#524437", "surface-container-high": "#f8e5d6", "surface-variant": "#f2dfd1", "primary-container": "#d08a2e", "on-tertiary-container": "#3c2f21", "on-secondary-fixed": "#3d0600", "surface": "#fff8f5", "surface-dim": "#e9d7c8", "surface-container": "#feeadc", "on-secondary": "#ffffff", "tertiary": "#6c5c4c", "on-secondary-container": "#752411", "tertiary-fixed": "#f5dfca", "inverse-on-surface": "#ffeee1", "outline-variant": "#d7c3b1", "surface-container-highest": "#f2dfd1", "tertiary-container": "#a99684", "secondary": "#9e422c", "on-error": "#ffffff", "on-primary-fixed-variant": "#663d00", "on-tertiary-fixed-variant": "#534435", "surface-container-lowest": "#ffffff", "inverse-primary": "#ffb865", "on-surface": "#231a11", "error": "#ba1a1a", "error-container": "#ffdad6", "primary-fixed-dim": "#ffb865", "surface-tint": "#875200", "secondary-container": "#fe8b70", "on-primary-fixed": "#2b1700" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "fontFamily": { "headline-md": [ "Lora" ], "body-md": [ "Inter" ], "label-md": [ "Inter" ], "body-lg": [ "Inter" ], "headline-lg": [ "Lora" ], "label-sm": [ "Inter" ], "label-lg": [ "Inter" ], "display-lg": [ "Lora" ], "headline-xl": [ "Lora" ], "body-reading": [ "Lora" ], "headline-sm": [ "Lora" ] }, "fontSize": { "headline-md": [ "22px", { "lineHeight": "30px", "fontWeight": "700" } ], "body-md": [ "14px", { "lineHeight": "22px", "fontWeight": "400" } ], "label-md": [ "12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" } ], "body-lg": [ "16px", { "lineHeight": "26px", "fontWeight": "400" } ], "headline-lg": [ "26px", { "lineHeight": "36px", "fontWeight": "700" } ], "label-sm": [ "11px", { "lineHeight": "14px", "letterSpacing": "0.03em", "fontWeight": "500" } ], "label-lg": [ "14px", { "lineHeight": "20px", "fontWeight": "600" } ], "display-lg": [ "40px", { "lineHeight": "52px", "letterSpacing": "-0.01em", "fontWeight": "700" } ], "headline-xl": [ "32px", { "lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "700" } ], "body-reading": [ "18px", { "lineHeight": "32px", "fontWeight": "400" } ], "headline-sm": [ "18px", { "lineHeight": "26px", "fontWeight": "700" } ] } } } };
     </script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trạm Truyện - Đọc Truyện Online</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
-    
-    <link rel="stylesheet" th:href="@{/css/home.css}">
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script th:src="@{/js/tailwind-config.js}"></script>
     <style>
-        /* Fix Tailwind reset affecting home.css elements */
-        h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; }
-        ul.categories-menu { list-style: none; padding: 0; margin: 0; display: flex; gap: 1rem; overflow-x: auto; }
         .dropdown-menu { display: none; }
         .dropdown-menu.show { display: block; }
         .modal { display: none; }
@@ -64,37 +47,10 @@
                 </form>
             </div>
             <div class="flex items-center gap-3 shrink-0">
-                <a class="px-4 py-2 rounded-lg font-label-lg text-label-lg text-on-surface hover:bg-surface-container-high hover:text-on-surface transition-colors" href="#">Đăng nhập</a>
-                <a class="px-5 py-2 rounded-lg bg-primary-container text-on-primary font-label-lg text-label-lg shadow-[0_2px_8px_rgba(135,82,0,0.2)] hover:bg-primary hover:text-on-primary transition-colors" href="#">Đăng ký</a>
-            </div>
-        </div>
-<body class="min-h-full flex flex-col bg-surface text-on-surface">
-
-    <header class="fixed top-0 left-0 right-0 z-50 bg-surface border-b border-outline-variant">
-        <div class="h-[72px] max-w-7xl mx-auto px-margin flex items-center justify-between">
-            <a th:href="@{/}" class="flex items-center gap-space-sm group">
-                <div class="w-9 h-9 rounded-full bg-primary-container flex items-center justify-center transition-transform group-hover:scale-105">
-                    <span class="material-symbols-outlined text-on-primary text-[20px]">menu_book</span>
-                </div>
-                <span class="font-headline-md text-headline-md text-on-surface hover:text-primary transition-colors">Trạm Truyện</span>
-            </a>
-            
-            <nav class="hidden md:flex items-center gap-6">
-                <ul class="categories-menu">
-                    <li th:each="category : ${categories}">
-                        <a th:href="@{/the-loai/{slug}(slug=${category.slug})}" th:text="${category.name}"></a>
-                    </li>
-                </ul>
-            </nav>
-
-            <div class="flex items-center gap-space-md">
                 <!-- If Not Authenticated -->
-                <div sec:authorize="!isAuthenticated()" class="flex items-center gap-space-md">
-                    <a th:href="@{/login}" class="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-colors">Đăng nhập</a>
-                    <a th:href="@{/register}" class="font-label-lg text-label-lg text-primary-container font-semibold underline hover:text-primary transition-colors">Đăng ký</a>
-                    <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center ml-space-xs">
-                        <span class="material-symbols-outlined text-on-primary text-[18px]">person</span>
-                    </div>
+                <div sec:authorize="!isAuthenticated()" class="flex items-center gap-3">
+                    <a class="px-4 py-2 rounded-lg font-label-lg text-label-lg text-on-surface hover:bg-surface-container-high hover:text-on-surface transition-colors" th:href="@{/login}">Đăng nhập</a>
+                    <a class="px-5 py-2 rounded-lg bg-primary-container text-on-primary font-label-lg text-label-lg shadow-[0_2px_8px_rgba(135,82,0,0.2)] hover:bg-primary hover:text-on-primary transition-colors" th:href="@{/register}">Đăng ký</a>
                 </div>
 
                 <!-- If Authenticated -->
@@ -219,88 +175,6 @@
                         </a>
                     </div>
                 </section>
-    <!-- Logout Modal -->
-    <div id="logoutModal" class="modal fixed inset-0 z-[100] items-center justify-center bg-black/40 backdrop-blur-sm">
-        <div class="bg-surface rounded-2xl p-8 max-w-[400px] w-[90%] flex flex-col items-center text-center shadow-2xl animate-fade-in-up">
-            <div class="w-16 h-16 rounded-full bg-[#f3e8d5] flex items-center justify-center mb-4">
-                <span class="material-symbols-outlined text-[#bc7d39] text-[32px]">menu_book</span>
-            </div>
-            
-            <div class="flex items-center justify-center gap-2 mb-2 w-full">
-                <span class="w-[60px] h-[1px] bg-[#e5e7eb] inline-block"></span>
-                <span class="w-1.5 h-1.5 rounded-full bg-[#d97706] inline-block"></span>
-                <span class="w-[60px] h-[1px] bg-[#e5e7eb] inline-block"></span>
-            </div>
-            
-            <h2 class="text-3xl font-bold font-serif text-[#333333] mb-3">Rời Trạm Truyện?</h2>
-            
-            <p class="text-[15px] text-[#666666] mb-8 leading-relaxed px-2">
-                Bạn có chắc muốn đăng xuất? Tiến độ đọc của bạn đã được lưu và luôn sẵn sàng khi quay lại.
-            </p>
-            
-            <form th:action="@{/logout}" method="post" class="w-full">
-                <button type="submit" class="w-full py-3 bg-[#bd5d38] hover:bg-[#a34b29] text-white font-bold rounded-lg shadow-md transition-colors mb-3">
-                    Đăng xuất
-                </button>
-            </form>
-            <button id="cancelLogoutBtn" class="w-full py-3 bg-white hover:bg-gray-50 text-[#333333] font-bold rounded-lg border border-gray-200 shadow-sm transition-colors">
-                Hủy · Quay lại đọc truyện
-            </button>
-        </div>
-    </div>
-    
-    <script>
-        // Dropdown Logic
-        const userMenuBtn = document.getElementById('userMenuBtn');
-        const userDropdown = document.getElementById('userDropdown');
-        if (userMenuBtn && userDropdown) {
-            userMenuBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                userDropdown.classList.toggle('show');
-            });
-            document.addEventListener('click', () => {
-                userDropdown.classList.remove('show');
-            });
-            userDropdown.addEventListener('click', (e) => e.stopPropagation());
-        }
-
-        // Modal Logic
-        const logoutBtn = document.getElementById('logoutBtn');
-        const logoutModal = document.getElementById('logoutModal');
-        const cancelLogoutBtn = document.getElementById('cancelLogoutBtn');
-
-        if (logoutBtn && logoutModal && cancelLogoutBtn) {
-            logoutBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                userDropdown.classList.remove('show');
-                logoutModal.classList.add('show');
-            });
-
-            cancelLogoutBtn.addEventListener('click', () => {
-                logoutModal.classList.remove('show');
-            });
-
-            logoutModal.addEventListener('click', (e) => {
-                if (e.target === logoutModal) {
-                    logoutModal.classList.remove('show');
-                }
-            });
-        }
-    </script>
-
-    <main class="container pt-[72px]">
-        <!-- Truyện Hot -->
-        <section class="hot-novels">
-            <h2>Truyện Hot Trong Tháng</h2>
-            <div class="novel-grid">
-                <div class="novel-card" th:each="novel : ${hotNovels}">
-                    <img th:src="${novel.coverUrl != null ? novel.coverUrl : '/images/default-cover.jpg'}" th:alt="${novel.title}">
-                    <h3 th:text="${novel.title}"></h3>
-                    <p class="author" th:text="${novel.author}"></p>
-                    <p class="views">👁 <span th:text="${novel.views}"></span></p>
-                </div>
-            </div>
-        </section>
 
                 <!-- 3. SECTION: ĐỀ CỬ CHO BẠN -->
                 <section class="space-y-5">
@@ -422,5 +296,74 @@
             <div class="text-on-surface-variant font-body-md text-body-md text-center md:text-right">© 2025 Trạm Truyện. Mọi quyền được bảo lưu.</div>
         </div>
     </footer>
+
+    <!-- Logout Modal -->
+    <div id="logoutModal" class="modal fixed inset-0 z-[100] items-center justify-center bg-black/40 backdrop-blur-sm">
+        <div class="bg-surface rounded-2xl p-8 max-w-[400px] w-[90%] flex flex-col items-center text-center shadow-2xl animate-fade-in-up">
+            <div class="w-16 h-16 rounded-full bg-[#f3e8d5] flex items-center justify-center mb-4">
+                <span class="material-symbols-outlined text-[#bc7d39] text-[32px]">menu_book</span>
+            </div>
+            
+            <div class="flex items-center justify-center gap-2 mb-2 w-full">
+                <span class="w-[60px] h-[1px] bg-[#e5e7eb] inline-block"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-[#d97706] inline-block"></span>
+                <span class="w-[60px] h-[1px] bg-[#e5e7eb] inline-block"></span>
+            </div>
+            
+            <h2 class="text-3xl font-bold font-serif text-[#333333] mb-3">Rời Trạm Truyện?</h2>
+            
+            <p class="text-[15px] text-[#666666] mb-8 leading-relaxed px-2">
+                Bạn có chắc muốn đăng xuất? Tiến độ đọc của bạn đã được lưu và luôn sẵn sàng khi quay lại.
+            </p>
+            
+            <form th:action="@{/logout}" method="post" class="w-full">
+                <button type="submit" class="w-full py-3 bg-[#bd5d38] hover:bg-[#a34b29] text-white font-bold rounded-lg shadow-md transition-colors mb-3">
+                    Đăng xuất
+                </button>
+            </form>
+            <button id="cancelLogoutBtn" class="w-full py-3 bg-white hover:bg-gray-50 text-[#333333] font-bold rounded-lg border border-gray-200 shadow-sm transition-colors">
+                Hủy · Quay lại đọc truyện
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        // Dropdown Logic
+        const userMenuBtn = document.getElementById('userMenuBtn');
+        const userDropdown = document.getElementById('userDropdown');
+        if (userMenuBtn && userDropdown) {
+            userMenuBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                userDropdown.classList.toggle('show');
+            });
+            document.addEventListener('click', () => {
+                userDropdown.classList.remove('show');
+            });
+            userDropdown.addEventListener('click', (e) => e.stopPropagation());
+        }
+
+        // Modal Logic
+        const logoutBtn = document.getElementById('logoutBtn');
+        const logoutModal = document.getElementById('logoutModal');
+        const cancelLogoutBtn = document.getElementById('cancelLogoutBtn');
+
+        if (logoutBtn && logoutModal && cancelLogoutBtn) {
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                userDropdown.classList.remove('show');
+                logoutModal.classList.add('show');
+            });
+
+            cancelLogoutBtn.addEventListener('click', () => {
+                logoutModal.classList.remove('show');
+            });
+
+            logoutModal.addEventListener('click', (e) => {
+                if (e.target === logoutModal) {
+                    logoutModal.classList.remove('show');
+                }
+            });
+        }
+    </script>
 </body>
 </html>
