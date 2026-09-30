@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="vi" class="h-full" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xác thực tài khoản - Trạm Truyện</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+    
+    <style>
+        @layer base {
+            html, body { margin: 0; padding: 0; }
+            body { overscroll-behavior: none; }
+            main > :first-child { margin-top: 0 !important; }
+            main > :last-child { margin-bottom: 0 !important; }
+        }
+        ::-webkit-scrollbar { display: none; }
+    </style>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script th:src="@{/js/tailwind-config.js}"></script>
+</head>
+<body class="min-h-full flex flex-col bg-surface text-on-surface">
+
+<header class="fixed top-0 left-0 right-0 z-50 bg-surface border-b border-outline-variant">
+    <div class="h-[72px] max-w-7xl mx-auto px-margin flex items-center justify-between">
+        <a th:href="@{/}" class="flex items-center gap-space-sm group">
+            <div class="w-9 h-9 rounded-full bg-primary-container flex items-center justify-center transition-transform group-hover:scale-105">
+                <span class="material-symbols-outlined text-on-primary text-[20px]">menu_book</span>
+            </div>
+            <span class="font-headline-md text-headline-md text-on-surface">Trạm Truyện</span>
+        </a>
+        <nav class="flex items-center gap-space-md">
+            <a th:href="@{/login}" class="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-colors">Đăng nhập</a>
+            <a th:href="@{/register}" class="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-colors">Đăng ký</a>
+            <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center ml-space-xs">
+                <span class="material-symbols-outlined text-on-primary text-[18px]">person</span>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<main class="flex-1 w-full pt-[72px] bg-surface flex flex-col justify-center items-center px-margin">
+    <div class="flex flex-col w-full items-center justify-center py-space-xl relative overflow-hidden">
+        
+        <div class="absolute -top-32 -left-24 w-96 h-96 rounded-full bg-primary-fixed/20 blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-32 -right-24 w-96 h-96 rounded-full bg-secondary-fixed/25 blur-3xl pointer-events-none"></div>
+        
+        <div class="relative w-full max-w-[440px] bg-surface-container-lowest rounded-xl p-[36px] shadow-[0_10px_25px_-5px_rgba(43,33,24,0.05),0_8px_10px_-6px_rgba(43,33,24,0.03)] border border-outline-variant">
+            
+            <div class="flex items-center justify-center gap-2 mb-3">
+                <span class="w-[40px] h-[1px] bg-outline-variant inline-block"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-primary-container inline-block"></span>
+                <span class="w-[40px] h-[1px] bg-outline-variant inline-block"></span>
+            </div>
+            
+            <h1 class="font-headline-lg text-headline-lg text-on-surface text-center mb-1.5 tracking-normal">
+                Xác thực tài khoản
+            </h1>
+            <p class="font-body-md text-body-md text-tertiary text-center mb-6">
+                Vui lòng kiểm tra hộp thư email <br> 
+                <strong class="text-on-surface" th:text="${email}">user@example.com</strong>
+            </p>
+
+            <!-- Error and Success Messages -->
+            <div th:if="${errorMessage}" class="mb-4 p-3 text-sm text-on-error-container bg-error-container rounded-lg border border-error/20" role="alert">
+                <span th:text="${errorMessage}">Lỗi xảy ra</span>
+            </div>
+            
+            <div th:if="${successMessage}" class="mb-4 p-3 text-sm text-[#0f5132] bg-[#d1e7dd] rounded-lg border border-[#badbcc]" role="alert">
+                <span th:text="${successMessage}">Mã OTP đã được gửi!</span>
+            </div>
+
+            <!-- OTP Verification Form -->
+            <form th:action="@{/verify-otp}" method="post" class="flex flex-col gap-4">
+                <input type="hidden" name="email" th:value="${email}" />
+                
+                <div class="flex flex-col">
+                    <label class="font-label-md text-label-md text-on-surface font-semibold mb-1.5 text-center" for="otpCode">
+                        Nhập mã gồm 6 chữ số
+                    </label>
+                    <div class="relative flex items-center mt-2">
+                        <span class="material-symbols-outlined absolute left-3.5 text-tertiary text-[24px] pointer-events-none select-none">password</span>
+                        <input name="otpCode" id="otpCode" type="text" required maxlength="6" placeholder="000000"
+                               pattern="\d{6}" title="Vui lòng nhập đúng 6 chữ số"
+                               class="w-full h-[56px] pl-12 pr-4 bg-surface-container-lowest rounded-[10px] border border-outline-variant font-headline-md text-headline-md text-on-surface placeholder:text-outline focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 transition-all text-center tracking-[0.5em]">
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full h-[46px] mt-4 rounded-[10px] bg-primary-container hover:bg-primary text-on-primary font-label-lg text-label-lg font-semibold shadow-[0_2px_6px_rgba(208,138,46,0.25)] hover:shadow-md transition-all active:scale-[0.99] flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-[20px]">check_circle</span>
+                    Xác nhận
+                </button>
+            </form>
+
+            <div class="mt-6 text-center font-body-md text-body-md text-tertiary">
+                Chưa nhận được mã? 
+                <a href="#" class="text-primary-container font-semibold hover:underline ml-1 transition-colors">Gửi lại ngay</a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="w-full bg-surface border-t border-outline-variant py-space-lg">
+    <div class="max-w-7xl mx-auto px-margin flex flex-col md:flex-row items-center justify-between gap-space-md font-body-md text-body-md">
+        <div class="flex items-center gap-space-lg">
+            <a href="#" class="text-tertiary hover:text-primary-container transition-colors">Liên hệ</a>
+            <a href="#" class="text-tertiary hover:text-primary-container transition-colors">Điều khoản dịch vụ</a>
+            <a href="#" class="text-tertiary hover:text-primary-container transition-colors">Chính sách bảo mật</a>
+        </div>
+        <div class="text-on-surface-variant">© 2025 Trạm Truyện. Mọi quyền được bảo lưu.</div>
+    </div>
+</footer>
+
+</body>
+</html>
