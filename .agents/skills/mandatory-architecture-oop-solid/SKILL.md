@@ -36,11 +36,13 @@ The project employs: MVC, Multi-layer architecture, OOP, SOLID, Separation of Co
 
 ## 2. SKILL OBJECTIVES
 
-When asked to implement a feature (e.g., "Implement M1-F01 Create Novel"), you **MUST NOT start writing code immediately**. You must perform architecture/design validation first.
+When asked to implement or modify a feature (e.g., "Implement M1-F01 Create Novel"), you **MUST NOT start writing code immediately**. You must perform architecture/design validation first and present a plan via an Artifact file for the user to review.
 
 ```text
-Requirement → Function identification → Architecture validation → OOP/SOLID validation → Existing code inspection → Design proposal → Implementation → Self-review → Architecture compliance check
+Requirement → Function identification → Architecture validation → OOP/SOLID validation → Existing code inspection → Create Plan Artifact → User Review → Implementation → Self-review → Architecture compliance check
 ```
+
+**CRITICAL:** Every time you are about to code a new feature or modify an existing one, you MUST create a Markdown Artifact file containing the implementation plan. You MUST set `ArtifactMetadata.RequestFeedback` to `true` to allow the user to review, comment, and click 'Proceed' before you write any code.
 
 If the design or code severely violates architecture/OOP/SOLID, you must **stop implementation and request a design fix**, do not deliberately write poorly architected code.
 
