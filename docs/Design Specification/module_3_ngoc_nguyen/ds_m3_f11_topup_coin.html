@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -78,30 +78,48 @@
         </thead>
         <tbody>
             <tr class="group-header">
+                <td colspan="3">***Header Information***</td>
+            </tr>
+            <tr>
+                <td>Top-up Rules Text</td>
+                <td>Text</td>
+                <td>Displays conversion rate and coin validity policy</td>
+            </tr>
+            <tr>
+                <td>Current Balance Badge</td>
+                <td>Badge</td>
+                <td>Displays user's current coin balance</td>
+            </tr>
+            <tr class="group-header">
                 <td colspan="3">***Package Selection***</td>
             </tr>
             <tr>
-                <td>Coin Packages</td>
+                <td>Coin Package Cards</td>
                 <td>Radio Button Group</td>
-                <td>List of coin packages displaying Price (VND), Coin amount, and Bonus</td>
+                <td>Selectable cards showing Coin amount, Price (VND), and Bonus/Tags</td>
             </tr>
             <tr>
-                <td>Payment Gateway</td>
-                <td>Combo Box Single-Choice</td>
-                <td>Default and only gateway: VNPay Sandbox</td>
-            </tr>
-            <tr>
-                <td>Total VND Payable</td>
+                <td>Important Note</td>
                 <td>Text</td>
-                <td>Summary of total VNÄ payment required</td>
+                <td>Warning regarding non-refundable policy</td>
             </tr>
             <tr class="group-header">
                 <td colspan="3">***Payment Actions***</td>
             </tr>
             <tr>
-                <td>Proceed to Payment</td>
+                <td>Total Payable Amount</td>
+                <td>Text</td>
+                <td>Displays total VND to pay and total Coins to receive</td>
+            </tr>
+            <tr>
+                <td>Pay via VNPay Button</td>
                 <td>Button</td>
-                <td>Generates order code, constructs VNPay HMAC-SHA512 URL, and redirects</td>
+                <td>Generates order and redirects to VNPay gateway for payment</td>
+            </tr>
+            <tr>
+                <td>Footer Trust Badges</td>
+                <td>Text</td>
+                <td>Displays SSL security and support contact info</td>
             </tr>
             <tr class="group-header">
                 <td colspan="3">***Payment Result Modal***</td>
@@ -122,7 +140,7 @@
                 <td>Total coins added to user's wallet</td>
             </tr>
             <tr>
-                <td>Back to Profile</td>
+                <td>Back to Profile Button</td>
                 <td>Button</td>
                 <td>Navigates back to user profile dashboard</td>
             </tr>
