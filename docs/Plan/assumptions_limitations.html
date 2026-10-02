@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assumptions & Dependencies, Limitations & Exclusions</title>
+</head>
+<body style="background-color: white; margin: 20px;">
+
+    <p style="color: #4f81bd; font-family: 'Times New Roman', Times, serif; font-size: 14pt; margin-bottom: 5px;">1. Assumptions & Dependencies</p>
+    <p style="color: #0000ff; font-style: italic; font-family: 'Times New Roman', Times, serif; font-size: 12pt; margin-top: 0; margin-bottom: 15px;">[Record any assumptions that were made when conceiving the project and writing this vision and scope document. Note any major dependencies the project must rely upon for success, such as specific technologies, third-party vendors, development partners, or other business relationships.]</p>
+    
+    <table style="font-family: 'Times New Roman', Times, serif; font-size: 12pt; border-collapse: collapse; width: 100%; border: none;">
+        <tr>
+            <td style="vertical-align: top; width: 60px; padding-bottom: 10px;">AS-1:</td>
+            <td style="padding-bottom: 10px;">Users (Guest, Member, Staff, Admin) have a stable internet connection and use modern web browsers to access the system.</td>
+        </tr>
+        <tr>
+            <td style="vertical-align: top; padding-bottom: 10px;">AS-2:</td>
+            <td style="padding-bottom: 10px;">The Staff and Admin team will be responsible for moderating copyright and the quality of novel content before publishing it on the platform.</td>
+        </tr>
+        <tr>
+            <td style="vertical-align: top; padding-bottom: 10px;">DE-1:</td>
+            <td style="padding-bottom: 10px;">The system depends on third-party payment gateways (VNPay, Momo Sandbox) to process users' Coin top-up transactions.</td>
+        </tr>
+        <tr>
+            <td style="vertical-align: top; padding-bottom: 10px;">DE-2:</td>
+            <td style="padding-bottom: 10px;">Google OAuth2 integration is required to support the quick Social Login feature for users.</td>
+        </tr>
+        <tr>
+            <td style="vertical-align: top; padding-bottom: 10px;">DE-3:</td>
+            <td style="padding-bottom: 10px;">The project relies on Cloudinary for storing and delivering image assets (novel covers, user avatars).</td>
+        </tr>
+        <tr>
+            <td style="vertical-align: top; padding-bottom: 10px;">DE-4:</td>
+            <td style="padding-bottom: 10px;">The system requires a Mail Server service (e.g., Gmail SMTP) to handle sending emails containing OTP codes for account verification and password reset.</td>
+        </tr>
+    </table>
+
+    <p style="color: #4f81bd; font-family: 'Times New Roman', Times, serif; font-size: 14pt; margin-top: 30px; margin-bottom: 5px;">2. Limitations & Exclusions</p>
+    <p style="color: #0000ff; font-style: italic; font-family: 'Times New Roman', Times, serif; font-size: 12pt; margin-top: 0; margin-bottom: 15px;">[Identify any product features or characteristics that a stakeholder might anticipate, but which are not planned to be included in the new product]</p>
+    
+    <table style="font-family: 'Times New Roman', Times, serif; font-size: 12pt; border-collapse: collapse; width: 100%; border: none;">
+        <tr>
+            <td style="vertical-align: top; width: 60px; padding-bottom: 10px;">LE-1:</td>
+            <td style="padding-bottom: 10px;">Mobile Application: The system is solely a Web-based platform (using Spring MVC and Thymeleaf). Dedicated mobile applications (iOS/Android Mobile Apps) are not within the development scope of this project.</td>
+        </tr>
+        <tr>
+            <td style="vertical-align: top; padding-bottom: 10px;">LE-2:</td>
+            <td style="padding-bottom: 10px;">Withdraw/Refund: Coins topped up into the system by users can only be used to unlock VIP chapters and cannot be converted back to cash, withdrawn, or refunded under any circumstances.</td>
+        </tr>
+        <tr>
+            <td style="vertical-align: top; padding-bottom: 10px;">LE-3:</td>
+            <td style="padding-bottom: 10px;">User-generated content: Regular members do not have the right to create and upload their own novels. Adding and publishing content is entirely managed by Staff/Admin.</td>
+        </tr>
+        <tr>
+            <td style="vertical-align: top; padding-bottom: 10px;">LE-4:</td>
+            <td style="padding-bottom: 10px;">Comic/Manga support: Trạm Truyện currently only supports purely text-based novel formats and does not support image-based comic/manga formats.</td>
+        </tr>
+        <tr>
+            <td style="vertical-align: top; padding-bottom: 10px;">LE-5:</td>
+            <td style="padding-bottom: 10px;">SPA Architecture: In the main version, the system's Frontend does not adopt the SPA (Single Page Application) architecture or fully separate REST APIs, but instead uses a Server-side Rendering mechanism.</td>
+        </tr>
+        <tr>
+            <td style="vertical-align: top; padding-bottom: 10px;">LE-6:</td>
+            <td style="padding-bottom: 10px;">Audio Reader quality: The voice reading feature (Audio Reader) depends on the default Text-to-Speech Engine of the user's browser/operating system, thus the voice quality may vary across different devices.</td>
+        </tr>
+    </table>
+
+</body>
+</html>
