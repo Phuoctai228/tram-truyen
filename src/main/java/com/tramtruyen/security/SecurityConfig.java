@@ -25,7 +25,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/register", "/verify-otp", "/login", "/css/**", "/js/**", "/images/**").permitAll()
-                .anyRequest().permitAll() // Temporarily permit all
+                .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
+                .anyRequest().permitAll() // Temporarily permit all other requests
         ).formLogin(form -> form
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
