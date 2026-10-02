@@ -10,12 +10,12 @@ INSERT INTO roles (id, name) VALUES
 ON CONFLICT (id) DO NOTHING;
 
 -- 2. Seed default users
--- Mật khẩu sử dụng mã hóa BCrypt của chuỗi '123456'
--- $2a$10$DowX8eL6tH23.x93z3fHGuuY3PofAUBhEToF6Z.K9o5eTz9uN73iS
+-- Mật khẩu sử dụng mã hóa BCrypt của chuỗi '12345678'
+-- $2a$10$LmC09bKcSP1wc7N7eArmUe8kOsjWYqjPYoTeIMJseMNNoRpPiGwSS
 INSERT INTO users (id, email, password, full_name, wallet_balance, status) VALUES 
-(1, 'admin@tramtruyen.com', '$2a$10$DowX8eL6tH23.x93z3fHGuuY3PofAUBhEToF6Z.K9o5eTz9uN73iS', 'System Admin', 10000, 'ACTIVE'),
-(2, 'staff@tramtruyen.com', '$2a$10$DowX8eL6tH23.x93z3fHGuuY3PofAUBhEToF6Z.K9o5eTz9uN73iS', 'Content Staff', 5000, 'ACTIVE'),
-(3, 'member@tramtruyen.com', '$2a$10$DowX8eL6tH23.x93z3fHGuuY3PofAUBhEToF6Z.K9o5eTz9uN73iS', 'Standard Reader', 1000, 'ACTIVE')
+(1, 'admin@tramtruyen.com', '$2a$10$LmC09bKcSP1wc7N7eArmUe8kOsjWYqjPYoTeIMJseMNNoRpPiGwSS', 'System Admin', 10000, 'ACTIVE'),
+(2, 'staff@tramtruyen.com', '$2a$10$LmC09bKcSP1wc7N7eArmUe8kOsjWYqjPYoTeIMJseMNNoRpPiGwSS', 'Content Staff', 5000, 'ACTIVE'),
+(3, 'member@tramtruyen.com', '$2a$10$LmC09bKcSP1wc7N7eArmUe8kOsjWYqjPYoTeIMJseMNNoRpPiGwSS', 'Standard Reader', 1000, 'ACTIVE')
 ON CONFLICT (id) DO NOTHING;
 
 -- 3. Seed user_roles
