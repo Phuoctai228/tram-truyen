@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<body>
+<aside th:fragment="sidebar(active)" class="sidebar">
+    <div>
+        <div class="brand"><span class="brand-mark">▣</span><span>Trạm Truyện</span><small>Admin</small></div>
+        <nav>
+            <a class="nav-link" th:classappend="${active == 'tong-quan' ? ' active' : ''}" href="#"><span>▦</span> Tổng quan</a>
+            <a class="nav-link" th:classappend="${active == 'truyen' ? ' active' : ''}" th:href="@{/admin/novels}"><span>▤</span> Truyện</a>
+            <a class="nav-link" th:classappend="${active == 'chuong' ? ' active' : ''}" href="#"><span>▥</span> Chương</a>
+            <a class="nav-link" th:classappend="${active == 'the-loai' ? ' active' : ''}" href="#"><span>◈</span> Thể loại</a>
+            <a class="nav-link" th:classappend="${active == 'bao-cao' ? ' active' : ''}" href="#"><span>⚑</span> Báo cáo</a>
+            <a class="nav-link" th:classappend="${active == 'cau-hinh' ? ' active' : ''}" href="#"><span>⚙</span> Cấu hình</a>
+        </nav>
+    </div>
+    <div class="sidebar-footer"><strong>TRẠM TRUYỆN CMS</strong><span>Hệ thống hoạt động</span></div>
+</aside>
+
+<header th:fragment="topbar" class="topbar"><span class="search-hint">⌕ &nbsp; Tìm kiếm truyện, chương, tác giả...</span><span class="profile">Quản trị nội dung <b>TT</b></span></header>
+</body>
+</html>

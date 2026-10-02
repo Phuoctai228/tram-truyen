@@ -41,3 +41,7 @@ spring:
 
 cloudinary:
   url: ${CLOUDINARY_URL:cloudinary://dummy}
+  cloud-name: ${CLOUDINARY_CLOUD_NAME:}
+  api-key: ${CLOUDINARY_API_KEY:}
+  api-secret: ${CLOUDINARY_API_SECRET:}
+  upload-preset: ${CLOUDINARY_UPLOAD_PRESET:}
