@@ -1,0 +1,565 @@
+<!DOCTYPE html><html lang="vi"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_dashboard" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"on-surface":"#231a11","outline":"#847464","surface-container-highest":"#f2dfd1","on-secondary":"#ffffff","primary":"#875200","surface-tint":"#875200","surface-container-lowest":"#ffffff","on-tertiary":"#ffffff","on-surface-variant":"#524437","inverse-surface":"#392e25","tertiary-fixed-dim":"#d8c3af","primary-container":"#d08a2e","inverse-on-surface":"#ffeee1","tertiary":"#6c5c4c","on-tertiary-fixed":"#25190d","surface-container":"#feeadc","secondary":"#9e422c","surface-dim":"#e9d7c8","surface-variant":"#f2dfd1","background":"#fff8f5","on-error-container":"#93000a","surface":"#fff8f5","on-tertiary-container":"#3c2f21","error":"#ba1a1a","on-secondary-fixed":"#3d0600","tertiary-container":"#a99684","surface-bright":"#fff8f5","on-tertiary-fixed-variant":"#534435","on-background":"#231a11","error-container":"#ffdad6","on-primary-container":"#492a00","secondary-fixed":"#ffdad2","on-primary":"#ffffff","secondary-container":"#fe8b70","on-secondary-fixed-variant":"#7e2b17","surface-container-low":"#fff1e8","on-error":"#ffffff","on-secondary-container":"#752411","tertiary-fixed":"#f5dfca","inverse-primary":"#ffb865","primary-fixed-dim":"#ffb865","secondary-fixed-dim":"#ffb4a3","outline-variant":"#d7c3b1","surface-container-high":"#f8e5d6","primary-fixed":"#ffddba","on-primary-fixed":"#2b1700","on-primary-fixed-variant":"#663d00"},borderRadius:{DEFAULT:"0.25rem",lg:"0.5rem",xl:"0.75rem",full:"9999px"},spacing:{"space-lg":"1.5rem","space-md":"1rem","space-sm":"0.5rem","space-xl":"2.5rem",gutter:"1.5rem",margin:"2rem","space-xs":"0.25rem"},fontFamily:{"label-lg":["Inter"],"body-reading":["Lora"],"headline-md":["Lora"],"headline-xl":["Lora"],"label-sm":["Inter"],"body-lg":["Inter"],"display-lg":["Lora"],"headline-sm":["Lora"],"headline-lg":["Lora"],"label-md":["Inter"],"body-md":["Inter"]},fontSize:{"label-lg":["14px",{lineHeight:"20px",fontWeight:"600"}],"body-reading":["18px",{lineHeight:"32px",fontWeight:"400"}],"headline-md":["22px",{lineHeight:"30px",fontWeight:"700"}],"headline-xl":["32px",{lineHeight:"42px",letterSpacing:"-0.01em",fontWeight:"700"}],"label-sm":["11px",{lineHeight:"14px",letterSpacing:"0.03em",fontWeight:"500"}],"body-lg":["16px",{lineHeight:"26px",fontWeight:"400"}],"display-lg":["40px",{lineHeight:"52px",letterSpacing:"-0.01em",fontWeight:"700"}],"headline-sm":["18px",{lineHeight:"26px",fontWeight:"700"}],"headline-lg":["26px",{lineHeight:"36px",fontWeight:"700"}],"label-md":["12px",{lineHeight:"16px",letterSpacing:"0.02em",fontWeight:"600"}],"body-md":["14px",{lineHeight:"22px",fontWeight:"400"}]}}}}</script></head><body class="bg-background font-body-md text-on-surface"><aside class="fixed left-0 top-0 h-full w-[260px] bg-surface z-50 flex flex-col justify-between py-space-lg shadow-[0_1px_8px_rgba(107,91,75,0.06)]"><div class="flex flex-col gap-space-md"><div class="px-space-lg flex items-center justify-between"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-primary text-[28px]">menu_book</span><span class="font-headline-sm text-headline-sm text-on-surface">Trạm Truyện</span></div><span class="font-label-sm text-label-sm bg-surface-container text-on-surface-variant px-2 py-0.5 rounded-full">Admin</span></div><nav class="flex flex-col gap-1 px-space-md mt-space-sm" data-active-classes="bg-surface-container-low text-primary-container font-semibold rounded-xl shadow-[0_2px_12px_-2px_rgba(107,91,75,0.06)]"><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="tong-quan" href="#"><span class="material-symbols-outlined text-[20px]">dashboard</span><span class="font-label-lg text-label-lg">Tổng quan</span></a><a aria-current="page" class="flex items-center gap-space-sm px-space-md py-space-sm transition-colors bg-surface-container-low text-primary-container font-semibold rounded-xl shadow-[0_2px_12px_-2px_rgba(107,91,75,0.06)]" data-path="truyen" href="#"><span class="material-symbols-outlined text-[20px]">auto_stories</span><span class="font-label-lg text-label-lg">Truyện</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="chuong" href="#"><span class="material-symbols-outlined text-[20px]">library_books</span><span class="font-label-lg text-label-lg">Chương</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="the-loai" href="#"><span class="material-symbols-outlined text-[20px]">category</span><span class="font-label-lg text-label-lg">Thể loại</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="bao-cao" href="#"><span class="material-symbols-outlined text-[20px]">flag</span><span class="font-label-lg text-label-lg">Báo cáo</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="thong-bao" href="#"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="font-label-lg text-label-lg">Thông báo</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="nguoi-dung" href="#"><span class="material-symbols-outlined text-[20px]">group</span><span class="font-label-lg text-label-lg">Người dùng</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="giao-dich" href="#"><span class="material-symbols-outlined text-[20px]">receipt_long</span><span class="font-label-lg text-label-lg">Giao dịch</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="cau-hinh" href="#"><span class="material-symbols-outlined text-[20px]">settings</span><span class="font-label-lg text-label-lg">Cấu hình</span></a></nav></div><div class="px-space-md"><div class="bg-surface-container-high/60 rounded-xl p-space-sm flex items-center gap-space-sm"><span class="material-symbols-outlined text-secondary text-[20px]">shield</span><div class="flex flex-col"><span class="font-label-md text-label-md text-on-surface">Trạm Truyện CMS</span><span class="font-label-sm text-label-sm text-on-surface-variant">v2.4.0 Hoạt động</span></div></div></div></aside><div class="pl-[260px]"><header class="fixed top-0 left-[260px] right-0 h-16 bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(107,91,75,0.04)] z-40 flex items-center justify-between px-space-lg"><div class="flex items-center gap-space-md"><span class="material-symbols-outlined text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer">search</span><span class="font-body-md text-body-md text-on-surface-variant hidden sm:inline">Tìm kiếm truyện, chương, tác giả...</span></div><div class="flex items-center gap-space-md"><button aria-label="Thông báo" class="p-space-xs text-on-surface-variant hover:text-on-surface transition-colors relative flex items-center justify-center" type="button"><span class="material-symbols-outlined text-[22px]">notifications</span><span class="absolute top-1 right-1 w-2 h-2 bg-secondary rounded-full"></span></button><div class="flex items-center gap-space-sm pl-space-sm"><div class="flex flex-col text-right hidden sm:flex"><span class="font-label-lg text-label-lg text-on-surface">Quản trị viên</span><span class="font-label-sm text-label-sm text-on-surface-variant">Toàn quyền</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shadow-[0_2px_8px_-2px_rgba(135,82,0,0.3)]"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="relative pt-16 bg-background w-full px-space-lg py-space-lg min-h-screen"><div class="flex flex-col w-full gap-space-lg">
+<!-- Header Context & Primary Action -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-primary font-semibold">Thư viện tác phẩm</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Tổng 342 đầu sách</span>
+</div>
+<h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight">Quản lý truyện</h1>
+</div>
+<!-- Quick Stats Cards & CTA -->
+<div class="flex items-center gap-space-md">
+<div class="hidden xl:flex items-center gap-space-md bg-surface-container-low px-space-md py-2 rounded-xl shadow-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">auto_stories</span>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Tăng trưởng tuần</span>
+<span class="font-label-lg text-label-lg text-on-surface">+18.4%</span>
+</div>
+</div>
+<div class="w-px h-6 bg-outline-variant/40"></div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">trending_up</span>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Tổng lượt đọc</span>
+<span class="font-label-lg text-label-lg text-on-surface">13.2M</span>
+</div>
+</div>
+</div>
+<button class="group flex items-center gap-space-sm bg-primary-container hover:bg-primary text-surface-container-lowest px-space-lg py-2.5 rounded-xl font-label-lg text-label-lg shadow-md hover:shadow-lg transition-all transform active:scale-95 cursor-pointer" type="button">
+<span class="material-symbols-outlined text-[20px] transition-transform group-hover:rotate-90">add</span>
+<span>Tạo truyện</span>
+</button>
+</div>
+</div>
+<!-- Filter, Search & Status Segment Control -->
+<div class="flex flex-col gap-space-md bg-surface-container-low/70 p-space-md rounded-2xl shadow-sm">
+<div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-space-md">
+<!-- Search Field -->
+<div class="relative flex-1 max-w-xl">
+<span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
+<input class="w-full bg-surface-container-lowest text-on-surface placeholder:text-on-surface-variant/60 pl-10 pr-10 py-2.5 rounded-xl font-body-md text-body-md shadow-sm outline-none focus:ring-2 focus:ring-primary/20 transition-all" placeholder="Tìm theo tên truyện, tác giả, ID..." type="text">
+<button class="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant/50 hover:text-on-surface text-[18px]" type="button">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+</button>
+</div>
+<!-- Quick Action Filter Utilities -->
+<div class="flex items-center gap-space-sm self-end lg:self-center">
+<button class="flex items-center gap-1.5 px-3 py-2 bg-surface-container-lowest text-on-surface-variant hover:text-on-surface rounded-xl font-label-md text-label-md shadow-sm transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">filter_list</span>
+<span>Bộ lọc nâng cao</span>
+</button>
+<button class="flex items-center gap-1.5 px-3 py-2 bg-surface-container-lowest text-on-surface-variant hover:text-on-surface rounded-xl font-label-md text-label-md shadow-sm transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">file_download</span>
+<span>Xuất Excel</span>
+</button>
+</div>
+</div>
+<!-- Status Tabs / Segment Chips -->
+<div class="flex flex-wrap items-center gap-2 pt-1">
+<!-- Active Chip: Tất cả -->
+<button class="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary text-on-primary font-label-md text-label-md shadow-sm shadow-primary/25 cursor-pointer" type="button">
+<span>Tất cả</span>
+<span class="px-1.5 py-0.2 rounded-full bg-on-primary/20 font-label-sm text-label-sm">342</span>
+</button>
+<!-- Inactive Chip: Đang ra -->
+<button class="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-container-lowest text-on-surface-variant hover:text-on-surface hover:bg-surface-container font-label-md text-label-md shadow-sm transition-colors cursor-pointer" type="button">
+<span>Đang ra</span>
+<span class="px-1.5 py-0.2 rounded-full bg-surface-container font-label-sm text-label-sm text-on-surface-variant">215</span>
+</button>
+<!-- Inactive Chip: Hoàn thành -->
+<button class="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-container-lowest text-on-surface-variant hover:text-on-surface hover:bg-surface-container font-label-md text-label-md shadow-sm transition-colors cursor-pointer" type="button">
+<span>Hoàn thành</span>
+<span class="px-1.5 py-0.2 rounded-full bg-surface-container font-label-sm text-label-sm text-on-surface-variant">98</span>
+</button>
+<!-- Inactive Chip: Tạm ngưng -->
+<button class="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-container-lowest text-on-surface-variant hover:text-on-surface hover:bg-surface-container font-label-md text-label-md shadow-sm transition-colors cursor-pointer" type="button">
+<span>Tạm ngưng</span>
+<span class="px-1.5 py-0.2 rounded-full bg-surface-container font-label-sm text-label-sm text-on-surface-variant">18</span>
+</button>
+<!-- Inactive Chip: Lưu trữ -->
+<button class="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-container-lowest text-on-surface-variant hover:text-on-surface hover:bg-surface-container font-label-md text-label-md shadow-sm transition-colors cursor-pointer" type="button">
+<span>Lưu trữ</span>
+<span class="px-1.5 py-0.2 rounded-full bg-surface-container font-label-sm text-label-sm text-on-surface-variant">11</span>
+</button>
+</div>
+</div>
+<!-- Primary Novels Management Table Container -->
+<div class="w-full bg-surface-container-lowest rounded-2xl shadow-sm overflow-hidden flex flex-col">
+<div class="overflow-x-auto w-full">
+<table class="w-full text-left border-collapse min-w-[1000px]">
+<thead>
+<tr class="bg-surface-container-high/40 text-on-surface-variant font-label-md text-label-md tracking-wider uppercase">
+<th class="py-3.5 px-space-md w-14 text-center" scope="col">
+<input aria-label="Chọn tất cả" class="w-4 h-4 rounded text-primary bg-surface-container-lowest border-outline-variant focus:ring-0 cursor-pointer" type="checkbox">
+</th>
+<th class="py-3.5 px-space-sm w-20" scope="col">Bìa</th>
+<th class="py-3.5 px-space-md" scope="col">Tác phẩm &amp; Thể loại</th>
+<th class="py-3.5 px-space-md" scope="col">Tác giả / Dịch</th>
+<th class="py-3.5 px-space-md" scope="col">Trạng thái</th>
+<th class="py-3.5 px-space-md text-right" scope="col">Số chương</th>
+<th class="py-3.5 px-space-md" scope="col">Đọc &amp; Đánh giá</th>
+<th class="py-3.5 px-space-md" scope="col">Cập nhật</th>
+<th class="py-3.5 px-space-md text-right pr-space-lg" scope="col">Thao tác</th>
+</tr>
+</thead>
+<tbody class="divide-y-0 text-on-surface font-body-md text-body-md">
+<!-- Row 1: Quỷ Bí Chi Chủ -->
+<tr class="hover:bg-surface-container-low/40 transition-colors group">
+<td class="py-3.5 px-space-md text-center">
+<input aria-label="Chọn truyện Quỷ Bí Chi Chủ" class="w-4 h-4 rounded text-primary bg-surface-container-lowest cursor-pointer" type="checkbox">
+</td>
+<td class="py-3.5 px-space-sm">
+<div class="relative w-12 h-16 rounded-lg overflow-hidden bg-surface-container shadow-sm flex-shrink-0">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Mysterious vintage gothic novel book cover with arcane pocket watch, fog in Victorian London alley, deep amber and sepia tint, editorial fantasy painting style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQPczPqIoh0W00nNG1g2i6P_H_R8PvHbODbNJDpsyTv5CXb5w4M36QevXemt7I-KGR-R2gxYX-0i3gtCoC2QWM1GqrY0bgyZRw7kLLAxAKCigNRnDOdd8jCQsAwQyUCjpYrUr3vLzOgkAhw5gHVSRO8pi98EOxml3UM_aemWyWslwHo7vhAxLoHuNf6m9Vcj5gFVww3HSaS9knhJ0-NNrg0TcUBi_J5HY9yEH9q4UgfPopv5ALm-FSRg">
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<a class="font-headline-sm text-headline-sm text-on-surface hover:text-primary transition-colors line-clamp-1" href="#">Quỷ Bí Chi Chủ</a>
+<div class="flex items-center gap-1.5 mt-1 flex-wrap">
+<span class="bg-surface-container px-2 py-0.5 rounded text-on-surface-variant font-label-sm text-label-sm">Huyền Bí</span>
+<span class="bg-surface-container px-2 py-0.5 rounded text-on-surface-variant font-label-sm text-label-sm">Steampunk</span>
+<span class="text-label-sm text-outline font-label-sm">#QBC-09</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg text-on-surface">Ái Tiềm Thủy Đích Ô Tặc</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Bản dịch VIP</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                Đang ra
+              </span>
+</td>
+<td class="py-3.5 px-space-md text-right font-semibold">
+<span class="font-label-lg text-label-lg text-on-surface">1.432</span>
+<span class="text-on-surface-variant font-label-sm text-label-sm block">chương</span>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<div class="flex items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-lg text-label-lg font-bold">4.9</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">3.8M lượt đọc</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">15 phút trước</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Ch. 1432</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md text-right pr-space-lg">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors" title="Chỉnh sửa truyện" type="button">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-secondary hover:bg-surface-container transition-colors" title="Tạm ẩn truyện" type="button">
+<span class="material-symbols-outlined text-[18px]">visibility_off</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-error hover:bg-error-container/40 transition-colors" title="Xóa tác phẩm" type="button">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2: Kiếm Đạo Đệ Nhất Tiên -->
+<tr class="hover:bg-surface-container-low/40 transition-colors bg-surface-container-low/15 group">
+<td class="py-3.5 px-space-md text-center">
+<input aria-label="Chọn truyện Kiếm Đạo Đệ Nhất Tiên" class="w-4 h-4 rounded text-primary bg-surface-container-lowest cursor-pointer" type="checkbox">
+</td>
+<td class="py-3.5 px-space-sm">
+<div class="relative w-12 h-16 rounded-lg overflow-hidden bg-surface-container shadow-sm flex-shrink-0">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Eastern xianxia sword celestial standing on majestic misty mountain peak with flying ancient jade swords, golden hour warm lighting, artistic digital brushwork" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCurnEzDmVoiWZNMHUvIuyR6c-R-ny1JROmrXowLD9P7htROmRTeFMnBOUv-_nDhHkqTacPcX_imQnIwxHSTB4LsyNDMqNcZjCoR8hyDXGRDxYX_Z1rmjBONXCNR0eSg9OXEyv87L20eXGYJlx18w9fE9HBoCXAenBy8jsH4DqPcsqx3VZkWcRPQmWzs8gNPRyyMTufw-GNWfuuZX1kuqvpOSNMQGVPrB3ViCT0KoHFWPOAix4JAhxKHg">
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<a class="font-headline-sm text-headline-sm text-on-surface hover:text-primary transition-colors line-clamp-1" href="#">Kiếm Đạo Đệ Nhất Tiên</a>
+<div class="flex items-center gap-1.5 mt-1 flex-wrap">
+<span class="bg-surface-container px-2 py-0.5 rounded text-on-surface-variant font-label-sm text-label-sm">Tiên Hiệp</span>
+<span class="text-label-sm text-outline font-label-sm">#KD-01</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg text-on-surface">Tiêu Cẩn Du</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Lạc Vũ Các dịch</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                Đang ra
+              </span>
+</td>
+<td class="py-3.5 px-space-md text-right font-semibold">
+<span class="font-label-lg text-label-lg text-on-surface">1.820</span>
+<span class="text-on-surface-variant font-label-sm text-label-sm block">chương</span>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<div class="flex items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-lg text-label-lg font-bold">4.9</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">2.9M lượt đọc</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">2 giờ trước</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Ch. 1820</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md text-right pr-space-lg">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors" title="Chỉnh sửa truyện" type="button">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-secondary hover:bg-surface-container transition-colors" title="Tạm ẩn truyện" type="button">
+<span class="material-symbols-outlined text-[18px]">visibility_off</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-error hover:bg-error-container/40 transition-colors" title="Xóa tác phẩm" type="button">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3: Đại Phụng Đả Canh Nhân -->
+<tr class="hover:bg-surface-container-low/40 transition-colors group">
+<td class="py-3.5 px-space-md text-center">
+<input aria-label="Chọn truyện Đại Phụng Đả Canh Nhân" class="w-4 h-4 rounded text-primary bg-surface-container-lowest cursor-pointer" type="checkbox">
+</td>
+<td class="py-3.5 px-space-sm">
+<div class="relative w-12 h-16 rounded-lg overflow-hidden bg-surface-container shadow-sm flex-shrink-0">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Ancient oriental detective constable lantern at night in imperial palace capital, atmospheric historical mystery novel cover, warm gold tones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuVx2vaK-HwHiANj2Cv191PgzZiGh5NBQ4fM-Ta_IgJuuX6rN22FLqluwT2-RSHmh3mp3BkGrGVzVocrgf9Xbs21l5nU2U3qF5I2f3JGyhkXaE_6ebtMG93B6X_fj6MbnxgLuN5tmRzOl5lO17Z0z49xZB_fbDp07Ej8WwUcg3yJqUTfkRk6BpxWpf6qrF3ZlOsoxL_2F0_PEtaWAkoAbdBZC-BqHRzCCwzBuYc9XMFjopFNHbK1v3iw">
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<a class="font-headline-sm text-headline-sm text-on-surface hover:text-primary transition-colors line-clamp-1" href="#">Đại Phụng Đả Canh Nhân</a>
+<div class="flex items-center gap-1.5 mt-1 flex-wrap">
+<span class="bg-surface-container px-2 py-0.5 rounded text-on-surface-variant font-label-sm text-label-sm">Lịch Sử</span>
+<span class="bg-surface-container px-2 py-0.5 rounded text-on-surface-variant font-label-sm text-label-sm">Trinh Thám</span>
+<span class="text-label-sm text-outline font-label-sm">#DP-44</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg text-on-surface">Mại Báo Tiểu Lang Quân</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Đình Hiệp dịch</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+                Hoàn thành
+              </span>
+</td>
+<td class="py-3.5 px-space-md text-right font-semibold">
+<span class="font-label-lg text-label-lg text-on-surface">924</span>
+<span class="text-on-surface-variant font-label-sm text-label-sm block">chương</span>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<div class="flex items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-lg text-label-lg font-bold">5.0</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">2.2M lượt đọc</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">Hôm qua</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Toàn bản</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md text-right pr-space-lg">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors" title="Chỉnh sửa truyện" type="button">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-secondary hover:bg-surface-container transition-colors" title="Tạm ẩn truyện" type="button">
+<span class="material-symbols-outlined text-[18px]">visibility_off</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-error hover:bg-error-container/40 transition-colors" title="Xóa tác phẩm" type="button">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4: Xích Tâm Tuần Thiên -->
+<tr class="hover:bg-surface-container-low/40 transition-colors bg-surface-container-low/15 group">
+<td class="py-3.5 px-space-md text-center">
+<input aria-label="Chọn truyện Xích Tâm Tuần Thiên" class="w-4 h-4 rounded text-primary bg-surface-container-lowest cursor-pointer" type="checkbox">
+</td>
+<td class="py-3.5 px-space-sm">
+<div class="relative w-12 h-16 rounded-lg overflow-hidden bg-surface-container shadow-sm flex-shrink-0">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Epic crimson red and warm bronze cultivation fantasy artwork, silhouette of grand celestial immortal overlooking vast mountain landscape, novel aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAeRSkuDb11qnqVqxRB33GpoeQb9p-itqx012iQZbBhmm6Pgiio5Zi_Sm89nBp6AlP4w6mBNtypbnt-Fo_DMulGL9oCcOy8Kr1OJ9wVU0pGzgItd5XO-DXFTlb2XFfnFYEwrHBIqK30Jn4eQNuXGmZUolL3OmYGYFPC91cIOuwlq8n0ajJugRRS1Ao2P0JxBoTp2G6zvXqBmMeKQsLuGfGF0dRTj2i1Jrl10WAYVyw5e5nENsoP4lUclg">
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<a class="font-headline-sm text-headline-sm text-on-surface hover:text-primary transition-colors line-clamp-1" href="#">Xích Tâm Tuần Thiên</a>
+<div class="flex items-center gap-1.5 mt-1 flex-wrap">
+<span class="bg-surface-container px-2 py-0.5 rounded text-on-surface-variant font-label-sm text-label-sm">Tu Chân</span>
+<span class="text-label-sm text-outline font-label-sm">#XC-12</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg text-on-surface">Tình Hà Dĩ Thẩm</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Tập thể dịch</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                Đang ra
+              </span>
+</td>
+<td class="py-3.5 px-space-md text-right font-semibold">
+<span class="font-label-lg text-label-lg text-on-surface">1.760</span>
+<span class="text-on-surface-variant font-label-sm text-label-sm block">chương</span>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<div class="flex items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-lg text-label-lg font-bold">4.9</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">1.4M lượt đọc</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">3 ngày trước</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Ch. 1760</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md text-right pr-space-lg">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors" title="Chỉnh sửa truyện" type="button">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-secondary hover:bg-surface-container transition-colors" title="Tạm ẩn truyện" type="button">
+<span class="material-symbols-outlined text-[18px]">visibility_off</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-error hover:bg-error-container/40 transition-colors" title="Xóa tác phẩm" type="button">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 5: Vạn Cổ Kiếm Thần -->
+<tr class="hover:bg-surface-container-low/40 transition-colors group">
+<td class="py-3.5 px-space-md text-center">
+<input aria-label="Chọn truyện Vạn Cổ Kiếm Thần" class="w-4 h-4 rounded text-primary bg-surface-container-lowest cursor-pointer" type="checkbox">
+</td>
+<td class="py-3.5 px-space-sm">
+<div class="relative w-12 h-16 rounded-lg overflow-hidden bg-surface-container shadow-sm flex-shrink-0">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Ancient weathered steel sword stuck in a stone boulder covered in moss, dusk atmospheric fantasy novel cover art in warm earthy palette" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWF8ZHCZt-Zw4zED_XcWDZ6MqaxetMfQove7uZOEevXoiErQXgJDkKhq5ArCFa4a7hH2Ig4RATSydHhJxQhekz5T8_UUqtwi3T6xsrrfc9Y7GRMfJyCFboW7E9yBvpQT-lcxNu7mQcvpfzwmEX0ObK0pCxEhyg9oeRuKGWLXB1CbzEe6a0ntNFGofjIZTdM4MluU8XY-0lJE6Z7YO8dSMWxq2qjuZ-6upD_csjiTEsxiTEFRatxBDqag">
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<a class="font-headline-sm text-headline-sm text-on-surface hover:text-primary transition-colors line-clamp-1" href="#">Vạn Cổ Kiếm Thần</a>
+<div class="flex items-center gap-1.5 mt-1 flex-wrap">
+<span class="bg-surface-container px-2 py-0.5 rounded text-on-surface-variant font-label-sm text-label-sm">Kiếm Hiệp</span>
+<span class="text-label-sm text-outline font-label-sm">#VC-02</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg text-on-surface">Mộng Vi Huyễn</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Đang tuyển dịch</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[14px]">pause_circle</span>
+                Tạm ngưng
+              </span>
+</td>
+<td class="py-3.5 px-space-md text-right font-semibold">
+<span class="font-label-lg text-label-lg text-on-surface">890</span>
+<span class="text-on-surface-variant font-label-sm text-label-sm block">chương</span>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<div class="flex items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-lg text-label-lg font-bold">4.8</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">1.6M lượt đọc</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">1 tuần trước</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Ch. 890</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md text-right pr-space-lg">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors" title="Chỉnh sửa truyện" type="button">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-primary-container hover:bg-surface-container transition-colors" title="Kích hoạt lại" type="button">
+<span class="material-symbols-outlined text-[18px]">play_arrow</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-error hover:bg-error-container/40 transition-colors" title="Xóa tác phẩm" type="button">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 6: Nhất Kiếm Độc Tôn -->
+<tr class="hover:bg-surface-container-low/40 transition-colors bg-surface-container-low/15 group">
+<td class="py-3.5 px-space-md text-center">
+<input aria-label="Chọn truyện Nhất Kiếm Độc Tôn" class="w-4 h-4 rounded text-primary bg-surface-container-lowest cursor-pointer" type="checkbox">
+</td>
+<td class="py-3.5 px-space-sm">
+<div class="relative w-12 h-16 rounded-lg overflow-hidden bg-surface-container shadow-sm flex-shrink-0">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Solo swordsman in billowing traditional white robes floating above sea of golden clouds, majestic fantasy book cover painting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSuEL3hsiYOJE6DTjaFFU6RE8bNIA9ZowR8izAOk-Hor0bb4oDaX54ZK2ADFXcNrrg9z65EpE0NOdrVZ8gMBB2Qxf31slfEFzsG1sI0WbE0WcmF2JRxWNZGAWpT5eT7CmFji5zCMJZVKkKOD2WhUlxhjHgI4n5yzCFR9Jgo0hsfApU9E78n7Zwua1QmDRuqDo7r2xR4fyz_tDV9OwcjuDHXSYR2tqkV-xJLAOySUG27KUCY9y-5hI-sg">
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<a class="font-headline-sm text-headline-sm text-on-surface hover:text-primary transition-colors line-clamp-1" href="#">Nhất Kiếm Độc Tôn</a>
+<div class="flex items-center gap-1.5 mt-1 flex-wrap">
+<span class="bg-surface-container px-2 py-0.5 rounded text-on-surface-variant font-label-sm text-label-sm">Huyền Huyễn</span>
+<span class="text-label-sm text-outline font-label-sm">#NK-88</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg text-on-surface">Thanh Loan Phong Thượng</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Nhất Niệm biên dịch</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+                Hoàn thành
+              </span>
+</td>
+<td class="py-3.5 px-space-md text-right font-semibold">
+<span class="font-label-lg text-label-lg text-on-surface">2.100</span>
+<span class="text-on-surface-variant font-label-sm text-label-sm block">chương</span>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<div class="flex items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-lg text-label-lg font-bold">4.7</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">1.3M lượt đọc</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">2 tuần trước</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Toàn bản</span>
+</div>
+</td>
+<td class="py-3.5 px-space-md text-right pr-space-lg">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors" title="Chỉnh sửa truyện" type="button">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-secondary hover:bg-surface-container transition-colors" title="Tạm ẩn truyện" type="button">
+<span class="material-symbols-outlined text-[18px]">visibility_off</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-error hover:bg-error-container/40 transition-colors" title="Xóa tác phẩm" type="button">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Batch Selection Actions & Footer Pagination -->
+<div class="flex flex-col sm:flex-row items-center justify-between gap-space-md px-space-lg py-4 bg-surface-container-high/20 border-t-0">
+<!-- Counter indicator -->
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]">library_books</span>
+<span class="font-body-md text-body-md text-on-surface-variant">
+          Hiển thị <strong class="font-semibold text-on-surface">1 - 6</strong> trong tổng số <strong class="font-semibold text-on-surface">342</strong> tác phẩm
+        </span>
+</div>
+<!-- Pagination Buttons -->
+<div class="flex items-center gap-1.5">
+<!-- Disabled Previous -->
+<button class="p-2 rounded-lg text-outline/40 cursor-not-allowed flex items-center justify-center" disabled="" type="button">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<!-- Page 1 (Active) -->
+<button class="w-9 h-9 rounded-xl bg-primary text-on-primary font-label-md text-label-md font-bold shadow-sm flex items-center justify-center cursor-pointer" type="button">
+          1
+        </button>
+<!-- Page 2 -->
+<button class="w-9 h-9 rounded-xl bg-surface-container-lowest hover:bg-surface-container text-on-surface font-label-md text-label-md transition-colors flex items-center justify-center cursor-pointer shadow-sm" type="button">
+          2
+        </button>
+<!-- Page 3 -->
+<button class="w-9 h-9 rounded-xl bg-surface-container-lowest hover:bg-surface-container text-on-surface font-label-md text-label-md transition-colors flex items-center justify-center cursor-pointer shadow-sm" type="button">
+          3
+        </button>
+<span class="px-1 text-on-surface-variant font-bold tracking-widest text-label-sm">...</span>
+<!-- Page 58 -->
+<button class="w-9 h-9 rounded-xl bg-surface-container-lowest hover:bg-surface-container text-on-surface font-label-md text-label-md transition-colors flex items-center justify-center cursor-pointer shadow-sm" type="button">
+          58
+        </button>
+<!-- Next Page CTA -->
+<button class="flex items-center gap-1 px-3 py-2 rounded-xl bg-surface-container-lowest hover:bg-surface-container text-on-surface font-label-md text-label-md shadow-sm transition-colors cursor-pointer" type="button">
+<span>Sau</span>
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Interactive script for table selection and filter feedback -->
+<script>
+    (function() {
+      // Checkbox master toggle
+      const masterCheckbox = document.querySelector('thead input[type="checkbox"]');
+      const rowCheckboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+
+      if (masterCheckbox) {
+        masterCheckbox.addEventListener('change', function() {
+          rowCheckboxes.forEach(cb => {
+            cb.checked = masterCheckbox.checked;
+          });
+        });
+      }
+
+      // Action toast simulation for quick interactions
+      const actionButtons = document.querySelectorAll('tbody button');
+      actionButtons.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const title = this.getAttribute('title') || 'Thao tác';
+          console.info(`Kích hoạt: ${title}`);
+        });
+      });
+    })();
+  </script>
+</div></main></div></body></html>

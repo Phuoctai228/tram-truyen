@@ -4,7 +4,6 @@ spring:
   
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/tramtruyen}
-    username: ${SPRING_DATASOURCE_USERNAME:postgres}
     password: ${SPRING_DATASOURCE_PASSWORD:123456}
     driver-class-name: org.postgresql.Driver
 
@@ -18,4 +17,7 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
 cloudinary:
-  url: ${CLOUDINARY_URL:cloudinary://dummy}
+  cloud-name: ${CLOUDINARY_CLOUD_NAME:}
+  api-key: ${CLOUDINARY_API_KEY:}
+  api-secret: ${CLOUDINARY_API_SECRET:}
+  upload-preset: ${CLOUDINARY_UPLOAD_PRESET:}
