@@ -2,7 +2,7 @@
 
 # **Requirement & Design Specification**
 
-**Global Access Management System (GAMS)**
+**Online Novels System (ONS)**
 
 **Version: 1.0**
 
@@ -147,22 +147,73 @@ Contents
 
 ### 2.3 Screen Authorization
 
-*\[Provide the system roles authorization to the system features (down to screens, and event to the screen activities if applicable) in the table form as below – replace Role1, Role2,… with your specific system user role names\]*
+The table below describes the access rights of each user group (Guest, Member, Staff, Admin) to the screens and features on the Trạm Truyện system:
 
-| Screen | Role-Name1 | Role-Name2 | Role-Name3 | … |
-| :---- | :---: | :---: | :---: | :---: |
-| \<\<Screen Name1\>\> | X |  | X | X |
-|     \<\<Screen Activity\>\> |  |  | X | X |
-| \<\<Screen Name2\>\> | X |  | X |  |
-|     Query All Data | X |  |  |  |
-|     Query Own Data |  |  | X |  |
-|     Query Managed Data |  |  | X |  |
-|     Add New Data |  |  | X | X |
-|     Update All Data |  |  |  | X |
-|     Update Own Data |  |  |  | X |
-|     Update Managed Data |  |  |  | X |
-|     Delete Data |  |  |  |  |
-|     … |  |  |  |  |
+| Screen | Guest | Member | Staff | Admin |
+| :--- | :---: | :---: | :---: | :---: |
+| **Novel List Screen** | X | X | X | X |
+| &nbsp;&nbsp;&nbsp;&nbsp;View Novel List | X | X | X | X |
+| &nbsp;&nbsp;&nbsp;&nbsp;Search Novels | X | X | X | X |
+| &nbsp;&nbsp;&nbsp;&nbsp;Filter Novels | X | X | X | X |
+| &nbsp;&nbsp;&nbsp;&nbsp;View Leaderboards | X | X | X | X |
+| **Novel Details Screen** | X | X | X | X |
+| &nbsp;&nbsp;&nbsp;&nbsp;View Novel Details | X | X | X | X |
+| &nbsp;&nbsp;&nbsp;&nbsp;View Comments | X | X | X | X |
+| &nbsp;&nbsp;&nbsp;&nbsp;Rate Novel | | X | | |
+| &nbsp;&nbsp;&nbsp;&nbsp;Write Comment | | X | | |
+| &nbsp;&nbsp;&nbsp;&nbsp;Report Novel / Comment | | X | | |
+| **Reading Screen** | X | X | X | X |
+| &nbsp;&nbsp;&nbsp;&nbsp;Read Free Chapter | X | X | X | X |
+| &nbsp;&nbsp;&nbsp;&nbsp;Unlock & Read VIP Chapter | | X | | |
+| &nbsp;&nbsp;&nbsp;&nbsp;Audio Reader | | X | | |
+| &nbsp;&nbsp;&nbsp;&nbsp;Report Chapter | | X | | |
+| **Bookshelf Screen** | | X | | |
+| &nbsp;&nbsp;&nbsp;&nbsp;View Bookshelf | | X | | |
+| &nbsp;&nbsp;&nbsp;&nbsp;Add / Remove Novel | | X | | |
+| &nbsp;&nbsp;&nbsp;&nbsp;Save Reading Progress | | X | | |
+| **Authentication Screens** | X | | | |
+| &nbsp;&nbsp;&nbsp;&nbsp;Register Account | X | | | |
+| &nbsp;&nbsp;&nbsp;&nbsp;Verify Account (OTP) | X | | | |
+| &nbsp;&nbsp;&nbsp;&nbsp;Login (Local / Google OAuth2) | X | | | |
+| &nbsp;&nbsp;&nbsp;&nbsp;Forgot Password | X | | | |
+| **User Profile Screen** | | X | X | X |
+| &nbsp;&nbsp;&nbsp;&nbsp;View Profile | | X | X | X |
+| &nbsp;&nbsp;&nbsp;&nbsp;Update Profile | | X | X | X |
+| &nbsp;&nbsp;&nbsp;&nbsp;Change Password | | X | X | X |
+| &nbsp;&nbsp;&nbsp;&nbsp;View Reading History | | X | | |
+| &nbsp;&nbsp;&nbsp;&nbsp;Daily Check-in | | X | | |
+| &nbsp;&nbsp;&nbsp;&nbsp;View Notification Mailbox | | X | | |
+| **Payment Screen** | | X | X | X |
+| &nbsp;&nbsp;&nbsp;&nbsp;Top-up Coin (VNPay) | | X | | |
+| &nbsp;&nbsp;&nbsp;&nbsp;View Coin History | | X | X | X |
+| **Novel CMS Screen** | | | X | X |
+| &nbsp;&nbsp;&nbsp;&nbsp;View Internal Novels | | | X | X |
+| &nbsp;&nbsp;&nbsp;&nbsp;Create Novel | | | X | X |
+| &nbsp;&nbsp;&nbsp;&nbsp;Update Novel | | | X | X |
+| &nbsp;&nbsp;&nbsp;&nbsp;Archive Novel | | | X | X |
+| &nbsp;&nbsp;&nbsp;&nbsp;Delete Novel | | | | X |
+| &nbsp;&nbsp;&nbsp;&nbsp;Categorize Novel | | | X | X |
+| **Chapter CMS Screen** | | | X | X |
+| &nbsp;&nbsp;&nbsp;&nbsp;Create Chapter | | | X | X |
+| &nbsp;&nbsp;&nbsp;&nbsp;Update Chapter | | | X | X |
+| &nbsp;&nbsp;&nbsp;&nbsp;Configure Chapter (VIP, Price) | | | X | X |
+| &nbsp;&nbsp;&nbsp;&nbsp;Lock / Unlock Chapter | | | X | X |
+| &nbsp;&nbsp;&nbsp;&nbsp;Delete Chapter | | | X | X |
+| **Category Management Screen** | X | X | X | X |
+| &nbsp;&nbsp;&nbsp;&nbsp;View Categories | X | X | X | X |
+| &nbsp;&nbsp;&nbsp;&nbsp;Create Category | | | | X |
+| &nbsp;&nbsp;&nbsp;&nbsp;Update Category | | | | X |
+| &nbsp;&nbsp;&nbsp;&nbsp;Delete Category | | | | X |
+| **Moderation Screen** | | | X | X |
+| &nbsp;&nbsp;&nbsp;&nbsp;View Reports | | | X | X |
+| &nbsp;&nbsp;&nbsp;&nbsp;Resolve Reports | | | X | X |
+| &nbsp;&nbsp;&nbsp;&nbsp;Send Notification | | | X | X |
+| **System Admin Screen** | | | | X |
+| &nbsp;&nbsp;&nbsp;&nbsp;View User List | | | | X |
+| &nbsp;&nbsp;&nbsp;&nbsp;Manage Staffs | | | | X |
+| &nbsp;&nbsp;&nbsp;&nbsp;Ban / Enable User | | | | X |
+| &nbsp;&nbsp;&nbsp;&nbsp;Audit Transactions | | | | X |
+| &nbsp;&nbsp;&nbsp;&nbsp;Configure System | | | | X |
 
 ### 2.4 Non-UI Functions
 

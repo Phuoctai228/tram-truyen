@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>UC-07 Cấu Hình Hệ Thống</title>
+</head>
+
+<body>
+    <div class="uc-container"
+        style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
+        <style>
+            .uc-container,
+            .uc-container table,
+            .uc-container tr,
+            .uc-container td,
+            .uc-container th,
+            .uc-container p,
+            .uc-container ol,
+            .uc-container ul,
+            .uc-container li,
+            .uc-container span,
+            .uc-container strong,
+            .uc-container b {
+                font-family: 'Calibri', sans-serif !important;
+                font-size: 11pt !important;
+                color: black !important;
+            }
+        </style>
+        <p><b>Functional Description Template</b></p>
+        <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Mã và Tên UC:</b>
+                </td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-07 Cấu Hình Hệ Thống
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Người tạo:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Khánh</td>
+                <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Ngày tạo:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-23</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân chính:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;">Admin</td>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân phụ:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;">Không có</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Kích hoạt (Trigger):</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Admin chọn mục "Cấu
+                    hình hệ thống" từ thanh điều hướng quản trị.</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mô tả (Description):</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cho phép Admin xem và
+                    thiết lập các thông số vận hành của toàn bộ hệ thống gồm: tỷ giá quy đổi VNĐ sang Coin, thông tin
+                    liên hệ ban quản trị (hotline, email hỗ trợ), điều khoản sử dụng, chính sách bảo mật và kích hoạt
+                    theme giao diện website.</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện tiên quyết:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>PRE-1.</b> Người dùng đã đăng nhập hệ thống với vai trò Admin.</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện hậu quyết:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>POST-1.</b> Các tham số cấu hình hệ thống mới được cập nhật vào cơ sở dữ liệu và có hiệu lực
+                        ngay lập tức.</p>
+                    <p><b>POST-2.</b> Hệ thống ghi nhận nhật ký kiểm toán hành động chỉnh sửa cấu hình của Admin.</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng cơ bản:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>A. Cấu hình hệ thống thành công</b></p>
+                    <ol>
+                        <li>Admin truy cập trang cấu hình hệ thống.</li>
+                        <li>Hệ thống kiểm tra quyền hạn Admin của tác nhân.</li>
+                        <li>Hệ thống truy xuất các giá trị tham số cấu hình hiện tại từ cơ sở dữ liệu.</li>
+                        <li>Hệ thống truy xuất danh sách các theme giao diện khả dụng.</li>
+                        <li>Hệ thống hiển thị biểu mẫu thiết lập gồm tỷ giá quy đổi VNĐ/Coin, email liên hệ, hotline,
+                            điều khoản sử dụng và danh sách theme.</li>
+                        <li>Admin thay đổi tỷ giá quy đổi hoặc cập nhật thông tin hỗ trợ trong biểu mẫu.</li>
+                        <li>Admin nhấn nút "Lưu cấu hình" .</li>
+                        <li>Hệ thống xác thực định dạng dữ liệu (tỷ giá phải là số nguyên dương lớn hơn 0, email đúng
+                            định dạng).</li>
+                        <li>Hệ thống thực thi giao dịch cập nhật các bản ghi cấu hình trong bảng system_settings.</li>
+                        <li>Hệ thống lưu nhật ký kiểm toán quản trị ghi nhận giá trị trước và sau khi thay đổi.</li>
+                        <li>Hệ thống hiển thị thông báo cập nhật cấu hình hệ thống thành công.</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng thay thế:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>A.8 Dữ liệu cấu hình không hợp lệ</b></p>
+                    <ol>
+                        <li>Hệ thống xác định tỷ giá nhập vào nhỏ hơn hoặc bằng 0 hoặc định dạng email không hợp lệ.
+                        </li>
+                        <li>Hệ thống hiển thị thông báo lỗi cụ thể tại trường dữ liệu sai sót.</li>
+                        <li>Quay lại bước 6.</li>
+                    </ol>
+                    <p><b>A.6 Thay đổi theme giao diện</b></p>
+                    <ol>
+                        <li>Admin chọn một theme giao diện khác trong danh sách và nhấn nút "Kích hoạt theme" .</li>
+                        <li>Hệ thống xác nhận và thực thi cập nhật trạng thái kích hoạt của theme được chọn.</li>
+                        <li>Hệ thống áp dụng giao diện mới cho toàn website.</li>
+                        <li>Quay lại bước 5.</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Ngoại lệ (Exceptions):</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>EX-1 Phiên đăng nhập không hợp lệ</b></p>
+                    <ol>
+                        <li>Hệ thống hiển thị thông báo lỗi xác thực phiên làm việc.</li>
+                        <li>Hệ thống chuyển hướng người dùng đến trang đăng nhập.</li>
+                    </ol>
+                    <p><b>EX-2 Quyền hạn không hợp lệ</b></p>
+                    <ol>
+                        <li>Hệ thống xác định tài khoản không có quyền Admin.</li>
+                        <li>Hệ thống hiển thị trang lỗi 403.</li>
+                    </ol>
+                    <p><b>EX-9 Lỗi lưu trữ cấu hình</b></p>
+                    <ol>
+                        <li>Hệ thống gặp sự cố kết nối khi lưu trữ tham số vào cơ sở dữ liệu.</li>
+                        <li>Hệ thống hoàn tác giao dịch và hiển thị thông báo lỗi cập nhật hệ thống.</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mức độ ưu tiên:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High, Must Have</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tần suất sử dụng:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Thấp (Khi cần thay đổi
+                    chính sách/cấu hình)</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Quy tắc nghiệp vụ:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">BR-03</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Thông tin khác:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Tỷ giá mới sẽ chỉ áp
+                    dụng cho các đơn nạp tiền phát sinh sau thời điểm cập nhật.</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Giả định:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <ul>
+                        <li>Admin có kết nối internet ổn định.</li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+
+</html>

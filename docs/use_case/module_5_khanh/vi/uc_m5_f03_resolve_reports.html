@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>UC-03 Xử Lý Báo Cáo</title>
+</head>
+
+<body>
+    <div class="uc-container"
+        style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
+        <style>
+            .uc-container,
+            .uc-container table,
+            .uc-container tr,
+            .uc-container td,
+            .uc-container th,
+            .uc-container p,
+            .uc-container ol,
+            .uc-container ul,
+            .uc-container li,
+            .uc-container span,
+            .uc-container strong,
+            .uc-container b {
+                font-family: 'Calibri', sans-serif !important;
+                font-size: 11pt !important;
+                color: black !important;
+            }
+        </style>
+        <p><b>Functional Description Template</b></p>
+        <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Mã và Tên UC:</b>
+                </td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-03 Xử Lý Báo Cáo
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Người tạo:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Khánh</td>
+                <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Ngày tạo:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-23</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân chính:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;">Staff, Admin</td>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tác nhân phụ:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;">Không có</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Kích hoạt (Trigger):</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Actor truy cập vào mục
+                    "Quản lý báo cáo" từ thanh điều hướng quản trị.</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mô tả (Description):</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cung cấp giao diện quản
+                    lý tập trung toàn bộ báo cáo từ độc giả (Báo cáo bình luận, Báo cáo nội dung truyện/chương). Cho
+                    phép Staff hoặc Admin kiểm tra chi tiết, đưa ra quyết định xử lý (Chấp thuận và áp dụng chế tài hoặc
+                    Từ chối báo cáo), lưu vết kiểm toán và tự động gửi thông báo phản hồi cho người báo cáo.</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện tiên quyết:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>PRE-1.</b> Actor đã đăng nhập hệ thống với vai trò Staff hoặc Admin.</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Điều kiện hậu quyết:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>POST-1.</b> Trạng thái phiếu báo cáo được cập nhật sang 'PROCESSED' (Đã xử lý) hoặc 'REJECTED'
+                        (Từ chối).</p>
+                    <p><b>POST-2.</b> Người xử lý, thời gian xử lý và ghi chú quyết định được lưu vết vào cơ sở dữ liệu.
+                    </p>
+                    <p><b>POST-3.</b> Chế tài được áp dụng lên đối tượng vi phạm (ẩn bình luận / khóa chương / tạm ẩn
+                        truyện) nếu báo cáo được chấp thuận.</p>
+                    <p><b>POST-4.</b> Hệ thống tự động gửi thông báo kết quả xử lý vào hòm thư của Member đã báo cáo.
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng cơ bản:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>A. Xử lý báo cáo thành công</b></p>
+                    <ol>
+                        <li>Actor truy cập trang danh sách quản lý báo cáo.</li>
+                        <li>Hệ thống kiểm tra quyền hạn của tác nhân.</li>
+                        <li>Hệ thống truy xuất danh sách các báo cáo từ cơ sở dữ liệu theo trạng thái chờ xử lý.</li>
+                        <li>Hệ thống hiển thị bảng danh sách báo cáo phân chia theo các tab chức năng kèm bộ lọc và phân
+                            trang.</li>
+                        <li>Actor chọn một phiếu báo cáo cụ thể và nhấn nút "Xem chi tiết" .</li>
+                        <li>Hệ thống truy xuất thông tin chi tiết của báo cáo và đối tượng bị báo cáo.</li>
+                        <li>Hệ thống hiển thị modal chi tiết báo cáo và các nút hành động ( "Xử lý vi phạm" , "Từ chối
+                            báo cáo" ).</li>
+                        <li>Actor nhấn nút "Xử lý vi phạm" , nhập ghi chú kết quả xử lý và chọn hành động chế tài tương
+                            ứng.</li>
+                        <li>Actor nhấn nút "Xác nhận" .</li>
+                        <li>Hệ thống xác thực nội dung ghi chú xử lý không được để trống.</li>
+                        <li>Hệ thống thực thi giao dịch cập nhật trạng thái phiếu báo cáo sang 'PROCESSED', lưu ID người
+                            xử lý và thời điểm xử lý.</li>
+                        <li>Hệ thống cập nhật trạng thái đối tượng bị báo cáo tương ứng với chế tài đã chọn.</li>
+                        <li>Hệ thống tạo bản ghi thông báo gửi đến hòm thư của Member đã gửi báo cáo.</li>
+                        <li>Hệ thống đóng modal và hiển thị thông báo xử lý báo cáo thành công.</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Luồng thay thế:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>A.8 Từ chối báo cáo</b></p>
+                    <ol>
+                        <li>Actor nhấn nút "Từ chối báo cáo" , nhập lý do từ chối và nhấn nút "Xác nhận" .</li>
+                        <li>Hệ thống xác thực lý do từ chối không được để trống.</li>
+                        <li>Hệ thống cập nhật trạng thái báo cáo sang 'REJECTED', lưu ID người xử lý và thời điểm xử lý.
+                        </li>
+                        <li>Hệ thống tạo bản ghi thông báo từ chối gửi đến hòm thư của Member báo cáo.</li>
+                        <li>Hệ thống đóng modal và hiển thị thông báo từ chối báo cáo hoàn tất.</li>
+                        <li>Quay lại bước 4.</li>
+                    </ol>
+                    <p><b>A.4 Chuyển tab hoặc lọc báo cáo</b></p>
+                    <ol>
+                        <li>Actor nhấn chọn tab báo cáo khác (Báo cáo bình luận / Báo cáo nội dung) hoặc chọn bộ lọc
+                            trạng thái.</li>
+                        <li>Hệ thống truy xuất danh sách báo cáo theo tiêu chí mới.</li>
+                        <li>Hệ thống cập nhật bảng dữ liệu danh sách báo cáo.</li>
+                        <li>Quay lại bước 4.</li>
+                    </ol>
+                    <p><b>A.10 Ghi chú xử lý trống</b></p>
+                    <ol>
+                        <li>Hệ thống xác định ghi chú lý do xử lý bị bỏ trống.</li>
+                        <li>Hệ thống hiển thị thông báo lỗi yêu cầu nhập ghi chú xử lý để lưu vết.</li>
+                        <li>Quay lại bước 8.</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Ngoại lệ (Exceptions):</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>EX-1 Phiên đăng nhập không hợp lệ</b></p>
+                    <ol>
+                        <li>Hệ thống hiển thị thông báo lỗi xác thực phiên làm việc.</li>
+                        <li>Hệ thống chuyển hướng người dùng đến trang đăng nhập.</li>
+                    </ol>
+                    <p><b>EX-2 Quyền hạn không hợp lệ</b></p>
+                    <ol>
+                        <li>Hệ thống xác định tài khoản không có quyền Staff hoặc Admin.</li>
+                        <li>Hệ thống hiển thị trang lỗi 403 Từ chối truy cập.</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Mức độ ưu tiên:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High, Must Have</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Tần suất sử dụng:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cao (Hàng ngày)</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Quy tắc nghiệp vụ:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">BR-05</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Thông tin khác:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Tuân thủ bắt buộc quy
+                    định lưu vết người xử lý, quyết định và gửi phản hồi cho người báo cáo.</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Giả định:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <ul>
+                        <li>Actor có kết nối internet ổn định.</li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+
+</html>

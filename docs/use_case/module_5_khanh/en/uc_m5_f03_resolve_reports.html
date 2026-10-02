@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>UC-03 Resolve Reports</title>
+</head>
+
+<body>
+    <div class="uc-container"
+        style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
+        <style>
+            .uc-container,
+            .uc-container table,
+            .uc-container tr,
+            .uc-container td,
+            .uc-container th,
+            .uc-container p,
+            .uc-container ol,
+            .uc-container ul,
+            .uc-container li,
+            .uc-container span,
+            .uc-container strong,
+            .uc-container b {
+                font-family: 'Calibri', sans-serif !important;
+                font-size: 11pt !important;
+                color: black !important;
+            }
+        </style>
+        <p><b>Functional Description Template</b></p>
+        <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>UC ID and Name:</b>
+                </td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-03 Resolve Reports
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Created By:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">KhanhND</td>
+                <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;"><b>Date Created:</b>
+                </td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-23</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Primary Actor:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;">Staff, Admin</td>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Secondary Actors:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;">None</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Trigger:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Actor accesses "Report
+                    Management" from the administrative navigation sidebar.</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Description:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Provides a centralized
+                    management dashboard for Staff and Admin to review reported tickets (comment reports, novel/chapter
+                    content reports), inspect violation context, execute resolution decisions (Approve with sanctions or
+                    Reject report), record audit logs, and automatically notify the reporter.</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Preconditions:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>PRE-1.</b> The actor is authenticated with Staff or Admin role.</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Postconditions:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>POST-1.</b> Report ticket status is transitioned to 'PROCESSED' or 'REJECTED'.</p>
+                    <p><b>POST-2.</b> Resolution timestamp, processor ID, and administrative decision note are logged in
+                        the database.</p>
+                    <p><b>POST-3.</b> Appropriate sanctions are applied to the violating entity (comment hidden, chapter
+                        locked, novel archived) if approved.</p>
+                    <p><b>POST-4.</b> A notification containing resolution details is automatically sent to the
+                        reporter's mailbox.</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Normal Flow:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>A. Resolve Report Successfully</b></p>
+                    <ol>
+                        <li>Actor accesses the report management page.</li>
+                        <li>The system verifies the actor's administrative authorization.</li>
+                        <li>The system retrieves the list of reports from the database with pending status.</li>
+                        <li>The system renders the report table organized by categorized tabs, with filter and
+                            pagination controls.</li>
+                        <li>Actor selects a specific report record and clicks "View Details" button.</li>
+                        <li>The system retrieves the detailed report ticket and the context of the reported entity.</li>
+                        <li>The system displays the report resolution modal with entity preview and action buttons (
+                            "Take Action" , "Reject Report" ).</li>
+                        <li>Actor clicks "Take Action" button, enters resolution note, and selects the disciplinary
+                            sanction.</li>
+                        <li>Actor clicks "Confirm" button.</li>
+                        <li>The system validates the resolution note is not empty.</li>
+                        <li>The system executes a database transaction updating report status to 'PROCESSED', saving
+                            processor ID and resolution timestamp.</li>
+                        <li>The system updates the reported entity's status corresponding to the chosen disciplinary
+                            sanction.</li>
+                        <li>The system generates a notification dispatching the result to the reporting Member's
+                            mailbox.</li>
+                        <li>The system closes the modal and displays a report resolved successfully notification.</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Alternative Flows:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>A.8 Reject Report</b></p>
+                    <ol>
+                        <li>Actor clicks "Reject Report" button, enters rejection reason, and clicks "Confirm" button.
+                        </li>
+                        <li>The system validates rejection explanation is provided.</li>
+                        <li>The system updates report status to 'REJECTED', recording processor ID and resolution
+                            timestamp.</li>
+                        <li>The system sends an explanatory notification to the reporter's mailbox.</li>
+                        <li>The system closes the modal and displays a rejection completed message.</li>
+                        <li>Back to step 4.</li>
+                    </ol>
+                    <p><b>A.4 Switch Tab or Apply Filters</b></p>
+                    <ol>
+                        <li>Actor clicks another tab (Comment Reports / Content Reports) or changes status filter.</li>
+                        <li>The system retrieves report records matching the updated criteria.</li>
+                        <li>The system refreshes the displayed table.</li>
+                        <li>Back to step 4.</li>
+                    </ol>
+                    <p><b>A.10 Empty Resolution Note</b></p>
+                    <ol>
+                        <li>The system determines the resolution note field is blank.</li>
+                        <li>The system displays a validation error requiring mandatory explanation.</li>
+                        <li>Back to step 8.</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Exceptions:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <p><b>EX-1 Session Invalid (Not Logged In)</b></p>
+                    <ol>
+                        <li>The system displays an authentication error message.</li>
+                        <li>The system redirects the user to the login page.</li>
+                    </ol>
+                    <p><b>EX-2 Access Denied</b></p>
+                    <ol>
+                        <li>The system determines the actor lacks Staff or Admin privileges.</li>
+                        <li>The system renders a 403 Forbidden error page.</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Priority:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High, Must Have</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Frequency of Use:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High (Daily)</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Business Rules:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">BR-05</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Other Information:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Adheres strictly to
+                    mandatory audit logging and sender notification requirements.</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 5px; text-align: right;"><b>Assumptions:</b></td>
+                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
+                    <ul>
+                        <li>Actor has a stable internet connection.</li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+
+</html>

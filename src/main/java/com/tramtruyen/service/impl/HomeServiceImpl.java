@@ -52,6 +52,7 @@ public class HomeServiceImpl implements HomeService {
                 .id(novel.getId())
                 .title(novel.getTitle())
                 .author(novel.getAuthor())
+                .summary(novel.getSummary())
                 .coverUrl(novel.getCoverUrl())
                 .status(novel.getStatus())
                 .views(novel.getViews())

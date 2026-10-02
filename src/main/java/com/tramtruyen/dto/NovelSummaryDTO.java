@@ -15,6 +15,7 @@ public class NovelSummaryDTO {
     private Integer id;
     private String title;
     private String author;
+    private String summary;
     private String coverUrl;
     private String status;
     private Integer views;

@@ -1,0 +1,264 @@
+﻿<style>
+    table.c200 { border-collapse: collapse; width: 100%; font-family: 'Times New Roman', serif; font-size: 11pt; }
+    table.c200 td { border: 1px solid black; padding: 5px 8px; vertical-align: top; }
+    table.c200 tr:first-child td { background-color: #fbe5df; font-weight: bold; text-align: center; }
+</style>
+<table class="c200">
+    <tr class="c8">
+        <td class="c121 c183" colspan="1" rowspan="1">
+            <p class="c94 c124">
+                <span class="c14">ID</span>
+            </p>
+        </td>
+        <td class="c60 c121" colspan="1" rowspan="1">
+            <p class="c213 c94">
+                <span class="c14">Category (Phân loại)</span>
+            </p>
+        </td>
+        <td class="c109" colspan="1" rowspan="1">
+            <p class="c94 c213">
+                <span class="c14">Rule Definition (Nội dung Quy tắc)</span>
+            </p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-01</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Ràng buộc</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Bảo mật tài khoản: Mật khẩu phải được mã hóa bằng BCrypt. Token đặt lại mật khẩu phải có thời gian hết hạn.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-02</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Ràng buộc</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Tiêu đề truyện: Hệ thống ngăn chặn việc tạo trùng lặp tiêu đề truyện bởi cùng một tác giả.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-03</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Ràng buộc</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Trạng thái truyện: ONGOING là trạng thái mặc định ban đầu. Giao diện công khai chỉ giới hạn hiển thị truyện ở trạng thái ONGOING và COMPLETED.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-04</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Ràng buộc</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Xóa truyện: Truyện không bao giờ bị xóa vật lý (chỉ xóa mềm). Các truyện ở trạng thái ON_HOLD tuyệt đối không được hiển thị trong danh sách công khai.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-05</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Ràng buộc</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Quản lý chương: Chỉ có Staff và Admin mới được phép tạo, cập nhật, xóa mềm, khóa/mở khóa hoặc cấu hình chương.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-06</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Ràng buộc</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Chương VIP: Một chương VIP bắt buộc phải có giá Coin lớn hơn 0. Một chương xuất bản thông thường không yêu cầu giá Coin.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-07</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Ràng buộc</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Tính duy nhất của Thể loại: Tên Thể loại và URL slug phải là duy nhất trên toàn hệ thống. Slug phải tuân thủ định dạng URL chuẩn.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-08</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Ràng buộc</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Xóa Thể loại: Không thể xóa một thể loại nếu số lượng truyện được gắn vào nó > 0. Admin phải gỡ thể loại ra khỏi tất cả các truyện trước khi xóa.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-09</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Ràng buộc</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Phân loại truyện: Mỗi truyện phải có ít nhất 1 thể loại và tối đa 5 thể loại. Việc cập nhật thể loại phải được thực hiện trong một transaction (giao dịch) duy nhất.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-10</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Tính toán</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Số lượng Thể loại: Số lượng truyện hiển thị công khai cho mỗi thể loại chỉ đếm các truyện đã xuất bản (ONGOING, COMPLETED).</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-11</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Ràng buộc</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Hiển thị chương: Các chương nháp (Draft) hoặc bị khóa (Locked) không được hiển thị cho Guest/Member. Các chương VIP phải được phân biệt rõ ràng trên danh sách chương.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-12</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Ràng buộc</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Truy cập VIP: Guest (Khách) không thể vượt qua khóa VIP. Chức năng nghe audio chỉ có sẵn cho các chương mà người dùng đã có quyền truy cập.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-13</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Tính toán</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Tiến độ đọc: Việc lưu tiến độ đọc chỉ dành riêng cho các Member đã đăng nhập. Tỷ lệ phần trăm hoàn thành được tính toán động dựa trên tổng số chương tại thời điểm đó.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-14</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Sự kiện</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Lịch sử đọc: Danh sách lịch sử đọc được giới hạn tối đa 50 mục gần nhất. Chỉ giữ lại mốc thời gian mới nhất cho mỗi chương nếu đọc lại nhiều lần.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-15</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Sự kiện</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Tủ sách: Tủ sách mặc định sắp xếp đưa truyện mới đọc gần nhất lên đầu. Xóa một truyện khỏi tủ sách cũng sẽ xóa luôn dấu trang (tiến độ đọc) của truyện đó.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-16</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Tính toán</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Bảng xếp hạng: Bảng xếp hạng chỉ tính các lượt xem hợp lệ. Dữ liệu xếp hạng được lưu cache định kỳ để tối ưu hóa truy vấn.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-17</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Tính toán</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Đánh giá: Mỗi Member chỉ được giới hạn 1 lượt đánh giá (rating) cho mỗi truyện. Lần đánh giá sau sẽ ghi đè lên đánh giá trước. Điểm đánh giá trung bình = tổng số sao / tổng số lượt đánh giá, làm tròn 1 chữ số thập phân.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-18</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Ràng buộc</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Bình luận: Độ dài bình luận phải từ 5 đến 1000 ký tự. Áp dụng giới hạn tốc độ (tối đa 1 bình luận mỗi 10 giây trên mỗi người dùng).</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-19</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Ràng buộc</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Bình luận bị ẩn: Các bình luận bị Staff/Admin ẩn hoặc xóa mềm (is_deleted = true) sẽ không được hiển thị công khai.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-20</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Ràng buộc</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Giao dịch: Mọi khoản trừ số dư BẮT BUỘC phải diễn ra trong một transaction tuân thủ chuẩn ACID bằng cách sử dụng pessimistic locking.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-21</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Sự kiện</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Quyền hạn VIP: Khi đã mở khóa, chương VIP sẽ có thể truy cập vĩnh viễn cho ID người dùng đó mà không cần mua lại.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-22</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Sự kiện</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Điểm danh hàng ngày: Thời gian reset điểm danh được quyết định bởi múi giờ của server. Phần thưởng điểm danh không thể rút hoặc quy đổi thành tiền mặt.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-23</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Sự kiện</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Nạp Coin: Thanh toán nạp Coin không được hoàn trả và không thể quy đổi thành tiền mặt.</span></p>
+        </td>
+    </tr>    <tr class="c8">
+        <td class="c102" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">BR-24</span></p>
+        </td>
+        <td class="c60" colspan="1" rowspan="1">
+            <p class="c56 c94"><span class="c18">Sự kiện</span></p>
+        </td>
+        <td class="c69" colspan="1" rowspan="1">
+            <p class="c56"><span class="c18">Tìm kiếm & Lọc: Tìm kiếm không phân biệt chữ hoa chữ thường. Lựa chọn nhiều thể loại sẽ áp dụng logic kết hợp (AND/OR). Trạng thái phân trang và bộ lọc được giữ nguyên khi thay đổi cách sắp xếp.</span></p>
+        </td>
+    </tr>
+</table>
