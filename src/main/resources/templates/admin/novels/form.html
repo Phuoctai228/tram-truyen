@@ -7,19 +7,23 @@
     <link rel="stylesheet" th:href="@{/css/novel-admin.css}">
 </head>
 <body>
-<main class="form-shell">
-    <a class="back-link" th:href="@{/admin/novels}">← Quay lại danh sách</a>
-    <div class="form-heading"><p class="eyebrow">NOVEL CMS</p><h1 th:text="${pageTitle}"></h1><p class="muted">Thông tin này sẽ được hiển thị trên nền tảng đọc truyện.</p></div>
-    <form class="novel-form" method="post" enctype="multipart/form-data" th:action="${formAction}" th:object="${novelForm}">
-        <div class="form-grid">
-            <label>Tên truyện <input th:field="*{title}" placeholder="Ví dụ: Quỷ Bí Chi Chủ"><small class="field-error" th:errors="*{title}"></small></label>
-            <label>Tác giả gốc <input th:field="*{author}" placeholder="Tên tác giả"><small class="field-error" th:errors="*{author}"></small></label>
-            <label>Trạng thái <select th:field="*{status}"><option value="ONGOING">Đang ra</option><option value="COMPLETED">Hoàn thành</option><option value="ON_HOLD">Tạm ngưng</option><option value="ARCHIVED">Lưu trữ</option></select><small class="field-error" th:errors="*{status}"></small></label>
-            <label class="cover-field">Ảnh bìa <input type="file" th:field="*{cover}" accept="image/png,image/jpeg,image/webp"><small>PNG, JPG hoặc WEBP. Ảnh được lưu trên Cloudinary.</small></label>
-            <label class="full-width">Tóm tắt <textarea th:field="*{summary}" rows="8" placeholder="Giới thiệu ngắn gọn về tác phẩm..."></textarea><small class="field-error" th:errors="*{summary}"></small></label>
-        </div>
-        <div class="form-actions"><a class="button button-secondary" th:href="@{/admin/novels}">Hủy</a><button class="button button-primary" type="submit">Lưu tác phẩm</button></div>
-    </form>
-</main>
+<div th:replace="~{admin/fragments/layout :: sidebar('truyen')}"></div>
+<div class="page-shell">
+    <div th:replace="~{admin/fragments/layout :: topbar}"></div>
+    <main class="form-shell">
+        <a class="back-link" th:href="@{/admin/novels}">← Quay lại danh sách</a>
+        <div class="form-heading"><p class="eyebrow">NOVEL CMS</p><h1 th:text="${pageTitle}"></h1><p class="muted">Thông tin này sẽ được hiển thị trên nền tảng đọc truyện.</p></div>
+        <form class="novel-form" method="post" enctype="multipart/form-data" th:action="${formAction}" th:object="${novelForm}">
+            <div class="form-grid">
+                <label>Tên truyện <input th:field="*{title}" placeholder="Ví dụ: Quỷ Bí Chi Chủ"><small class="field-error" th:errors="*{title}"></small></label>
+                <label>Tác giả gốc <input th:field="*{author}" placeholder="Tên tác giả"><small class="field-error" th:errors="*{author}"></small></label>
+                <label>Trạng thái <select th:field="*{status}"><option value="ONGOING">Đang ra</option><option value="COMPLETED">Hoàn thành</option><option value="ON_HOLD">Tạm ngưng</option><option value="ARCHIVED">Lưu trữ</option></select><small class="field-error" th:errors="*{status}"></small></label>
+                <label class="cover-field">Ảnh bìa <input type="file" th:field="*{cover}" accept="image/png,image/jpeg,image/webp"><small>PNG, JPG hoặc WEBP. Ảnh được lưu trên Cloudinary.</small></label>
+                <label class="full-width">Tóm tắt <textarea th:field="*{summary}" rows="8" placeholder="Giới thiệu ngắn gọn về tác phẩm..."></textarea><small class="field-error" th:errors="*{summary}"></small></label>
+            </div>
+            <div class="form-actions"><a class="button button-secondary" th:href="@{/admin/novels}">Hủy</a><button class="button button-primary" type="submit">Lưu tác phẩm</button></div>
+        </form>
+    </main>
+</div>
 </body>
 </html>

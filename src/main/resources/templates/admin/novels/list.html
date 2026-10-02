@@ -9,20 +9,9 @@
     <link rel="stylesheet" th:href="@{/css/novel-admin.css}">
 </head>
 <body>
-<aside class="sidebar">
-    <div class="brand"><span class="brand-mark">▣</span><span>Trạm Truyện</span><small>Admin</small></div>
-    <nav>
-        <a class="nav-link active" th:href="@{/admin/novels}"><span>▤</span> Truyện</a>
-        <a class="nav-link" href="#"><span>▥</span> Chương</a>
-        <a class="nav-link" href="#"><span>◈</span> Thể loại</a>
-        <a class="nav-link" href="#"><span>⚑</span> Báo cáo</a>
-        <a class="nav-link" href="#"><span>⚙</span> Cấu hình</a>
-    </nav>
-    <div class="sidebar-footer"><strong>TRẠM TRUYỆN CMS</strong><span>Hệ thống hoạt động</span></div>
-</aside>
-
+<div th:replace="~{admin/fragments/layout :: sidebar('truyen')}"></div>
 <main class="page-shell">
-    <header class="topbar"><span class="search-hint">⌕ &nbsp; Tìm kiếm truyện, chương, tác giả...</span><span class="profile">Quản trị nội dung <b>TT</b></span></header>
+    <div th:replace="~{admin/fragments/layout :: topbar}"></div>
     <section class="content">
         <div class="page-heading">
             <div><p class="eyebrow">THƯ VIỆN TÁC PHẨM</p><h1>Quản lý truyện</h1><p class="muted">Tạo, chỉnh sửa và kiểm soát các tác phẩm đang phát hành.</p></div>
@@ -55,7 +44,7 @@
                         <td th:text="${novel.author}"></td>
                         <td><span class="status" th:classappend="${novel.status == 'COMPLETED' ? ' done' : (novel.status == 'ON_HOLD' ? ' paused' : '')}" th:text="${novel.status == 'ONGOING' ? 'Đang ra' : (novel.status == 'COMPLETED' ? 'Hoàn thành' : (novel.status == 'ON_HOLD' ? 'Tạm ngưng' : 'Lưu trữ'))}"></span></td>
                         <td><span class="rating">★ <b th:text="${novel.averageRating}"></b></span><small th:text="${novel.views + ' lượt đọc'}"></small></td>
-                        <td class="actions"><a class="icon-button" title="Chỉnh sửa" th:href="@{/admin/novels/{id}/edit(id=${novel.id})}">✎</a><form th:action="@{/admin/novels/{id}/delete(id=${novel.id})}" method="post" onsubmit="return confirm('Xóa mềm tác phẩm này?');"><button class="icon-button danger" title="Xóa" type="submit">⌫</button></form></td>
+                        <td class="actions"><a class="icon-button" title="Quản lý chương" th:href="@{/admin/novels/{id}/chapters(id=${novel.id})}">▤</a><a class="icon-button" title="Chỉnh sửa" th:href="@{/admin/novels/{id}/edit(id=${novel.id})}">✎</a><form th:action="@{/admin/novels/{id}/delete(id=${novel.id})}" method="post" onsubmit="return confirm('Xóa mềm tác phẩm này?');"><button class="icon-button danger" title="Xóa" type="submit">⌫</button></form></td>
                     </tr>
                     <tr th:if="${#lists.isEmpty(novels)}"><td class="empty" colspan="5">Chưa có tác phẩm phù hợp.</td></tr>
                     </tbody>
