@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="vi" class="h-full">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Tủ sách của tôi - Trạm Truyện</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script id="tailwind-config">
+        tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-secondary-fixed-variant": "#7e2b17", "on-primary-container": "#492a00", "primary": "#875200", "on-background": "#231a11", "surface-container-low": "#fff1e8", "secondary-fixed": "#ffdad2", "primary-fixed": "#ffddba", "secondary-fixed-dim": "#ffb4a3", "tertiary-fixed-dim": "#d8c3af", "on-error-container": "#93000a", "inverse-surface": "#392e25", "on-tertiary": "#ffffff", "on-tertiary-fixed": "#25190d", "surface-bright": "#fff8f5", "background": "#fff8f5", "on-primary": "#ffffff", "outline": "#847464", "on-surface-variant": "#524437", "surface-container-high": "#f8e5d6", "surface-variant": "#f2dfd1", "primary-container": "#d08a2e", "on-tertiary-container": "#3c2f21", "on-secondary-fixed": "#3d0600", "surface": "#fff8f5", "surface-dim": "#e9d7c8", "surface-container": "#feeadc", "on-secondary": "#ffffff", "tertiary": "#6c5c4c", "on-secondary-container": "#752411", "tertiary-fixed": "#f5dfca", "inverse-on-surface": "#ffeee1", "outline-variant": "#d7c3b1", "surface-container-highest": "#f2dfd1", "tertiary-container": "#a99684", "secondary": "#9e422c", "on-error": "#ffffff", "on-primary-fixed-variant": "#663d00", "on-tertiary-fixed-variant": "#534435", "surface-container-lowest": "#ffffff", "inverse-primary": "#ffb865", "on-surface": "#231a11", "error": "#ba1a1a", "error-container": "#ffdad6", "primary-fixed-dim": "#ffb865", "surface-tint": "#875200", "secondary-container": "#fe8b70", "on-primary-fixed": "#2b1700" }, "fontFamily": { "headline-md": [ "Lora" ], "body-md": [ "Inter" ], "label-md": [ "Inter" ] } } } };
+    </script>
+    <style>
+        .modal { display: none; }
+        .modal.show { display: flex; }
+    </style>
+</head>
+<body class="bg-background font-body-md text-on-surface min-h-full flex flex-col">
+    <!-- KHUNG HEADER (Tạm) -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-surface border-b border-outline-variant shadow-sm h-16 flex items-center justify-between px-6">
+        <div class="flex items-center gap-4">
+            <span class="font-headline-md font-bold text-primary">Trạm Truyện</span>
+            <nav class="hidden md:flex gap-4 ml-6"><a href="/">Trang chủ</a><a href="#">Thể loại</a><a href="#" class="text-primary font-bold">Tủ sách</a></nav>
+        </div>
+        <div class="flex items-center gap-4">
+            <span class="material-symbols-outlined">notifications</span>
+            <div class="w-8 h-8 bg-primary rounded-full"></div>
+        </div>
+    </header>
+
+    <main class="w-full pt-20 flex-1 max-w-7xl mx-auto px-4 lg:px-8 flex gap-8">
+        <!-- SIDEBAR -->
+        <aside class="w-64 shrink-0 hidden lg:block space-y-6">
+            <div class="bg-surface-container-low rounded-xl p-4 flex items-center gap-4">
+                <div class="w-12 h-12 bg-primary-container rounded-full flex items-center justify-center text-on-primary"><span class="material-symbols-outlined">person</span></div>
+                <div>
+                    <div class="font-bold">Hoàng Long</div>
+                    <div class="text-xs text-primary bg-primary-fixed px-2 py-0.5 rounded-full inline-block mt-1">Hội viên Tinh Hoa</div>
+                </div>
+            </div>
+            <nav class="space-y-1">
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-surface-container transition-colors"><span class="material-symbols-outlined text-outline">person</span> Hồ sơ cá nhân</a>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-surface-container text-primary font-bold"><span class="material-symbols-outlined">bookmark</span> Tủ sách</a>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-surface-container transition-colors"><span class="material-symbols-outlined text-outline">history</span> Lịch sử đọc</a>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-surface-container transition-colors"><span class="material-symbols-outlined text-outline">mail</span> Hòm thư</a>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-surface-container transition-colors"><span class="material-symbols-outlined text-outline">account_balance_wallet</span> Ví Coin</a>
+            </nav>
+        </aside>
+
+        <!-- CONTENT -->
+        <div class="flex-1 bg-surface-container-lowest rounded-2xl p-6 lg:p-8 min-h-[600px] shadow-sm border border-outline-variant">
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center gap-4">
+                    <h1 class="text-2xl font-bold font-headline-md">Tủ sách của tôi</h1>
+                    <span class="text-xs bg-surface-container-high px-2.5 py-1 rounded-full text-on-surface-variant">18 tác phẩm</span>
+                </div>
+            </div>
+
+            <!-- TABS -->
+            <div class="flex items-center justify-between mb-6 border-b border-outline-variant pb-2">
+                <div class="flex gap-6">
+                    <button class="font-bold text-primary border-b-2 border-primary pb-2 px-1">Tất cả (18)</button>
+                    <button class="text-on-surface-variant hover:text-on-surface pb-2 px-1">Đang đọc (12)</button>
+                    <button class="text-on-surface-variant hover:text-on-surface pb-2 px-1">Đã xong (6)</button>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-2 top-1.5 text-[18px] text-outline">search</span>
+                        <input type="text" placeholder="Tìm trong tủ sách..." class="pl-8 pr-3 py-1.5 bg-surface-container text-sm rounded-lg border-none focus:ring-1 focus:ring-primary w-48">
+                    </div>
+                </div>
+            </div>
+
+            <!-- LIST -->
+            <div class="space-y-4">
+                <!-- ITEM 1 -->
+                <div class="flex items-center gap-4 p-4 rounded-xl hover:bg-surface-container-low transition-colors border border-transparent hover:border-outline-variant group">
+                    <div class="w-16 h-24 bg-surface-container rounded-md overflow-hidden shrink-0 relative">
+                        <span class="absolute top-1 left-1 bg-primary text-white text-[10px] font-bold px-1 rounded">VIP</span>
+                        <img src="https://placehold.co/100x150" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-[10px] bg-surface-container-high px-1.5 rounded text-on-surface-variant">Tây Huyền</span>
+                        </div>
+                        <h3 class="font-bold text-lg truncate">Quỷ Bí Chi Chủ</h3>
+                        <p class="text-sm text-on-surface-variant truncate">Mực Thích Lặn Nước</p>
+                        
+                        <!-- Progress -->
+                        <div class="mt-3 flex items-center justify-between text-xs text-on-surface-variant mb-1">
+                            <span>Tiến độ: Chương 542 / 1.432</span>
+                            <span>37%</span>
+                        </div>
+                        <div class="w-full h-1.5 bg-surface-variant rounded-full overflow-hidden">
+                            <div class="h-full bg-primary rounded-full" style="width: 37%"></div>
+                        </div>
+                    </div>
+                    <div class="shrink-0 flex items-center gap-3">
+                        <button class="bg-primary-container text-on-primary-container px-4 py-2 rounded-lg font-bold text-sm hover:bg-primary hover:text-white transition-colors flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[18px]">play_arrow</span> Đọc tiếp
+                        </button>
+                        <button class="w-8 h-8 rounded-full hover:bg-surface-container flex items-center justify-center text-outline" onclick="document.getElementById('deleteModal').classList.add('show')">
+                            <span class="material-symbols-outlined">more_vert</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- ITEM 2 -->
+                <div class="flex items-center gap-4 p-4 rounded-xl hover:bg-surface-container-low transition-colors border border-transparent hover:border-outline-variant group">
+                    <div class="w-16 h-24 bg-surface-container rounded-md overflow-hidden shrink-0">
+                        <img src="https://placehold.co/100x150" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-[10px] bg-surface-container-high px-1.5 rounded text-on-surface-variant">Tiên Hiệp</span>
+                        </div>
+                        <h3 class="font-bold text-lg truncate">Kiếm Đạo Đệ Nhất Tiên</h3>
+                        <p class="text-sm text-on-surface-variant truncate">Tiêu Cẩn Du</p>
+                        
+                        <!-- Progress -->
+                        <div class="mt-3 flex items-center justify-between text-xs text-on-surface-variant mb-1">
+                            <span>Tiến độ: Chương 1.120 / 2.500</span>
+                            <span>44%</span>
+                        </div>
+                        <div class="w-full h-1.5 bg-surface-variant rounded-full overflow-hidden">
+                            <div class="h-full bg-primary rounded-full" style="width: 44%"></div>
+                        </div>
+                    </div>
+                    <div class="shrink-0 flex items-center gap-3">
+                        <button class="bg-primary-container text-on-primary-container px-4 py-2 rounded-lg font-bold text-sm hover:bg-primary hover:text-white transition-colors flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[18px]">play_arrow</span> Đọc tiếp
+                        </button>
+                        <button class="w-8 h-8 rounded-full hover:bg-surface-container flex items-center justify-center text-outline">
+                            <span class="material-symbols-outlined">more_vert</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Phân trang -->
+            <div class="flex items-center justify-center gap-2 mt-8">
+                <button class="w-8 h-8 rounded flex items-center justify-center hover:bg-surface-container text-outline"><span class="material-symbols-outlined text-[18px]">chevron_left</span></button>
+                <button class="w-8 h-8 rounded bg-primary text-white font-bold">1</button>
+                <button class="w-8 h-8 rounded hover:bg-surface-container">2</button>
+                <button class="w-8 h-8 rounded hover:bg-surface-container">3</button>
+                <button class="w-8 h-8 rounded flex items-center justify-center hover:bg-surface-container text-outline"><span class="material-symbols-outlined text-[18px]">chevron_right</span></button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Xóa -->
+    <div id="deleteModal" class="modal fixed inset-0 z-[100] items-center justify-center bg-black/40 backdrop-blur-sm">
+        <div class="bg-surface rounded-2xl p-6 w-[400px] shadow-2xl text-center">
+            <div class="w-12 h-12 rounded-full bg-error-container text-error flex items-center justify-center mx-auto mb-4">
+                <span class="material-symbols-outlined">delete</span>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Xóa khỏi tủ sách?</h3>
+            <p class="text-sm text-on-surface-variant mb-6">Bạn có chắc chắn muốn xóa tác phẩm <strong>Quỷ Bí Chi Chủ</strong> khỏi tủ sách cá nhân? Tiến độ đọc hiện tại (Chương 542) vẫn sẽ được lưu trữ an toàn trong <strong>Lịch sử đọc</strong>.</p>
+            
+            <div class="flex gap-3">
+                <button class="flex-1 py-2.5 rounded-lg border border-outline text-on-surface font-bold hover:bg-surface-container" onclick="document.getElementById('deleteModal').classList.remove('show')">Hủy</button>
+                <button class="flex-1 py-2.5 rounded-lg bg-[#b3261e] text-white font-bold hover:bg-[#8c1d18] flex items-center justify-center gap-1">
+                    <span class="material-symbols-outlined text-[18px]">delete</span> Xóa khỏi tủ sách
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html class="h-full" lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Tìm kiếm truyện - Trạm Truyện</title>
+  
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Lora:ital,wght@0,400;0,700;1,400&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" th:href="@{/css/home/search.css}">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script th:src="@{/js/home/tailwind-config.js}"></script>
+</head>
+<body class="bg-background font-body-md text-on-surface min-h-full flex flex-col">
+  <div th:replace="~{fragments/header :: main-header}"></div>
+  <main class="w-full pt-20 flex-1 bg-surface">
+    <div class="flex flex-col w-full">
+      <section class="w-full bg-surface-container-low/70 py-8 px-6 lg:px-12">
+        <div class="max-w-7xl mx-auto flex flex-col gap-4">
+          <nav class="flex items-center gap-2 font-label-md text-label-md text-on-surface-variant">
+            <a class="hover:text-primary transition-colors" th:href="@{/}">Trang chủ</a>
+            <span class="text-outline-variant">/</span>
+            <span class="text-primary font-bold">Kết quả tìm kiếm</span>
+          </nav>
+          <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+              <h1 class="font-headline-xl text-headline-xl text-on-surface font-bold tracking-tight">
+                Kết quả tìm kiếm cho: <span class="text-primary italic" th:text="${query != null ? '“' + query + '”' : 'Tất cả'}">“kiếm hiệp”</span>
+              </h1>
+              <p class="font-body-md text-body-md text-on-surface-variant mt-1">
+                Tìm thấy <strong class="text-on-surface font-bold" th:text="${novels.size()}">0</strong> tác phẩm phù hợp.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="max-w-7xl mx-auto w-full px-6 lg:px-12 py-8 flex flex-col lg:flex-row gap-8 items-start">
+        <aside class="w-full lg:w-72 shrink-0 bg-surface-container-lowest rounded-xl p-5 shadow-sm sticky top-24">
+          <div class="flex items-center justify-between pb-4">
+            <div class="flex items-center gap-2 text-on-surface font-headline-sm text-headline-sm font-bold">
+              <span class="material-symbols-outlined text-primary text-[22px]">tune</span>
+              <span>Bộ lọc nâng cao</span>
+            </div>
+            <button class="font-label-sm text-label-sm text-secondary hover:underline cursor-pointer">Xóa tất cả</button>
+          </div>
+          <div class="text-on-surface-variant text-sm italic">
+            Tính năng bộ lọc sẽ được cập nhật trong phiên bản sau.
+          </div>
+        </aside>
+
+        <main class="flex-1 w-full flex flex-col gap-6">
+          <div th:if="${novels.isEmpty()}" class="p-8 text-center bg-surface-container-lowest rounded-xl shadow-sm">
+             <p class="text-on-surface-variant font-body-md">Không tìm thấy truyện nào phù hợp với từ khóa của bạn.</p>
+          </div>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5" th:if="${!novels.isEmpty()}">
+            <article class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col group" th:each="novel : ${novels}">
+              <a th:href="@{/novel/{id}(id=${novel.id})}" class="block w-full h-full">
+                <div class="relative w-full aspect-[2/3] overflow-hidden bg-surface-container">
+                  <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" th:src="${novel.coverUrl != null ? novel.coverUrl : '/images/default-cover.jpg'}" onerror="this.onerror=null;this.src='/images/default-cover.jpg';" alt="Cover">
+                  <div class="absolute inset-0 bg-gradient-to-t from-on-background/80 via-transparent to-transparent"></div>
+                  <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded bg-surface/90 text-on-surface font-label-sm text-label-sm backdrop-blur-sm" th:text="${novel.status == 'COMPLETED' ? 'Hoàn thành' : 'Đang ra'}">Đang ra</span>
+                  <span class="absolute bottom-2.5 left-2.5 font-label-sm text-label-sm text-on-primary/90 font-medium">
+                     <span class="material-symbols-outlined text-[14px] align-middle">visibility</span> <span th:text="${novel.views}" class="align-middle"></span>
+                  </span>
+                </div>
+                <div class="p-3.5 flex flex-col flex-1 justify-between gap-2">
+                  <div>
+                    <h2 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors line-clamp-1 font-bold" th:text="${novel.title}">
+                      Title
+                    </h2>
+                    <p class="font-body-md text-body-md text-on-surface-variant font-medium" th:text="${novel.author}">Author</p>
+                    <p class="font-body-md text-body-md text-on-surface-variant/80 line-clamp-2 mt-1" th:text="${novel.summary}">
+                      Summary
+                    </p>
+                  </div>
+                  <div class="pt-2 flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm">
+                    <span class="flex items-center text-primary font-semibold">★ <span th:text="${novel.averageRating}">0</span></span>
+                    <span th:text="${novel.ratingCount + ' đánh giá'}">0 đánh giá</span>
+                  </div>
+                </div>
+              </a>
+            </article>
+          </div>
+        </main>
+      </section>
+    </div>
+  </main>
+  <div th:replace="~{fragments/footer :: main-footer}"></div>
+</body>
+</html>

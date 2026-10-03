@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi" class="h-full">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Mục lục chương - Quỷ Bí Chi Chủ</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: "class", theme: { extend: { colors: { primary: "#875200", "surface-lowest": "#fff8f5" }, fontFamily: { lora: ["Lora"], inter: ["Inter"] } } } };
+    </script>
+</head>
+<body class="bg-surface-lowest font-inter text-[#231a11] min-h-full flex flex-col">
+    <!-- Header -->
+    <header class="bg-white border-b border-orange-100 shadow-sm h-16 flex items-center justify-between px-6 sticky top-0 z-50">
+        <div class="flex items-center gap-4"><span class="font-lora text-xl font-bold text-primary">Trạm Truyện</span></div>
+    </header>
+
+    <main class="w-full pt-8 flex-1 max-w-4xl mx-auto px-4">
+        <!-- Novel Info Bar -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex items-center gap-4 mb-8">
+            <img src="https://placehold.co/60x80" class="w-12 h-16 rounded object-cover shadow-sm">
+            <div class="flex-1">
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="bg-green-100 text-green-700 text-[10px] font-bold px-1.5 py-0.5 rounded uppercase">Đang ra tiếp</span>
+                    <span class="text-xs text-gray-500">• Cập nhật 15 phút trước</span>
+                </div>
+                <h1 class="text-xl font-bold font-lora">Quỷ Bí Chi Chủ</h1>
+                <div class="text-xs text-gray-500 mt-1">Ái Tiềm Thủy Địch Ô Tặc • 1.432 chương • 14.8M lượt đọc</div>
+            </div>
+            <button class="flex items-center gap-1 border border-gray-300 px-4 py-2 rounded-lg font-bold text-sm hover:bg-gray-50 transition-colors">
+                <span class="material-symbols-outlined text-[18px]">arrow_back</span> Trở về chi tiết
+            </button>
+        </div>
+
+        <!-- Progress bar -->
+        <div class="bg-orange-50 border border-orange-100 rounded-xl p-4 flex items-center justify-between mb-8">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-orange-200 flex items-center justify-center text-primary"><span class="material-symbols-outlined">bookmark</span></div>
+                <div>
+                    <div class="font-bold text-sm">Tiến độ đọc của bạn: <span class="text-primary">12 / 1.432</span> chương (1%)</div>
+                    <div class="text-xs text-gray-600 mt-0.5">Lần đọc gần nhất: Chương 12: Kẻ Ngu Giả họp mặt • 2 ngày trước</div>
+                </div>
+            </div>
+            <button class="bg-[#875200] text-white px-5 py-2 rounded-lg font-bold text-sm hover:bg-[#663d00] shadow-sm flex items-center gap-1">
+                Đọc tiếp chương 13 <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+            </button>
+        </div>
+
+        <!-- Chapter Tools -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <div class="relative flex-1 max-w-sm">
+                <input type="text" placeholder="Tìm kiếm số chương hoặc tên chương..." class="w-full pl-9 pr-3 py-2 bg-white border border-gray-300 rounded-lg text-sm focus:outline-primary">
+                <span class="material-symbols-outlined absolute left-2.5 top-2 text-gray-400">search</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <button class="border border-gray-300 bg-white px-3 py-1.5 rounded-lg text-sm font-bold flex items-center gap-1 hover:bg-gray-50"><span class="material-symbols-outlined text-[18px]">sort</span> Cũ → Mới</button>
+                <div class="h-6 w-px bg-gray-300"></div>
+                <button class="bg-primary text-white px-3 py-1.5 rounded-lg text-sm font-bold">Tất cả (1.432)</button>
+                <button class="border border-gray-300 bg-white px-3 py-1.5 rounded-lg text-sm font-bold hover:bg-gray-50">Miễn phí (20)</button>
+                <button class="border border-yellow-500 text-yellow-600 bg-yellow-50 px-3 py-1.5 rounded-lg text-sm font-bold flex items-center gap-1 hover:bg-yellow-100"><span class="material-symbols-outlined text-[16px]">lock</span> VIP (1.412)</button>
+            </div>
+        </div>
+
+        <!-- Volume block -->
+        <div class="mb-8">
+            <h2 class="font-bold text-lg border-b border-gray-200 pb-2 mb-4 flex items-center justify-between">
+                <span><span class="material-symbols-outlined text-primary align-text-bottom">import_contacts</span> Quyển 1: Kẻ Chấp Vá (Chương 01 - 213)</span>
+                <span class="text-xs text-gray-500 font-normal uppercase tracking-wider">ĐANG HIỂN THỊ 20 / 1.432 CHƯƠNG</span>
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <!-- Chapter Free & Read -->
+                <a href="#" class="flex items-center justify-between p-3 border border-gray-200 rounded-lg bg-gray-50 hover:border-primary group">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-green-500 text-[18px]">check_circle</span>
+                        <div>
+                            <div class="text-sm font-bold text-gray-600 group-hover:text-primary">001 Chương 1: Khởi đầu hồng nguyệt</div>
+                            <div class="text-[10px] text-gray-400">Đã đọc • 2 ngày trước</div>
+                        </div>
+                    </div>
+                    <span class="text-[10px] bg-gray-200 text-gray-500 px-1.5 py-0.5 rounded font-bold">Miễn phí</span>
+                </a>
+                
+                <!-- Chapter Free & Read -->
+                <a href="#" class="flex items-center justify-between p-3 border border-gray-200 rounded-lg bg-gray-50 hover:border-primary group">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-green-500 text-[18px]">check_circle</span>
+                        <div>
+                            <div class="text-sm font-bold text-gray-600 group-hover:text-primary">002 Chương 2: Tình huống dị thường</div>
+                            <div class="text-[10px] text-gray-400">Đã đọc • 2 ngày trước</div>
+                        </div>
+                    </div>
+                    <span class="text-[10px] bg-gray-200 text-gray-500 px-1.5 py-0.5 rounded font-bold">Miễn phí</span>
+                </a>
+
+                <!-- Chapter Free & Last Read (Active) -->
+                <a href="#" class="flex items-center justify-between p-3 border border-primary rounded-lg bg-orange-50 group">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-primary text-[18px]">bookmark_added</span>
+                        <div>
+                            <div class="text-sm font-bold text-primary">012 Chương 12: Kẻ Ngu Giả họp mặt</div>
+                            <div class="text-[10px] text-primary/70">Vừa đọc xong • Hôm qua</div>
+                        </div>
+                    </div>
+                    <span class="text-[10px] bg-primary text-white px-1.5 py-0.5 rounded font-bold">Vừa đọc</span>
+                </a>
+
+                <!-- Chapter Free & Unread -->
+                <a href="#" class="flex items-center justify-between p-3 border border-gray-200 rounded-lg bg-white hover:border-primary hover:shadow-sm group">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-gray-300 text-[18px]">radio_button_unchecked</span>
+                        <div>
+                            <div class="text-sm font-bold group-hover:text-primary">013 Chương 13: Lá bài Hoàng Hậu</div>
+                            <div class="text-[10px] text-gray-400">Đăng: 3 ngày trước</div>
+                        </div>
+                    </div>
+                    <span class="text-[10px] bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded font-bold">Miễn phí</span>
+                </a>
+
+                <!-- Chapter VIP & Unread (Locked) -->
+                <a href="#" class="flex items-center justify-between p-3 border border-yellow-200 rounded-lg bg-yellow-50/30 hover:border-yellow-400 hover:shadow-sm group">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-yellow-500 text-[18px]">lock</span>
+                        <div>
+                            <div class="text-sm font-bold group-hover:text-yellow-700">017 Chương 17: Khởi nguyên của hội Tarot</div>
+                            <div class="text-[10px] text-gray-400">Đăng: 2 ngày trước</div>
+                        </div>
+                    </div>
+                    <span class="text-[10px] bg-yellow-100 text-yellow-700 border border-yellow-200 px-1.5 py-0.5 rounded font-bold flex items-center gap-0.5">
+                        <span class="material-symbols-outlined text-[12px]">toll</span> 50 Coin
+                    </span>
+                </a>
+                
+                <!-- Chapter VIP & Unread (Locked) -->
+                <a href="#" class="flex items-center justify-between p-3 border border-yellow-200 rounded-lg bg-yellow-50/30 hover:border-yellow-400 hover:shadow-sm group">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-yellow-500 text-[18px]">lock</span>
+                        <div>
+                            <div class="text-sm font-bold group-hover:text-yellow-700">018 Chương 18: Tấm màn che lịch sử</div>
+                            <div class="text-[10px] text-gray-400">Đăng: 2 ngày trước</div>
+                        </div>
+                    </div>
+                    <span class="text-[10px] bg-yellow-100 text-yellow-700 border border-yellow-200 px-1.5 py-0.5 rounded font-bold flex items-center gap-0.5">
+                        <span class="material-symbols-outlined text-[12px]">toll</span> 50 Coin
+                    </span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Quick Volume Jump -->
+        <div class="bg-gray-50 border border-gray-200 rounded-xl p-4 flex items-center justify-between mb-8">
+            <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-gray-400 text-3xl">library_books</span>
+                <div>
+                    <div class="font-bold">Chuyển nhanh theo từng quyển</div>
+                    <div class="text-xs text-gray-500">Tác phẩm gồm 8 Quyển lớn hoàn thành theo chuẩn mạch truyện</div>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <button class="bg-primary text-white text-xs font-bold px-3 py-1.5 rounded">Q.1 (1-213)</button>
+                <button class="bg-white border border-gray-300 text-gray-600 text-xs font-bold px-3 py-1.5 rounded hover:bg-gray-100">Q.2 (214-482)</button>
+                <button class="bg-white border border-gray-300 text-gray-600 text-xs font-bold px-3 py-1.5 rounded hover:bg-gray-100">Q.3 (483-732)</button>
+                <span class="text-gray-400 mt-1">...</span>
+            </div>
+        </div>
+
+    </main>
+</body>
+</html>

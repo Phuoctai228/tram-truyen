@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title th:text="${chapter.title} + ' - ' + ${novel.title} + ' - Trạm Truyện'">Trạm Truyện</title>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Lora:ital,wght@0,400;0,700;1,400&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/novel/novel-ui.css}">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script th:src="@{/js/novel/tailwind-config.js}"></script>
+</head>
+<body class="bg-background font-body-reading text-on-surface antialiased">
+  <header class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-md shadow-[0_2px_12px_rgba(107,91,75,0.05)]">
+    <div class="h-14 max-w-5xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3 min-w-0">
+        <a class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors flex items-center justify-center" th:href="@{/novel/{id}(id=${novel.id})}">
+          <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+        </a>
+        <div class="flex flex-col truncate">
+          <span class="font-label-lg text-label-lg text-on-surface truncate" th:text="${novel.title}">Trang Đọc Sách</span>
+          <span class="font-label-sm text-label-sm text-outline truncate" th:text="'Chương ' + ${chapter.chapterNumber}">Chương Đang Đọc</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <a class="p-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors flex items-center justify-center cursor-pointer" id="btn-audio-read" title="Nghe tự động">
+          <span class="material-symbols-outlined text-[20px]" id="audio-icon">headphones</span>
+        </a>
+        <a class="p-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors flex items-center justify-center cursor-pointer" onclick="document.getElementById('settings-drawer').classList.toggle('translate-x-full')">
+          <span class="material-symbols-outlined text-[20px]">format_size</span>
+        </a>
+        <a class="p-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors flex items-center justify-center" th:href="@{/novel/{id}/chapters(id=${novel.id})}">
+          <span class="material-symbols-outlined text-[20px]">format_list_bulleted</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="w-full pt-14 bg-background min-h-screen">
+    <div class="flex flex-col w-full relative">
+      <aside class="sticky top-14 z-40 w-full bg-surface/95 backdrop-blur-md transition-all">
+        <div class="max-w-4xl mx-auto px-6 h-11 flex items-center justify-between">
+          <div class="flex items-center gap-3 text-on-surface-variant min-w-0">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-container text-on-tertiary-container font-label-sm text-label-sm">
+              <span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span> Đang đọc
+            </span>
+            <span class="font-label-md text-label-md text-on-surface truncate" th:text="${novel.title}">Title</span>
+          </div>
+          <div class="flex items-center gap-4 text-on-surface-variant">
+            <div class="flex items-center gap-1">
+              <button class="p-1.5 rounded-lg hover:bg-surface-container text-tertiary hover:text-on-surface transition-colors flex items-center justify-center" id="btn-theme-toggle" title="Chế độ bảo vệ mắt">
+                <span class="material-symbols-outlined text-[18px]">lightbulb</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <main class="relative z-10 w-full max-w-[720px] mx-auto px-5 sm:px-8 pt-10 pb-36">
+        <header class="mb-12 text-left">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="font-label-md text-label-md text-primary font-bold uppercase tracking-widest" th:text="${novel.title}">Novel</span>
+            <span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+            <span class="font-label-md text-label-md text-tertiary" th:text="'Tác giả: ' + ${novel.author}">Tác giả</span>
+          </div>
+          <h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight mb-4 leading-snug" th:text="${chapter.title}">
+            Chương 1
+          </h1>
+        </header>
+
+        <article class="space-y-6 text-on-surface font-body-reading text-body-reading leading-[1.95] select-text" id="reader-body">
+           <div th:utext="${#strings.replace(chapter.content, '&#10;', '&lt;p class=&quot;indent-8 text-justify&quot;&gt;&lt;/p&gt;')}">
+              Content here
+           </div>
+        </article>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 mt-8">
+          <a th:if="${chapter.chapterNumber > 1}" th:href="@{/novel/{id}/read/{chapterNumber}(id=${novel.id}, chapterNumber=${chapter.chapterNumber - 1})}" class="p-5 rounded-2xl bg-surface-container hover:bg-surface-container-high transition-all flex items-center justify-between gap-4 group shadow-sm">
+            <div class="w-10 h-10 rounded-xl bg-primary text-on-primary flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform flex-shrink-0">
+              <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+            </div>
+            <div class="min-w-0 text-right">
+              <span class="font-label-sm text-label-sm text-primary uppercase tracking-wider block">Chương trước</span>
+              <span class="font-label-lg text-label-lg text-on-surface font-semibold truncate block group-hover:text-primary transition-colors">
+                Chương [[${chapter.chapterNumber - 1}]]
+              </span>
+            </div>
+          </a>
+          
+          <a th:href="@{/novel/{id}/read/{chapterNumber}(id=${novel.id}, chapterNumber=${chapter.chapterNumber + 1})}" class="p-5 rounded-2xl bg-surface-container hover:bg-surface-container-high transition-all flex items-center justify-between gap-4 group shadow-sm" th:classappend="${chapter.chapterNumber <= 1 ? 'col-start-2' : ''}">
+            <div class="min-w-0">
+              <span class="font-label-sm text-label-sm text-primary uppercase tracking-wider block">Chương kế tiếp</span>
+              <span class="font-label-lg text-label-lg text-on-surface font-semibold truncate block group-hover:text-primary transition-colors">
+                Chương [[${chapter.chapterNumber + 1}]]
+              </span>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-primary text-on-primary flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform flex-shrink-0">
+              <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+            </div>
+          </a>
+        </div>
+      </main>
+      
+      <!-- Settings Drawer -->
+      <aside id="settings-drawer" class="fixed top-14 right-0 w-full sm:w-[360px] h-[calc(100vh-3.5rem)] bg-surface-container-lowest z-50 shadow-2xl flex flex-col justify-between overflow-hidden translate-x-full transition-transform duration-300">
+        <div class="px-6 py-5 bg-surface-container-low flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+              <span class="material-symbols-outlined text-[20px]">tune</span>
+            </div>
+            <h2 class="font-headline-sm text-headline-sm text-on-surface">Tùy chỉnh giao diện</h2>
+          </div>
+          <button class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" onclick="document.getElementById('settings-drawer').classList.toggle('translate-x-full')">
+            <span class="material-symbols-outlined text-[20px]">close</span>
+          </button>
+        </div>
+        <div class="flex-1 overflow-y-auto px-6 py-6 space-y-7">
+          <!-- Kích thước chữ -->
+          <section class="space-y-3">
+            <label class="font-label-lg text-label-lg text-on-surface flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[18px] text-tertiary">format_size</span> Kích thước chữ
+            </label>
+            <div class="bg-surface-container-low p-4 rounded-xl flex items-center gap-3">
+              <span class="font-display-lg text-body-md text-tertiary select-none font-bold">A-</span>
+              <input class="w-full h-1.5 bg-surface-container-highest rounded-lg appearance-none cursor-pointer accent-primary" id="setting-font-size" max="36" min="14" step="2" type="range" value="18">
+              <span class="font-display-lg text-headline-sm text-on-surface select-none font-bold">A+</span>
+            </div>
+          </section>
+
+          <!-- Font chữ -->
+          <section class="space-y-3">
+            <label class="font-label-lg text-label-lg text-on-surface flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[18px] text-tertiary">match_case</span> Kiểu chữ
+            </label>
+            <div class="grid grid-cols-2 gap-3" id="setting-font-family">
+              <button class="py-2 rounded-lg border border-outline-variant hover:bg-surface-container transition-colors font-body-reading font-semibold" data-value="Lora">Lora</button>
+              <button class="py-2 rounded-lg border border-outline-variant hover:bg-surface-container transition-colors font-sans font-semibold" data-value="Arial">Arial</button>
+              <button class="py-2 rounded-lg border border-outline-variant hover:bg-surface-container transition-colors font-serif font-semibold" data-value="'Times New Roman'">Times New Roman</button>
+              <button class="py-2 rounded-lg border border-outline-variant hover:bg-surface-container transition-colors font-serif font-semibold" data-value="'Palatino Linotype'">Palatino</button>
+            </div>
+          </section>
+
+          <!-- Khoảng cách dòng -->
+          <section class="space-y-3">
+            <label class="font-label-lg text-label-lg text-on-surface flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[18px] text-tertiary">format_line_spacing</span> Giãn dòng
+            </label>
+            <div class="flex items-center gap-3 bg-surface-container-low p-2 rounded-xl" id="setting-line-height">
+              <button class="flex-1 py-1.5 rounded-md hover:bg-surface-container-high transition-colors text-on-surface font-semibold" data-value="1.5">1.5</button>
+              <button class="flex-1 py-1.5 rounded-md hover:bg-surface-container-high transition-colors text-on-surface font-semibold" data-value="1.8">1.8</button>
+              <button class="flex-1 py-1.5 rounded-md hover:bg-surface-container-high transition-colors text-on-surface font-semibold" data-value="2.0">2.0</button>
+            </div>
+          </section>
+
+          <!-- Màu nền -->
+          <section class="space-y-3">
+            <label class="font-label-lg text-label-lg text-on-surface flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[18px] text-tertiary">palette</span> Màu nền
+            </label>
+            <div class="flex items-center gap-4" id="setting-theme">
+              <button class="w-10 h-10 rounded-full bg-[#f4f4f4] border-2 border-outline-variant shadow-sm transition-transform hover:scale-110" data-value="theme-light" title="Sáng"></button>
+              <button class="w-10 h-10 rounded-full bg-[#f1e5c5] border-2 border-transparent shadow-sm transition-transform hover:scale-110" data-value="theme-sepia" title="Giấy cũ"></button>
+              <button class="w-10 h-10 rounded-full bg-[#1a1a1a] border-2 border-transparent shadow-sm transition-transform hover:scale-110" data-value="theme-dark" title="Tối"></button>
+              <button class="w-10 h-10 rounded-full bg-[#e3f2fd] border-2 border-transparent shadow-sm transition-transform hover:scale-110" data-value="theme-blue" title="Dịu mắt"></button>
+            </div>
+          </section>
+        </div>
+      </aside>
+
+      <footer class="fixed bottom-0 left-0 right-0 z-40 bg-surface/95 backdrop-blur-md shadow-[0_-4px_20px_rgba(107,91,75,0.06)]">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+          <a th:if="${chapter.chapterNumber > 1}" th:href="@{/novel/{id}/read/{chapterNumber}(id=${novel.id}, chapterNumber=${chapter.chapterNumber - 1})}" class="flex items-center gap-2 px-3.5 py-2 rounded-xl text-outline font-label-md text-label-md hover:text-on-surface">
+            <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+            <span class="hidden sm:inline">Chương trước</span>
+          </a>
+          <button th:if="${chapter.chapterNumber <= 1}" class="flex items-center gap-2 px-3.5 py-2 rounded-xl text-outline font-label-md text-label-md opacity-40 cursor-not-allowed select-none" disabled>
+            <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+            <span class="hidden sm:inline">Chương trước</span>
+          </button>
+          
+          <div class="flex-1 max-w-md mx-2 flex flex-col items-center gap-1.5">
+            <div class="w-full flex items-center justify-between text-label-sm font-label-sm text-tertiary">
+              <span th:text="'Chương ' + ${chapter.chapterNumber}">Chương</span>
+              <span class="font-semibold text-primary" id="progress-percent">0% hoàn thành</span>
+            </div>
+            <div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden relative cursor-pointer group">
+              <div class="h-full bg-primary rounded-full transition-all duration-150" id="reading-bar" style="width: 0%;"></div>
+            </div>
+          </div>
+          
+          <div class="flex items-center gap-2">
+            <a th:href="@{/novel/{id}/read/{chapterNumber}(id=${novel.id}, chapterNumber=${chapter.chapterNumber + 1})}" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md shadow-sm transition-transform active:scale-95">
+              <span class="font-medium">Chương sau</span>
+              <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+            </a>
+          </div>
+        </div>
+      </footer>
+
+      <!-- Audio Floating Player -->
+      <div id="audio-player-panel" class="fixed bottom-20 left-1/2 -translate-x-1/2 w-[90%] max-w-[400px] bg-surface-container-lowest/95 backdrop-blur-xl shadow-2xl rounded-2xl p-4 z-50 transform translate-y-48 opacity-0 transition-all duration-500 pointer-events-none border border-outline-variant/30">
+          <div class="flex items-center justify-between mb-3">
+              <span class="font-label-md text-label-md text-primary font-bold flex items-center gap-1.5"><span class="material-symbols-outlined text-[18px] animate-pulse">graphic_eq</span> Trình Đọc Truyện AI</span>
+              <button id="close-audio-panel" class="text-on-surface-variant hover:text-error transition-colors"><span class="material-symbols-outlined text-[20px]">close</span></button>
+          </div>
+          <div class="space-y-4">
+              <!-- Cài đặt giọng & tốc độ -->
+              <div class="grid grid-cols-2 gap-3">
+                  <div class="flex flex-col gap-1">
+                      <label class="text-[10px] uppercase font-bold text-tertiary tracking-wider">Giọng đọc</label>
+                      <select id="audio-voice-select" class="w-full bg-surface-container p-1.5 rounded-lg text-label-sm font-label-sm text-on-surface outline-none focus:ring-1 ring-primary"></select>
+                  </div>
+                  <div class="flex flex-col gap-1">
+                      <label class="text-[10px] uppercase font-bold text-tertiary tracking-wider flex justify-between">Tốc độ: <span id="speed-label">1.0x</span></label>
+                      <input type="range" id="audio-speed" min="0.5" max="2.0" step="0.1" value="1.0" class="w-full h-1.5 bg-outline-variant/40 rounded-lg appearance-none accent-primary mt-1.5">
+                  </div>
+              </div>
+              
+              <!-- Nút điều khiển -->
+              <div class="flex items-center justify-center gap-6 pt-1 border-t border-outline-variant/20">
+                  <button id="audio-prev" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container text-on-surface-variant transition-colors"><span class="material-symbols-outlined">skip_previous</span></button>
+                  <button id="audio-toggle" class="w-14 h-14 flex items-center justify-center rounded-full bg-primary text-on-primary shadow-lg hover:scale-105 transition-transform"><span class="material-symbols-outlined text-[32px]" id="audio-toggle-icon">play_arrow</span></button>
+                  <button id="audio-stop" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container text-on-surface-variant hover:text-error transition-colors"><span class="material-symbols-outlined">stop</span></button>
+                  <button id="audio-next" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container text-on-surface-variant transition-colors"><span class="material-symbols-outlined">skip_next</span></button>
+              </div>
+          </div>
+      </div>
+    </div>
+  </main>
+  
+  <script>
+    (function() {
+      // 1. Progress Bar
+      window.addEventListener('scroll', function() {
+        const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = height > 0 ? Math.min(100, Math.max(0, Math.round((winScroll / height) * 100))) : 0;
+        
+        const progressBar = document.getElementById('reading-bar');
+        const progressLabel = document.getElementById('progress-percent');
+        
+        if (progressBar && progressLabel) {
+          progressBar.style.width = scrolled + '%';
+          progressLabel.textContent = scrolled + '% hoàn thành';
+        }
+      }, { passive: true });
+
+      // 2. Reading Settings & LocalStorage
+      const article = document.getElementById('reader-body');
+      const body = document.body;
+      
+      const defaultSettings = {
+          fontSize: '18',
+          fontFamily: 'Lora',
+          lineHeight: '1.95',
+          theme: 'theme-light'
+      };
+
+      // Load settings from localStorage
+      let currentSettings = JSON.parse(localStorage.getItem('tramtruyen_reading_settings')) || defaultSettings;
+
+      function applySettings() {
+          if (!article) return;
+          // Apply Font Size
+          article.style.fontSize = currentSettings.fontSize + 'px';
+          document.getElementById('setting-font-size').value = currentSettings.fontSize;
+          
+          // Apply Font Family
+          article.style.fontFamily = currentSettings.fontFamily;
+          document.querySelectorAll('#setting-font-family button').forEach(btn => {
+              if (btn.dataset.value === currentSettings.fontFamily) {
+                  btn.classList.add('bg-primary-container', 'text-on-primary-container', 'border-primary');
+              } else {
+                  btn.classList.remove('bg-primary-container', 'text-on-primary-container', 'border-primary');
+              }
+          });
+
+          // Apply Line Height
+          article.style.lineHeight = currentSettings.lineHeight;
+          document.querySelectorAll('#setting-line-height button').forEach(btn => {
+              if (btn.dataset.value === currentSettings.lineHeight) {
+                  btn.classList.add('bg-primary', 'text-on-primary');
+              } else {
+                  btn.classList.remove('bg-primary', 'text-on-primary');
+              }
+          });
+
+          // Apply Theme
+          body.classList.remove('theme-light', 'theme-sepia', 'theme-dark', 'theme-blue');
+          body.classList.add(currentSettings.theme);
+          
+          document.querySelectorAll('#setting-theme button').forEach(btn => {
+              if (btn.dataset.value === currentSettings.theme) {
+                  btn.classList.replace('border-transparent', 'border-primary');
+                  btn.classList.replace('border-outline-variant', 'border-primary');
+              } else {
+                  btn.classList.replace('border-primary', 'border-transparent');
+                  if(btn.dataset.value === 'theme-light') btn.classList.replace('border-transparent', 'border-outline-variant');
+              }
+          });
+      }
+
+      function updateSetting(key, value) {
+          currentSettings[key] = value;
+          localStorage.setItem('tramtruyen_reading_settings', JSON.stringify(currentSettings));
+          applySettings();
+      }
+
+      // Initialize
+      applySettings();
+
+      // Listeners
+      const fontSizeSlider = document.getElementById('setting-font-size');
+      if (fontSizeSlider) {
+          fontSizeSlider.addEventListener('input', function() {
+             updateSetting('fontSize', this.value);
+          });
+      }
+
+      document.querySelectorAll('#setting-font-family button').forEach(btn => {
+          btn.addEventListener('click', function() {
+              updateSetting('fontFamily', this.dataset.value);
+          });
+      });
+
+      document.querySelectorAll('#setting-line-height button').forEach(btn => {
+          btn.addEventListener('click', function() {
+              updateSetting('lineHeight', this.dataset.value);
+          });
+      });
+
+      document.querySelectorAll('#setting-theme button').forEach(btn => {
+          btn.addEventListener('click', function() {
+              updateSetting('theme', this.dataset.value);
+          });
+      });
+      
+      // Quick toggle theme button in header
+      const themeToggleBtn = document.getElementById('btn-theme-toggle');
+      if (themeToggleBtn) {
+          themeToggleBtn.addEventListener('click', function() {
+              const newTheme = currentSettings.theme === 'theme-light' ? 'theme-sepia' : 
+                              (currentSettings.theme === 'theme-sepia' ? 'theme-dark' : 'theme-light');
+              updateSetting('theme', newTheme);
+          });
+      }
+
+      // 3. Audio Reader (Advanced TTS with Karaoke & Auto-scroll)
+      const btnAudioMain = document.getElementById('btn-audio-read');
+      const audioIcon = document.getElementById('audio-icon');
+      const playerPanel = document.getElementById('audio-player-panel');
+      const toggleBtn = document.getElementById('audio-toggle');
+      const toggleIcon = document.getElementById('audio-toggle-icon');
+      const stopBtn = document.getElementById('audio-stop');
+      const nextBtn = document.getElementById('audio-next');
+      const prevBtn = document.getElementById('audio-prev');
+      const closePanelBtn = document.getElementById('close-audio-panel');
+      const voiceSelect = document.getElementById('audio-voice-select');
+      const speedSlider = document.getElementById('audio-speed');
+      const speedLabel = document.getElementById('speed-label');
+      
+      let synth = window.speechSynthesis;
+      let voices = [];
+      let sentences = [];
+      let currentSentenceIndex = 0;
+      let isPlaying = false;
+      let isPanelOpen = false;
+
+      // Load Voices
+      function populateVoiceList() {
+          voices = synth.getVoices().filter(v => v.lang.includes('vi')); // Only Vietnamese voices
+          if (voices.length === 0) voices = synth.getVoices(); // Fallback if no VN voices found
+          
+          voiceSelect.innerHTML = '';
+          voices.forEach((voice, i) => {
+              const option = document.createElement('option');
+              option.textContent = voice.name + (voice.default ? ' (Mặc định)' : '');
+              option.value = i;
+              voiceSelect.appendChild(option);
+          });
+      }
+      populateVoiceList();
+      if (speechSynthesis.onvoiceschanged !== undefined) {
+          speechSynthesis.onvoiceschanged = populateVoiceList;
+      }
+
+      function openPlayerPanel() {
+          playerPanel.classList.remove('translate-y-48', 'opacity-0', 'pointer-events-none');
+          isPanelOpen = true;
+          btnAudioMain.classList.add('text-primary');
+          audioIcon.textContent = "graphic_eq";
+          
+          // Prepare document for Karaoke Mode
+          if (sentences.length === 0) {
+             const rawText = article.innerText;
+             // Split text by punctuation marks (., !, ?) to create sentences
+             const chunks = rawText.match(/[^.!?]+[.!?]+/g) || [rawText];
+             
+             let karaokeHtml = '';
+             chunks.forEach((chunk, idx) => {
+                 const t = chunk.trim();
+                 if (t.length > 0) {
+                     sentences.push(t);
+                     karaokeHtml += `<span class="karaoke-sentence transition-colors duration-300 rounded-sm" id="sen-${idx}">${chunk}</span> `;
+                 }
+             });
+             if (sentences.length > 0) {
+                 article.innerHTML = karaokeHtml;
+             }
+          }
+      }
+
+      function closePlayerPanel() {
+          playerPanel.classList.add('translate-y-48', 'opacity-0', 'pointer-events-none');
+          isPanelOpen = false;
+          btnAudioMain.classList.remove('text-primary');
+          audioIcon.textContent = "headphones";
+          stopAudio();
+          // Remove Karaoke Highlights
+          document.querySelectorAll('.karaoke-sentence').forEach(el => {
+              el.classList.remove('bg-primary', 'text-on-primary', 'shadow-sm', 'px-1');
+          });
+      }
+
+      function highlightSentence(index) {
+          document.querySelectorAll('.karaoke-sentence').forEach((el, i) => {
+              if (i === index) {
+                  el.classList.add('bg-primary', 'text-on-primary', 'shadow-sm', 'px-1');
+                  // Auto-scroll
+                  const rect = el.getBoundingClientRect();
+                  if (rect.top > window.innerHeight - 200 || rect.bottom < 100) {
+                      window.scrollTo({
+                          top: el.offsetTop - 150,
+                          behavior: 'smooth'
+                      });
+                  }
+              } else {
+                  el.classList.remove('bg-primary', 'text-on-primary', 'shadow-sm', 'px-1');
+              }
+          });
+      }
+
+      function speakSentence(index) {
+          if (index < 0 || index >= sentences.length) {
+              isPlaying = false;
+              toggleIcon.textContent = "play_arrow";
+              return;
+          }
+          
+          synth.cancel(); // clear queue
+          
+          let utterance = new SpeechSynthesisUtterance(sentences[index]);
+          const selectedVoice = voices[voiceSelect.value];
+          if (selectedVoice) utterance.voice = selectedVoice;
+          
+          utterance.rate = parseFloat(speedSlider.value);
+          utterance.pitch = 1.0;
+          
+          utterance.onstart = () => {
+              highlightSentence(index);
+          };
+          
+          utterance.onend = () => {
+              if (isPlaying && index + 1 < sentences.length) {
+                  currentSentenceIndex++;
+                  speakSentence(currentSentenceIndex);
+              } else if (index + 1 >= sentences.length) {
+                  isPlaying = false;
+                  toggleIcon.textContent = "play_arrow";
+              }
+          };
+          
+          synth.speak(utterance);
+      }
+
+      function toggleAudio() {
+          if (!isPlaying) {
+              isPlaying = true;
+              toggleIcon.textContent = "pause";
+              speakSentence(currentSentenceIndex);
+          } else {
+              isPlaying = false;
+              toggleIcon.textContent = "play_arrow";
+              synth.cancel();
+          }
+      }
+
+      function stopAudio() {
+          isPlaying = false;
+          toggleIcon.textContent = "play_arrow";
+          synth.cancel();
+          currentSentenceIndex = 0;
+          highlightSentence(-1);
+      }
+
+      // Event Listeners for Player
+      btnAudioMain.addEventListener('click', () => {
+          if (!('speechSynthesis' in window)) {
+              alert("Trình duyệt của bạn không hỗ trợ tính năng đọc âm thanh.");
+              return;
+          }
+          if (isPanelOpen) closePlayerPanel();
+          else openPlayerPanel();
+      });
+
+      closePanelBtn.addEventListener('click', closePlayerPanel);
+      toggleBtn.addEventListener('click', toggleAudio);
+      stopBtn.addEventListener('click', stopAudio);
+      
+      nextBtn.addEventListener('click', () => {
+          if (currentSentenceIndex < sentences.length - 1) {
+              currentSentenceIndex++;
+              if (isPlaying) speakSentence(currentSentenceIndex);
+              else highlightSentence(currentSentenceIndex);
+          }
+      });
+      
+      prevBtn.addEventListener('click', () => {
+          if (currentSentenceIndex > 0) {
+              currentSentenceIndex--;
+              if (isPlaying) speakSentence(currentSentenceIndex);
+              else highlightSentence(currentSentenceIndex);
+          }
+      });
+      
+      speedSlider.addEventListener('input', function() {
+          speedLabel.textContent = this.value + 'x';
+          if (isPlaying) {
+              // Restart current sentence to apply new speed
+              speakSentence(currentSentenceIndex);
+          }
+      });
+      
+      voiceSelect.addEventListener('change', () => {
+          if (isPlaying) speakSentence(currentSentenceIndex);
+      });
+
+      // Stop audio if user leaves page
+      window.addEventListener('beforeunload', stopAudio);
+    })();
+  </script>
+</body>
+</html>

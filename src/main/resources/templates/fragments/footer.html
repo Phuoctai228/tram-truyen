@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+  <!-- Footer Fragment -->
+  <div th:fragment="main-footer">
+    <footer class="w-full bg-surface-container-low shadow-[0_-1px_12px_rgba(107,91,75,0.03)] mt-auto">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 py-12 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-primary-container/20 flex items-center justify-center text-primary">
+                    <span class="material-symbols-outlined text-[20px]">auto_stories</span>
+                </div>
+                <span class="font-headline-sm text-headline-sm text-on-surface font-bold">Trạm Truyện</span>
+            </div>
+            <nav class="flex flex-wrap items-center justify-center gap-8">
+                <a class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors"
+                    href="#">Liên hệ</a>
+                <a class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors"
+                    href="#">Điều khoản dịch vụ</a>
+                <a class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors"
+                    href="#">Chính sách bảo mật</a>
+            </nav>
+            <div class="text-on-surface-variant font-body-md text-body-md text-center md:text-right">© 2025 Trạm Truyện.
+                Mọi quyền được bảo lưu.</div>
+        </div>
+    </footer>
+
+    <!-- Logout Modal -->
+    <div id="logoutModal" class="modal fixed inset-0 z-[100] items-center justify-center bg-black/40 backdrop-blur-sm" style="display: none;">
+        <div
+            class="bg-surface rounded-2xl p-8 max-w-[400px] w-[90%] flex flex-col items-center text-center shadow-2xl animate-fade-in-up">
+            <div class="w-16 h-16 rounded-full bg-[#f3e8d5] flex items-center justify-center mb-4">
+                <span class="material-symbols-outlined text-[#bc7d39] text-[32px]">menu_book</span>
+            </div>
+
+            <div class="flex items-center justify-center gap-2 mb-2 w-full">
+                <span class="w-[60px] h-[1px] bg-[#e5e7eb] inline-block"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-[#d97706] inline-block"></span>
+                <span class="w-[60px] h-[1px] bg-[#e5e7eb] inline-block"></span>
+            </div>
+
+            <h2 class="text-3xl font-bold font-serif text-[#333333] mb-3">Rời Trạm Truyện?</h2>
+
+            <p class="text-[15px] text-[#666666] mb-8 leading-relaxed px-2">
+                Bạn có chắc muốn đăng xuất? Tiến độ đọc của bạn đã được lưu và luôn sẵn sàng khi quay lại.
+            </p>
+
+            <form th:action="@{/logout}" method="post" class="w-full">
+                <button type="submit"
+                    class="w-full py-3 bg-[#bd5d38] hover:bg-[#a34b29] text-white font-bold rounded-lg shadow-md transition-colors mb-3">
+                    Đăng xuất
+                </button>
+            </form>
+            <button id="cancelLogoutBtn"
+                class="w-full py-3 bg-white hover:bg-gray-50 text-[#333333] font-bold rounded-lg border border-gray-200 shadow-sm transition-colors">
+                Hủy · Quay lại đọc truyện
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Dropdown Logic
+        const userMenuBtn = document.getElementById('userMenuBtn');
+        const userDropdown = document.getElementById('userDropdown');
+        if (userMenuBtn && userDropdown) {
+            userMenuBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                // Instead of toggling class, we manipulate style to avoid needing global css for .show
+                if (userDropdown.style.display === 'block') {
+                    userDropdown.style.display = 'none';
+                } else {
+                    userDropdown.style.display = 'block';
+                }
+            });
+            document.addEventListener('click', () => {
+                userDropdown.style.display = 'none';
+            });
+            userDropdown.addEventListener('click', (e) => e.stopPropagation());
+        }
+
+        // Modal Logic
+        const logoutBtn = document.getElementById('logoutBtn');
+        const logoutModal = document.getElementById('logoutModal');
+        const cancelLogoutBtn = document.getElementById('cancelLogoutBtn');
+
+        if (logoutBtn && logoutModal && cancelLogoutBtn) {
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                if(userDropdown) userDropdown.style.display = 'none';
+                logoutModal.style.display = 'flex';
+            });
+
+            cancelLogoutBtn.addEventListener('click', () => {
+                logoutModal.style.display = 'none';
+            });
+
+            logoutModal.addEventListener('click', (e) => {
+                if (e.target === logoutModal) {
+                    logoutModal.style.display = 'none';
+                }
+            });
+        }
+    </script>
+  </div>
+</body>
+</html>

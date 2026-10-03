@@ -12,6 +12,11 @@ spring:
               - email
               - profile
 
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 210MB
+
   mail:
     host: smtp.gmail.com
     port: 587

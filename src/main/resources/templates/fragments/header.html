@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+  <!-- Header Fragment -->
+  <header th:fragment="main-header" class="fixed top-0 left-0 right-0 z-50 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(107,91,75,0.06)]">
+        <div class="h-20 max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between gap-6">
+            <div class="flex items-center gap-8 lg:gap-10 shrink-0">
+                <a class="flex items-center gap-3 group" th:href="@{/}">
+                    <div class="w-10 h-10 rounded-full overflow-hidden shadow-sm transition-transform group-hover:scale-105 border border-outline-variant/30">
+                        <img src="/images/logo.jpg" alt="Logo" class="w-full h-full object-cover">
+                    </div>
+                    <span class="font-headline-md text-headline-md text-on-surface font-bold tracking-tight">Trạm
+                        Truyện</span>
+                </a>
+                <nav class="hidden md:flex items-center gap-6">
+                    <a class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors py-2"
+                        th:href="@{/}">Trang chủ</a>
+                    <a class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors py-2"
+                        href="#">Thể loại</a>
+                    <a class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors py-2"
+                        href="#">Bảng xếp hạng</a>
+                </nav>
+            </div>
+            <div class="flex-1 max-w-md hidden sm:block">
+                <form class="relative flex items-center w-full" th:action="@{/search}" method="GET">
+                    <span class="material-symbols-outlined absolute left-3.5 text-outline pointer-events-none text-[20px]">search</span>
+                    <input name="q" th:value="${query}"
+                        class="w-full pl-10 pr-4 py-2 rounded-lg bg-surface-container-lowest text-on-surface placeholder:text-outline font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-primary-container shadow-[0_2px_12px_rgba(107,91,75,0.04)] transition-all"
+                        placeholder="Tìm kiếm truyện, tác giả, dịch giả..." type="text">
+                </form>
+            </div>
+            <div class="flex items-center gap-3 shrink-0">
+                <!-- If Not Authenticated -->
+                <div sec:authorize="!isAuthenticated()" class="flex items-center gap-3">
+                    <a class="px-4 py-2 rounded-lg font-label-lg text-label-lg text-on-surface hover:bg-surface-container-high hover:text-on-surface transition-colors"
+                        href="/login" th:href="@{/login}">Đăng nhập</a>
+                    <a class="px-5 py-2 rounded-lg bg-primary-container text-on-primary font-label-lg text-label-lg shadow-[0_2px_8px_rgba(135,82,0,0.2)] hover:bg-primary hover:text-on-primary transition-colors"
+                        href="/register" th:href="@{/register}">Đăng ký</a>
+                </div>
+
+                <!-- If Authenticated -->
+                <div sec:authorize="isAuthenticated()" class="relative">
+                    <button id="userMenuBtn"
+                        class="flex items-center gap-2 focus:outline-none rounded-full p-1 hover:bg-surface-container transition-colors">
+                        <span class="font-label-lg text-label-lg text-on-surface font-semibold hidden md:block"
+                            sec:authentication="principal.user.fullName"></span>
+                        <div
+                            class="w-10 h-10 rounded-full bg-primary overflow-hidden flex items-center justify-center shadow-sm border border-outline-variant">
+                            <img th:if="${#authentication.principal.user.avatarUrl != null}"
+                                th:src="${#authentication.principal.user.avatarUrl}" alt="Avatar" onerror="this.onerror=null;this.src='/images/default-avatar.jpg';"
+                                class="w-full h-full object-cover">
+                            <img th:unless="${#authentication.principal.user.avatarUrl != null}"
+                                src="/images/default-avatar.jpg" alt="Avatar"
+                                class="w-full h-full object-cover">
+                        </div>
+                    </button>
+
+                    <!-- Dropdown -->
+                    <div id="userDropdown" style="display: none;"
+                        class="dropdown-menu absolute right-0 mt-2 w-48 bg-surface rounded-xl shadow-lg border border-outline-variant py-2 z-50">
+                        <div class="px-4 py-2 border-b border-outline-variant md:hidden">
+                            <p class="font-label-md text-on-surface font-bold truncate"
+                                sec:authentication="principal.user.fullName"></p>
+                        </div>
+                        <a href="#"
+                            class="block px-4 py-2 text-sm text-on-surface hover:bg-surface-container-low transition-colors flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[18px]">account_circle</span> Hồ sơ
+                        </a>
+                        <a sec:authorize="hasAuthority('ROLE_ADMIN')" th:href="@{/admin/novels}"
+                            class="block px-4 py-2 text-sm text-on-surface hover:bg-surface-container-low transition-colors flex items-center gap-2 text-primary">
+                            <span class="material-symbols-outlined text-[18px]">admin_panel_settings</span> Trang quản
+                            trị
+                        </a>
+                        <button id="logoutBtn"
+                            class="w-full text-left px-4 py-2 text-sm text-error hover:bg-error-container hover:text-on-error-container transition-colors flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[18px]">logout</span> Đăng xuất
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+</body>
+</html>

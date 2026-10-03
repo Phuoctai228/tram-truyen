@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.transaction.annotation.Transactional;
+
 @Service
 @RequiredArgsConstructor
 public class HomeServiceImpl implements HomeService {
@@ -21,6 +23,7 @@ public class HomeServiceImpl implements HomeService {
     private final CategoryRepository categoryRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public HomePageDTO getHomePageData() {
         List<Category> categories = categoryRepository.findAll();
 

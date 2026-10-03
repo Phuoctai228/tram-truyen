@@ -11,6 +11,10 @@ public interface NovelService {
     List<Novel> findAdminNovels(String query, String status);
 
     Novel getEditableNovel(Integer id);
+    
+    Novel getPublicNovel(Integer id);
+    
+    List<Novel> searchPublicNovels(String query);
 
     Novel createNovel(NovelForm form);
 

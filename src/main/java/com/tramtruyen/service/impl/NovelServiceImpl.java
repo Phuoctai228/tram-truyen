@@ -44,6 +44,28 @@ public class NovelServiceImpl implements NovelService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Novel getPublicNovel(Integer id) {
+        // Có thể thêm filter status != ARCHIVED ở đây nếu cần
+        Novel novel = findActiveNovel(id);
+        // Tăng view (nếu có cache thì tốt hơn, nhưng đây là đơn giản nhất)
+        novel.setViews(novel.getViews() + 1);
+        novelRepository.save(novel);
+        return novel;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Novel> searchPublicNovels(String query) {
+        if (query == null || query.isBlank()) {
+            return novelRepository.findAllByIsDeletedFalseOrderByUpdatedAtDesc();
+        }
+        return novelRepository
+                .findAllByIsDeletedFalseAndTitleContainingIgnoreCaseOrIsDeletedFalseAndAuthorContainingIgnoreCaseOrderByUpdatedAtDesc(
+                        query.trim(), query.trim());
+    }
+
+    @Override
     @Transactional
     public Novel createNovel(NovelForm form) {
         validateStatus(form.getStatus());
