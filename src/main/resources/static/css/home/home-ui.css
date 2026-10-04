@@ -38,18 +38,3 @@
     font-variation-settings: 'FILL' 0 !important;
 }
 
-.dropdown-menu {
-    display: none;
-}
-
-.dropdown-menu.show {
-    display: block;
-}
-
-.modal {
-    display: none;
-}
-
-.modal.show {
-    display: flex;
-}
