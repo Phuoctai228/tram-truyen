@@ -11,10 +11,18 @@ public interface NovelService {
     List<Novel> findAdminNovels(String query, String status);
 
     Novel getEditableNovel(Integer id);
+    
+    Novel getPublicNovel(Integer id);
+    
+    Novel getPublicNovelBySlug(String slug);
+    
+    List<Novel> searchPublicNovels(String query);
 
     Novel createNovel(NovelForm form);
 
     Novel updateNovel(Integer id, NovelForm form);
 
     void deleteNovel(Integer id);
+
+    List<Novel> getNovelsBySameAuthor(String author, Integer currentNovelId);
 }

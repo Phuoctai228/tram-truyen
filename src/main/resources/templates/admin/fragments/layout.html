@@ -1,19 +1,32 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="vi">
 <body>
 <aside th:fragment="sidebar(active)" class="sidebar">
     <div>
         <div class="brand"><span class="brand-mark">▣</span><span>Trạm Truyện</span><small>Admin</small></div>
         <nav>
-            <a class="nav-link" th:classappend="${active == 'tong-quan' ? ' active' : ''}" href="#"><span>▦</span> Tổng quan</a>
+            <a class="nav-link" th:classappend="${active == 'tong-quan' ? ' active' : ''}" th:href="@{/admin}"><span>▦</span> Tổng quan</a>
             <a class="nav-link" th:classappend="${active == 'truyen' ? ' active' : ''}" th:href="@{/admin/novels}"><span>▤</span> Truyện</a>
-            <a class="nav-link" th:classappend="${active == 'chuong' ? ' active' : ''}" href="#"><span>▥</span> Chương</a>
-            <a class="nav-link" th:classappend="${active == 'the-loai' ? ' active' : ''}" href="#"><span>◈</span> Thể loại</a>
-            <a class="nav-link" th:classappend="${active == 'bao-cao' ? ' active' : ''}" href="#"><span>⚑</span> Báo cáo</a>
-            <a class="nav-link" th:classappend="${active == 'cau-hinh' ? ' active' : ''}" href="#"><span>⚙</span> Cấu hình</a>
+            <a class="nav-link" th:classappend="${active == 'chuong' ? ' active' : ''}" th:href="@{#}"><span>▥</span> Chương</a>
+            <a class="nav-link" th:classappend="${active == 'the-loai' ? ' active' : ''}" th:href="@{#}"><span>◈</span> Thể loại</a>
+            <a class="nav-link" th:classappend="${active == 'bao-cao' ? ' active' : ''}" th:href="@{#}"><span>⚑</span> Báo cáo</a>
+            <a class="nav-link" th:classappend="${active == 'cau-hinh' ? ' active' : ''}" th:href="@{#}"><span>⚙</span> Cấu hình</a>
+            <a class="nav-link" th:classappend="${active == 'trang-chu' ? ' active' : ''}" th:href="@{/}"><span>⮌</span> Về trang chủ</a>
         </nav>
     </div>
-    <div class="sidebar-footer"><strong>TRẠM TRUYỆN CMS</strong><span>Hệ thống hoạt động</span></div>
+    <div class="sidebar-footer">
+        <strong sec:authorize="isAuthenticated()" sec:authentication="principal.user.fullName">TRẠM TRUYỆN CMS</strong>
+        <strong sec:authorize="!isAuthenticated()">TRẠM TRUYỆN CMS</strong>
+        
+        <span sec:authorize="isAuthenticated()" sec:authentication="principal.user.email">Hệ thống hoạt động</span>
+        <span sec:authorize="!isAuthenticated()">Hệ thống hoạt động</span>
+        
+        <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" class="admin-logout-form">
+            <button type="submit" class="admin-logout-btn">
+                Đăng xuất
+            </button>
+        </form>
+    </div>
 </aside>
 
 <header th:fragment="topbar" class="topbar"><span class="search-hint">⌕ &nbsp; Tìm kiếm truyện, chương, tác giả...</span><span class="profile">Quản trị nội dung <b>TT</b></span></header>

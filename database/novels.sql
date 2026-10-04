@@ -78,7 +78,8 @@ CREATE TABLE categories (
 CREATE TABLE novels (
     id SERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
-    author VARCHAR(100) NOT NULL, -- Tác giả gốc của tác phẩm
+    slug VARCHAR(255) UNIQUE,
+    author VARCHAR(100) NOT NULL, -- Tác giả gốc của truyện
     summary TEXT, --descriptions
     cover_url VARCHAR(255),
     status VARCHAR(50) DEFAULT 'ONGOING', -- ONGOING (Đang ra), COMPLETED (Hoàn thành), ON_HOLD (Tạm ngưng), ARCHIVED (Tạm ẩn M1-F03)

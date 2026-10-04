@@ -2,6 +2,8 @@ package com.tramtruyen.controller;
 
 import com.tramtruyen.dto.RegisterRequestDTO;
 import com.tramtruyen.service.AuthService;
+import com.tramtruyen.security.CustomAuthenticationSuccessHandler;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -21,12 +24,52 @@ public class AuthController {
     }
 
     @GetMapping("/login")
-    public String showLoginForm() {
+    public String showLoginForm(
+            @RequestParam(value = "redirect", required = false) String redirect,
+            HttpServletRequest request,
+            Model model) {
+        String targetRedirect = redirect;
+        if (targetRedirect == null || targetRedirect.isBlank() || "/".equals(targetRedirect)) {
+            Object sessionRedirect = request.getSession().getAttribute("REDIRECT_URL");
+            if (sessionRedirect instanceof String s && !s.isBlank() && !"/".equals(s)) {
+                targetRedirect = s;
+            } else {
+                targetRedirect = null;
+            }
+        }
+
+        if (targetRedirect != null && !targetRedirect.isBlank() && CustomAuthenticationSuccessHandler.isValidRedirectUrl(targetRedirect)) {
+            request.getSession().setAttribute("REDIRECT_URL", targetRedirect);
+            model.addAttribute("redirect", targetRedirect);
+        } else {
+            request.getSession().removeAttribute("REDIRECT_URL");
+            model.addAttribute("redirect", null);
+        }
         return "authentication/login";
     }
 
     @GetMapping("/register")
-    public String showRegistrationForm(Model model) {
+    public String showRegistrationForm(
+            @RequestParam(value = "redirect", required = false) String redirect,
+            HttpServletRequest request,
+            Model model) {
+        String targetRedirect = redirect;
+        if (targetRedirect == null || targetRedirect.isBlank() || "/".equals(targetRedirect)) {
+            Object sessionRedirect = request.getSession().getAttribute("REDIRECT_URL");
+            if (sessionRedirect instanceof String s && !s.isBlank() && !"/".equals(s)) {
+                targetRedirect = s;
+            } else {
+                targetRedirect = null;
+            }
+        }
+
+        if (targetRedirect != null && !targetRedirect.isBlank() && CustomAuthenticationSuccessHandler.isValidRedirectUrl(targetRedirect)) {
+            request.getSession().setAttribute("REDIRECT_URL", targetRedirect);
+            model.addAttribute("redirect", targetRedirect);
+        } else {
+            request.getSession().removeAttribute("REDIRECT_URL");
+            model.addAttribute("redirect", null);
+        }
         model.addAttribute("userDto", new RegisterRequestDTO());
         return "authentication/register";
     }

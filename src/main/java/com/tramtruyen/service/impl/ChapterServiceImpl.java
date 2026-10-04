@@ -83,6 +83,30 @@ public class ChapterServiceImpl implements ChapterService {
         chapterRepository.save(chapter);
     }
 
+    @Override
+    @Transactional
+    public Chapter getPublicChapter(Integer novelId, Integer chapterNumber) {
+        Novel novel = findActiveNovel(novelId);
+        Chapter chapter = chapterRepository.findByNovelIdAndChapterNumberAndIsDeletedFalseAndStatus(novelId, chapterNumber, "PUBLISHED")
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy chương"));
+
+        // Lượt đọc chỉ tăng khi truy cập vào đọc từng chương
+        chapter.setViews((chapter.getViews() != null ? chapter.getViews() : 0) + 1);
+        chapterRepository.save(chapter);
+
+        novel.setViews((novel.getViews() != null ? novel.getViews() : 0) + 1);
+        novelRepository.save(novel);
+
+        return chapter;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Chapter> getPublicChapters(Integer novelId) {
+        findActiveNovel(novelId);
+        return chapterRepository.findAllByNovelIdAndIsDeletedFalseAndStatusOrderByChapterNumberAsc(novelId, "PUBLISHED");
+    }
+
     private Chapter findActiveChapter(Integer novelId, Integer chapterId) {
         return chapterRepository.findByIdAndNovelIdAndIsDeletedFalse(chapterId, novelId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy chương"));

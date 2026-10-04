@@ -18,3 +18,21 @@ nav { display: grid; gap: 6px; }.nav-link { border-radius: 10px; color: var(--mu
 .chapter-heading { margin: 40px 0 24px; }.chapter-number { color: var(--amber); font-family: Lora, serif; font-size: 20px; font-weight: 700; width: 120px; }.chapter-preview { color: var(--muted); display: -webkit-box; font-size: 12px; margin-top: 3px; max-width: 560px; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }.form-note { background: var(--wash); border-radius: 8px; color: var(--muted); font-size: 13px; margin: 22px 0 0; padding: 12px 14px; }
 .chapter-list-content { max-width: 1440px; }.chapter-list-content .table-panel { margin-top: 26px; }.chapter-list-content .back-link { display: inline-block; margin-bottom: 12px; }.page-shell > .form-shell { max-width: 920px; }
 @media (max-width: 760px) { .sidebar { height: auto; position: static; width: 100%; }.sidebar nav { grid-template-columns: repeat(3, 1fr); }.sidebar-footer { display: none; }.page-shell { margin-left: 0; }.topbar { padding: 0 18px; }.search-hint { display: none; }.content { padding: 28px 16px; }.page-heading, .toolbar { align-items: stretch; flex-direction: column; }.page-heading .button { align-self: flex-start; }.toolbar select { max-width: none; }.form-grid { grid-template-columns: 1fr; }.full-width { grid-column: auto; } }
+
+.admin-logout-form {
+    margin-top: 5px;
+}
+
+.admin-logout-btn {
+    background: none;
+    border: none;
+    color: #b96940;
+    font-size: 12px;
+    cursor: pointer;
+    padding: 0;
+    font-weight: 500;
+}
+
+.admin-logout-btn:hover {
+    text-decoration: underline;
+}

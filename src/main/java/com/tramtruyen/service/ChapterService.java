@@ -17,4 +17,8 @@ public interface ChapterService {
     Chapter updateChapter(Integer novelId, Integer chapterId, ChapterForm form);
 
     void deleteChapter(Integer novelId, Integer chapterId);
+
+    Chapter getPublicChapter(Integer novelId, Integer chapterNumber);
+
+    List<Chapter> getPublicChapters(Integer novelId);
 }

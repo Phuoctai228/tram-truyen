@@ -1,0 +1,106 @@
+/* ================================================================================
+   TRẠM TRUYỆN - USER BOOKSHELF & PROFILE STYLESHEET
+   ================================================================================ */
+
+:root {
+    --primary: #875200;
+    --primary-container: #d08a2e;
+    --on-primary-container: #492a00;
+    --secondary: #9e422c;
+    --secondary-container: #fe8b70;
+    --on-secondary: #ffffff;
+    --surface: #fff8f5;
+    --surface-container-lowest: #ffffff;
+    --surface-container-low: #fff1e8;
+    --surface-container: #feeadc;
+    --surface-container-high: #f8e5d6;
+    --surface-container-highest: #f2dfd1;
+    --on-surface: #231a11;
+    --on-surface-variant: #524437;
+    --outline: #847464;
+    --outline-variant: #d7c3b1;
+}
+
+@layer base {
+    html, body {
+        margin: 0;
+        padding: 0;
+    }
+}
+
+/* Material Symbols icon helpers */
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.icon-fill {
+    font-variation-settings: 'FILL' 1 !important;
+}
+
+.icon-half {
+    font-variation-settings: 'FILL' 0.5 !important;
+}
+
+.icon-outline {
+    font-variation-settings: 'FILL' 0 !important;
+}
+
+/* Bookshelf Progress Bar Component */
+.bookshelf-progress-bar {
+    width: 100%;
+    height: 6px;
+    background-color: var(--surface-container-high, #f8e5d6);
+    border-radius: 9999px;
+    overflow: hidden;
+}
+
+.bookshelf-progress-fill {
+    height: 100%;
+    width: 0%;
+    background-color: var(--primary-container, #d08a2e);
+    border-radius: 9999px;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Smooth transitions for cards and dropdowns */
+.bookshelf-card {
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bookshelf-card:hover {
+    transform: translateY(-2px);
+}
+
+.bookshelf-dropdown {
+    transform-origin: top right;
+    transition: opacity 0.15s ease-out, transform 0.15s ease-out;
+}
+
+/* Modal styling helpers */
+.bookshelf-modal-backdrop {
+    backdrop-filter: blur(4px);
+    transition: opacity 0.2s ease-in-out;
+}
+
+.bookshelf-modal-card {
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease-in-out;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(132, 116, 100, 0.25);
+    border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(132, 116, 100, 0.45);
+}

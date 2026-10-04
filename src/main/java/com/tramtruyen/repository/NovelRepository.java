@@ -19,6 +19,8 @@ public interface NovelRepository extends JpaRepository<Novel, Integer> {
 
     Optional<Novel> findByIdAndIsDeletedFalse(Integer id);
     
+    Optional<Novel> findBySlugAndIsDeletedFalse(String slug);
+    
     // Lấy truyện mới cập nhật
     List<Novel> findTop10ByIsDeletedFalseOrderByUpdatedAtDesc();
 
@@ -27,4 +29,7 @@ public interface NovelRepository extends JpaRepository<Novel, Integer> {
 
     // Lấy truyện đã hoàn thành
     List<Novel> findTop10ByIsDeletedFalseAndStatusOrderByUpdatedAtDesc(String status);
+
+    // Lấy truyện cùng tác giả (loại trừ truyện hiện tại)
+    List<Novel> findTop5ByAuthorIgnoreCaseAndIdNotAndIsDeletedFalseOrderByViewsDesc(String author, Integer id);
 }
