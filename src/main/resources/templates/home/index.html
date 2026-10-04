@@ -18,57 +18,9 @@
         rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet">
-    <style>
-        @layer base {
-
-            html,
-            body {
-                margin: 0;
-                padding: 0;
-            }
-
-            body {
-                overscroll-behavior: none;
-            }
-
-            main> :first-child {
-                margin-top: 0 !important;
-            }
-
-            main> :last-child {
-                margin-bottom: 0 !important;
-            }
-        }
-
-        ::-webkit-scrollbar {
-            display: none;
-        }
-
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/home/home-ui.css}">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script id="tailwind-config">
-        tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-secondary-fixed-variant": "#7e2b17", "on-primary-container": "#492a00", "primary": "#875200", "on-background": "#231a11", "surface-container-low": "#fff1e8", "secondary-fixed": "#ffdad2", "primary-fixed": "#ffddba", "secondary-fixed-dim": "#ffb4a3", "tertiary-fixed-dim": "#d8c3af", "on-error-container": "#93000a", "inverse-surface": "#392e25", "on-tertiary": "#ffffff", "on-tertiary-fixed": "#25190d", "surface-bright": "#fff8f5", "background": "#fff8f5", "on-primary": "#ffffff", "outline": "#847464", "on-surface-variant": "#524437", "surface-container-high": "#f8e5d6", "surface-variant": "#f2dfd1", "primary-container": "#d08a2e", "on-tertiary-container": "#3c2f21", "on-secondary-fixed": "#3d0600", "surface": "#fff8f5", "surface-dim": "#e9d7c8", "surface-container": "#feeadc", "on-secondary": "#ffffff", "tertiary": "#6c5c4c", "on-secondary-container": "#752411", "tertiary-fixed": "#f5dfca", "inverse-on-surface": "#ffeee1", "outline-variant": "#d7c3b1", "surface-container-highest": "#f2dfd1", "tertiary-container": "#a99684", "secondary": "#9e422c", "on-error": "#ffffff", "on-primary-fixed-variant": "#663d00", "on-tertiary-fixed-variant": "#534435", "surface-container-lowest": "#ffffff", "inverse-primary": "#ffb865", "on-surface": "#231a11", "error": "#ba1a1a", "error-container": "#ffdad6", "primary-fixed-dim": "#ffb865", "surface-tint": "#875200", "secondary-container": "#fe8b70", "on-primary-fixed": "#2b1700" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "fontFamily": { "headline-md": ["Lora"], "body-md": ["Inter"], "label-md": ["Inter"], "body-lg": ["Inter"], "headline-lg": ["Lora"], "label-sm": ["Inter"], "label-lg": ["Inter"], "display-lg": ["Lora"], "headline-xl": ["Lora"], "body-reading": ["Lora"], "headline-sm": ["Lora"] }, "fontSize": { "headline-md": ["22px", { "lineHeight": "30px", "fontWeight": "700" }], "body-md": ["14px", { "lineHeight": "22px", "fontWeight": "400" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "body-lg": ["16px", { "lineHeight": "26px", "fontWeight": "400" }], "headline-lg": ["26px", { "lineHeight": "36px", "fontWeight": "700" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.03em", "fontWeight": "500" }], "label-lg": ["14px", { "lineHeight": "20px", "fontWeight": "600" }], "display-lg": ["40px", { "lineHeight": "52px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "headline-xl": ["32px", { "lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "body-reading": ["18px", { "lineHeight": "32px", "fontWeight": "400" }], "headline-sm": ["18px", { "lineHeight": "26px", "fontWeight": "700" }] } } } };
-    </script>
-    <style>
-        .dropdown-menu {
-            display: none;
-        }
-
-        .dropdown-menu.show {
-            display: block;
-        }
-
-        .modal {
-            display: none;
-        }
-
-        .modal.show {
-            display: flex;
-        }
-    </style>
+    <script th:src="@{/js/home/tailwind-config.js}"></script>
 </head>
 
 <body class="bg-background font-body-md text-on-surface min-h-full flex flex-col">
@@ -111,8 +63,7 @@
                                 <div class="flex flex-wrap items-center gap-2 mb-3">
                                     <span
                                         class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary font-label-sm text-label-sm tracking-wide uppercase">
-                                        <span class="material-symbols-outlined text-[15px]"
-                                            style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+                                        <span class="material-symbols-outlined text-[15px] icon-fill">auto_awesome</span>
                                         Truyện Nổi Bật • Độc Đắc Tuần Này
                                     </span>
                                     <span
@@ -133,8 +84,7 @@
                                 <!-- Metrics & Genre Tags -->
                                 <div class="flex flex-wrap items-center gap-4 mb-4 text-on-surface-variant">
                                     <div class="flex items-center gap-1 text-primary">
-                                        <span class="material-symbols-outlined text-[18px]"
-                                            style="font-variation-settings: 'FILL' 1;">star</span>
+                                        <span class="material-symbols-outlined text-[18px] icon-fill">star</span>
                                         <span class="font-label-lg text-label-lg font-bold"
                                             th:text="${heroNovel.averageRating}">4.9</span>
                                     </div>
@@ -153,14 +103,22 @@
                             <!-- CTA Buttons -->
                             <div class="flex flex-wrap items-center gap-4">
                                 <a class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-primary-container text-on-primary font-label-lg text-label-lg shadow-[0_2px_10px_rgba(208,138,46,0.3)] hover:bg-primary transition-all"
-                                    th:href="@{'/novel/' + ${heroNovel.id}}">
+                                    th:href="@{'/truyen/' + ${heroNovel.slug}}">
                                     <span class="">Đọc ngay</span>
                                     <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
                                 </a>
-                                <button
+                                <form sec:authorize="isAuthenticated()" th:action="@{'/user/bookshelf/' + ${heroNovel.id}}" method="POST" class="m-0 inline-block">
+                                    <input type="hidden" name="source" value="home">
+                                    <button type="submit"
+                                        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-lg text-label-lg hover:bg-surface-container transition-colors shadow-sm">
+                                        <span class="material-symbols-outlined text-[18px]">bookmark_add</span>
+                                        <span>+ Thêm vào Tủ sách</span>
+                                    </button>
+                                </form>
+                                <button type="button" sec:authorize="!isAuthenticated()" onclick="openLoginRequiredModal('Vui lòng đăng nhập để thêm truyện vào Tủ sách cá nhân của bạn.')"
                                     class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-lg text-label-lg hover:bg-surface-container transition-colors shadow-sm">
                                     <span class="material-symbols-outlined text-[18px]">bookmark_add</span>
-                                    <span class="">+ Thêm vào Tủ sách</span>
+                                    <span>+ Thêm vào Tủ sách</span>
                                 </button>
                             </div>
                         </div>
@@ -184,7 +142,7 @@
                     </div>
                     <!-- Grid -->
                     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-                        <a th:each="novel : ${recentlyUpdatedNovels}" th:href="@{'/novel/' + ${novel.id}}"
+                        <a th:each="novel : ${recentlyUpdatedNovels}" th:href="@{'/truyen/' + ${novel.slug}}"
                             class="group flex flex-col p-3 rounded-xl bg-surface-container-lowest shadow-[0_3px_14px_rgba(107,91,75,0.04)] hover:shadow-[0_8px_24px_rgba(107,91,75,0.1)] transition-all">
                             <div
                                 class="relative w-full aspect-[3/4] rounded-lg overflow-hidden mb-3 bg-surface-container">
@@ -217,12 +175,12 @@
                     </div>
                     <!-- Grid -->
                     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-                        <a th:each="novel : ${completedNovels}" th:href="@{'/novel/' + ${novel.id}}" class="flex flex-col p-3.5 rounded-xl bg-surface-container-low shadow-[0_3px_14px_rgba(107,91,75,0.04)] hover:bg-surface-container transition-all block">
+                        <a th:each="novel : ${completedNovels}" th:href="@{'/truyen/' + ${novel.slug}}" class="flex flex-col p-3.5 rounded-xl bg-surface-container-low shadow-[0_3px_14px_rgba(107,91,75,0.04)] hover:bg-surface-container transition-all block">
                             <div class="relative w-full aspect-[3/4] rounded-lg overflow-hidden mb-3">
                                 <img class="w-full h-full object-cover" th:src="${novel.coverUrl != null ? novel.coverUrl : '/images/default-cover.jpg'}" onerror="this.onerror=null;this.src='/images/default-cover.jpg';" alt="Cover">
                             </div>
                             <div class="flex items-center gap-1 text-primary mb-1">
-                                <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                                <span class="material-symbols-outlined text-[14px] icon-fill">star</span>
                                 <span class="font-label-sm text-label-sm font-bold" th:text="${novel.averageRating}">4.95</span>
                             </div>
                             <h3 class="font-headline-sm text-label-lg font-bold text-on-surface line-clamp-1 mb-1"
@@ -263,7 +221,7 @@
                                 </div>
                                 <div class="flex-1 min-w-0">
                                     <div class="flex items-center gap-2 mb-0.5">
-                                        <a th:href="@{'/novel/' + ${novel.id}}"
+                                        <a th:href="@{'/truyen/' + ${novel.slug}}"
                                             class="font-headline-sm text-headline-sm text-on-surface font-bold truncate hover:text-primary transition-colors"
                                             th:text="${novel.title}">Title</a>
                                     </div>
@@ -308,8 +266,7 @@
                         <!-- Literary Quote Card -->
                         <div class="relative p-6 rounded-2xl bg-surface-container-highest shadow-sm overflow-hidden">
                             <div class="relative z-10 flex items-start gap-4">
-                                <span class="material-symbols-outlined text-primary text-[32px] shrink-0"
-                                    style="font-variation-settings: 'FILL' 1;">format_quote</span>
+                                <span class="material-symbols-outlined text-primary text-[32px] shrink-0 icon-fill">format_quote</span>
                                 <div>
                                     <p
                                         class="font-headline-md text-body-reading text-on-surface italic leading-relaxed mb-3">

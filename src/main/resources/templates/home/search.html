@@ -60,7 +60,7 @@
           
           <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5" th:if="${!novels.isEmpty()}">
             <article class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col group" th:each="novel : ${novels}">
-              <a th:href="@{/novel/{id}(id=${novel.id})}" class="block w-full h-full">
+              <a th:href="@{/truyen/{slug}(slug=${novel.slug})}" class="block w-full h-full">
                 <div class="relative w-full aspect-[2/3] overflow-hidden bg-surface-container">
                   <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" th:src="${novel.coverUrl != null ? novel.coverUrl : '/images/default-cover.jpg'}" onerror="this.onerror=null;this.src='/images/default-cover.jpg';" alt="Cover">
                   <div class="absolute inset-0 bg-gradient-to-t from-on-background/80 via-transparent to-transparent"></div>

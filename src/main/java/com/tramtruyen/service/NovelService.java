@@ -14,6 +14,8 @@ public interface NovelService {
     
     Novel getPublicNovel(Integer id);
     
+    Novel getPublicNovelBySlug(String slug);
+    
     List<Novel> searchPublicNovels(String query);
 
     Novel createNovel(NovelForm form);
@@ -21,4 +23,6 @@ public interface NovelService {
     Novel updateNovel(Integer id, NovelForm form);
 
     void deleteNovel(Integer id);
+
+    List<Novel> getNovelsBySameAuthor(String author, Integer currentNovelId);
 }

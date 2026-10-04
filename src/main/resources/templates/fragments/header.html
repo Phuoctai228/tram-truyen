@@ -9,8 +9,7 @@
                     <div class="w-10 h-10 rounded-full overflow-hidden shadow-sm transition-transform group-hover:scale-105 border border-outline-variant/30">
                         <img src="/images/logo.jpg" alt="Logo" class="w-full h-full object-cover">
                     </div>
-                    <span class="font-headline-md text-headline-md text-on-surface font-bold tracking-tight">Trạm
-                        Truyện</span>
+                    <span class="font-headline-md text-headline-md text-on-surface font-bold tracking-tight">Trạm Truyện</span>
                 </a>
                 <nav class="hidden md:flex items-center gap-6">
                     <a class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors py-2"
@@ -19,6 +18,8 @@
                         href="#">Thể loại</a>
                     <a class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors py-2"
                         href="#">Bảng xếp hạng</a>
+                    <a class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors py-2"
+                        th:href="@{/user/bookshelf}">Tủ sách</a>
                 </nav>
             </div>
             <div class="flex-1 max-w-md hidden sm:block">
@@ -32,53 +33,100 @@
             <div class="flex items-center gap-3 shrink-0">
                 <!-- If Not Authenticated -->
                 <div sec:authorize="!isAuthenticated()" class="flex items-center gap-3">
-                    <a class="px-4 py-2 rounded-lg font-label-lg text-label-lg text-on-surface hover:bg-surface-container-high hover:text-on-surface transition-colors"
-                        href="/login" th:href="@{/login}">Đăng nhập</a>
-                    <a class="px-5 py-2 rounded-lg bg-primary-container text-on-primary font-label-lg text-label-lg shadow-[0_2px_8px_rgba(135,82,0,0.2)] hover:bg-primary hover:text-on-primary transition-colors"
-                        href="/register" th:href="@{/register}">Đăng ký</a>
+                    <a id="navLoginBtn" class="px-4 py-2 rounded-lg font-label-lg text-label-lg text-on-surface hover:bg-surface-container-high hover:text-on-surface transition-colors"
+                        th:href="@{/login}">Đăng nhập</a>
+                    <a id="navRegisterBtn" class="px-5 py-2 rounded-lg bg-primary-container text-on-primary font-label-lg text-label-lg shadow-[0_2px_8px_rgba(135,82,0,0.2)] hover:bg-primary hover:text-on-primary transition-colors"
+                        th:href="@{/register}">Đăng ký</a>
                 </div>
 
                 <!-- If Authenticated -->
-                <div sec:authorize="isAuthenticated()" class="relative">
-                    <button id="userMenuBtn"
-                        class="flex items-center gap-2 focus:outline-none rounded-full p-1 hover:bg-surface-container transition-colors">
-                        <span class="font-label-lg text-label-lg text-on-surface font-semibold hidden md:block"
-                            sec:authentication="principal.user.fullName"></span>
-                        <div
-                            class="w-10 h-10 rounded-full bg-primary overflow-hidden flex items-center justify-center shadow-sm border border-outline-variant">
-                            <img th:if="${#authentication.principal.user.avatarUrl != null}"
-                                th:src="${#authentication.principal.user.avatarUrl}" alt="Avatar" onerror="this.onerror=null;this.src='/images/default-avatar.jpg';"
-                                class="w-full h-full object-cover">
-                            <img th:unless="${#authentication.principal.user.avatarUrl != null}"
-                                src="/images/default-avatar.jpg" alt="Avatar"
-                                class="w-full h-full object-cover">
-                        </div>
-                    </button>
+                <div sec:authorize="isAuthenticated()" class="flex items-center gap-3">
+                    <!-- Coin Balance -->
+                    <div class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-container-high text-on-surface">
+                        <span class="material-symbols-outlined text-primary-container text-[18px]">monetization_on</span>
+                        <span class="font-label-md text-label-md text-on-primary-container font-semibold"
+                              th:text="${#authentication.principal.user.walletBalance != null ? #authentication.principal.user.walletBalance : 0} + ' Coin'">0 Coin</span>
+                    </div>
 
-                    <!-- Dropdown -->
-                    <div id="userDropdown" style="display: none;"
-                        class="dropdown-menu absolute right-0 mt-2 w-48 bg-surface rounded-xl shadow-lg border border-outline-variant py-2 z-50">
-                        <div class="px-4 py-2 border-b border-outline-variant md:hidden">
-                            <p class="font-label-md text-on-surface font-bold truncate"
-                                sec:authentication="principal.user.fullName"></p>
-                        </div>
-                        <a href="#"
-                            class="block px-4 py-2 text-sm text-on-surface hover:bg-surface-container-low transition-colors flex items-center gap-2">
-                            <span class="material-symbols-outlined text-[18px]">account_circle</span> Hồ sơ
-                        </a>
-                        <a sec:authorize="hasAuthority('ROLE_ADMIN')" th:href="@{/admin/novels}"
-                            class="block px-4 py-2 text-sm text-on-surface hover:bg-surface-container-low transition-colors flex items-center gap-2 text-primary">
-                            <span class="material-symbols-outlined text-[18px]">admin_panel_settings</span> Trang quản
-                            trị
-                        </a>
-                        <button id="logoutBtn"
-                            class="w-full text-left px-4 py-2 text-sm text-error hover:bg-error-container hover:text-on-error-container transition-colors flex items-center gap-2">
-                            <span class="material-symbols-outlined text-[18px]">logout</span> Đăng xuất
+                    <div class="relative">
+                        <button id="userMenuBtn" type="button"
+                            class="flex items-center gap-2 focus:outline-none rounded-full p-1 hover:bg-surface-container transition-colors">
+                            <span class="font-label-lg text-label-lg text-on-surface font-semibold hidden md:block"
+                                sec:authentication="principal.user.fullName"></span>
+                            <div
+                                class="w-10 h-10 rounded-full bg-primary overflow-hidden flex items-center justify-center shadow-sm border border-outline-variant">
+                                <img th:if="${#authentication.principal.user.avatarUrl != null}"
+                                    th:src="${#authentication.principal.user.avatarUrl}" alt="Avatar" onerror="this.onerror=null;this.src='/images/default-avatar.jpg';"
+                                    class="w-full h-full object-cover">
+                                <img th:unless="${#authentication.principal.user.avatarUrl != null}"
+                                    src="/images/default-avatar.jpg" alt="Avatar"
+                                    class="w-full h-full object-cover">
+                            </div>
                         </button>
+
+                        <!-- Dropdown -->
+                        <div id="userDropdown"
+                            class="dropdown-menu hidden absolute right-0 mt-2 w-52 bg-surface rounded-xl shadow-lg border border-outline-variant py-2 z-50">
+                            <div class="px-4 py-2 border-b border-outline-variant">
+                                <p class="font-label-md text-on-surface font-bold truncate"
+                                    sec:authentication="principal.user.fullName"></p>
+                                <p class="text-xs text-outline truncate"
+                                    sec:authentication="principal.user.email"></p>
+                            </div>
+                            <a th:href="@{/user/profile}"
+                                class="block px-4 py-2 text-sm text-on-surface hover:bg-surface-container-low transition-colors flex items-center gap-2">
+                                <span class="material-symbols-outlined text-[18px]">account_circle</span> Hồ sơ cá nhân
+                            </a>
+                            <a th:href="@{/user/bookshelf}"
+                                class="block px-4 py-2 text-sm text-primary font-semibold hover:bg-surface-container-low transition-colors flex items-center gap-2">
+                                <span class="material-symbols-outlined text-[18px]">bookmark</span> Tủ sách của tôi
+                            </a>
+                            <a sec:authorize="hasAuthority('ROLE_ADMIN')" th:href="@{/admin/novels}"
+                                class="block px-4 py-2 text-sm text-on-surface hover:bg-surface-container-low transition-colors flex items-center gap-2 text-primary">
+                                <span class="material-symbols-outlined text-[18px]">admin_panel_settings</span> Trang quản trị
+                            </a>
+                            <div class="my-1 border-t border-outline-variant"></div>
+                            <form action="/logout" method="post" id="headerLogoutForm" class="m-0">
+                                <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                <button type="submit"
+                                    class="w-full text-left px-4 py-2 text-sm text-error hover:bg-error-container hover:text-on-error-container transition-colors flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-[18px]">logout</span> Đăng xuất
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <script>
+            (function() {
+                // Update Login & Register buttons to preserve current page return URL
+                const loginBtn = document.getElementById('navLoginBtn');
+                const regBtn = document.getElementById('navRegisterBtn');
+                const currentPath = window.location.pathname;
+                if (currentPath && currentPath !== '/' && !currentPath.startsWith('/login') && !currentPath.startsWith('/register')) {
+                    const redirectTarget = encodeURIComponent(currentPath + window.location.search);
+                    if (loginBtn) loginBtn.href = '/login?redirect=' + redirectTarget;
+                    if (regBtn) regBtn.href = '/register?redirect=' + redirectTarget;
+                }
+
+                // Dropdown menu logic
+                const btn = document.getElementById('userMenuBtn');
+                const dropdown = document.getElementById('userDropdown');
+                if (btn && dropdown) {
+                    btn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        dropdown.classList.toggle('hidden');
+                    });
+                    document.addEventListener('click', function(e) {
+                        if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
+                            dropdown.classList.add('hidden');
+                        }
+                    });
+                }
+            })();
+        </script>
     </header>
 </body>
 </html>

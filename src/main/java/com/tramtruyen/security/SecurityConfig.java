@@ -11,9 +11,12 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final CustomOAuth2UserService customOAuth2UserService;
+    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
-    public SecurityConfig(CustomOAuth2UserService customOAuth2UserService) {
+    public SecurityConfig(CustomOAuth2UserService customOAuth2UserService,
+                          CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler) {
         this.customOAuth2UserService = customOAuth2UserService;
+        this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
     }
 
     @Bean
@@ -26,11 +29,12 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/register", "/verify-otp", "/login", "/css/**", "/js/**", "/images/**").permitAll()
                 .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
-                .anyRequest().permitAll() // Temporarily permit all other requests
+                .requestMatchers("/user/**", "/tu-sach").authenticated()
+                .anyRequest().permitAll()
         ).formLogin(form -> form
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
-                .defaultSuccessUrl("/", true)
+                .successHandler(customAuthenticationSuccessHandler)
                 .failureUrl("/login?error")
                 .permitAll()
         ).oauth2Login(oauth2 -> oauth2
@@ -38,7 +42,7 @@ public class SecurityConfig {
                 .userInfoEndpoint(userInfo -> userInfo
                         .userService(customOAuth2UserService)
                 )
-                .defaultSuccessUrl("/", true)
+                .successHandler(customAuthenticationSuccessHandler)
         ).logout(logout -> logout
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/")

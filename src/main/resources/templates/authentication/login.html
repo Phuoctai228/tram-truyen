@@ -81,6 +81,7 @@
 
             <!-- Login Form -->
             <form th:action="@{/login}" method="post" class="flex flex-col gap-4">
+                <input type="hidden" name="redirect" th:if="${redirect != null}" th:value="${redirect}">
                 
                 <div class="flex flex-col">
                     <label class="font-label-md text-label-md text-on-surface font-semibold mb-1.5" for="username">
@@ -134,7 +135,7 @@
 
             <div class="mt-5 text-center font-body-md text-body-md text-tertiary">
                 Chưa có tài khoản? 
-                <a th:href="@{/register}" class="text-primary-container font-semibold hover:underline ml-1 transition-colors">Đăng ký ngay</a>
+                <a th:href="${redirect != null} ? @{/register(redirect=${redirect})} : @{/register}" class="text-primary-container font-semibold hover:underline ml-1 transition-colors">Đăng ký ngay</a>
             </div>
         </div>
     </div>

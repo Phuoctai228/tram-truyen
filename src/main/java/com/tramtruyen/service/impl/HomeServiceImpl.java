@@ -54,6 +54,7 @@ public class HomeServiceImpl implements HomeService {
         return NovelSummaryDTO.builder()
                 .id(novel.getId())
                 .title(novel.getTitle())
+                .slug(novel.getSlug())
                 .author(novel.getAuthor())
                 .summary(novel.getSummary())
                 .coverUrl(novel.getCoverUrl())

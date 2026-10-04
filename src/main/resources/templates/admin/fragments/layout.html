@@ -21,8 +21,8 @@
         <span sec:authorize="isAuthenticated()" sec:authentication="principal.user.email">Hệ thống hoạt động</span>
         <span sec:authorize="!isAuthenticated()">Hệ thống hoạt động</span>
         
-        <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" style="margin-top: 5px;">
-            <button type="submit" style="background: none; border: none; color: #b96940; font-size: 12px; cursor: pointer; padding: 0; font-weight: 500;">
+        <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" class="admin-logout-form">
+            <button type="submit" class="admin-logout-btn">
                 Đăng xuất
             </button>
         </form>

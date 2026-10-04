@@ -46,12 +46,49 @@ public class NovelServiceImpl implements NovelService {
     @Override
     @Transactional(readOnly = true)
     public Novel getPublicNovel(Integer id) {
-        // Có thể thêm filter status != ARCHIVED ở đây nếu cần
-        Novel novel = findActiveNovel(id);
-        // Tăng view (nếu có cache thì tốt hơn, nhưng đây là đơn giản nhất)
-        novel.setViews(novel.getViews() + 1);
-        novelRepository.save(novel);
-        return novel;
+        return findActiveNovel(id);
+    }
+
+    @Override
+    @Transactional
+    public Novel getPublicNovelBySlug(String slug) {
+        if (slug == null || slug.isBlank()) {
+            throw new ResourceNotFoundException("Slug không hợp lệ");
+        }
+        return novelRepository.findBySlugAndIsDeletedFalse(slug.trim())
+                .orElseGet(() -> {
+                    // Try parsing as integer id in case URL is numeric like /truyen/1
+                    try {
+                        Integer id = Integer.parseInt(slug.trim());
+                        return findActiveNovel(id);
+                    } catch (NumberFormatException ignored) {}
+
+                    // Fallback: match by generated slug or check all active novels
+                    List<Novel> all = novelRepository.findAllByIsDeletedFalseOrderByUpdatedAtDesc();
+                    for (Novel n : all) {
+                        String generatedSlug = com.tramtruyen.util.SlugUtils.toSlug(n.getTitle());
+                        if (slug.equalsIgnoreCase(n.getSlug()) || slug.equalsIgnoreCase(generatedSlug)
+                                || slug.equalsIgnoreCase(generatedSlug + "-" + n.getId())
+                                || slug.equalsIgnoreCase("novel-" + n.getId())) {
+                            if (n.getSlug() == null || n.getSlug().isBlank()) {
+                                n.setSlug(generatedSlug);
+                                novelRepository.save(n);
+                            }
+                            return n;
+                        }
+                    }
+                    throw new ResourceNotFoundException("Không tìm thấy truyện: " + slug);
+                });
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Novel> getNovelsBySameAuthor(String author, Integer currentNovelId) {
+        if (author == null || author.isBlank()) {
+            return java.util.Collections.emptyList();
+        }
+        return novelRepository.findTop5ByAuthorIgnoreCaseAndIdNotAndIsDeletedFalseOrderByViewsDesc(
+                author.trim(), currentNovelId);
     }
 
     @Override
@@ -105,6 +142,10 @@ public class NovelServiceImpl implements NovelService {
         String coverUrl = mediaStorageService.uploadImage(form.getCover());
         if (coverUrl != null && !coverUrl.isBlank()) {
             novel.setCoverUrl(coverUrl);
+        }
+
+        if (novel.getSlug() == null || novel.getSlug().isBlank()) {
+            novel.setSlug(com.tramtruyen.util.SlugUtils.toSlug(form.getTitle().trim()));
         }
     }
 

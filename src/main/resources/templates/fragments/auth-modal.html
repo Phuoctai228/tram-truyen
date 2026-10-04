@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+</head>
+<body>
+    <!-- Login Required Modal Fragment -->
+    <div th:fragment="login-modal" id="loginRequiredModal" class="modal fixed inset-0 z-[100] items-center justify-center bg-black/50 backdrop-blur-sm hidden">
+        <div class="bg-surface rounded-2xl p-7 max-w-[420px] w-[90%] flex flex-col items-center text-center shadow-2xl relative border border-outline-variant/30 animate-fade-in-up">
+            <!-- Close Button -->
+            <button type="button" onclick="closeLoginRequiredModal()" aria-label="Đóng"
+                    class="absolute top-4 right-4 text-outline hover:text-on-surface transition-colors p-1 rounded-lg hover:bg-surface-container">
+                <span class="material-symbols-outlined text-[20px]">close</span>
+            </button>
+
+            <!-- Warm Book Icon -->
+            <div class="w-16 h-16 rounded-full bg-surface-container-high flex items-center justify-center mb-4 text-primary shadow-inner">
+                <span class="material-symbols-outlined text-[32px] icon-fill">auto_stories</span>
+            </div>
+
+            <h3 class="text-2xl font-bold font-headline-sm text-on-surface mb-2 tracking-tight">Yêu cầu đăng nhập</h3>
+
+            <p id="loginRequiredMessage" class="text-on-surface-variant font-body-md text-sm mb-6 leading-relaxed px-1">
+                Vui lòng đăng nhập để thực hiện tính năng này và lưu dữ liệu cá nhân của bạn.
+            </p>
+
+            <div class="w-full space-y-3">
+                <a id="loginRequiredLoginBtn" href="/login"
+                   class="w-full py-3 bg-primary hover:bg-primary-container text-on-primary font-bold rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-[18px]">login</span>
+                    <span>Đăng nhập ngay</span>
+                </a>
+                <a id="loginRequiredRegisterBtn" href="/register"
+                   class="w-full py-3 bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-semibold rounded-xl transition-all flex items-center justify-center gap-2 border border-outline-variant/50">
+                    <span class="material-symbols-outlined text-[18px]">person_add</span>
+                    <span>Đăng ký tài khoản</span>
+                </a>
+                <button type="button" onclick="closeLoginRequiredModal()"
+                        class="w-full py-2 text-tertiary hover:text-on-surface font-medium text-sm transition-colors">
+                    Để sau
+                </button>
+            </div>
+        </div>
+
+        <script>
+            function openLoginRequiredModal(customMessage) {
+                const modal = document.getElementById('loginRequiredModal');
+                if (!modal) return;
+
+                if (customMessage) {
+                    const msgEl = document.getElementById('loginRequiredMessage');
+                    if (msgEl) msgEl.textContent = customMessage;
+                }
+
+                const p = window.location.pathname;
+                const currentPath = encodeURIComponent(p + window.location.search);
+                const loginBtn = document.getElementById('loginRequiredLoginBtn');
+                if (loginBtn) {
+                    loginBtn.href = (p === '/' || p === '') ? '/login' : '/login?redirect=' + currentPath;
+                }
+                const regBtn = document.getElementById('loginRequiredRegisterBtn');
+                if (regBtn) {
+                    regBtn.href = (p === '/' || p === '') ? '/register' : '/register?redirect=' + currentPath;
+                }
+
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+
+            function closeLoginRequiredModal() {
+                const modal = document.getElementById('loginRequiredModal');
+                if (!modal) return;
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const modal = document.getElementById('loginRequiredModal');
+                if (modal) {
+                    modal.addEventListener('click', (e) => {
+                        if (e.target === modal) {
+                            closeLoginRequiredModal();
+                        }
+                    });
+                }
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        closeLoginRequiredModal();
+                    }
+                });
+            });
+        </script>
+    </div>
+</body>
+</html>

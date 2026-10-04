@@ -1,171 +1,515 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="vi" class="h-full">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Tủ sách của tôi - Trạm Truyện</title>
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/bookshelf.css}">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script id="tailwind-config">
-        tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-secondary-fixed-variant": "#7e2b17", "on-primary-container": "#492a00", "primary": "#875200", "on-background": "#231a11", "surface-container-low": "#fff1e8", "secondary-fixed": "#ffdad2", "primary-fixed": "#ffddba", "secondary-fixed-dim": "#ffb4a3", "tertiary-fixed-dim": "#d8c3af", "on-error-container": "#93000a", "inverse-surface": "#392e25", "on-tertiary": "#ffffff", "on-tertiary-fixed": "#25190d", "surface-bright": "#fff8f5", "background": "#fff8f5", "on-primary": "#ffffff", "outline": "#847464", "on-surface-variant": "#524437", "surface-container-high": "#f8e5d6", "surface-variant": "#f2dfd1", "primary-container": "#d08a2e", "on-tertiary-container": "#3c2f21", "on-secondary-fixed": "#3d0600", "surface": "#fff8f5", "surface-dim": "#e9d7c8", "surface-container": "#feeadc", "on-secondary": "#ffffff", "tertiary": "#6c5c4c", "on-secondary-container": "#752411", "tertiary-fixed": "#f5dfca", "inverse-on-surface": "#ffeee1", "outline-variant": "#d7c3b1", "surface-container-highest": "#f2dfd1", "tertiary-container": "#a99684", "secondary": "#9e422c", "on-error": "#ffffff", "on-primary-fixed-variant": "#663d00", "on-tertiary-fixed-variant": "#534435", "surface-container-lowest": "#ffffff", "inverse-primary": "#ffb865", "on-surface": "#231a11", "error": "#ba1a1a", "error-container": "#ffdad6", "primary-fixed-dim": "#ffb865", "surface-tint": "#875200", "secondary-container": "#fe8b70", "on-primary-fixed": "#2b1700" }, "fontFamily": { "headline-md": [ "Lora" ], "body-md": [ "Inter" ], "label-md": [ "Inter" ] } } } };
-    </script>
-    <style>
-        .modal { display: none; }
-        .modal.show { display: flex; }
-    </style>
+    <script th:src="@{/js/novel/tailwind-config.js}"></script>
 </head>
-<body class="bg-background font-body-md text-on-surface min-h-full flex flex-col">
-    <!-- KHUNG HEADER (Tạm) -->
-    <header class="fixed top-0 left-0 right-0 z-50 bg-surface border-b border-outline-variant shadow-sm h-16 flex items-center justify-between px-6">
-        <div class="flex items-center gap-4">
-            <span class="font-headline-md font-bold text-primary">Trạm Truyện</span>
-            <nav class="hidden md:flex gap-4 ml-6"><a href="/">Trang chủ</a><a href="#">Thể loại</a><a href="#" class="text-primary font-bold">Tủ sách</a></nav>
-        </div>
-        <div class="flex items-center gap-4">
-            <span class="material-symbols-outlined">notifications</span>
-            <div class="w-8 h-8 bg-primary rounded-full"></div>
-        </div>
-    </header>
+<body class="bg-surface font-body-md text-on-surface min-h-screen flex flex-col">
+    <!-- Header -->
+    <div th:replace="~{fragments/header :: main-header}"></div>
 
-    <main class="w-full pt-20 flex-1 max-w-7xl mx-auto px-4 lg:px-8 flex gap-8">
-        <!-- SIDEBAR -->
-        <aside class="w-64 shrink-0 hidden lg:block space-y-6">
-            <div class="bg-surface-container-low rounded-xl p-4 flex items-center gap-4">
-                <div class="w-12 h-12 bg-primary-container rounded-full flex items-center justify-center text-on-primary"><span class="material-symbols-outlined">person</span></div>
-                <div>
-                    <div class="font-bold">Hoàng Long</div>
-                    <div class="text-xs text-primary bg-primary-fixed px-2 py-0.5 rounded-full inline-block mt-1">Hội viên Tinh Hoa</div>
-                </div>
-            </div>
-            <nav class="space-y-1">
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-surface-container transition-colors"><span class="material-symbols-outlined text-outline">person</span> Hồ sơ cá nhân</a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-surface-container text-primary font-bold"><span class="material-symbols-outlined">bookmark</span> Tủ sách</a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-surface-container transition-colors"><span class="material-symbols-outlined text-outline">history</span> Lịch sử đọc</a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-surface-container transition-colors"><span class="material-symbols-outlined text-outline">mail</span> Hòm thư</a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-surface-container transition-colors"><span class="material-symbols-outlined text-outline">account_balance_wallet</span> Ví Coin</a>
-            </nav>
-        </aside>
-
-        <!-- CONTENT -->
-        <div class="flex-1 bg-surface-container-lowest rounded-2xl p-6 lg:p-8 min-h-[600px] shadow-sm border border-outline-variant">
-            <div class="flex items-center justify-between mb-8">
-                <div class="flex items-center gap-4">
-                    <h1 class="text-2xl font-bold font-headline-md">Tủ sách của tôi</h1>
-                    <span class="text-xs bg-surface-container-high px-2.5 py-1 rounded-full text-on-surface-variant">18 tác phẩm</span>
-                </div>
-            </div>
-
-            <!-- TABS -->
-            <div class="flex items-center justify-between mb-6 border-b border-outline-variant pb-2">
-                <div class="flex gap-6">
-                    <button class="font-bold text-primary border-b-2 border-primary pb-2 px-1">Tất cả (18)</button>
-                    <button class="text-on-surface-variant hover:text-on-surface pb-2 px-1">Đang đọc (12)</button>
-                    <button class="text-on-surface-variant hover:text-on-surface pb-2 px-1">Đã xong (6)</button>
-                </div>
+    <main class="w-full pt-20 bg-surface flex-1">
+        <div class="max-w-[1280px] mx-auto px-6 py-8">
+            <!-- Toast notification messages -->
+            <div th:if="${successMsg}" class="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center justify-between shadow-sm">
                 <div class="flex items-center gap-2">
-                    <div class="relative">
-                        <span class="material-symbols-outlined absolute left-2 top-1.5 text-[18px] text-outline">search</span>
-                        <input type="text" placeholder="Tìm trong tủ sách..." class="pl-8 pr-3 py-1.5 bg-surface-container text-sm rounded-lg border-none focus:ring-1 focus:ring-primary w-48">
-                    </div>
+                    <span class="material-symbols-outlined text-[20px] text-emerald-600">check_circle</span>
+                    <span class="text-sm font-semibold" th:text="${successMsg}"></span>
                 </div>
+                <button type="button" onclick="this.parentElement.remove()" class="text-emerald-500 hover:text-emerald-700">
+                    <span class="material-symbols-outlined text-[18px]">close</span>
+                </button>
+            </div>
+            <div th:if="${errorMsg}" class="mb-6 p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 flex items-center justify-between shadow-sm">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[20px] text-rose-600">error</span>
+                    <span class="text-sm font-semibold" th:text="${errorMsg}"></span>
+                </div>
+                <button type="button" onclick="this.parentElement.remove()" class="text-rose-500 hover:text-rose-700">
+                    <span class="material-symbols-outlined text-[18px]">close</span>
+                </button>
             </div>
 
-            <!-- LIST -->
-            <div class="space-y-4">
-                <!-- ITEM 1 -->
-                <div class="flex items-center gap-4 p-4 rounded-xl hover:bg-surface-container-low transition-colors border border-transparent hover:border-outline-variant group">
-                    <div class="w-16 h-24 bg-surface-container rounded-md overflow-hidden shrink-0 relative">
-                        <span class="absolute top-1 left-1 bg-primary text-white text-[10px] font-bold px-1 rounded">VIP</span>
-                        <img src="https://placehold.co/100x150" class="w-full h-full object-cover">
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="text-[10px] bg-surface-container-high px-1.5 rounded text-on-surface-variant">Tây Huyền</span>
-                        </div>
-                        <h3 class="font-bold text-lg truncate">Quỷ Bí Chi Chủ</h3>
-                        <p class="text-sm text-on-surface-variant truncate">Mực Thích Lặn Nước</p>
-                        
-                        <!-- Progress -->
-                        <div class="mt-3 flex items-center justify-between text-xs text-on-surface-variant mb-1">
-                            <span>Tiến độ: Chương 542 / 1.432</span>
-                            <span>37%</span>
-                        </div>
-                        <div class="w-full h-1.5 bg-surface-variant rounded-full overflow-hidden">
-                            <div class="h-full bg-primary rounded-full" style="width: 37%"></div>
-                        </div>
-                    </div>
-                    <div class="shrink-0 flex items-center gap-3">
-                        <button class="bg-primary-container text-on-primary-container px-4 py-2 rounded-lg font-bold text-sm hover:bg-primary hover:text-white transition-colors flex items-center gap-1">
-                            <span class="material-symbols-outlined text-[18px]">play_arrow</span> Đọc tiếp
-                        </button>
-                        <button class="w-8 h-8 rounded-full hover:bg-surface-container flex items-center justify-center text-outline" onclick="document.getElementById('deleteModal').classList.add('show')">
-                            <span class="material-symbols-outlined">more_vert</span>
-                        </button>
-                    </div>
-                </div>
+            <div class="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-8 items-start">
                 
-                <!-- ITEM 2 -->
-                <div class="flex items-center gap-4 p-4 rounded-xl hover:bg-surface-container-low transition-colors border border-transparent hover:border-outline-variant group">
-                    <div class="w-16 h-24 bg-surface-container rounded-md overflow-hidden shrink-0">
-                        <img src="https://placehold.co/100x150" class="w-full h-full object-cover">
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="text-[10px] bg-surface-container-high px-1.5 rounded text-on-surface-variant">Tiên Hiệp</span>
-                        </div>
-                        <h3 class="font-bold text-lg truncate">Kiếm Đạo Đệ Nhất Tiên</h3>
-                        <p class="text-sm text-on-surface-variant truncate">Tiêu Cẩn Du</p>
-                        
-                        <!-- Progress -->
-                        <div class="mt-3 flex items-center justify-between text-xs text-on-surface-variant mb-1">
-                            <span>Tiến độ: Chương 1.120 / 2.500</span>
-                            <span>44%</span>
-                        </div>
-                        <div class="w-full h-1.5 bg-surface-variant rounded-full overflow-hidden">
-                            <div class="h-full bg-primary rounded-full" style="width: 44%"></div>
+                <!-- SIDEBAR HỒ SƠ NGƯỜI DÙNG (Dữ liệu thật, KHÔNG CÓ tag hội viên tinh hoa/tác giả) -->
+                <aside class="w-full space-y-6">
+                    <div class="p-5 rounded-xl bg-surface-container-lowest shadow-[0_4px_20px_-2px_rgba(107,91,75,0.06)]">
+                        <div class="flex items-center gap-4">
+                            <div class="w-14 h-14 rounded-full overflow-hidden bg-primary-container/20 flex items-center justify-center border border-outline-variant/30">
+                                <img th:if="${userProfile.avatarUrl != null and !#strings.isEmpty(userProfile.avatarUrl)}"
+                                     th:src="${userProfile.avatarUrl}" alt="Avatar"
+                                     onerror="this.onerror=null;this.src='/images/default-avatar.jpg';" class="w-full h-full object-cover">
+                                <img th:unless="${userProfile.avatarUrl != null and !#strings.isEmpty(userProfile.avatarUrl)}"
+                                     src="/images/default-avatar.jpg" alt="Avatar"
+                                     class="w-full h-full object-cover">
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <h3 class="font-headline-sm text-headline-sm text-on-surface truncate" th:text="${userProfile.fullName}">Họ và Tên</h3>
+                                <p class="text-xs text-outline truncate mt-0.5" th:text="${userProfile.email}">email@example.com</p>
+                            </div>
                         </div>
                     </div>
-                    <div class="shrink-0 flex items-center gap-3">
-                        <button class="bg-primary-container text-on-primary-container px-4 py-2 rounded-lg font-bold text-sm hover:bg-primary hover:text-white transition-colors flex items-center gap-1">
-                            <span class="material-symbols-outlined text-[18px]">play_arrow</span> Đọc tiếp
-                        </button>
-                        <button class="w-8 h-8 rounded-full hover:bg-surface-container flex items-center justify-center text-outline">
-                            <span class="material-symbols-outlined">more_vert</span>
-                        </button>
+
+                    <!-- Navigation menu -->
+                    <nav class="p-3 rounded-xl bg-surface-container-lowest shadow-[0_4px_20px_-2px_rgba(107,91,75,0.06)] space-y-1.5">
+                        <a th:href="@{/user/profile}"
+                           class="flex items-center gap-3.5 px-3.5 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all">
+                            <span class="material-symbols-outlined text-[20px]">person</span>
+                            <span class="font-label-lg text-label-lg">Hồ sơ cá nhân</span>
+                        </a>
+                        <a th:href="@{/user/bookshelf}"
+                           class="flex items-center gap-3.5 px-3.5 py-3 rounded-lg bg-surface-container text-primary-container font-bold shadow-sm transition-all">
+                            <span class="material-symbols-outlined text-[20px] icon-fill">bookmark</span>
+                            <span class="font-label-lg text-label-lg">Tủ sách</span>
+                        </a>
+                        <a href="#"
+                           class="flex items-center gap-3.5 px-3.5 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all">
+                            <span class="material-symbols-outlined text-[20px]">history</span>
+                            <span class="font-label-lg text-label-lg">Lịch sử đọc</span>
+                        </a>
+                        <a href="#"
+                           class="flex items-center gap-3.5 px-3.5 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all">
+                            <span class="material-symbols-outlined text-[20px]">mail</span>
+                            <span class="font-label-lg text-label-lg">Hòm thư</span>
+                        </a>
+                        <a href="#"
+                           class="flex items-center gap-3.5 px-3.5 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all">
+                            <span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
+                            <span class="font-label-lg text-label-lg">Ví Coin</span>
+                        </a>
+                    </nav>
+                </aside>
+
+                <!-- SECTION NỘI DUNG TỦ SÁCH -->
+                <section class="w-full min-w-0">
+                    <div class="flex flex-col w-full">
+
+                        <!-- KỊCH BẢN 1: TỦ SÁCH HOÀN TOÀN TRỐNG (totalCount == 0 && không có từ khóa tìm kiếm) -->
+                        <div th:if="${bookshelfPage.totalCount == 0 and (bookshelfPage.searchQuery == null or bookshelfPage.searchQuery == '')}" class="flex flex-col gap-8">
+                            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2">
+                                <div>
+                                    <div class="flex items-center gap-2 mb-1.5">
+                                        <span class="w-1.5 h-4 rounded-full bg-primary-container"></span>
+                                        <span class="font-label-sm text-label-sm text-tertiary uppercase tracking-widest">Bộ sưu tập cá nhân</span>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <h1 class="font-headline-lg text-headline-lg text-on-surface">Tủ sách của tôi</h1>
+                                        <span class="flex items-center justify-center px-2 py-0.5 rounded-full bg-surface-container-high font-label-md text-label-md text-tertiary">0 truyện</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="relative overflow-hidden rounded-2xl bg-surface-container-lowest p-8 md:p-14 shadow-[0_4px_24px_-2px_rgba(107,91,75,0.06)] flex flex-col items-center text-center">
+                                <div class="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-surface-container-high/40 blur-3xl pointer-events-none"></div>
+                                <div class="absolute -bottom-16 -left-16 w-72 h-72 rounded-full bg-primary-container/5 blur-3xl pointer-events-none"></div>
+                                
+                                <div class="relative mb-6">
+                                    <div class="w-32 h-32 md:w-36 md:h-36 rounded-full bg-surface-container flex items-center justify-center shadow-inner relative group transition-transform duration-500 hover:scale-105">
+                                        <div class="w-24 h-24 rounded-full bg-surface-container-low flex items-center justify-center">
+                                            <svg class="w-12 h-12 text-primary-container" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M8 38C12 36 18 36 24 39C30 36 36 36 40 38V12C36 10 30 10 24 13C18 10 12 10 8 12V38Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+                                                <path d="M24 13V39" stroke="currentColor" stroke-linecap="round" stroke-width="2.5"></path>
+                                                <path d="M14 20H18" opacity="0.6" stroke="currentColor" stroke-linecap="round" stroke-width="2"></path>
+                                                <path d="M14 26H20" opacity="0.6" stroke="currentColor" stroke-linecap="round" stroke-width="2"></path>
+                                                <path d="M28 20H34" opacity="0.6" stroke="currentColor" stroke-linecap="round" stroke-width="2"></path>
+                                                <path d="M30 26H34" opacity="0.6" stroke="currentColor" stroke-linecap="round" stroke-width="2"></path>
+                                            </svg>
+                                        </div>
+                                        <div class="absolute top-2 right-2 w-7 h-7 rounded-full bg-surface-container-lowest flex items-center justify-center text-primary-container shadow-sm">
+                                            <span class="material-symbols-outlined text-[16px]">bookmark_add</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="max-w-md mx-auto space-y-3">
+                                    <h2 class="font-headline-md text-headline-md text-on-surface">Tủ sách còn trống</h2>
+                                    <p class="font-body-reading text-body-md text-on-surface-variant leading-relaxed">
+                                        Bạn chưa lưu cuốn sách nào vào tủ sách cá nhân. Hãy bắt đầu khám phá hàng ngàn bộ truyện hấp dẫn tại Trạm Truyện và đánh dấu các hành trình kỳ thú của bạn!
+                                    </p>
+                                </div>
+
+                                <div class="mt-7">
+                                    <a class="inline-flex items-center gap-2.5 px-6 py-3 rounded-lg bg-primary-container text-surface-container-lowest hover:bg-primary transition-all font-label-lg text-label-lg shadow-md hover:shadow-lg group" th:href="@{/}">
+                                        <span>Khám phá truyện</span>
+                                        <span class="material-symbols-outlined text-[18px] transition-transform duration-300 group-hover:translate-x-1">auto_stories</span>
+                                    </a>
+                                </div>
+
+                                <!-- Thể loại thịnh hành từ database thật -->
+                                <div th:if="${bookshelfPage.popularCategories != null and !#lists.isEmpty(bookshelfPage.popularCategories)}" class="w-full max-w-lg mt-12 pt-8 relative">
+                                    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-px bg-outline-variant/40"></div>
+                                    <div class="flex items-center justify-center gap-2 mb-4">
+                                        <span class="material-symbols-outlined text-tertiary text-[18px]">local_fire_department</span>
+                                        <span class="font-label-sm text-label-sm text-tertiary uppercase tracking-wider font-semibold">Thể loại thịnh hành dành cho bạn</span>
+                                    </div>
+                                    <div class="flex flex-wrap items-center justify-center gap-2.5">
+                                        <a th:each="cat : ${bookshelfPage.popularCategories}"
+                                           th:href="@{/search(q=${cat.name})}"
+                                           class="group flex items-center gap-2 px-3.5 py-2 rounded-xl bg-surface-container-high hover:bg-primary-container hover:text-surface-container-lowest transition-all">
+                                            <span class="w-2 h-2 rounded-full bg-primary-container group-hover:bg-surface-container-lowest transition-colors"></span>
+                                            <span class="font-label-md text-label-md text-on-surface group-hover:text-surface-container-lowest font-medium" th:text="${cat.name}">Tiên hiệp</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                                <div class="p-5 rounded-xl bg-surface-container-low/70 flex items-start gap-4">
+                                    <div class="w-10 h-10 rounded-lg bg-surface-container-lowest flex items-center justify-center text-primary shrink-0 shadow-sm">
+                                        <span class="material-symbols-outlined text-[22px]">notifications_active</span>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <h3 class="font-label-lg text-label-lg text-on-surface font-semibold mb-1">Cập nhật tức thì</h3>
+                                        <p class="font-body-md text-body-md text-on-surface-variant">Nhận thông báo khi tác giả đăng chương truyện mới nhất.</p>
+                                    </div>
+                                </div>
+                                <div class="p-5 rounded-xl bg-surface-container-low/70 flex items-start gap-4">
+                                    <div class="w-10 h-10 rounded-lg bg-surface-container-lowest flex items-center justify-center text-primary shrink-0 shadow-sm">
+                                        <span class="material-symbols-outlined text-[22px]">devices</span>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <h3 class="font-label-lg text-label-lg text-on-surface font-semibold mb-1">Đồng bộ đa thiết bị</h3>
+                                        <p class="font-body-md text-body-md text-on-surface-variant">Lưu tiến trình đọc xuyên suốt giữa điện thoại và máy tính.</p>
+                                    </div>
+                                </div>
+                                <div class="p-5 rounded-xl bg-surface-container-low/70 flex items-start gap-4">
+                                    <div class="w-10 h-10 rounded-lg bg-surface-container-lowest flex items-center justify-center text-primary shrink-0 shadow-sm">
+                                        <span class="material-symbols-outlined text-[22px]">collections_bookmark</span>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <h3 class="font-label-lg text-label-lg text-on-surface font-semibold mb-1">Bộ sưu tập tùy chỉnh</h3>
+                                        <p class="font-body-md text-body-md text-on-surface-variant">Dễ dàng phân loại các bộ truyện yêu thích theo nhãn riêng.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- KỊCH BẢN 2: TỦ SÁCH CÓ TRUYỆN (Hoặc có truyện khi tìm kiếm/lọc) -->
+                        <div th:unless="${bookshelfPage.totalCount == 0 and (bookshelfPage.searchQuery == null or bookshelfPage.searchQuery == '')}" class="space-y-6">
+                            
+                            <!-- Header Box with Filter Chips and Search -->
+                            <div class="bg-surface-container-lowest p-6 sm:p-8 rounded-xl shadow-[0_4px_20px_-2px_rgba(107,91,75,0.06)]">
+                                <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                                    <div>
+                                        <div class="flex items-center gap-3">
+                                            <h1 class="font-headline-xl text-headline-xl text-on-surface">Tủ sách của tôi</h1>
+                                            <div class="hidden sm:flex items-center gap-2">
+                                                <span class="w-8 h-[1.5px] bg-primary-container/40"></span>
+                                                <span class="w-2 h-2 rounded-full bg-primary-container"></span>
+                                                <span class="w-8 h-[1.5px] bg-primary-container/40"></span>
+                                            </div>
+                                        </div>
+                                        <p class="font-body-md text-body-md text-on-surface-variant mt-2">
+                                            Lưu giữ và theo dõi tiến độ các bộ truyện yêu thích của bạn.
+                                        </p>
+                                    </div>
+                                    <div class="flex items-center gap-2 px-3.5 py-2 rounded-lg bg-surface-container-high self-start md:self-auto">
+                                        <span class="material-symbols-outlined text-primary text-[20px]">auto_stories</span>
+                                        <span class="font-label-md text-label-md text-on-surface">
+                                            Đã đọc <strong class="text-primary font-bold" th:text="${bookshelfPage.completedCount} + ' truyện'">0 truyện</strong>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- Filter Tabs & Search / Sort controls -->
+                                <div class="mt-8 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 pt-6 border-t-0 bg-surface-container-low/50 -mx-6 sm:-mx-8 px-6 sm:px-8 py-4 rounded-b-xl">
+                                    <!-- Filter tabs -->
+                                    <div class="flex flex-wrap items-center gap-2">
+                                        <a th:href="@{/user/bookshelf(filter='ALL', q=${bookshelfPage.searchQuery}, sort=${bookshelfPage.currentSort})}"
+                                           th:class="${bookshelfPage.currentFilter == 'ALL'} ? 
+                                                    'px-4 py-2 rounded-lg font-label-md text-label-md transition-all bg-primary-container text-surface-container-lowest shadow-sm' : 
+                                                    'px-4 py-2 rounded-lg font-label-md text-label-md transition-all bg-surface-container text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface'">
+                                            Tất cả (<span th:text="${bookshelfPage.totalCount}">0</span>)
+                                        </a>
+                                        <a th:href="@{/user/bookshelf(filter='READING', q=${bookshelfPage.searchQuery}, sort=${bookshelfPage.currentSort})}"
+                                           th:class="${bookshelfPage.currentFilter == 'READING'} ? 
+                                                    'px-4 py-2 rounded-lg font-label-md text-label-md transition-all bg-primary-container text-surface-container-lowest shadow-sm' : 
+                                                    'px-4 py-2 rounded-lg font-label-md text-label-md transition-all bg-surface-container text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface'">
+                                            Đang đọc (<span th:text="${bookshelfPage.readingCount}">0</span>)
+                                        </a>
+                                        <a th:href="@{/user/bookshelf(filter='COMPLETED', q=${bookshelfPage.searchQuery}, sort=${bookshelfPage.currentSort})}"
+                                           th:class="${bookshelfPage.currentFilter == 'COMPLETED'} ? 
+                                                    'px-4 py-2 rounded-lg font-label-md text-label-md transition-all bg-primary-container text-surface-container-lowest shadow-sm' : 
+                                                    'px-4 py-2 rounded-lg font-label-md text-label-md transition-all bg-surface-container text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface'">
+                                            Đã xong (<span th:text="${bookshelfPage.completedCount}">0</span>)
+                                        </a>
+                                    </div>
+
+                                    <!-- Search & Sort -->
+                                    <form th:action="@{/user/bookshelf}" method="GET" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 m-0">
+                                        <input type="hidden" name="filter" th:value="${bookshelfPage.currentFilter}">
+                                        <div class="relative flex-1 sm:w-64">
+                                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span>
+                                            <input name="q" th:value="${bookshelfPage.searchQuery}"
+                                                   class="w-full pl-9 pr-3 py-2 rounded-lg bg-surface-container-lowest font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary-container/30 shadow-sm"
+                                                   placeholder="Tìm trong tủ sách..." type="text">
+                                        </div>
+                                        <div class="relative">
+                                            <select name="sort" onchange="this.form.submit()"
+                                                    class="appearance-none w-full sm:w-auto pl-3.5 pr-8 py-2 rounded-lg bg-surface-container-lowest font-label-md text-label-md text-on-surface-variant focus:outline-none focus:ring-2 focus:ring-primary-container/30 shadow-sm cursor-pointer">
+                                                <option value="recent" th:selected="${bookshelfPage.currentSort == 'recent'}">Mới đọc gần đây</option>
+                                                <option value="name" th:selected="${bookshelfPage.currentSort == 'name'}">Tên truyện A - Z</option>
+                                                <option value="progress" th:selected="${bookshelfPage.currentSort == 'progress'}">Tiến độ cao nhất</option>
+                                            </select>
+                                            <span class="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-outline text-[18px]">expand_more</span>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <!-- Empty search result inside bookshelf -->
+                            <div th:if="${#lists.isEmpty(bookshelfPage.items)}" class="bg-surface-container-lowest p-12 rounded-xl text-center space-y-4 shadow-sm">
+                                <span class="material-symbols-outlined text-4xl text-outline">search_off</span>
+                                <h3 class="font-headline-sm text-on-surface font-bold">Không tìm thấy truyện phù hợp</h3>
+                                <p class="text-sm text-on-surface-variant">Không có kết quả nào khớp với điều kiện tìm kiếm hoặc bộ lọc hiện tại.</p>
+                                <a th:href="@{/user/bookshelf}" class="inline-block mt-2 px-5 py-2 rounded-lg bg-surface-container-high hover:bg-surface-container text-on-surface font-label-md text-label-md">
+                                    Xóa bộ lọc tìm kiếm
+                                </a>
+                            </div>
+
+                            <!-- List of Books in Bookshelf -->
+                            <div th:unless="${#lists.isEmpty(bookshelfPage.items)}" class="space-y-4">
+                                <article th:each="item : ${bookshelfPage.items}"
+                                         class="p-5 rounded-xl bg-surface-container-lowest shadow-[0_4px_20px_-2px_rgba(107,91,75,0.06)] hover:shadow-[0_8px_24px_-2px_rgba(107,91,75,0.10)] transition-all flex flex-col md:flex-row md:items-center justify-between gap-5 group">
+                                    
+                                    <div class="flex items-start gap-4 flex-1 min-w-0">
+                                        <!-- Cover Thumbnail (Click to view novel details) -->
+                                        <a th:href="@{/truyen/{slug}(slug=${item.slug != null ? item.slug : ('novel-' + item.novelId)})}"
+                                           class="block relative w-20 h-28 flex-shrink-0 overflow-hidden rounded-lg shadow-md bg-surface-container-high group-hover:shadow-lg transition-shadow">
+                                            <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                                 th:src="${item.coverUrl != null and !#strings.isEmpty(item.coverUrl) ? item.coverUrl : '/images/default-cover.jpg'}"
+                                                 th:alt="${item.title}"
+                                                 onerror="this.onerror=null;this.src='/images/default-cover.jpg';">
+                                            <span th:if="${item.hasVipChapters}" class="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded bg-surface/90 backdrop-blur font-label-sm text-label-sm text-primary font-bold shadow-xs">VIP</span>
+                                        </a>
+
+                                        <!-- Information -->
+                                        <div class="flex-1 min-w-0 space-y-2">
+                                            <div class="flex flex-wrap items-center gap-2">
+                                                <span th:each="cat : ${item.categories}"
+                                                      th:text="${cat}"
+                                                      class="px-2 py-0.5 rounded bg-surface-container font-label-sm text-label-sm text-on-surface-variant">
+                                                </span>
+                                                <span class="text-outline font-label-sm text-label-sm flex items-center gap-1">
+                                                    <span class="material-symbols-outlined text-[14px]">update</span>
+                                                    <span th:text="${item.relativeTime}">Vừa xong</span>
+                                                </span>
+                                            </div>
+
+                                            <div>
+                                                <h2 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors truncate">
+                                                    <a th:href="@{/truyen/{slug}(slug=${item.slug != null ? item.slug : ('novel-' + item.novelId)})}" th:text="${item.title}">Tên truyện</a>
+                                                </h2>
+                                                <p class="font-body-md text-body-md text-tertiary mt-0.5" th:text="${item.author}">Tác giả</p>
+                                            </div>
+
+                                            <!-- Progress Indicator -->
+                                            <div class="pt-1 max-w-md">
+                                                <div class="flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant mb-1.5">
+                                                    <span class="font-medium" th:if="${item.isCompleted}">
+                                                        Tiến độ: Chương <span th:text="${item.totalChapters}">0</span> / <span th:text="${item.totalChapters}">0</span> (Hoàn thành)
+                                                    </span>
+                                                    <span class="font-medium" th:unless="${item.isCompleted}">
+                                                        Tiến độ: Chương <span th:text="${item.currentChapterNumber}">0</span> / <span th:text="${item.totalChapters}">0</span>
+                                                    </span>
+                                                    <span class="font-semibold text-primary" th:text="${item.progressPercentage} + '%'">0%</span>
+                                                </div>
+                                                <div class="bookshelf-progress-bar">
+                                                    <div class="bookshelf-progress-fill"
+                                                         th:data-progress="${item.progressPercentage}"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Action Buttons & Dropdown -->
+                                    <div class="flex items-center justify-end gap-3 pt-3 md:pt-0">
+                                        <!-- Primary action: Đọc tiếp or Đọc lại -->
+                                        <a th:if="${item.isCompleted}"
+                                           th:href="${item.readUrl}"
+                                           class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-surface-container-high hover:bg-surface-container text-on-surface font-label-lg text-label-lg transition-colors shadow-sm">
+                                            <span class="material-symbols-outlined text-[18px]">restart_alt</span>
+                                            <span>Đọc lại</span>
+                                        </a>
+                                        <a th:unless="${item.isCompleted}"
+                                           th:href="${item.readUrl}"
+                                           class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary-container hover:bg-primary text-surface-container-lowest font-label-lg text-label-lg transition-colors shadow-sm">
+                                            <span class="material-symbols-outlined text-[18px]">play_arrow</span>
+                                            <span>Đọc tiếp</span>
+                                        </a>
+
+                                        <!-- More Actions Dropdown -->
+                                        <div class="relative action-menu-container">
+                                            <button aria-label="Thao tác khác" type="button"
+                                                    class="w-10 h-10 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors"
+                                                    onclick="toggleDropdown(this)">
+                                                <span class="material-symbols-outlined text-[20px]">more_vert</span>
+                                            </button>
+
+                                            <div class="action-dropdown hidden absolute right-0 top-12 w-52 py-2 rounded-xl bg-surface-container-lowest shadow-[0_12px_32px_-4px_rgba(107,91,75,0.12)] z-30 border border-surface-container">
+                                                <!-- Đánh dấu đã đọc -->
+                                                <form th:action="@{/user/bookshelf/{id}/mark-read(id=${item.novelId})}" method="POST" class="m-0">
+                                                    <button type="submit" class="w-full text-left px-4 py-2 font-label-md text-label-md text-on-surface hover:bg-surface-container-low flex items-center gap-2.5">
+                                                        <span class="material-symbols-outlined text-outline text-[18px]">check_circle</span>
+                                                        Đánh dấu đã đọc
+                                                    </button>
+                                                </form>
+
+                                                <!-- Báo chương mới -->
+                                                <button type="button" onclick="notifySubscription(this)" class="w-full text-left px-4 py-2 font-label-md text-label-md text-on-surface hover:bg-surface-container-low flex items-center gap-2.5">
+                                                    <span class="material-symbols-outlined text-outline text-[18px]">notifications_active</span>
+                                                    Báo chương mới
+                                                </button>
+
+                                                <div class="my-1 border-t border-surface-container"></div>
+
+                                                <!-- Xóa khỏi tủ sách (Mở Modal) -->
+                                                <button type="button"
+                                                        th:data-id="${item.novelId}"
+                                                        th:data-title="${item.title}"
+                                                        th:data-author="${item.author}"
+                                                        th:data-cover="${item.coverUrl != null and !#strings.isEmpty(item.coverUrl) ? item.coverUrl : '/images/default-cover.jpg'}"
+                                                        th:data-category="${not #lists.isEmpty(item.categories) ? item.categories[0] : 'Truyện chữ'}"
+                                                        th:data-chapter="${item.currentChapterNumber > 0 ? 'Chương ' + item.currentChapterNumber : 'Chưa đọc'}"
+                                                        onclick="openDeleteModalFromBtn(this)"
+                                                        class="w-full text-left px-4 py-2 font-label-md text-label-md text-error hover:bg-error-container/30 flex items-center gap-2.5">
+                                                    <span class="material-symbols-outlined text-error text-[18px]">delete</span>
+                                                    Xóa khỏi tủ sách
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </article>
+                            </div>
+
+                            <!-- Phân trang chuẩn -->
+                            <div th:if="${bookshelfPage.totalPages > 1}" class="pt-4 flex flex-col sm:flex-row items-center justify-between gap-4 font-label-md text-label-md text-on-surface-variant">
+                                <div class="flex items-center gap-2">
+                                    <span>Trang <strong th:text="${bookshelfPage.currentPage}">1</strong> trên tổng số <strong th:text="${bookshelfPage.totalPages}">1</strong></span>
+                                </div>
+
+                                <nav aria-label="Phân trang" class="flex items-center gap-1.5">
+                                    <!-- Previous -->
+                                    <a th:if="${bookshelfPage.hasPrevious}"
+                                       th:href="@{/user/bookshelf(filter=${bookshelfPage.currentFilter}, q=${bookshelfPage.searchQuery}, sort=${bookshelfPage.currentSort}, page=${bookshelfPage.currentPage - 1})}"
+                                       class="w-9 h-9 rounded-lg flex items-center justify-center text-on-surface bg-surface-container-lowest hover:bg-surface-container-high transition-colors">
+                                        <span class="material-symbols-outlined text-[20px]">chevron_left</span>
+                                    </a>
+                                    <span th:unless="${bookshelfPage.hasPrevious}"
+                                          class="w-9 h-9 rounded-lg flex items-center justify-center text-outline/40 bg-surface-container-lowest opacity-50 cursor-not-allowed">
+                                        <span class="material-symbols-outlined text-[20px]">chevron_left</span>
+                                    </span>
+
+                                    <!-- Page numbers -->
+                                    <th:block th:each="pageNum : ${#numbers.sequence(1, bookshelfPage.totalPages)}">
+                                        <a th:if="${pageNum == bookshelfPage.currentPage}"
+                                           class="w-9 h-9 rounded-lg flex items-center justify-center bg-primary-container text-surface-container-lowest font-bold shadow-xs"
+                                           th:text="${pageNum}">1</a>
+                                        <a th:unless="${pageNum == bookshelfPage.currentPage}"
+                                           th:href="@{/user/bookshelf(filter=${bookshelfPage.currentFilter}, q=${bookshelfPage.searchQuery}, sort=${bookshelfPage.currentSort}, page=${pageNum})}"
+                                           class="w-9 h-9 rounded-lg flex items-center justify-center bg-surface-container-lowest text-on-surface hover:bg-surface-container-high transition-colors"
+                                           th:text="${pageNum}">2</a>
+                                    </th:block>
+
+                                    <!-- Next -->
+                                    <a th:if="${bookshelfPage.hasNext}"
+                                       th:href="@{/user/bookshelf(filter=${bookshelfPage.currentFilter}, q=${bookshelfPage.searchQuery}, sort=${bookshelfPage.currentSort}, page=${bookshelfPage.currentPage + 1})}"
+                                       class="w-9 h-9 rounded-lg flex items-center justify-center text-on-surface bg-surface-container-lowest hover:bg-surface-container-high transition-colors">
+                                        <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+                                    </a>
+                                    <span th:unless="${bookshelfPage.hasNext}"
+                                          class="w-9 h-9 rounded-lg flex items-center justify-center text-outline/40 bg-surface-container-lowest opacity-50 cursor-not-allowed">
+                                        <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+                                    </span>
+                                </nav>
+                            </div>
+                        </div>
+
                     </div>
-                </div>
-            </div>
-            
-            <!-- Phân trang -->
-            <div class="flex items-center justify-center gap-2 mt-8">
-                <button class="w-8 h-8 rounded flex items-center justify-center hover:bg-surface-container text-outline"><span class="material-symbols-outlined text-[18px]">chevron_left</span></button>
-                <button class="w-8 h-8 rounded bg-primary text-white font-bold">1</button>
-                <button class="w-8 h-8 rounded hover:bg-surface-container">2</button>
-                <button class="w-8 h-8 rounded hover:bg-surface-container">3</button>
-                <button class="w-8 h-8 rounded flex items-center justify-center hover:bg-surface-container text-outline"><span class="material-symbols-outlined text-[18px]">chevron_right</span></button>
+                </section>
             </div>
         </div>
     </main>
 
-    <!-- Modal Xóa -->
-    <div id="deleteModal" class="modal fixed inset-0 z-[100] items-center justify-center bg-black/40 backdrop-blur-sm">
-        <div class="bg-surface rounded-2xl p-6 w-[400px] shadow-2xl text-center">
-            <div class="w-12 h-12 rounded-full bg-error-container text-error flex items-center justify-center mx-auto mb-4">
-                <span class="material-symbols-outlined">delete</span>
-            </div>
-            <h3 class="text-xl font-bold mb-2">Xóa khỏi tủ sách?</h3>
-            <p class="text-sm text-on-surface-variant mb-6">Bạn có chắc chắn muốn xóa tác phẩm <strong>Quỷ Bí Chi Chủ</strong> khỏi tủ sách cá nhân? Tiến độ đọc hiện tại (Chương 542) vẫn sẽ được lưu trữ an toàn trong <strong>Lịch sử đọc</strong>.</p>
+    <!-- HỘP THOẠI XÁC NHẬN XÓA (MODAL THEO ĐÚNG HTML THIẾT KẾ ĐỀ BÀI) -->
+    <div id="deleteModalBackdrop" class="fixed inset-0 z-50 bg-inverse-surface/60 backdrop-blur-[3px] transition-opacity duration-300 hidden items-center justify-center p-4">
+        <div id="deleteModalCard" class="relative w-full max-w-[480px] bg-surface-container-lowest rounded-2xl shadow-[0_24px_48px_-12px_rgba(57,46,37,0.35),0_4px_16px_rgba(107,91,75,0.08)] p-7 sm:p-8 space-y-6 transform transition-all duration-300 scale-95 opacity-0">
             
-            <div class="flex gap-3">
-                <button class="flex-1 py-2.5 rounded-lg border border-outline text-on-surface font-bold hover:bg-surface-container" onclick="document.getElementById('deleteModal').classList.remove('show')">Hủy</button>
-                <button class="flex-1 py-2.5 rounded-lg bg-[#b3261e] text-white font-bold hover:bg-[#8c1d18] flex items-center justify-center gap-1">
-                    <span class="material-symbols-outlined text-[18px]">delete</span> Xóa khỏi tủ sách
-                </button>
+            <!-- Close Button '✕' top-right -->
+            <button aria-label="Đóng cửa sổ" type="button" onclick="closeDeleteModal()"
+                    class="absolute top-5 right-5 w-8 h-8 rounded-full flex items-center justify-center text-outline hover:text-on-surface hover:bg-surface-container-high transition-colors focus:outline-none">
+                <span class="material-symbols-outlined text-[20px]">close</span>
+            </button>
+
+            <!-- Top Icon -->
+            <div class="flex flex-col items-center text-center space-y-3 pt-1">
+                <div class="w-16 h-16 rounded-full bg-surface-container-high flex items-center justify-center text-secondary shadow-[inset_0_2px_4px_rgba(107,91,75,0.06)] relative">
+                    <span class="material-symbols-outlined text-[32px] select-none text-secondary">bookmark_remove</span>
+                    <span class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-surface-container-low flex items-center justify-center text-secondary shadow-sm">
+                        <span class="material-symbols-outlined text-[14px]">delete</span>
+                    </span>
+                </div>
+                <span class="font-label-sm text-label-sm uppercase tracking-widest text-secondary font-semibold">Thao tác thư viện</span>
+                <h2 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Xóa khỏi tủ sách?</h2>
+            </div>
+
+            <!-- Book Preview Snippet Card -->
+            <div class="p-3.5 rounded-xl bg-surface-container-low flex items-center gap-3.5 shadow-sm">
+                <div class="w-12 h-16 rounded-md overflow-hidden flex-shrink-0 shadow-sm bg-surface-container-high">
+                    <img id="modalCover" class="w-full h-full object-cover" src="/images/default-cover.jpg" alt="Book cover">
+                </div>
+                <div class="min-w-0 flex-1">
+                    <div class="flex items-center gap-2">
+                        <h5 id="modalTitle" class="font-headline-sm text-headline-sm text-on-surface truncate">Tên truyện</h5>
+                        <span id="modalCategory" class="font-label-sm text-label-sm px-1.5 py-0.2 rounded bg-surface-container text-tertiary shrink-0">Thể loại</span>
+                    </div>
+                    <p id="modalAuthor" class="font-body-md text-body-md text-tertiary truncate">Tác giả</p>
+                    <div class="flex items-center gap-1.5 mt-0.5 font-label-sm text-label-sm text-primary font-medium">
+                        <span class="material-symbols-outlined text-[14px]">auto_stories</span>
+                        <span id="modalChapter">Đang đọc: Chương 1</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Description Body -->
+            <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed text-center px-1">
+                Bạn có chắc chắn muốn xóa truyện <strong id="modalTitleStrong" class="text-on-surface font-semibold">“...”</strong> khỏi tủ sách cá nhân? Tiến độ đọc hiện tại (<span id="modalProgressText" class="text-primary font-semibold">Chương 1</span>) vẫn sẽ được lưu trữ an toàn trong <strong class="text-on-surface font-semibold">Lịch sử đọc</strong>.
+            </p>
+
+            <!-- Action Footer Form -->
+            <form id="deleteForm" method="POST" action="">
+                <div class="flex flex-col-reverse sm:flex-row items-center gap-3 pt-2">
+                    <button type="button" onclick="closeDeleteModal()"
+                            class="w-full sm:flex-1 py-3 px-5 rounded-lg bg-transparent hover:bg-surface-container font-label-lg text-label-lg text-tertiary hover:text-on-surface transition-all text-center focus:outline-none shadow-sm">
+                        Hủy
+                    </button>
+                    <button type="submit" id="confirmDeleteBtn"
+                            class="w-full sm:flex-1 py-3 px-5 rounded-lg bg-secondary hover:bg-on-secondary-container text-on-secondary font-label-lg text-label-lg shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 focus:outline-none">
+                        <span class="material-symbols-outlined text-[18px]">delete</span>
+                        <span>Xóa khỏi tủ sách</span>
+                    </button>
+                </div>
+            </form>
+
+            <div class="text-center pt-1">
+                <p class="font-label-sm text-label-sm text-outline">Truyện có thể thêm lại bất kỳ lúc nào từ trang chi tiết truyện.</p>
             </div>
         </div>
     </div>
+
+    <!-- Footer -->
+    <div th:replace="~{fragments/footer :: main-footer}"></div>
+
+    <!-- External Scripts for Dropdown, Modal, and Micro-interactions -->
+    <script th:src="@{/js/bookshelf.js}"></script>
 </body>
 </html>

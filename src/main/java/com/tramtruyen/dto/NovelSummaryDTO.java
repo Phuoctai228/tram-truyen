@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 public class NovelSummaryDTO {
     private Integer id;
     private String title;
+    private String slug;
     private String author;
     private String summary;
     private String coverUrl;

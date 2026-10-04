@@ -20,6 +20,9 @@ public class Novel {
     @Column(nullable = false, length = 255)
     private String title;
 
+    @Column(length = 255, unique = true)
+    private String slug;
+
     @Column(nullable = false, length = 100)
     private String author;
 
@@ -56,4 +59,21 @@ public class Novel {
 
     @Column(name = "updated_at", insertable = false, updatable = false)
     private LocalDateTime updatedAt;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "novel_categories",
+        joinColumns = @JoinColumn(name = "novel_id"),
+        inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    @Builder.Default
+    private java.util.Set<Category> categories = new java.util.HashSet<>();
+
+    public String getSlug() {
+        if (slug != null && !slug.isBlank()) {
+            return slug;
+        }
+        String generated = com.tramtruyen.util.SlugUtils.toSlug(title);
+        return (generated != null && !generated.isBlank()) ? generated : ("novel-" + (id != null ? id : ""));
+    }
 }

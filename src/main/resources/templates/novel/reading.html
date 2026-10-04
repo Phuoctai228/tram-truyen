@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
@@ -16,7 +16,7 @@
   <header class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-md shadow-[0_2px_12px_rgba(107,91,75,0.05)]">
     <div class="h-14 max-w-5xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-4">
       <div class="flex items-center gap-3 min-w-0">
-        <a class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors flex items-center justify-center" th:href="@{/novel/{id}(id=${novel.id})}">
+        <a class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors flex items-center justify-center" th:href="@{/truyen/{slug}(slug=${novel.slug})}">
           <span class="material-symbols-outlined text-[20px]">arrow_back</span>
         </a>
         <div class="flex flex-col truncate">
@@ -31,9 +31,31 @@
         <a class="p-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors flex items-center justify-center cursor-pointer" onclick="document.getElementById('settings-drawer').classList.toggle('translate-x-full')">
           <span class="material-symbols-outlined text-[20px]">format_size</span>
         </a>
-        <a class="p-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors flex items-center justify-center" th:href="@{/novel/{id}/chapters(id=${novel.id})}">
+        <a class="p-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors flex items-center justify-center" th:href="@{/truyen/{slug}#chapters(slug=${novel.slug})}">
           <span class="material-symbols-outlined text-[20px]">format_list_bulleted</span>
         </a>
+
+        <!-- Bookshelf Action in Reader -->
+        <div sec:authorize="isAuthenticated()" class="inline-block">
+          <form th:if="${inBookshelf}" th:action="@{/user/bookshelf/{id}/remove(id=${novel.id})}" method="POST" class="m-0">
+            <input type="hidden" name="source" th:value="'/truyen/' + ${novel.slug} + '/chuong-' + ${chapter.chapterNumber}">
+            <button type="submit" class="p-2 rounded-lg text-primary hover:bg-surface-container transition-colors flex items-center justify-center" title="Đã lưu trong Tủ sách (Nhấn để bỏ lưu)">
+              <span class="material-symbols-outlined text-[20px] icon-fill">bookmark</span>
+            </button>
+          </form>
+          <form th:unless="${inBookshelf}" th:action="@{/user/bookshelf/{id}(id=${novel.id})}" method="POST" class="m-0">
+            <input type="hidden" name="source" th:value="'/truyen/' + ${novel.slug} + '/chuong-' + ${chapter.chapterNumber}">
+            <button type="submit" class="p-2 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors flex items-center justify-center" title="Lưu vào Tủ sách">
+              <span class="material-symbols-outlined text-[20px]">bookmark_add</span>
+            </button>
+          </form>
+        </div>
+        <div sec:authorize="!isAuthenticated()" class="inline-block">
+          <button type="button" onclick="openLoginRequiredModal('Vui lòng đăng nhập để lưu truyện vào Tủ sách và theo dõi tiến độ đọc của bạn.')"
+                  class="p-2 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors flex items-center justify-center" title="Lưu vào Tủ sách">
+            <span class="material-symbols-outlined text-[20px]">bookmark_add</span>
+          </button>
+        </div>
       </div>
     </div>
   </header>
@@ -77,7 +99,7 @@
         </article>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 mt-8">
-          <a th:if="${chapter.chapterNumber > 1}" th:href="@{/novel/{id}/read/{chapterNumber}(id=${novel.id}, chapterNumber=${chapter.chapterNumber - 1})}" class="p-5 rounded-2xl bg-surface-container hover:bg-surface-container-high transition-all flex items-center justify-between gap-4 group shadow-sm">
+          <a th:if="${chapter.chapterNumber > 1}" th:href="@{/truyen/{slug}/chuong-{chapterNumber}(slug=${novel.slug}, chapterNumber=${chapter.chapterNumber - 1})}" class="p-5 rounded-2xl bg-surface-container hover:bg-surface-container-high transition-all flex items-center justify-between gap-4 group shadow-sm">
             <div class="w-10 h-10 rounded-xl bg-primary text-on-primary flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform flex-shrink-0">
               <span class="material-symbols-outlined text-[20px]">arrow_back</span>
             </div>
@@ -89,7 +111,7 @@
             </div>
           </a>
           
-          <a th:href="@{/novel/{id}/read/{chapterNumber}(id=${novel.id}, chapterNumber=${chapter.chapterNumber + 1})}" class="p-5 rounded-2xl bg-surface-container hover:bg-surface-container-high transition-all flex items-center justify-between gap-4 group shadow-sm" th:classappend="${chapter.chapterNumber <= 1 ? 'col-start-2' : ''}">
+          <a th:href="@{/truyen/{slug}/chuong-{chapterNumber}(slug=${novel.slug}, chapterNumber=${chapter.chapterNumber + 1})}" class="p-5 rounded-2xl bg-surface-container hover:bg-surface-container-high transition-all flex items-center justify-between gap-4 group shadow-sm" th:classappend="${chapter.chapterNumber <= 1 ? 'col-start-2' : ''}">
             <div class="min-w-0">
               <span class="font-label-sm text-label-sm text-primary uppercase tracking-wider block">Chương kế tiếp</span>
               <span class="font-label-lg text-label-lg text-on-surface font-semibold truncate block group-hover:text-primary transition-colors">
@@ -171,7 +193,7 @@
 
       <footer class="fixed bottom-0 left-0 right-0 z-40 bg-surface/95 backdrop-blur-md shadow-[0_-4px_20px_rgba(107,91,75,0.06)]">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
-          <a th:if="${chapter.chapterNumber > 1}" th:href="@{/novel/{id}/read/{chapterNumber}(id=${novel.id}, chapterNumber=${chapter.chapterNumber - 1})}" class="flex items-center gap-2 px-3.5 py-2 rounded-xl text-outline font-label-md text-label-md hover:text-on-surface">
+          <a th:if="${chapter.chapterNumber > 1}" th:href="@{/truyen/{slug}/chuong-{chapterNumber}(slug=${novel.slug}, chapterNumber=${chapter.chapterNumber - 1})}" class="flex items-center gap-2 px-3.5 py-2 rounded-xl text-outline font-label-md text-label-md hover:text-on-surface">
             <span class="material-symbols-outlined text-[18px]">chevron_left</span>
             <span class="hidden sm:inline">Chương trước</span>
           </a>
@@ -186,12 +208,12 @@
               <span class="font-semibold text-primary" id="progress-percent">0% hoàn thành</span>
             </div>
             <div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden relative cursor-pointer group">
-              <div class="h-full bg-primary rounded-full transition-all duration-150" id="reading-bar" style="width: 0%;"></div>
+              <div class="h-full bg-primary rounded-full transition-all duration-150 w-0" id="reading-bar"></div>
             </div>
           </div>
           
           <div class="flex items-center gap-2">
-            <a th:href="@{/novel/{id}/read/{chapterNumber}(id=${novel.id}, chapterNumber=${chapter.chapterNumber + 1})}" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md shadow-sm transition-transform active:scale-95">
+            <a th:href="@{/truyen/{slug}/chuong-{chapterNumber}(slug=${novel.slug}, chapterNumber=${chapter.chapterNumber + 1})}" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md shadow-sm transition-transform active:scale-95">
               <span class="font-medium">Chương sau</span>
               <span class="material-symbols-outlined text-[18px]">chevron_right</span>
             </a>
@@ -541,5 +563,8 @@
       window.addEventListener('beforeunload', stopAudio);
     })();
   </script>
+
+  <!-- Login Required Modal -->
+  <div th:replace="~{fragments/auth-modal :: login-modal}"></div>
 </body>
 </html>

@@ -153,7 +153,7 @@
 
             <div class="mt-5 text-center font-body-md text-body-md text-tertiary">
                 Đã có tài khoản? 
-                <a th:href="@{/login}" class="text-primary-container font-semibold hover:underline ml-1 transition-colors">Đăng nhập</a>
+                <a th:href="${redirect != null} ? @{/login(redirect=${redirect})} : @{/login}" class="text-primary-container font-semibold hover:underline ml-1 transition-colors">Đăng nhập</a>
             </div>
         </div>
     </div>
