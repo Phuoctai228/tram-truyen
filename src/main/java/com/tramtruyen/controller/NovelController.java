@@ -113,8 +113,28 @@ public class NovelController {
             inBookshelf = bookshelfService.isNovelInBookshelf(authentication.getName(), novel.getId());
         }
 
+        List<Chapter> chapters = chapterService.getPublicChapters(novel.getId());
+        Integer prevChapterNumber = null;
+        Integer nextChapterNumber = null;
+        for (int i = 0; i < chapters.size(); i++) {
+            if (chapters.get(i).getChapterNumber().equals(chapterNumber)) {
+                if (i > 0) {
+                    prevChapterNumber = chapters.get(i - 1).getChapterNumber();
+                }
+                if (i < chapters.size() - 1) {
+                    nextChapterNumber = chapters.get(i + 1).getChapterNumber();
+                }
+                break;
+            }
+        }
+        boolean isLatestChapter = (nextChapterNumber == null);
+
         model.addAttribute("novel", novel);
         model.addAttribute("chapter", chapter);
+        model.addAttribute("chapters", chapters);
+        model.addAttribute("prevChapterNumber", prevChapterNumber);
+        model.addAttribute("nextChapterNumber", nextChapterNumber);
+        model.addAttribute("isLatestChapter", isLatestChapter);
         model.addAttribute("inBookshelf", inBookshelf);
         return "novel/reading";
     }
