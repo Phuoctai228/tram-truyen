@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 
 @Controller
 public class AuthController {
@@ -27,7 +29,12 @@ public class AuthController {
     public String showLoginForm(
             @RequestParam(value = "redirect", required = false) String redirect,
             HttpServletRequest request,
+            Authentication authentication,
             Model model) {
+            
+        if (authentication != null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
+            return "redirect:/";
+        }
         String targetRedirect = redirect;
         if (targetRedirect == null || targetRedirect.isBlank() || "/".equals(targetRedirect)) {
             Object sessionRedirect = request.getSession().getAttribute("REDIRECT_URL");
@@ -52,7 +59,12 @@ public class AuthController {
     public String showRegistrationForm(
             @RequestParam(value = "redirect", required = false) String redirect,
             HttpServletRequest request,
+            Authentication authentication,
             Model model) {
+            
+        if (authentication != null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
+            return "redirect:/";
+        }
         String targetRedirect = redirect;
         if (targetRedirect == null || targetRedirect.isBlank() || "/".equals(targetRedirect)) {
             Object sessionRedirect = request.getSession().getAttribute("REDIRECT_URL");
