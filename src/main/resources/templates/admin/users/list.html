@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Quản lý người dùng & phân quyền | Trạm Truyện</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script th:src="@{/js/authentication/tailwind-config.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/novel-admin.css}">
+    <style>
+        .font-serif-title { font-family: 'Lora', serif; }
+        .ban-row { background-color: #fff4f2 !important; }
+        .ban-row:hover td { background-color: #feebe8 !important; }
+    </style>
+</head>
+<body class="bg-[#fff8f5] text-[#231a11] font-sans antialiased min-h-screen">
+
+<!-- Admin Sidebar (Reusing layout.html) -->
+<div th:replace="~{admin/fragments/layout :: sidebar('nguoi-dung')}"></div>
+
+<main class="page-shell">
+    <!-- Admin Topbar (Reusing layout.html) -->
+    <div th:replace="~{admin/fragments/layout :: topbar}"></div>
+
+    <section class="content max-w-7xl mx-auto px-4 md:px-8 py-8">
+
+        <!-- Page Heading -->
+        <div class="mb-8">
+            <div class="flex items-center gap-1.5 text-xs font-bold tracking-wider text-[#875200] uppercase mb-1.5">
+                <span class="material-symbols-outlined text-[16px]">manage_accounts</span>
+                <span>HỆ THỐNG PHÂN QUYỀN & THÀNH VIÊN</span>
+            </div>
+            <h1 class="font-serif-title text-3xl md:text-4xl font-bold text-[#231a11] tracking-tight mb-2">
+                Quản lý người dùng & phân quyền
+            </h1>
+            <p class="text-sm text-[#75695d]">
+                Theo dõi, cấp bậc tác quyền và kiểm duyệt trạng thái tài khoản trên hệ thống Trạm Truyện.
+            </p>
+        </div>
+
+        <!-- Flash Notifications -->
+        <div th:if="${successMessage}" class="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center gap-3">
+            <span class="material-symbols-outlined text-emerald-600">check_circle</span>
+            <span class="text-sm font-medium" th:text="${successMessage}"></span>
+        </div>
+        <div th:if="${infoMessage}" class="mb-6 p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 flex items-center gap-3">
+            <span class="material-symbols-outlined text-amber-600">info</span>
+            <span class="text-sm font-medium" th:text="${infoMessage}"></span>
+        </div>
+        <div th:if="${errorMessage}" class="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-800 flex items-center gap-3">
+            <span class="material-symbols-outlined text-red-600">error</span>
+            <span class="text-sm font-medium" th:text="${errorMessage}"></span>
+        </div>
+
+        <!-- 3 System Overview Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+            <!-- Total Users Card -->
+            <div class="bg-white border border-[#ead8cb] rounded-2xl p-6 shadow-sm flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold text-[#75695d] uppercase tracking-wider mb-1">Tổng người dùng</p>
+                    <p class="text-3xl font-bold text-[#231a11]" th:text="${#numbers.formatDecimal(stats.totalUsers, 0, 'POINT', 0, 'POINT')}">0</p>
+                </div>
+                <div class="w-12 h-12 rounded-full bg-[#fef0e6] flex items-center justify-center text-[#875200]">
+                    <span class="material-symbols-outlined text-[24px]">group</span>
+                </div>
+            </div>
+
+            <!-- Active Users Card -->
+            <div class="bg-white border border-[#ead8cb] rounded-2xl p-6 shadow-sm flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold text-[#75695d] uppercase tracking-wider mb-1">Đang hoạt động</p>
+                    <p class="text-3xl font-bold text-[#231a11]" th:text="${#numbers.formatDecimal(stats.activeUsers, 0, 'POINT', 0, 'POINT')}">0</p>
+                    <div class="flex items-center gap-1.5 mt-1.5 text-xs text-[#75695d]">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                        <span th:text="${stats.activePercentage + ' tổng tài khoản'}">0% tổng tài khoản</span>
+                    </div>
+                </div>
+                <div class="w-12 h-12 rounded-full bg-[#e8f5e9] flex items-center justify-center text-[#2e7d32]">
+                    <span class="material-symbols-outlined text-[24px]">verified_user</span>
+                </div>
+            </div>
+
+            <!-- Banned Users Card -->
+            <div class="bg-white border border-[#ead8cb] rounded-2xl p-6 shadow-sm flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold text-[#75695d] uppercase tracking-wider mb-1">Đang bị khóa</p>
+                    <p class="text-3xl font-bold text-[#231a11]" th:text="${#numbers.formatDecimal(stats.bannedUsers, 0, 'POINT', 0, 'POINT')}">0</p>
+                    <div class="flex items-center gap-1.5 mt-1.5 text-xs text-[#9e422c] font-medium">
+                        <span class="material-symbols-outlined text-[14px]">warning</span>
+                        <span>Cần xử lý vi phạm</span>
+                    </div>
+                </div>
+                <div class="w-12 h-12 rounded-full bg-[#ffd9d1] flex items-center justify-center text-[#9e422c]">
+                    <span class="material-symbols-outlined text-[24px]">block</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toolbar: Search and Filters -->
+        <form id="filterForm" method="get" th:action="@{/admin/users}"
+              class="bg-[#fff1e8] border border-[#ead8cb] rounded-2xl p-4 mb-6 flex flex-col md:flex-row items-stretch md:items-center gap-3">
+            
+            <!-- Search input -->
+            <div class="flex-1 relative flex items-center bg-white border border-[#ead8cb] rounded-xl px-3 py-2 focus-within:border-[#875200] transition-colors shadow-sm">
+                <span class="material-symbols-outlined text-[#75695d] text-[20px] mr-2">search</span>
+                <input type="text" name="keyword" th:value="${keyword}"
+                       placeholder="Tìm theo email, tên hiển thị, ID..."
+                       class="w-full bg-transparent border-0 outline-none text-sm text-[#231a11] placeholder:text-[#a09081]" />
+            </div>
+
+            <!-- Role filter -->
+            <div class="relative w-full md:w-52">
+                <select name="role" onchange="this.form.submit()"
+                        class="w-full bg-white border border-[#ead8cb] rounded-xl px-3 py-2.5 text-sm text-[#231a11] outline-none focus:border-[#875200] transition-colors cursor-pointer shadow-sm">
+                    <option value="" th:selected="${role == ''}">Tất cả vai trò</option>
+                    <option value="ROLE_MEMBER" th:selected="${role == 'ROLE_MEMBER'}">Độc giả</option>
+                    <option value="ROLE_STAFF" th:selected="${role == 'ROLE_STAFF'}">Nhân viên</option>
+                    <option value="ROLE_ADMIN" th:selected="${role == 'ROLE_ADMIN'}">Quản trị viên</option>
+                </select>
+            </div>
+
+            <!-- Status filter -->
+            <div class="relative w-full md:w-52">
+                <select name="status" onchange="this.form.submit()"
+                        class="w-full bg-white border border-[#ead8cb] rounded-xl px-3 py-2.5 text-sm text-[#231a11] outline-none focus:border-[#875200] transition-colors cursor-pointer shadow-sm">
+                    <option value="" th:selected="${status == ''}">Tất cả trạng thái</option>
+                    <option value="ACTIVE" th:selected="${status == 'ACTIVE'}">Đang hoạt động</option>
+                    <option value="PENDING_VERIFICATION" th:selected="${status == 'PENDING_VERIFICATION'}">Chờ kích hoạt</option>
+                    <option value="BANNED" th:selected="${status == 'BANNED'}">Bị khóa</option>
+                </select>
+            </div>
+
+            <!-- Reset Filters -->
+            <a th:href="@{/admin/users}" title="Bỏ lọc"
+               class="flex items-center justify-center p-2.5 rounded-xl border border-[#ead8cb] bg-white text-[#75695d] hover:bg-[#feeadc] hover:text-[#875200] transition-colors shadow-sm">
+                <span class="material-symbols-outlined text-[20px]">filter_alt_off</span>
+            </a>
+        </form>
+
+        <!-- User Table Panel -->
+        <div class="bg-white border border-[#ead8cb] rounded-2xl overflow-hidden shadow-sm">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-[#fff1e8] text-[11px] font-bold text-[#75695d] uppercase tracking-wider border-b border-[#ead8cb]">
+                            <th class="py-4 px-6">Avatar & Họ tên</th>
+                            <th class="py-4 px-6">Email</th>
+                            <th class="py-4 px-6">Vai trò</th>
+                            <th class="py-4 px-6 text-center">Số dư Coin</th>
+                            <th class="py-4 px-6 text-center">Trạng thái</th>
+                            <th class="py-4 px-6">Ngày tham gia</th>
+                            <th class="py-4 px-6 text-right">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-[#ead8cb] text-sm">
+                        <!-- User Row -->
+                        <tr th:each="user : ${users.content}"
+                            th:classappend="${user.banned ? 'ban-row' : ''}">
+
+                            <!-- Avatar & Name -->
+                            <td class="py-4 px-6">
+                                <div class="flex items-center gap-3">
+                                    <div class="relative w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs shrink-0 overflow-hidden"
+                                         th:classappend="${user.banned ? 'bg-[#ffd9d1] text-[#9e422c]' : 'bg-[#feeadc] text-[#875200]'}">
+                                        <img th:if="${user.avatarUrl != null and !user.avatarUrl.isEmpty()}"
+                                             th:src="${user.avatarUrl}" alt="Avatar"
+                                             class="w-full h-full object-cover">
+                                        <span th:unless="${user.avatarUrl != null and !user.avatarUrl.isEmpty()}"
+                                              th:text="${user.initial}">US</span>
+                                        <span th:if="${user.banned}"
+                                              class="absolute -bottom-0.5 -right-0.5 bg-[#9e422c] text-white rounded-full p-0.5 flex items-center justify-center">
+                                            <span class="material-symbols-outlined text-[10px]">block</span>
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold"
+                                           th:classappend="${user.banned ? 'text-[#75695d] line-through' : 'text-[#231a11]'}"
+                                           th:text="${user.fullName}">Tên người dùng</p>
+                                        <span class="text-xs text-[#a09081]" th:text="'ID: #USR-' + ${user.id}">ID: #USR-0</span>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <!-- Email -->
+                            <td class="py-4 px-6 text-[#524437]" th:text="${user.email}">user@example.com</td>
+
+                            <!-- Role Badge -->
+                            <td class="py-4 px-6">
+                                <span th:if="${user.admin}"
+                                      class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-[#ffddba] text-[#663d00]">
+                                    <span class="material-symbols-outlined text-[14px]">shield_person</span>
+                                    <span>Quản trị viên</span>
+                                </span>
+                                <span th:if="${!user.admin and user.staff}"
+                                      class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-[#e0e7ff] text-[#3730a3]">
+                                    <span class="material-symbols-outlined text-[14px]">badge</span>
+                                    <span>Nhân viên</span>
+                                </span>
+                                <span th:if="${!user.admin and !user.staff}"
+                                      class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-[#feeadc] text-[#75695d]">
+                                    <span class="material-symbols-outlined text-[14px]">menu_book</span>
+                                    <span>Độc giả</span>
+                                </span>
+                            </td>
+
+                            <!-- Wallet Coin -->
+                            <td class="py-4 px-6 text-center font-semibold text-[#231a11]" th:text="${user.formattedBalance}">0</td>
+
+                            <!-- Status -->
+                            <td class="py-4 px-6 text-center">
+                                <span th:if="${user.status == 'ACTIVE'}"
+                                      class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#e6f4ea] text-[#137333]">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-[#137333]"></span>
+                                    <span>Đang hoạt động</span>
+                                </span>
+                                <span th:if="${user.status == 'PENDING_VERIFICATION'}"
+                                      class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#fef7e0] text-[#b06000]">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-[#b06000]"></span>
+                                    <span>Chờ kích hoạt</span>
+                                </span>
+                                <span th:if="${user.status == 'BANNED'}"
+                                      class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#872a24] text-white">
+                                    <span class="material-symbols-outlined text-[13px]">lock</span>
+                                    <span>Bị khóa</span>
+                                </span>
+                            </td>
+
+                            <!-- Joined Date -->
+                            <td class="py-4 px-6 text-[#75695d]" th:text="${user.createdAtFormatted}">01/01/2026</td>
+
+                            <!-- Action Buttons -->
+                            <td class="py-4 px-6 text-right whitespace-nowrap">
+                                <div class="inline-flex items-center gap-2">
+                                    
+                                    <!-- Phân quyền Button -->
+                                    <button th:if="${!user.admin}"
+                                            type="button"
+                                            class="open-role-modal px-3 py-1.5 rounded-lg border border-[#ead8cb] text-xs font-semibold text-[#524437] hover:bg-[#feeadc] hover:text-[#875200] transition-colors"
+                                            th:data-user-id="${user.id}"
+                                            th:data-user-name="${user.fullName}"
+                                            th:data-user-email="${user.email}"
+                                            th:data-initial="${user.initial}"
+                                            th:data-avatar-url="${user.avatarUrl}"
+                                            th:data-is-staff="${user.staff}">
+                                        Phân quyền
+                                    </button>
+                                    <button th:if="${user.admin}"
+                                            type="button"
+                                            disabled
+                                            title="Không thể đổi vai trò của quản trị viên"
+                                            class="px-3 py-1.5 rounded-lg border border-[#ead8cb] text-xs font-semibold text-[#a09081] bg-[#fff8f5] opacity-50 cursor-not-allowed">
+                                        Phân quyền
+                                    </button>
+
+                                    <!-- Khóa / Mở khóa Button -->
+                                    <!-- Active/Pending user: button Khóa -->
+                                    <th:block th:if="${!user.banned}">
+                                        <button th:if="${!user.admin and user.id != currentAdminId}"
+                                                type="button"
+                                                class="open-ban-modal px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#ffd9d1] text-[#9e422c] hover:bg-[#ffb4a3] transition-colors"
+                                                th:data-user-id="${user.id}"
+                                                th:data-user-name="${user.fullName}"
+                                                th:data-user-email="${user.email}"
+                                                th:data-initial="${user.initial}"
+                                                th:data-avatar-url="${user.avatarUrl}">
+                                            Khóa
+                                        </button>
+                                        <button th:if="${user.admin or user.id == currentAdminId}"
+                                                type="button"
+                                                disabled
+                                                title="Không thể khóa tài khoản quản trị viên hoặc chính mình"
+                                                class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-gray-100 text-gray-400 opacity-50 cursor-not-allowed">
+                                            Khóa
+                                        </button>
+                                    </th:block>
+
+                                    <!-- Banned user: button Mở khóa -->
+                                    <th:block th:if="${user.banned}">
+                                        <button type="button"
+                                                class="open-unban-modal px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#875200] text-white hover:bg-[#663d00] transition-colors shadow-sm"
+                                                th:data-user-id="${user.id}"
+                                                th:data-user-name="${user.fullName}"
+                                                th:data-user-email="${user.email}"
+                                                th:data-initial="${user.initial}"
+                                                th:data-avatar-url="${user.avatarUrl}"
+                                                th:data-last-ban-reason="${user.lastBanReason}"
+                                                th:data-last-ban-date="${user.lastBanDate}">
+                                            Mở khóa
+                                        </button>
+                                    </th:block>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Empty State -->
+                        <tr th:if="${#lists.isEmpty(users.content)}">
+                            <td colspan="7" class="py-12 text-center text-[#75695d]">
+                                <span class="material-symbols-outlined text-[36px] text-[#a09081] mb-2 block">person_search</span>
+                                <span>Không tìm thấy người dùng phù hợp.</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Table Footer & Pagination -->
+            <div class="px-6 py-4 bg-[#fffaf8] border-t border-[#ead8cb] flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="text-xs text-[#75695d]">
+                    <span th:if="${totalElements > 0}"
+                          th:text="'Hiển thị ' + (${currentPage * pageSize + 1}) + ' - ' + (${currentPage * pageSize + users.numberOfElements}) + ' trong tổng số ' + ${#numbers.formatDecimal(totalElements, 0, 'POINT', 0, 'POINT')} + ' người dùng'">
+                    </span>
+                    <span th:if="${totalElements == 0}">Hiển thị 0 người dùng</span>
+                </div>
+
+                <!-- Pagination controls -->
+                <div th:if="${totalPages > 1}" class="flex items-center gap-1.5">
+                    <!-- Prev Page -->
+                    <a th:if="${currentPage > 0}"
+                       th:href="@{/admin/users(page=${currentPage - 1}, keyword=${keyword}, role=${role}, status=${status})}"
+                       class="w-8 h-8 rounded-lg border border-[#ead8cb] bg-white flex items-center justify-center text-xs font-bold text-[#524437] hover:bg-[#feeadc] transition-colors">
+                        &lt;
+                    </a>
+                    <span th:unless="${currentPage > 0}"
+                          class="w-8 h-8 rounded-lg border border-[#ead8cb] bg-gray-50 flex items-center justify-center text-xs font-bold text-gray-300 cursor-not-allowed">
+                        &lt;
+                    </span>
+
+                    <!-- Page Numbers -->
+                    <th:block th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                        <!-- Show first, last, and window around current page -->
+                        <th:block th:if="${i == 0 or i == totalPages - 1 or (i >= currentPage - 2 and i <= currentPage + 2)}">
+                            <a th:href="@{/admin/users(page=${i}, keyword=${keyword}, role=${role}, status=${status})}"
+                               th:text="${i + 1}"
+                               class="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold transition-colors"
+                               th:classappend="${i == currentPage ? 'bg-[#875200] text-white shadow-sm' : 'border border-[#ead8cb] bg-white text-[#524437] hover:bg-[#feeadc]'}">
+                                1
+                            </a>
+                        </th:block>
+                        <th:block th:if="${(i == 1 and currentPage > 3) or (i == totalPages - 2 and currentPage < totalPages - 4)}">
+                            <span class="w-8 h-8 flex items-center justify-center text-xs text-[#75695d]">...</span>
+                        </th:block>
+                    </th:block>
+
+                    <!-- Next Page -->
+                    <a th:if="${currentPage < totalPages - 1}"
+                       th:href="@{/admin/users(page=${currentPage + 1}, keyword=${keyword}, role=${role}, status=${status})}"
+                       class="w-8 h-8 rounded-lg border border-[#ead8cb] bg-white flex items-center justify-center text-xs font-bold text-[#524437] hover:bg-[#feeadc] transition-colors">
+                        &gt;
+                    </a>
+                    <span th:unless="${currentPage < totalPages - 1}"
+                          class="w-8 h-8 rounded-lg border border-[#ead8cb] bg-gray-50 flex items-center justify-center text-xs font-bold text-gray-300 cursor-not-allowed">
+                        &gt;
+                    </span>
+                </div>
+            </div>
+        </div>
+
+    </section>
+</main>
+
+<!-- ========================================================================= -->
+<!-- MODAL 1: PHÂN QUYỀN (UC-48 Assign Roles) -->
+<!-- ========================================================================= -->
+<div id="roleModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl animate-fade-in-up border border-[#ead8cb]">
+        
+        <!-- Header -->
+        <div class="flex items-center justify-between pb-4 border-b border-[#ead8cb]">
+            <div class="flex items-center gap-3">
+                <div id="roleModalAvatar" class="w-12 h-12 rounded-full bg-[#feeadc] text-[#875200] flex items-center justify-center font-bold text-sm shrink-0 overflow-hidden">
+                    <span id="roleModalInitial">HA</span>
+                </div>
+                <div>
+                    <h3 id="roleModalName" class="font-serif-title text-lg font-bold text-[#231a11]">Nguyễn Hoàng An</h3>
+                    <p id="roleModalEmail" class="text-xs text-[#75695d]">hoangan.writer@gmail.com</p>
+                </div>
+            </div>
+            <button type="button" class="close-modal-btn text-[#75695d] hover:text-[#231a11] p-1.5 rounded-lg hover:bg-[#fff1e8] transition-colors">
+                <span class="material-symbols-outlined text-[20px]">close</span>
+            </button>
+        </div>
+
+        <!-- Form -->
+        <form th:action="@{/admin/users/assign-role}" method="post" class="mt-5">
+            <input type="hidden" name="userId" id="roleModalUserId">
+            <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+            <p class="text-xs font-bold text-[#75695d] uppercase tracking-wider mb-3">VAI TRÒ HỆ THỐNG</p>
+
+            <div class="space-y-3 mb-4">
+                <!-- Role Member (Default, Disabled) -->
+                <div class="flex items-start justify-between p-3.5 rounded-xl border border-[#ead8cb] bg-[#fff8f5]">
+                    <div class="flex items-start gap-3">
+                        <input type="checkbox" checked disabled class="mt-1 w-4 h-4 accent-[#875200] cursor-not-allowed">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="font-semibold text-sm text-[#231a11]">ROLE_MEMBER</span>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-[#feeadc] text-[#663d00]">Cơ bản</span>
+                            </div>
+                            <p class="text-xs text-[#75695d] mt-0.5">Vai trò mặc định, không thể bỏ chọn</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Role Staff (Toggleable) -->
+                <label class="flex items-start justify-between p-3.5 rounded-xl border border-[#ead8cb] bg-[#fff1e8] hover:border-[#875200] transition-colors cursor-pointer">
+                    <div class="flex items-start gap-3">
+                        <input type="checkbox" name="hasStaffRole" id="roleModalStaffCheckbox" value="true"
+                               class="mt-1 w-4 h-4 accent-[#875200] rounded cursor-pointer">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="font-semibold text-sm text-[#231a11]">ROLE_STAFF</span>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-[#ffddba] text-[#663d00]">Điều phối</span>
+                            </div>
+                            <p class="text-xs text-[#75695d] mt-0.5">Xử lý báo cáo, gửi thông báo, quản lý nội dung</p>
+                        </div>
+                    </div>
+                </label>
+            </div>
+
+            <!-- Notice Box -->
+            <div class="flex items-start gap-2.5 p-3 rounded-xl bg-[#fff8f5] border border-[#ead8cb] text-xs text-[#75695d] mb-6">
+                <span class="material-symbols-outlined text-[#875200] text-[18px] shrink-0 mt-0.5">info</span>
+                <span>Thay đổi vai trò sẽ có hiệu lực ngay lập tức với phiên làm việc kế tiếp.</span>
+            </div>
+
+            <!-- Footer Buttons -->
+            <div class="flex items-center justify-end gap-3 pt-4 border-t border-[#ead8cb]">
+                <button type="button" class="close-modal-btn px-5 py-2.5 rounded-xl border border-[#ead8cb] text-sm font-semibold text-[#524437] hover:bg-[#fff1e8] transition-colors">
+                    Hủy
+                </button>
+                <button type="submit" class="px-5 py-2.5 rounded-xl bg-[#875200] hover:bg-[#663d00] text-white text-sm font-semibold flex items-center gap-2 transition-colors shadow-sm">
+                    <span class="material-symbols-outlined text-[18px]">check</span>
+                    <span>Lưu thay đổi</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ========================================================================= -->
+<!-- MODAL 2: KHÓA TÀI KHOẢN (UC-50 Ban User) -->
+<!-- ========================================================================= -->
+<div id="banModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl animate-fade-in-up border border-[#ead8cb]">
+        
+        <!-- Header -->
+        <div class="flex items-start justify-between pb-4 border-b border-[#ead8cb]">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-[#ffd9d1] text-[#9e422c] flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-[22px]">gavel</span>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h3 class="font-serif-title text-lg font-bold text-[#231a11]">Khóa tài khoản</h3>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-[#ffd9d1] text-[#9e422c]">CẢNH BÁO</span>
+                    </div>
+                    <p class="text-xs text-[#75695d] mt-0.5">Xử phạt vi phạm điều khoản quy tắc cộng đồng Trạm Truyện</p>
+                </div>
+            </div>
+            <button type="button" class="close-modal-btn text-[#75695d] hover:text-[#231a11] p-1.5 rounded-lg hover:bg-[#fff1e8] transition-colors">
+                <span class="material-symbols-outlined text-[20px]">close</span>
+            </button>
+        </div>
+
+        <!-- Target User Badge -->
+        <div class="mt-4 p-3 rounded-xl bg-[#fff8f5] border border-[#ead8cb] flex items-center gap-3">
+            <div id="banModalAvatar" class="w-10 h-10 rounded-full bg-[#ffd9d1] text-[#9e422c] flex items-center justify-center font-bold text-xs shrink-0 overflow-hidden">
+                <span id="banModalInitial">SP</span>
+            </div>
+            <div>
+                <div class="flex items-center gap-2">
+                    <span id="banModalUserName" class="font-semibold text-sm text-[#231a11]">Tài khoản</span>
+                    <span id="banModalUserChip" class="px-1.5 py-0.5 rounded text-[10px] bg-[#feeadc] text-[#75695d]">#USR-0</span>
+                </div>
+                <p id="banModalUserEmail" class="text-xs text-[#75695d]">user@tempmail.com</p>
+            </div>
+        </div>
+
+        <!-- Form -->
+        <form th:action="@{/admin/users/ban}" method="post" class="mt-4">
+            <input type="hidden" name="userId" id="banModalUserId">
+            <input type="hidden" name="duration" id="banDurationInput" value="3">
+            <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+            <!-- Reason select -->
+            <div class="mb-4">
+                <label class="block text-xs font-bold text-[#231a11] mb-1.5">Lý do xử lý *</label>
+                <select name="reason" id="banReasonSelect" required
+                        class="w-full bg-white border border-[#ead8cb] rounded-xl px-3 py-2.5 text-sm text-[#231a11] outline-none focus:border-[#9e422c] transition-colors cursor-pointer">
+                    <option value="spam">Spam quảng cáo thương mại / bình luận rác trái phép</option>
+                    <option value="hate">Xúc phạm thành viên, ngôn từ thù địch lặp lại</option>
+                    <option value="fraud">Hành vi gian lận nạp Coin / trục lợi hệ thống</option>
+                    <option value="other">Lý do khác (Ghi rõ vào ghi chú bên dưới)</option>
+                </select>
+            </div>
+
+            <!-- Duration Selection -->
+            <div class="mb-4">
+                <div class="flex items-center justify-between mb-1.5">
+                    <label class="text-xs font-bold text-[#231a11]">Thời hạn đình chỉ tài khoản</label>
+                    <span class="text-[11px] text-[#75695d]">Hiệu lực ngay lập tức</span>
+                </div>
+                <div class="grid grid-cols-4 gap-2">
+                    <button type="button" data-duration="3"
+                            class="duration-btn py-2 px-2 rounded-xl text-xs font-bold border transition-colors bg-[#9e422c] text-white border-[#9e422c]">
+                        3 ngày
+                    </button>
+                    <button type="button" data-duration="7"
+                            class="duration-btn py-2 px-2 rounded-xl text-xs font-bold border transition-colors bg-white text-[#524437] border-[#ead8cb] hover:bg-[#fff1e8]">
+                        7 ngày
+                    </button>
+                    <button type="button" data-duration="30"
+                            class="duration-btn py-2 px-2 rounded-xl text-xs font-bold border transition-colors bg-white text-[#524437] border-[#ead8cb] hover:bg-[#fff1e8]">
+                        30 ngày
+                    </button>
+                    <button type="button" data-duration="forever"
+                            class="duration-btn py-2 px-2 rounded-xl text-xs font-bold border transition-colors bg-white text-[#524437] border-[#ead8cb] hover:bg-[#fff1e8]">
+                        Vĩnh viễn
+                    </button>
+                </div>
+            </div>
+
+            <!-- Internal Note -->
+            <div class="mb-4">
+                <div class="flex items-center justify-between mb-1.5">
+                    <label class="text-xs font-bold text-[#231a11]">Ghi chú nội bộ cho ban quản trị</label>
+                    <span class="text-[11px] text-[#75695d]">Lưu vào nhật ký kiểm duyệt</span>
+                </div>
+                <textarea name="note" id="banNoteTextarea" rows="2" maxlength="500"
+                          placeholder="Nhập ghi chú hoặc bằng chứng vi phạm..."
+                          class="w-full bg-white border border-[#ead8cb] rounded-xl p-3 text-sm text-[#231a11] outline-none focus:border-[#9e422c] transition-colors resize-none"></textarea>
+            </div>
+
+            <!-- Warning Notice -->
+            <div class="flex items-start gap-2.5 p-3 rounded-xl bg-[#fff4f2] border border-[#ffd9d1] text-xs text-[#9e422c] mb-6">
+                <span class="material-symbols-outlined text-[18px] shrink-0 mt-0.5">error_outline</span>
+                <span>Lưu ý: Tài khoản bị khóa sẽ lập tức bị hủy phiên đăng nhập trên toàn bộ thiết bị và không thể nạp/tiêu Coin trong thời gian áp dụng kỷ luật.</span>
+            </div>
+
+            <!-- Footer Buttons -->
+            <div class="flex items-center justify-end gap-3 pt-4 border-t border-[#ead8cb]">
+                <button type="button" class="close-modal-btn px-5 py-2.5 rounded-xl border border-[#ead8cb] text-sm font-semibold text-[#524437] hover:bg-[#fff1e8] transition-colors">
+                    Hủy bỏ
+                </button>
+                <button type="submit" class="px-5 py-2.5 rounded-xl bg-[#9e422c] hover:bg-[#7e2b17] text-white text-sm font-semibold flex items-center gap-2 transition-colors shadow-sm">
+                    <span class="material-symbols-outlined text-[18px]">lock</span>
+                    <span>Xác nhận khóa tài khoản</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ========================================================================= -->
+<!-- MODAL 3: MỞ KHÓA TÀI KHOẢN (UC-50 Unban User) -->
+<!-- ========================================================================= -->
+<div id="unbanModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl animate-fade-in-up border border-[#ead8cb]">
+        
+        <!-- Amber gradient top accent -->
+        <div class="h-1.5 bg-gradient-to-r from-[#d08a2e] to-[#875200]"></div>
+
+        <div class="p-6">
+            <!-- Header -->
+            <div class="flex items-start justify-between pb-4 border-b border-[#ead8cb]">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-[#fef0e6] text-[#875200] flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-[22px]">lock_open</span>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-1.5 text-[11px] font-bold tracking-wider text-[#875200] uppercase">
+                            <span class="material-symbols-outlined text-[14px]">verified</span>
+                            <span>THẨM QUYỀN QUẢN TRỊ VIÊN</span>
+                        </div>
+                        <h3 class="font-serif-title text-lg font-bold text-[#231a11]">Mở khóa tài khoản</h3>
+                    </div>
+                </div>
+                <button type="button" class="close-modal-btn text-[#75695d] hover:text-[#231a11] p-1.5 rounded-lg hover:bg-[#fff1e8] transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">close</span>
+                </button>
+            </div>
+
+            <!-- Target User Details with Prior Ban Info -->
+            <div class="mt-4 p-3.5 rounded-xl bg-[#fff8f5] border border-[#ead8cb]">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div id="unbanModalAvatar" class="w-10 h-10 rounded-full bg-[#ffd9d1] text-[#9e422c] flex items-center justify-center font-bold text-xs shrink-0 overflow-hidden">
+                            <span id="unbanModalInitial">SP</span>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span id="unbanModalUserName" class="font-semibold text-sm text-[#231a11]">Tài khoản</span>
+                                <span id="unbanModalUserChip" class="px-1.5 py-0.5 rounded text-[10px] bg-[#feeadc] text-[#75695d]">#USR-0</span>
+                            </div>
+                            <p id="unbanModalUserEmail" class="text-xs text-[#75695d]">spammer@tempmail.com</p>
+                        </div>
+                    </div>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-[#ffd9d1] text-[#9e422c] flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#9e422c]"></span> Đang bị khóa
+                    </span>
+                </div>
+                <div class="mt-2.5 pt-2.5 border-t border-[#ead8cb] text-xs text-[#75695d] flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[#875200] text-[16px]">info</span>
+                    <span>Lý do đã khóa: <strong id="unbanModalLastReason" class="text-[#231a11]">Spam</strong> (Áp dụng từ <span id="unbanModalLastDate">--</span>)</span>
+                </div>
+            </div>
+
+            <!-- Form -->
+            <form th:action="@{/admin/users/unban}" method="post" id="unbanForm" class="mt-4">
+                <input type="hidden" name="userId" id="unbanModalUserId">
+                <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+                <!-- Unban Reason Textarea with live character counter -->
+                <div class="mb-4">
+                    <div class="flex items-center justify-between mb-1.5">
+                        <label class="text-xs font-bold text-[#231a11]">Ghi chú thẩm định & Lý do mở khóa *</label>
+                        <span class="text-[11px] text-[#75695d]">Tối thiểu 20 ký tự</span>
+                    </div>
+                    <textarea name="unbanReason" id="unbanReasonTextarea" rows="3" minlength="20" maxlength="500" required
+                              placeholder="Nhập lý do hoặc căn cứ khôi phục quyền truy cập tài khoản..."
+                              class="w-full bg-white border border-[#ead8cb] rounded-xl p-3 text-sm text-[#231a11] outline-none focus:border-[#875200] transition-colors resize-none"></textarea>
+                    <div class="flex items-center justify-between mt-1 text-[11px] text-[#75695d]">
+                        <span id="unbanValidationMsg" class="text-red-500 hidden">Cần ít nhất 20 ký tự</span>
+                        <span class="ml-auto"><span id="unbanCharCount">0</span> / 500 ký tự</span>
+                    </div>
+                </div>
+
+                <!-- Checkbox Send Notification -->
+                <div class="mb-4">
+                    <label class="flex items-start gap-2.5 cursor-pointer">
+                        <input type="checkbox" name="sendNotification" value="true" checked
+                               class="mt-0.5 w-4 h-4 accent-[#875200] rounded cursor-pointer">
+                        <div>
+                            <span class="text-xs font-semibold text-[#231a11]">Gửi thông báo mở khóa</span>
+                            <p class="text-[11px] text-[#75695d]">Người dùng sẽ nhận thông báo tài khoản đã được khôi phục trong Hòm thư</p>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Info note -->
+                <div class="flex items-start gap-2.5 p-3 rounded-xl bg-[#fff8f5] border border-[#ead8cb] text-xs text-[#75695d] mb-6">
+                    <span class="material-symbols-outlined text-[#875200] text-[18px] shrink-0 mt-0.5">verified_user</span>
+                    <span>Sau khi mở khóa, người dùng sẽ có thể đăng nhập bình thường ngay lập tức. Hành động mở khóa này sẽ được ghi nhận vào Audit Log hệ thống cùng ID quản trị viên thao tác.</span>
+                </div>
+
+                <!-- Footer Buttons -->
+                <div class="flex items-center justify-end gap-3 pt-4 border-t border-[#ead8cb]">
+                    <button type="button" class="close-modal-btn px-5 py-2.5 rounded-xl border border-[#ead8cb] text-sm font-semibold text-[#524437] hover:bg-[#fff1e8] transition-colors">
+                        Hủy bỏ
+                    </button>
+                    <button type="submit" id="unbanSubmitBtn"
+                            class="px-5 py-2.5 rounded-xl bg-[#875200] hover:bg-[#663d00] text-white text-sm font-semibold flex items-center gap-2 transition-colors shadow-sm">
+                        <span class="material-symbols-outlined text-[18px]">lock_open</span>
+                        <span>Xác nhận mở khóa tài khoản</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================================================= -->
+<!-- JAVASCRIPT LOGIC CHO 3 MODAL -->
+<!-- ========================================================================= -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Modal Elements
+    const roleModal = document.getElementById('roleModal');
+    const banModal = document.getElementById('banModal');
+    const unbanModal = document.getElementById('unbanModal');
+
+    // Helper: Close all modals
+    function closeAllModals() {
+        if (roleModal) roleModal.classList.add('hidden');
+        if (banModal) banModal.classList.add('hidden');
+        if (unbanModal) unbanModal.classList.add('hidden');
+    }
+
+    // Attach close buttons
+    document.querySelectorAll('.close-modal-btn').forEach(function (btn) {
+        btn.addEventListener('click', closeAllModals);
+    });
+
+    // Close on backdrop click
+    [roleModal, banModal, unbanModal].forEach(function (modal) {
+        if (modal) {
+            modal.addEventListener('click', function (e) {
+                if (e.target === modal) closeAllModals();
+            });
+        }
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeAllModals();
+    });
+
+    // -------------------------------------------------------------
+    // UC-48: OPEN ROLE MODAL
+    // -------------------------------------------------------------
+    document.querySelectorAll('.open-role-modal').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const userId = this.getAttribute('data-user-id');
+            const userName = this.getAttribute('data-user-name');
+            const userEmail = this.getAttribute('data-user-email');
+            const initial = this.getAttribute('data-initial') || 'U';
+            const isStaff = this.getAttribute('data-is-staff') === 'true';
+            const avatarUrl = this.getAttribute('data-avatar-url');
+
+            document.getElementById('roleModalUserId').value = userId;
+            document.getElementById('roleModalName').textContent = userName;
+            document.getElementById('roleModalEmail').textContent = userEmail;
+            document.getElementById('roleModalStaffCheckbox').checked = isStaff;
+
+            const avatarContainer = document.getElementById('roleModalAvatar');
+            if (avatarUrl && avatarUrl.trim() !== '') {
+                avatarContainer.innerHTML = '<img src="' + avatarUrl + '" alt="Avatar" class="w-full h-full object-cover">';
+            } else {
+                avatarContainer.innerHTML = '<span id="roleModalInitial">' + initial + '</span>';
+            }
+
+            roleModal.classList.remove('hidden');
+        });
+    });
+
+    // -------------------------------------------------------------
+    // UC-50: OPEN BAN MODAL
+    // -------------------------------------------------------------
+    document.querySelectorAll('.open-ban-modal').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const userId = this.getAttribute('data-user-id');
+            const userName = this.getAttribute('data-user-name');
+            const userEmail = this.getAttribute('data-user-email');
+            const initial = this.getAttribute('data-initial') || 'U';
+            const avatarUrl = this.getAttribute('data-avatar-url');
+
+            document.getElementById('banModalUserId').value = userId;
+            document.getElementById('banModalUserName').textContent = userName;
+            document.getElementById('banModalUserChip').textContent = '#USR-' + userId;
+            document.getElementById('banModalUserEmail').textContent = userEmail;
+            document.getElementById('banNoteTextarea').value = '';
+            document.getElementById('banReasonSelect').selectedIndex = 0;
+
+            // Reset duration to 3 days default
+            document.getElementById('banDurationInput').value = '3';
+            document.querySelectorAll('.duration-btn').forEach(function (b) {
+                if (b.getAttribute('data-duration') === '3') {
+                    b.className = 'duration-btn py-2 px-2 rounded-xl text-xs font-bold border transition-colors bg-[#9e422c] text-white border-[#9e422c]';
+                } else {
+                    b.className = 'duration-btn py-2 px-2 rounded-xl text-xs font-bold border transition-colors bg-white text-[#524437] border-[#ead8cb] hover:bg-[#fff1e8]';
+                }
+            });
+
+            const avatarContainer = document.getElementById('banModalAvatar');
+            if (avatarUrl && avatarUrl.trim() !== '') {
+                avatarContainer.innerHTML = '<img src="' + avatarUrl + '" alt="Avatar" class="w-full h-full object-cover">';
+            } else {
+                avatarContainer.innerHTML = '<span id="banModalInitial">' + initial + '</span>';
+            }
+
+            banModal.classList.remove('hidden');
+        });
+    });
+
+    // Duration Button selection
+    document.querySelectorAll('.duration-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const duration = this.getAttribute('data-duration');
+            document.getElementById('banDurationInput').value = duration;
+
+            document.querySelectorAll('.duration-btn').forEach(function (b) {
+                b.className = 'duration-btn py-2 px-2 rounded-xl text-xs font-bold border transition-colors bg-white text-[#524437] border-[#ead8cb] hover:bg-[#fff1e8]';
+            });
+            this.className = 'duration-btn py-2 px-2 rounded-xl text-xs font-bold border transition-colors bg-[#9e422c] text-white border-[#9e422c]';
+        });
+    });
+
+    // Ban note required if reason is 'other'
+    const banReasonSelect = document.getElementById('banReasonSelect');
+    const banNoteTextarea = document.getElementById('banNoteTextarea');
+    if (banReasonSelect && banNoteTextarea) {
+        banReasonSelect.addEventListener('change', function () {
+            if (this.value === 'other') {
+                banNoteTextarea.required = true;
+                banNoteTextarea.placeholder = 'BẮT BUỘC: Ghi rõ lý do khác và bằng chứng vi phạm...';
+                banNoteTextarea.focus();
+            } else {
+                banNoteTextarea.required = false;
+                banNoteTextarea.placeholder = 'Nhập ghi chú hoặc bằng chứng vi phạm...';
+            }
+        });
+    }
+
+    // -------------------------------------------------------------
+    // UC-50: OPEN UNBAN MODAL
+    // -------------------------------------------------------------
+    const unbanTextarea = document.getElementById('unbanReasonTextarea');
+    const unbanCharCount = document.getElementById('unbanCharCount');
+    const unbanValidationMsg = document.getElementById('unbanValidationMsg');
+
+    document.querySelectorAll('.open-unban-modal').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const userId = this.getAttribute('data-user-id');
+            const userName = this.getAttribute('data-user-name');
+            const userEmail = this.getAttribute('data-user-email');
+            const initial = this.getAttribute('data-initial') || 'U';
+            const avatarUrl = this.getAttribute('data-avatar-url');
+            const lastReason = this.getAttribute('data-last-ban-reason') || 'Vi phạm điều khoản cộng đồng';
+            const lastDate = this.getAttribute('data-last-ban-date') || 'Gần đây';
+
+            document.getElementById('unbanModalUserId').value = userId;
+            document.getElementById('unbanModalUserName').textContent = userName;
+            document.getElementById('unbanModalUserChip').textContent = '#USR-' + userId;
+            document.getElementById('unbanModalUserEmail').textContent = userEmail;
+            document.getElementById('unbanModalLastReason').textContent = lastReason;
+            document.getElementById('unbanModalLastDate').textContent = lastDate;
+
+            if (unbanTextarea) {
+                unbanTextarea.value = '';
+                if (unbanCharCount) unbanCharCount.textContent = '0';
+                if (unbanValidationMsg) unbanValidationMsg.classList.add('hidden');
+            }
+
+            const avatarContainer = document.getElementById('unbanModalAvatar');
+            if (avatarUrl && avatarUrl.trim() !== '') {
+                avatarContainer.innerHTML = '<img src="' + avatarUrl + '" alt="Avatar" class="w-full h-full object-cover">';
+            } else {
+                avatarContainer.innerHTML = '<span id="unbanModalInitial">' + initial + '</span>';
+            }
+
+            unbanModal.classList.remove('hidden');
+        });
+    });
+
+    // Unban Live Character Counter & Validation (20-500 chars)
+    if (unbanTextarea && unbanCharCount) {
+        unbanTextarea.addEventListener('input', function () {
+            const len = this.value.trim().length;
+            unbanCharCount.textContent = len;
+            if (len < 20) {
+                unbanCharCount.classList.add('text-red-500');
+                if (unbanValidationMsg) unbanValidationMsg.classList.remove('hidden');
+            } else {
+                unbanCharCount.classList.remove('text-red-500');
+                if (unbanValidationMsg) unbanValidationMsg.classList.add('hidden');
+            }
+        });
+    }
+
+    const unbanForm = document.getElementById('unbanForm');
+    if (unbanForm && unbanTextarea) {
+        unbanForm.addEventListener('submit', function (e) {
+            const len = unbanTextarea.value.trim().length;
+            if (len < 20) {
+                e.preventDefault();
+                alert('Vui lòng nhập lý do mở khóa tối thiểu 20 ký tự (sau khi bỏ khoảng trắng thừa).');
+                unbanTextarea.focus();
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
