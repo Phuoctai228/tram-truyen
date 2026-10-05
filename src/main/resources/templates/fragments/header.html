@@ -100,7 +100,7 @@
         </div>
 
         <script>
-            (function() {
+            document.addEventListener('DOMContentLoaded', function() {
                 // Update Login & Register buttons to preserve current page return URL
                 const loginBtn = document.getElementById('navLoginBtn');
                 const regBtn = document.getElementById('navRegisterBtn');
@@ -125,7 +125,7 @@
                         }
                     });
                 }
-            })();
+            });
         </script>
     </header>
 </body>
