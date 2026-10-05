@@ -258,6 +258,7 @@ public class BookshelfServiceImpl implements BookshelfService {
                 .avatarUrl(user.getAvatarUrl())
                 .walletBalance(user.getWalletBalance() != null ? user.getWalletBalance() : 0)
                 .createdAt(user.getCreatedAt())
+                .isEmailVerified("ACTIVE".equalsIgnoreCase(user.getStatus()))
                 .build();
     }
 
