@@ -7,6 +7,7 @@ import com.tramtruyen.repository.UserRepository;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
-        
+
         Map<String, Object> attributes = oAuth2User.getAttributes();
         String email = (String) attributes.get("email");
         String name = (String) attributes.get("name");
@@ -39,6 +40,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         if (userOptional.isPresent()) {
             user = userOptional.get();
+
+            // If a user is banned, block them immediately; do not update or save anything
+            // to the database
+            if ("BANNED".equalsIgnoreCase(user.getStatus())) {
+                throw new OAuth2AuthenticationException(
+                        new OAuth2Error("account_locked", "Tài khoản của bạn đã bị khóa.", null));
+            }
+
             // Update avatar if needed
             if (user.getAvatarUrl() == null && picture != null) {
                 user.setAvatarUrl(picture);
