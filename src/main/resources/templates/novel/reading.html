@@ -12,9 +12,9 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script th:src="@{/js/novel/tailwind-config.js}"></script>
 </head>
-<body class="bg-background font-body-reading text-on-surface antialiased">
-  <header class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-md shadow-[0_2px_12px_rgba(107,91,75,0.05)]">
-    <div class="h-14 max-w-5xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-4">
+<body class="font-body-reading antialiased">
+  <header class="fixed top-0 w-full z-50 backdrop-blur-md shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
+    <div class="h-14 max-w-5xl mx-auto px-4 sm:px-6 flex items-center gap-4">
       <div class="flex items-center gap-3 min-w-0">
         <a class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors flex items-center justify-center" th:href="@{/truyen/{slug}(slug=${novel.slug})}">
           <span class="material-symbols-outlined text-[20px]">arrow_back</span>
@@ -24,58 +24,18 @@
           <span class="font-label-sm text-label-sm text-outline truncate" th:text="'Chương ' + ${chapter.chapterNumber}">Chương Đang Đọc</span>
         </div>
       </div>
-      <div class="flex items-center gap-3">
-        <a class="p-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors flex items-center justify-center cursor-pointer" id="btn-audio-read" title="Nghe tự động">
-          <span class="material-symbols-outlined text-[20px]" id="audio-icon">headphones</span>
-        </a>
-        <a class="p-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors flex items-center justify-center cursor-pointer" onclick="document.getElementById('settings-drawer').classList.toggle('translate-x-full')">
-          <span class="material-symbols-outlined text-[20px]">format_size</span>
-        </a>
-        <a class="p-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors flex items-center justify-center" th:href="@{/truyen/{slug}#chapters(slug=${novel.slug})}">
-          <span class="material-symbols-outlined text-[20px]">format_list_bulleted</span>
-        </a>
-
-        <!-- Bookshelf Action in Reader -->
-        <div sec:authorize="isAuthenticated()" class="inline-block">
-          <form th:if="${inBookshelf}" th:action="@{/user/bookshelf/{id}/remove(id=${novel.id})}" method="POST" class="m-0">
-            <input type="hidden" name="source" th:value="'/truyen/' + ${novel.slug} + '/chuong-' + ${chapter.chapterNumber}">
-            <button type="submit" class="p-2 rounded-lg text-primary hover:bg-surface-container transition-colors flex items-center justify-center" title="Đã lưu trong Tủ sách (Nhấn để bỏ lưu)">
-              <span class="material-symbols-outlined text-[20px] icon-fill">bookmark</span>
-            </button>
-          </form>
-          <form th:unless="${inBookshelf}" th:action="@{/user/bookshelf/{id}(id=${novel.id})}" method="POST" class="m-0">
-            <input type="hidden" name="source" th:value="'/truyen/' + ${novel.slug} + '/chuong-' + ${chapter.chapterNumber}">
-            <button type="submit" class="p-2 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors flex items-center justify-center" title="Lưu vào Tủ sách">
-              <span class="material-symbols-outlined text-[20px]">bookmark_add</span>
-            </button>
-          </form>
-        </div>
-        <div sec:authorize="!isAuthenticated()" class="inline-block">
-          <button type="button" onclick="openLoginRequiredModal('Vui lòng đăng nhập để lưu truyện vào Tủ sách và theo dõi tiến độ đọc của bạn.')"
-                  class="p-2 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors flex items-center justify-center" title="Lưu vào Tủ sách">
-            <span class="material-symbols-outlined text-[20px]">bookmark_add</span>
-          </button>
-        </div>
-      </div>
     </div>
   </header>
 
-  <main class="w-full pt-14 bg-background min-h-screen">
+  <main class="w-full pt-14 min-h-screen">
     <div class="flex flex-col w-full relative">
-      <aside class="sticky top-14 z-40 w-full bg-surface/95 backdrop-blur-md transition-all">
+      <aside class="sticky top-14 z-40 w-full backdrop-blur-md transition-all shadow-[0_1px_3px_rgba(0,0,0,0.03)]">
         <div class="max-w-4xl mx-auto px-6 h-11 flex items-center justify-between">
-          <div class="flex items-center gap-3 text-on-surface-variant min-w-0">
+          <div class="flex items-center gap-3 min-w-0">
             <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-container text-on-tertiary-container font-label-sm text-label-sm">
               <span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span> Đang đọc
             </span>
-            <span class="font-label-md text-label-md text-on-surface truncate" th:text="${novel.title}">Title</span>
-          </div>
-          <div class="flex items-center gap-4 text-on-surface-variant">
-            <div class="flex items-center gap-1">
-              <button class="p-1.5 rounded-lg hover:bg-surface-container text-tertiary hover:text-on-surface transition-colors flex items-center justify-center" id="btn-theme-toggle" title="Chế độ bảo vệ mắt">
-                <span class="material-symbols-outlined text-[18px]">lightbulb</span>
-              </button>
-            </div>
+            <span class="font-label-md text-label-md truncate" th:text="${novel.title}">Title</span>
           </div>
         </div>
       </aside>
@@ -93,39 +53,146 @@
         </header>
 
         <article class="space-y-6 text-on-surface font-body-reading text-body-reading leading-[1.95] select-text" id="reader-body">
-           <div th:utext="${#strings.replace(chapter.content, '&#10;', '&lt;p class=&quot;indent-8 text-justify&quot;&gt;&lt;/p&gt;')}">
-              Content here
-           </div>
+           <th:block th:each="para : ${#strings.arraySplit(#strings.replace(chapter.content, '&#13;', ''), '&#10;')}">
+              <p th:if="${!#strings.isEmpty(#strings.trim(para))}" class="indent-8 text-justify" th:text="${para}">Nội dung</p>
+           </th:block>
         </article>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 mt-8">
-          <a th:if="${chapter.chapterNumber > 1}" th:href="@{/truyen/{slug}/chuong-{chapterNumber}(slug=${novel.slug}, chapterNumber=${chapter.chapterNumber - 1})}" class="p-5 rounded-2xl bg-surface-container hover:bg-surface-container-high transition-all flex items-center justify-between gap-4 group shadow-sm">
-            <div class="w-10 h-10 rounded-xl bg-primary text-on-primary flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform flex-shrink-0">
-              <span class="material-symbols-outlined text-[20px]">arrow_back</span>
-            </div>
-            <div class="min-w-0 text-right">
-              <span class="font-label-sm text-label-sm text-primary uppercase tracking-wider block">Chương trước</span>
-              <span class="font-label-lg text-label-lg text-on-surface font-semibold truncate block group-hover:text-primary transition-colors">
-                Chương [[${chapter.chapterNumber - 1}]]
-              </span>
-            </div>
-          </a>
-          
-          <a th:href="@{/truyen/{slug}/chuong-{chapterNumber}(slug=${novel.slug}, chapterNumber=${chapter.chapterNumber + 1})}" class="p-5 rounded-2xl bg-surface-container hover:bg-surface-container-high transition-all flex items-center justify-between gap-4 group shadow-sm" th:classappend="${chapter.chapterNumber <= 1 ? 'col-start-2' : ''}">
-            <div class="min-w-0">
-              <span class="font-label-sm text-label-sm text-primary uppercase tracking-wider block">Chương kế tiếp</span>
-              <span class="font-label-lg text-label-lg text-on-surface font-semibold truncate block group-hover:text-primary transition-colors">
-                Chương [[${chapter.chapterNumber + 1}]]
-              </span>
-            </div>
-            <div class="w-10 h-10 rounded-xl bg-primary text-on-primary flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform flex-shrink-0">
-              <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
-            </div>
-          </a>
-        </div>
+
       </main>
-      
-      <!-- Settings Drawer -->
+
+      <!-- Floating Vertical Toolbar (Right side - Chuẩn docln/Hako) -->
+      <nav id="reading-vertical-toolbar" class="fixed right-2 sm:right-6 top-1/2 -translate-y-1/2 z-40 flex flex-col items-center rounded-2xl shadow-xl border border-outline-variant/30 py-2 px-1 transition-all space-y-1 select-none">
+          <!-- 1. Previous Chapter -->
+          <a th:if="${prevChapterNumber != null}" th:href="@{'/truyen/' + ${novel.slug} + '/chuong-' + ${prevChapterNumber}}"
+             class="w-10 h-10 rounded-xl flex items-center justify-center transition-all group relative"
+             title="Chương trước">
+              <span class="material-symbols-outlined text-[20px]">fast_rewind</span>
+              <span class="absolute right-12 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Chương trước</span>
+          </a>
+          <button th:if="${prevChapterNumber == null}" disabled
+             class="w-10 h-10 rounded-xl flex items-center justify-center opacity-30 cursor-not-allowed group relative"
+             title="Đã là chương đầu">
+              <span class="material-symbols-outlined text-[20px]">fast_rewind</span>
+              <span class="absolute right-12 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Đã là chương đầu</span>
+          </button>
+
+          <!-- 2. Home / Novel Details -->
+          <a th:href="@{'/truyen/' + ${novel.slug}}"
+             class="w-10 h-10 rounded-xl flex items-center justify-center transition-all group relative"
+             title="Thông tin truyện">
+              <span class="material-symbols-outlined text-[20px]">home</span>
+              <span class="absolute right-12 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Thông tin truyện</span>
+          </a>
+
+          <!-- 3. Appearance Settings (A) -->
+          <button type="button" onclick="toggleAppearanceSettings()"
+             class="w-10 h-10 rounded-xl flex items-center justify-center transition-all group relative"
+             title="Tùy chỉnh giao diện">
+              <span class="font-serif font-bold text-[18px]">A</span>
+              <span class="absolute right-12 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Tùy chỉnh giao diện</span>
+          </button>
+
+          <!-- 4. Text-to-Speech / Audio -->
+          <button type="button" id="btn-audio-read-vertical" onclick="toggleAudioPanel()"
+             class="w-10 h-10 rounded-xl flex items-center justify-center transition-all group relative"
+             title="Nghe đọc">
+              <span class="material-symbols-outlined text-[20px]" id="audio-icon-vertical">volume_up</span>
+              <span class="absolute right-12 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Nghe đọc</span>
+          </button>
+
+          <!-- 5. Chapter List / Drawer (i) -->
+          <button type="button" onclick="toggleChapterListDrawer()"
+             class="w-10 h-10 rounded-xl flex items-center justify-center transition-all group relative"
+             title="Mục lục chương">
+              <span class="font-serif italic font-bold text-[18px]">i</span>
+              <span class="absolute right-12 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Mục lục chương</span>
+          </button>
+
+          <!-- 6. Bookshelf Action -->
+          <div sec:authorize="isAuthenticated()" class="w-10 h-10 flex items-center justify-center">
+              <form th:if="${inBookshelf}" th:action="@{/user/bookshelf/{id}/remove(id=${novel.id})}" method="POST" class="m-0">
+                  <input type="hidden" name="source" th:value="'/truyen/' + ${novel.slug} + '/chuong-' + ${chapter.chapterNumber}">
+                  <button type="submit" class="w-10 h-10 rounded-xl flex items-center justify-center text-primary transition-all group relative" title="Đã trong Tủ sách (Bấm để xóa)">
+                      <span class="material-symbols-outlined text-[20px] icon-fill">bookmark</span>
+                      <span class="absolute right-12 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Đã trong tủ sách</span>
+                  </button>
+              </form>
+              <form th:unless="${inBookshelf}" th:action="@{/user/bookshelf/{id}(id=${novel.id})}" method="POST" class="m-0">
+                  <input type="hidden" name="source" th:value="'/truyen/' + ${novel.slug} + '/chuong-' + ${chapter.chapterNumber}">
+                  <button type="submit" class="w-10 h-10 rounded-xl flex items-center justify-center transition-all group relative" title="Lưu vào Tủ sách">
+                      <span class="material-symbols-outlined text-[20px]">bookmark</span>
+                      <span class="absolute right-12 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Thêm vào tủ sách</span>
+                  </button>
+              </form>
+          </div>
+          <div sec:authorize="!isAuthenticated()" class="w-10 h-10 flex items-center justify-center">
+              <button type="button" onclick="openLoginRequiredModal('Vui lòng đăng nhập để lưu truyện vào Tủ sách và theo dõi tiến độ đọc của bạn.')"
+                      class="w-10 h-10 rounded-xl flex items-center justify-center transition-all group relative" title="Lưu vào Tủ sách">
+                  <span class="material-symbols-outlined text-[20px]">bookmark</span>
+                  <span class="absolute right-12 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Thêm vào tủ sách</span>
+              </button>
+          </div>
+
+          <!-- 7. Next Chapter -->
+          <a th:if="${!isLatestChapter}" th:href="@{'/truyen/' + ${novel.slug} + '/chuong-' + ${nextChapterNumber}}"
+             class="w-10 h-10 rounded-xl flex items-center justify-center transition-all group relative"
+             title="Chương sau">
+              <span class="material-symbols-outlined text-[20px]">fast_forward</span>
+              <span class="absolute right-12 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Chương sau</span>
+          </a>
+          <button th:if="${isLatestChapter}" type="button" onclick="openEndOfChapterModal()"
+             class="w-10 h-10 rounded-xl flex items-center justify-center text-primary transition-all group relative"
+             title="Đã hết chương mới nhất">
+              <span class="material-symbols-outlined text-[20px]">fast_forward</span>
+              <span class="absolute right-12 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Đã hết chương mới nhất</span>
+          </button>
+      </nav>
+
+      <!-- Left Chapter List Drawer (Image 4 style) -->
+      <div id="chapter-list-drawer-backdrop" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden transition-opacity" onclick="toggleChapterListDrawer()"></div>
+      <aside id="chapter-list-drawer" class="fixed top-0 left-0 w-80 sm:w-96 h-full z-50 shadow-2xl flex flex-col -translate-x-full transition-transform duration-300 border-r border-outline-variant/30">
+          <div class="p-4 border-b border-outline-variant/30 flex items-center gap-3.5 bg-surface-container-low">
+              <img th:src="${novel.coverUrl != null ? novel.coverUrl : '/images/default-cover.jpg'}" alt="Cover" class="w-12 h-16 object-cover rounded-lg shadow-sm border border-outline-variant/30 flex-shrink-0">
+              <div class="min-w-0 flex-1">
+                  <h4 class="font-headline-sm text-sm font-bold text-on-surface line-clamp-2" th:text="${novel.title}">Tên truyện</h4>
+                  <p class="text-xs text-outline truncate mt-0.5" th:text="${novel.author}">Tác giả</p>
+                  <span class="inline-block mt-1 text-[11px] font-semibold text-primary" th:text="${#lists.size(chapters)} + ' chương'">20 chương</span>
+              </div>
+              <button type="button" onclick="toggleChapterListDrawer()" class="p-1.5 rounded-lg text-outline hover:text-on-surface hover:bg-surface-container transition-colors">
+                  <span class="material-symbols-outlined text-[20px]">close</span>
+              </button>
+          </div>
+
+          <!-- Search Filter -->
+          <div class="p-3 border-b border-outline-variant/20 bg-surface-container-lowest">
+              <div class="relative flex items-center">
+                  <span class="material-symbols-outlined absolute left-3 text-outline text-[18px]">search</span>
+                  <input type="text" id="chapter-search-input" placeholder="Tìm số chương hoặc tiêu đề..."
+                         oninput="filterChapterList(this.value)"
+                         class="w-full pl-9 pr-3 py-1.5 rounded-lg text-xs bg-surface-container text-on-surface outline-none focus:ring-1 ring-primary border border-outline-variant/30">
+              </div>
+          </div>
+
+          <!-- Chapters Container -->
+          <div class="flex-1 overflow-y-auto p-3 space-y-1" id="chapter-list-container">
+              <a th:each="c : ${chapters}" th:href="@{'/truyen/' + ${novel.slug} + '/chuong-' + ${c.chapterNumber}}"
+                 class="chapter-item flex items-center justify-between px-3 py-2.5 rounded-xl transition-all"
+                 th:attr="data-chapter=${c.chapterNumber}, data-title=${c.title}"
+                 th:classappend="${c.chapterNumber == chapter.chapterNumber} ? 'bg-primary/10 text-primary font-bold shadow-sm' : 'text-on-surface hover:bg-surface-container hover:text-primary'">
+                  <div class="min-w-0 flex-1 pr-2">
+                      <span class="text-[11px] block opacity-70 font-medium" th:text="'Chương ' + ${c.chapterNumber}">Chương 1</span>
+                      <span class="text-sm truncate block" th:text="${c.title}">Tiêu đề chương</span>
+                  </div>
+                  <span th:if="${c.chapterNumber == chapter.chapterNumber}" class="text-[10px] uppercase tracking-wider font-semibold text-primary bg-primary-container/20 px-2 py-0.5 rounded-full flex-shrink-0">
+                      Đang đọc
+                  </span>
+              </a>
+          </div>
+      </aside>
+
+      <!-- Settings Drawer Backdrop & Drawer -->
+      <div id="settings-drawer-backdrop" class="fixed inset-0 z-40 bg-black/40 backdrop-blur-xs hidden transition-opacity" onclick="toggleAppearanceSettings()"></div>
       <aside id="settings-drawer" class="fixed top-14 right-0 w-full sm:w-[360px] h-[calc(100vh-3.5rem)] bg-surface-container-lowest z-50 shadow-2xl flex flex-col justify-between overflow-hidden translate-x-full transition-transform duration-300">
         <div class="px-6 py-5 bg-surface-container-low flex items-center justify-between">
           <div class="flex items-center gap-2.5">
@@ -134,7 +201,7 @@
             </div>
             <h2 class="font-headline-sm text-headline-sm text-on-surface">Tùy chỉnh giao diện</h2>
           </div>
-          <button class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" onclick="document.getElementById('settings-drawer').classList.toggle('translate-x-full')">
+          <button class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" onclick="toggleAppearanceSettings()">
             <span class="material-symbols-outlined text-[20px]">close</span>
           </button>
         </div>
@@ -182,22 +249,57 @@
               <span class="material-symbols-outlined text-[18px] text-tertiary">palette</span> Màu nền
             </label>
             <div class="flex items-center gap-4" id="setting-theme">
-              <button class="w-10 h-10 rounded-full bg-[#f4f4f4] border-2 border-outline-variant shadow-sm transition-transform hover:scale-110" data-value="theme-light" title="Sáng"></button>
-              <button class="w-10 h-10 rounded-full bg-[#f1e5c5] border-2 border-transparent shadow-sm transition-transform hover:scale-110" data-value="theme-sepia" title="Giấy cũ"></button>
-              <button class="w-10 h-10 rounded-full bg-[#1a1a1a] border-2 border-transparent shadow-sm transition-transform hover:scale-110" data-value="theme-dark" title="Tối"></button>
-              <button class="w-10 h-10 rounded-full bg-[#e3f2fd] border-2 border-transparent shadow-sm transition-transform hover:scale-110" data-value="theme-blue" title="Dịu mắt"></button>
+              <button class="w-10 h-10 rounded-full bg-[#fcfbf9] border-2 border-outline-variant shadow-sm transition-transform hover:scale-110" data-value="theme-light" title="Sáng"></button>
+              <button class="w-10 h-10 rounded-full bg-[#f4ecd8] border-2 border-transparent shadow-sm transition-transform hover:scale-110" data-value="theme-sepia" title="Giấy cũ"></button>
+              <button class="w-10 h-10 rounded-full bg-[#1e1e1e] border-2 border-transparent shadow-sm transition-transform hover:scale-110" data-value="theme-dark" title="Tối"></button>
+              <button class="w-10 h-10 rounded-full bg-[#eaf2f8] border-2 border-transparent shadow-sm transition-transform hover:scale-110" data-value="theme-blue" title="Dịu mắt"></button>
             </div>
           </section>
         </div>
       </aside>
 
-      <footer class="fixed bottom-0 left-0 right-0 z-40 bg-surface/95 backdrop-blur-md shadow-[0_-4px_20px_rgba(107,91,75,0.06)]">
+      <!-- End of Chapters Modal -->
+      <div id="endOfChapterModal" class="fixed inset-0 z-[100] items-center justify-center bg-black/60 backdrop-blur-sm hidden transition-all">
+          <div class="bg-surface rounded-2xl p-7 max-w-[440px] w-[90%] flex flex-col items-center text-center shadow-2xl relative border border-outline-variant/30 animate-fade-in-up">
+              <!-- Close Button -->
+              <button type="button" onclick="closeEndOfChapterModal()" aria-label="Đóng"
+                      class="absolute top-4 right-4 text-outline hover:text-on-surface transition-colors p-1 rounded-lg hover:bg-surface-container">
+                  <span class="material-symbols-outlined text-[20px]">close</span>
+              </button>
+
+              <!-- Sparkle/Book Icon -->
+              <div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4 text-primary shadow-inner">
+                  <span class="material-symbols-outlined text-[32px] icon-fill">auto_stories</span>
+              </div>
+
+              <h3 class="text-2xl font-bold font-headline-sm text-on-surface mb-2 tracking-tight">Đã hết chương mới nhất!</h3>
+
+              <p class="text-on-surface-variant font-body-md text-sm mb-6 leading-relaxed px-1">
+                  Bạn đã đọc đến chương cuối cùng hiện có của truyện <strong class="text-primary font-semibold" th:text="${novel.title}">Tên truyện</strong>. Hãy quay lại sau khi tác giả cập nhật thêm chương mới nhé!
+              </p>
+
+              <div class="w-full space-y-3">
+                  <a th:href="@{'/truyen/' + ${novel.slug}}"
+                     class="w-full py-3 bg-primary hover:bg-primary-container text-on-primary font-bold rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2">
+                      <span class="material-symbols-outlined text-[18px]">menu_book</span>
+                      <span>Về trang chi tiết truyện</span>
+                  </a>
+                  <button type="button" onclick="closeEndOfChapterModal()"
+                          class="w-full py-2.5 bg-surface-container hover:bg-surface-container-high text-on-surface font-semibold rounded-xl transition-all flex items-center justify-center gap-2">
+                      <span>Ở lại trang này</span>
+                  </button>
+              </div>
+          </div>
+      </div>
+
+      <!-- Bottom Sticky Footer -->
+      <footer class="fixed bottom-0 left-0 right-0 z-40 bg-surface/95 backdrop-blur-md shadow-[0_-4px_20px_rgba(107,91,75,0.06)] border-t border-outline-variant/10">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
-          <a th:if="${chapter.chapterNumber > 1}" th:href="@{/truyen/{slug}/chuong-{chapterNumber}(slug=${novel.slug}, chapterNumber=${chapter.chapterNumber - 1})}" class="flex items-center gap-2 px-3.5 py-2 rounded-xl text-outline font-label-md text-label-md hover:text-on-surface">
+          <a th:if="${prevChapterNumber != null}" th:href="@{/truyen/{slug}/chuong-{chapterNumber}(slug=${novel.slug}, chapterNumber=${prevChapterNumber})}" class="flex items-center gap-2 px-3.5 py-2 rounded-xl text-outline font-label-md text-label-md hover:text-on-surface">
             <span class="material-symbols-outlined text-[18px]">chevron_left</span>
             <span class="hidden sm:inline">Chương trước</span>
           </a>
-          <button th:if="${chapter.chapterNumber <= 1}" class="flex items-center gap-2 px-3.5 py-2 rounded-xl text-outline font-label-md text-label-md opacity-40 cursor-not-allowed select-none" disabled>
+          <button th:if="${prevChapterNumber == null}" class="flex items-center gap-2 px-3.5 py-2 rounded-xl text-outline font-label-md text-label-md opacity-40 cursor-not-allowed select-none" disabled>
             <span class="material-symbols-outlined text-[18px]">chevron_left</span>
             <span class="hidden sm:inline">Chương trước</span>
           </button>
@@ -213,19 +315,34 @@
           </div>
           
           <div class="flex items-center gap-2">
-            <a th:href="@{/truyen/{slug}/chuong-{chapterNumber}(slug=${novel.slug}, chapterNumber=${chapter.chapterNumber + 1})}" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md shadow-sm transition-transform active:scale-95">
+            <a th:if="${!isLatestChapter}" th:href="@{/truyen/{slug}/chuong-{chapterNumber}(slug=${novel.slug}, chapterNumber=${nextChapterNumber})}" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md shadow-sm transition-transform active:scale-95">
               <span class="font-medium">Chương sau</span>
               <span class="material-symbols-outlined text-[18px]">chevron_right</span>
             </a>
+            <button th:if="${isLatestChapter}" type="button" onclick="openEndOfChapterModal()" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md shadow-sm transition-transform active:scale-95 group relative" title="Đã hết chương mới nhất">
+              <span class="font-medium">Chương sau</span>
+              <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+              <span class="absolute -top-9 right-0 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+                Đã hết chương mới nhất
+              </span>
+            </button>
           </div>
         </div>
       </footer>
 
-      <!-- Audio Floating Player -->
-      <div id="audio-player-panel" class="fixed bottom-20 left-1/2 -translate-x-1/2 w-[90%] max-w-[400px] bg-surface-container-lowest/95 backdrop-blur-xl shadow-2xl rounded-2xl p-4 z-50 transform translate-y-48 opacity-0 transition-all duration-500 pointer-events-none border border-outline-variant/30">
-          <div class="flex items-center justify-between mb-3">
-              <span class="font-label-md text-label-md text-primary font-bold flex items-center gap-1.5"><span class="material-symbols-outlined text-[18px] animate-pulse">graphic_eq</span> Trình Đọc Truyện AI</span>
-              <button id="close-audio-panel" class="text-on-surface-variant hover:text-error transition-colors"><span class="material-symbols-outlined text-[20px]">close</span></button>
+      <!-- Audio Floating Player (Placed on empty right space on desktop, non-obtrusive, draggable) -->
+      <div id="audio-player-panel" class="fixed bottom-20 left-1/2 -translate-x-1/2 lg:bottom-auto lg:left-auto lg:translate-x-0 lg:top-36 lg:right-20 xl:right-24 2xl:right-32 w-[92%] sm:w-[340px] bg-surface-container-lowest/95 backdrop-blur-xl shadow-2xl rounded-2xl p-4 z-50 transform translate-y-6 opacity-0 transition-all duration-300 pointer-events-none border border-outline-variant/30">
+          <div id="audio-panel-header" class="flex items-center justify-between mb-3 cursor-move select-none" title="Nhấn giữ và kéo để di chuyển">
+              <span class="font-label-md text-label-md text-primary font-bold flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[18px] animate-pulse">graphic_eq</span>
+                  Nghe đọc truyện
+              </span>
+              <div class="flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[18px] text-on-surface-variant/40 hover:text-on-surface-variant cursor-grab active:cursor-grabbing" title="Kéo để di chuyển">drag_indicator</span>
+                  <button id="close-audio-panel" class="p-1 rounded-lg text-on-surface-variant hover:text-error hover:bg-surface-container transition-colors">
+                      <span class="material-symbols-outlined text-[18px]">close</span>
+                  </button>
+              </div>
           </div>
           <div class="space-y-4">
               <!-- Cài đặt giọng & tốc độ -->
@@ -242,10 +359,10 @@
               
               <!-- Nút điều khiển -->
               <div class="flex items-center justify-center gap-6 pt-1 border-t border-outline-variant/20">
-                  <button id="audio-prev" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container text-on-surface-variant transition-colors"><span class="material-symbols-outlined">skip_previous</span></button>
-                  <button id="audio-toggle" class="w-14 h-14 flex items-center justify-center rounded-full bg-primary text-on-primary shadow-lg hover:scale-105 transition-transform"><span class="material-symbols-outlined text-[32px]" id="audio-toggle-icon">play_arrow</span></button>
-                  <button id="audio-stop" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container text-on-surface-variant hover:text-error transition-colors"><span class="material-symbols-outlined">stop</span></button>
-                  <button id="audio-next" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container text-on-surface-variant transition-colors"><span class="material-symbols-outlined">skip_next</span></button>
+                  <button id="audio-prev" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container text-on-surface-variant transition-colors" title="Câu trước"><span class="material-symbols-outlined">skip_previous</span></button>
+                  <button id="audio-toggle" class="w-14 h-14 flex items-center justify-center rounded-full bg-primary text-on-primary shadow-lg hover:scale-105 transition-transform" title="Phát / Tạm dừng"><span class="material-symbols-outlined text-[32px]" id="audio-toggle-icon">play_arrow</span></button>
+                  <button id="audio-stop" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container text-on-surface-variant hover:text-error transition-colors" title="Dừng đọc"><span class="material-symbols-outlined">stop</span></button>
+                  <button id="audio-next" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container text-on-surface-variant transition-colors" title="Câu tiếp theo"><span class="material-symbols-outlined">skip_next</span></button>
               </div>
           </div>
       </div>
@@ -309,7 +426,9 @@
               }
           });
 
-          // Apply Theme
+          // Apply Theme to html and body
+          document.documentElement.classList.remove('theme-light', 'theme-sepia', 'theme-dark', 'theme-blue');
+          document.documentElement.classList.add(currentSettings.theme);
           body.classList.remove('theme-light', 'theme-sepia', 'theme-dark', 'theme-blue');
           body.classList.add(currentSettings.theme);
           
@@ -317,9 +436,11 @@
               if (btn.dataset.value === currentSettings.theme) {
                   btn.classList.replace('border-transparent', 'border-primary');
                   btn.classList.replace('border-outline-variant', 'border-primary');
+                  btn.classList.add('ring-2', 'ring-primary', 'ring-offset-2');
               } else {
                   btn.classList.replace('border-primary', 'border-transparent');
                   if(btn.dataset.value === 'theme-light') btn.classList.replace('border-transparent', 'border-outline-variant');
+                  btn.classList.remove('ring-2', 'ring-primary', 'ring-offset-2');
               }
           });
       }
@@ -359,19 +480,13 @@
           });
       });
       
-      // Quick toggle theme button in header
-      const themeToggleBtn = document.getElementById('btn-theme-toggle');
-      if (themeToggleBtn) {
-          themeToggleBtn.addEventListener('click', function() {
-              const newTheme = currentSettings.theme === 'theme-light' ? 'theme-sepia' : 
-                              (currentSettings.theme === 'theme-sepia' ? 'theme-dark' : 'theme-light');
-              updateSetting('theme', newTheme);
-          });
-      }
+
 
       // 3. Audio Reader (Advanced TTS with Karaoke & Auto-scroll)
       const btnAudioMain = document.getElementById('btn-audio-read');
       const audioIcon = document.getElementById('audio-icon');
+      const vAudioBtn = document.getElementById('btn-audio-read-vertical');
+      const vAudioIcon = document.getElementById('audio-icon-vertical');
       const playerPanel = document.getElementById('audio-player-panel');
       const toggleBtn = document.getElementById('audio-toggle');
       const toggleIcon = document.getElementById('audio-toggle-icon');
@@ -408,48 +523,77 @@
           speechSynthesis.onvoiceschanged = populateVoiceList;
       }
 
+      function getParagraphTexts() {
+          const pList = Array.from(article.querySelectorAll('p')).filter(p => p.innerText.trim().length > 0);
+          if (pList.length > 0) {
+              return pList.map(p => p.innerText.trim());
+          }
+          let html = article.innerHTML;
+          const rawParts = html.split(/(?:<p[^>]*><\/p>|<br\s*[\/]?>|\n)+/gi);
+          const results = [];
+          rawParts.forEach(part => {
+              const temp = document.createElement('div');
+              temp.innerHTML = part;
+              const text = (temp.textContent || temp.innerText || '').trim();
+              if (text.length > 0) {
+                  results.push(text);
+              }
+          });
+          return results;
+      }
+
       function openPlayerPanel() {
-          playerPanel.classList.remove('translate-y-48', 'opacity-0', 'pointer-events-none');
+          playerPanel.classList.remove('translate-y-6', 'opacity-0', 'pointer-events-none');
+          playerPanel.classList.add('translate-y-0', 'opacity-100', 'pointer-events-auto');
           isPanelOpen = true;
-          btnAudioMain.classList.add('text-primary');
-          audioIcon.textContent = "graphic_eq";
+          if (btnAudioMain) btnAudioMain.classList.add('text-primary');
+          if (audioIcon) audioIcon.textContent = "graphic_eq";
+          if (vAudioBtn) vAudioBtn.classList.add('text-primary');
+          if (vAudioIcon) vAudioIcon.textContent = "graphic_eq";
           
-          // Prepare document for Karaoke Mode
+          // Prepare document for Karaoke Mode with full paragraph structure preservation
           if (sentences.length === 0) {
-             const rawText = article.innerText;
-             // Split text by punctuation marks (., !, ?) to create sentences
-             const chunks = rawText.match(/[^.!?]+[.!?]+/g) || [rawText];
-             
-             let karaokeHtml = '';
-             chunks.forEach((chunk, idx) => {
-                 const t = chunk.trim();
-                 if (t.length > 0) {
-                     sentences.push(t);
-                     karaokeHtml += `<span class="karaoke-sentence transition-colors duration-300 rounded-sm" id="sen-${idx}">${chunk}</span> `;
-                 }
-             });
-             if (sentences.length > 0) {
-                 article.innerHTML = karaokeHtml;
-             }
+              const paragraphs = getParagraphTexts();
+              if (paragraphs.length > 0) {
+                  let structuredHtml = '';
+                  paragraphs.forEach(para => {
+                      const sList = para.match(/[^.!?]+(?:[.!?]+["'”’]?|$)/g) || [para];
+                      let paraHtml = '<p class="indent-8 text-justify mb-5">';
+                      sList.forEach(s => {
+                          const clean = s.trim();
+                          if (clean.length > 0) {
+                              const idx = sentences.length;
+                              sentences.push(clean);
+                              paraHtml += `<span class="karaoke-sentence transition-colors duration-200 rounded px-0.5" id="sen-${idx}">${clean}</span> `;
+                          }
+                      });
+                      paraHtml += '</p>';
+                      structuredHtml += paraHtml;
+                  });
+                  article.innerHTML = structuredHtml;
+              }
           }
       }
 
       function closePlayerPanel() {
-          playerPanel.classList.add('translate-y-48', 'opacity-0', 'pointer-events-none');
+          playerPanel.classList.add('translate-y-6', 'opacity-0', 'pointer-events-none');
+          playerPanel.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
           isPanelOpen = false;
-          btnAudioMain.classList.remove('text-primary');
-          audioIcon.textContent = "headphones";
+          if (btnAudioMain) btnAudioMain.classList.remove('text-primary');
+          if (audioIcon) audioIcon.textContent = "headphones";
+          if (vAudioBtn) vAudioBtn.classList.remove('text-primary');
+          if (vAudioIcon) vAudioIcon.textContent = "volume_up";
           stopAudio();
           // Remove Karaoke Highlights
           document.querySelectorAll('.karaoke-sentence').forEach(el => {
-              el.classList.remove('bg-primary', 'text-on-primary', 'shadow-sm', 'px-1');
+              el.classList.remove('bg-primary', 'text-on-primary', 'shadow-sm');
           });
       }
 
       function highlightSentence(index) {
           document.querySelectorAll('.karaoke-sentence').forEach((el, i) => {
               if (i === index) {
-                  el.classList.add('bg-primary', 'text-on-primary', 'shadow-sm', 'px-1');
+                  el.classList.add('bg-primary', 'text-on-primary', 'shadow-sm');
                   // Auto-scroll
                   const rect = el.getBoundingClientRect();
                   if (rect.top > window.innerHeight - 200 || rect.bottom < 100) {
@@ -459,7 +603,7 @@
                       });
                   }
               } else {
-                  el.classList.remove('bg-primary', 'text-on-primary', 'shadow-sm', 'px-1');
+                  el.classList.remove('bg-primary', 'text-on-primary', 'shadow-sm');
               }
           });
       }
@@ -518,14 +662,16 @@
       }
 
       // Event Listeners for Player
-      btnAudioMain.addEventListener('click', () => {
-          if (!('speechSynthesis' in window)) {
-              alert("Trình duyệt của bạn không hỗ trợ tính năng đọc âm thanh.");
-              return;
-          }
-          if (isPanelOpen) closePlayerPanel();
-          else openPlayerPanel();
-      });
+      if (btnAudioMain) {
+          btnAudioMain.addEventListener('click', () => {
+              if (!('speechSynthesis' in window)) {
+                  alert("Trình duyệt của bạn không hỗ trợ tính năng đọc âm thanh.");
+                  return;
+              }
+              if (isPanelOpen) closePlayerPanel();
+              else openPlayerPanel();
+          });
+      }
 
       closePanelBtn.addEventListener('click', closePlayerPanel);
       toggleBtn.addEventListener('click', toggleAudio);
@@ -561,6 +707,134 @@
 
       // Stop audio if user leaves page
       window.addEventListener('beforeunload', stopAudio);
+
+      // Draggable Audio Player Panel on desktop
+      const panelHeader = document.getElementById('audio-panel-header');
+      if (panelHeader && playerPanel) {
+          let isDragging = false;
+          let dragStartX, dragStartY, initialLeft, initialTop;
+
+          panelHeader.addEventListener('mousedown', (e) => {
+              if (e.target.closest('button') || e.target.closest('select') || e.target.closest('input')) return;
+              isDragging = true;
+              dragStartX = e.clientX;
+              dragStartY = e.clientY;
+              const rect = playerPanel.getBoundingClientRect();
+              initialLeft = rect.left;
+              initialTop = rect.top;
+              playerPanel.style.transition = 'none';
+              playerPanel.style.bottom = 'auto';
+              playerPanel.style.right = 'auto';
+              playerPanel.style.left = initialLeft + 'px';
+              playerPanel.style.top = initialTop + 'px';
+              playerPanel.style.margin = '0';
+              document.body.style.userSelect = 'none';
+          });
+
+          document.addEventListener('mousemove', (e) => {
+              if (!isDragging) return;
+              const dx = e.clientX - dragStartX;
+              const dy = e.clientY - dragStartY;
+              const newLeft = Math.max(10, Math.min(window.innerWidth - playerPanel.offsetWidth - 10, initialLeft + dx));
+              const newTop = Math.max(56, Math.min(window.innerHeight - playerPanel.offsetHeight - 10, initialTop + dy));
+              playerPanel.style.left = newLeft + 'px';
+              playerPanel.style.top = newTop + 'px';
+          });
+
+          document.addEventListener('mouseup', () => {
+              if (isDragging) {
+                  isDragging = false;
+                  playerPanel.style.transition = '';
+                  document.body.style.userSelect = '';
+              }
+          });
+      }
+
+      // 4. Global UI Helper Functions for Drawer, Modals & Floating Toolbar
+      window.toggleAppearanceSettings = function() {
+          const drawer = document.getElementById('settings-drawer');
+          const backdrop = document.getElementById('settings-drawer-backdrop');
+          if (!drawer) return;
+          const isClosed = drawer.classList.contains('translate-x-full');
+          if (isClosed) {
+              drawer.classList.remove('translate-x-full');
+              if (backdrop) backdrop.classList.remove('hidden');
+          } else {
+              drawer.classList.add('translate-x-full');
+              if (backdrop) backdrop.classList.add('hidden');
+          }
+      };
+
+      window.toggleChapterListDrawer = function() {
+          const drawer = document.getElementById('chapter-list-drawer');
+          const backdrop = document.getElementById('chapter-list-drawer-backdrop');
+          if (!drawer) return;
+          const isClosed = drawer.classList.contains('-translate-x-full');
+          if (isClosed) {
+              drawer.classList.remove('-translate-x-full');
+              if (backdrop) backdrop.classList.remove('hidden');
+              const activeChapter = drawer.querySelector('.chapter-item.bg-primary\\/10, .chapter-item[class*="bg-primary"]');
+              if (activeChapter) {
+                  activeChapter.scrollIntoView({ block: 'center', behavior: 'smooth' });
+              }
+          } else {
+              drawer.classList.add('-translate-x-full');
+              if (backdrop) backdrop.classList.add('hidden');
+          }
+      };
+
+      window.filterChapterList = function(query) {
+          const q = (query || '').toLowerCase().trim();
+          document.querySelectorAll('#chapter-list-container .chapter-item').forEach(item => {
+              const num = (item.getAttribute('data-chapter') || '').toLowerCase();
+              const title = (item.getAttribute('data-title') || '').toLowerCase();
+              if (!q || num.includes(q) || title.includes(q)) {
+                  item.style.display = 'flex';
+              } else {
+                  item.style.display = 'none';
+              }
+          });
+      };
+
+      window.openEndOfChapterModal = function() {
+          const modal = document.getElementById('endOfChapterModal');
+          if (modal) {
+              modal.classList.remove('hidden');
+              modal.classList.add('flex');
+          }
+      };
+
+      window.closeEndOfChapterModal = function() {
+          const modal = document.getElementById('endOfChapterModal');
+          if (modal) {
+              modal.classList.remove('flex');
+              modal.classList.add('hidden');
+          }
+      };
+
+      window.toggleAudioPanel = function() {
+          if (!('speechSynthesis' in window)) {
+              alert("Trình duyệt của bạn không hỗ trợ tính năng đọc âm thanh.");
+              return;
+          }
+          if (isPanelOpen) closePlayerPanel();
+          else openPlayerPanel();
+      };
+
+      // Keyboard shortcuts
+      document.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape') {
+              closeEndOfChapterModal();
+              const cDrawer = document.getElementById('chapter-list-drawer');
+              if (cDrawer && !cDrawer.classList.contains('-translate-x-full')) {
+                  toggleChapterListDrawer();
+              }
+              const sDrawer = document.getElementById('settings-drawer');
+              if (sDrawer && !sDrawer.classList.contains('translate-x-full')) {
+                  toggleAppearanceSettings();
+              }
+          }
+      });
     })();
   </script>
 

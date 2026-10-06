@@ -96,9 +96,9 @@ docker compose up -d
 
 ## 8. Default Accounts
 *Hệ thống sẽ được khởi tạo với các tài khoản mặc định thông qua file `database/seed.sql`.*
-- **Admin**: `admin@tramtruyen.com` / `123456`
-- **Staff**: `staff@tramtruyen.com` / `123456`
-- **Member**: `member@tramtruyen.com` / `123456`
+- **Admin**: `admin@tramtruyen.com` / `12345678`
+- **Staff**: `staff@tramtruyen.com` / `12345678`
+- **Member**: `member@tramtruyen.com` / `12345678`
 
 ## 9. Project Team
 - **Member 1**: Novel Management

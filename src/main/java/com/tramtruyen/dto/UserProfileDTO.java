@@ -22,4 +22,5 @@ public class UserProfileDTO {
     private String avatarUrl;
     private Integer walletBalance;
     private LocalDateTime createdAt;
+    private boolean isEmailVerified;
 }

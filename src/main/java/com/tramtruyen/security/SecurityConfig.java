@@ -12,11 +12,14 @@ public class SecurityConfig {
 
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
 
     public SecurityConfig(CustomOAuth2UserService customOAuth2UserService,
-                          CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler) {
+                          CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler,
+                          CustomAuthenticationFailureHandler customAuthenticationFailureHandler) {
         this.customOAuth2UserService = customOAuth2UserService;
         this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
+        this.customAuthenticationFailureHandler = customAuthenticationFailureHandler;
     }
 
     @Bean
@@ -27,7 +30,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/register", "/verify-otp", "/login", "/css/**", "/js/**", "/images/**").permitAll()
+                .requestMatchers("/register", "/verify-otp", "/login", "/account-locked", "/css/**", "/js/**", "/images/**").permitAll()
                 .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
                 .requestMatchers("/user/**", "/tu-sach").authenticated()
                 .anyRequest().permitAll()
@@ -35,7 +38,7 @@ public class SecurityConfig {
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
                 .successHandler(customAuthenticationSuccessHandler)
-                .failureUrl("/login?error")
+                .failureHandler(customAuthenticationFailureHandler)
                 .permitAll()
         ).oauth2Login(oauth2 -> oauth2
                 .loginPage("/login")
@@ -43,6 +46,7 @@ public class SecurityConfig {
                         .userService(customOAuth2UserService)
                 )
                 .successHandler(customAuthenticationSuccessHandler)
+                .failureHandler(customAuthenticationFailureHandler)
         ).logout(logout -> logout
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/")

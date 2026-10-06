@@ -66,7 +66,7 @@
 
                         <!-- Dropdown -->
                         <div id="userDropdown"
-                            class="dropdown-menu hidden absolute right-0 mt-2 w-52 bg-surface rounded-xl shadow-lg border border-outline-variant py-2 z-50">
+                            class="hidden absolute right-0 mt-2 w-52 bg-surface rounded-xl shadow-lg border border-outline-variant py-2 z-50">
                             <div class="px-4 py-2 border-b border-outline-variant">
                                 <p class="font-label-md text-on-surface font-bold truncate"
                                     sec:authentication="principal.user.fullName"></p>
@@ -100,7 +100,7 @@
         </div>
 
         <script>
-            (function() {
+            document.addEventListener('DOMContentLoaded', function() {
                 // Update Login & Register buttons to preserve current page return URL
                 const loginBtn = document.getElementById('navLoginBtn');
                 const regBtn = document.getElementById('navRegisterBtn');
@@ -124,8 +124,13 @@
                             dropdown.classList.add('hidden');
                         }
                     });
+                    document.addEventListener('keydown', function(e) {
+                        if (e.key === 'Escape') {
+                            dropdown.classList.add('hidden');
+                        }
+                    });
                 }
-            })();
+            });
         </script>
     </header>
 </body>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Hồ sơ cá nhân - Trạm Truyện</title>
+    <title>Chỉnh sửa hồ sơ - Trạm Truyện</title>
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -11,6 +11,21 @@
     <link rel="stylesheet" th:href="@{/css/bookshelf.css}">
     <script src="https://cdn.tailwindcss.com"></script>
     <script th:src="@{/js/novel/tailwind-config.js}"></script>
+    <script>
+        function previewAvatar(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img1 = document.getElementById('sidebar-avatar');
+                    const img2 = document.getElementById('sidebar-avatar-fallback');
+                    if (img1) img1.src = e.target.result;
+                    if (img2) img2.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
 </head>
 <body class="bg-surface font-body-md text-on-surface min-h-screen flex flex-col">
     <!-- Header -->
@@ -18,18 +33,28 @@
 
     <main class="w-full pt-20 bg-surface flex-1">
         <div class="max-w-[1280px] mx-auto px-6 py-8">
-            <div class="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-8 items-start">
+            <form th:action="@{/user/edit-profile}" method="post" enctype="multipart/form-data" class="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-8 items-start">
                 
                 <!-- Sidebar -->
                 <aside class="w-full space-y-6">
                     <div class="p-5 rounded-xl bg-surface-container-lowest shadow-[0_4px_20px_-2px_rgba(107,91,75,0.06)]">
                         <div class="flex items-center gap-4">
-                            <div class="w-14 h-14 rounded-full overflow-hidden bg-primary-container/20 flex items-center justify-center border border-outline-variant/30">
-                                <img th:if="${userProfile.avatarUrl != null}" th:src="${userProfile.avatarUrl}" alt="Avatar"
-                                     onerror="this.onerror=null;this.src='/images/default-avatar.jpg';" class="w-full h-full object-cover">
-                                <img th:unless="${userProfile.avatarUrl != null}" src="/images/default-avatar.jpg" alt="Avatar"
-                                     class="w-full h-full object-cover">
+                            <div class="relative group cursor-pointer" onclick="document.getElementById('avatar-upload').click()">
+                                <div class="w-14 h-14 rounded-full overflow-hidden bg-primary-container/20 flex items-center justify-center border border-outline-variant/30 group-hover:border-primary-container transition-colors">
+                                    <img id="sidebar-avatar" th:if="${userProfile.avatarUrl != null}" th:src="${userProfile.avatarUrl}" alt="Avatar"
+                                         onerror="this.onerror=null;this.src='/images/default-avatar.jpg';" class="w-full h-full object-cover">
+                                    <img id="sidebar-avatar-fallback" th:unless="${userProfile.avatarUrl != null}" src="/images/default-avatar.jpg" alt="Avatar"
+                                         class="w-full h-full object-cover">
+                                </div>
+                                <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-primary-container text-on-primary-container rounded-full flex items-center justify-center border-2 border-surface-container-lowest shadow-sm z-10">
+                                    <span class="material-symbols-outlined text-[14px]">photo_camera</span>
+                                </div>
+                                <div class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20">
+                                    <span class="material-symbols-outlined text-white text-[20px]">edit</span>
+                                </div>
                             </div>
+                            <input type="file" id="avatar-upload" name="avatar" accept="image/*" class="hidden" onchange="previewAvatar(event)">
+                            
                             <div class="min-w-0 flex-1">
                                 <h3 class="font-headline-sm text-headline-sm text-on-surface truncate" th:text="${userProfile.fullName}">Họ và Tên</h3>
                                 <p class="text-xs text-outline truncate" th:text="${userProfile.email}">email@example.com</p>
@@ -72,50 +97,48 @@
                     <div class="bg-surface-container-lowest p-6 sm:p-8 rounded-xl shadow-[0_4px_20px_-2px_rgba(107,91,75,0.06)] space-y-6">
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-surface-container">
                             <div>
-                                <h1 class="font-headline-lg text-2xl md:text-3xl text-on-surface font-bold">Hồ sơ cá nhân</h1>
-                                <p class="text-sm text-on-surface-variant mt-1">Thông tin tài khoản độc giả tại Trạm Truyện.</p>
+                                <h1 class="font-headline-lg text-2xl md:text-3xl text-on-surface font-bold">Chỉnh sửa hồ sơ</h1>
+                                <p class="text-sm text-on-surface-variant mt-1">Cập nhật thông tin cá nhân của bạn.</p>
                             </div>
                             <div class="flex items-center gap-3 shrink-0">
-                                <a th:href="@{/user/edit-profile}"
-                                   class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-surface-container text-primary hover:bg-surface-container-high font-label-lg text-label-lg transition-all shadow-sm">
-                                    <span class="material-symbols-outlined text-[18px]">edit</span>
-                                    <span>Chỉnh sửa</span>
+                                <a th:href="@{/user/profile}"
+                                   class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-surface-container text-on-surface-variant hover:bg-surface-container-high font-label-lg text-label-lg transition-all shadow-sm">
+                                    <span class="material-symbols-outlined text-[18px]">close</span>
+                                    <span>Hủy</span>
                                 </a>
-                                <a th:href="@{/user/bookshelf}"
-                                   class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-primary-container text-surface-container-lowest hover:bg-primary font-label-lg text-label-lg transition-all shadow-sm">
-                                    <span class="material-symbols-outlined text-[18px]">bookmark</span>
-                                    <span>Vào Tủ sách</span>
-                                </a>
+                                <button type="submit"
+                                   class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-primary-container text-on-primary-container hover:bg-primary hover:text-on-primary font-label-lg text-label-lg transition-all shadow-sm">
+                                    <span class="material-symbols-outlined text-[18px]">save</span>
+                                    <span>Lưu thay đổi</span>
+                                </button>
                             </div>
                         </div>
 
-                        <!-- Success Toast -->
-                        <div th:if="${successMessage}" class="w-full bg-surface-container-high border-l-4 border-primary rounded-r-[10px] p-4 text-on-surface flex items-start gap-3 shadow-sm animate-fade-in">
-                            <span class="material-symbols-outlined text-primary-container text-[24px]">task_alt</span>
-                            <div class="flex flex-col text-left justify-center min-h-[24px]">
-                                <span class="font-label-lg text-label-lg text-on-surface font-bold" th:text="${successMessage}">Cập nhật thành công</span>
-                            </div>
-                        </div>
+
 
                         <!-- Info Cards -->
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div class="p-4 rounded-xl bg-surface-container-low/60 flex items-center gap-4">
-                                <div class="w-12 h-12 rounded-xl bg-surface-container-lowest flex items-center justify-center text-primary shadow-xs">
+                            <!-- Họ và tên (Editable) -->
+                            <div class="p-4 rounded-xl bg-surface flex items-center gap-4 border border-outline-variant/50 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all">
+                                <div class="w-12 h-12 rounded-xl bg-surface-container-lowest flex items-center justify-center text-primary shadow-xs shrink-0">
                                     <span class="material-symbols-outlined text-[24px]">badge</span>
                                 </div>
-                                <div>
-                                    <div class="text-xs text-outline font-medium">Họ và tên</div>
-                                    <div class="font-bold text-on-surface text-base" th:text="${userProfile.fullName}">Họ tên</div>
+                                <div class="w-full min-w-0">
+                                    <label for="full-name" class="text-xs text-outline font-medium block mb-0.5">Họ và tên</label>
+                                    <input id="full-name" name="fullName" type="text" th:value="${userProfile.fullName}" required
+                                           class="w-full bg-transparent border-none p-0 focus:ring-0 font-bold text-on-surface text-base placeholder:font-normal placeholder:text-outline-variant outline-none">
                                 </div>
                             </div>
 
-                            <div class="p-4 rounded-xl bg-surface-container-low/60 flex items-center gap-4">
-                                <div class="w-12 h-12 rounded-xl bg-surface-container-lowest flex items-center justify-center text-primary shadow-xs">
+                            <!-- Email (Readonly) -->
+                            <div class="p-4 rounded-xl bg-surface-container-low/60 flex items-center gap-4 opacity-80">
+                                <div class="w-12 h-12 rounded-xl bg-surface-container-lowest flex items-center justify-center text-primary shadow-xs shrink-0">
                                     <span class="material-symbols-outlined text-[24px]">mail</span>
                                 </div>
                                 <div class="min-w-0">
                                     <div class="text-xs text-outline font-medium flex items-center gap-1">
-                                        Địa chỉ Email
+                                        Địa chỉ Email 
+                                        <span class="material-symbols-outlined text-[14px]" title="Không thể thay đổi email">lock</span>
                                         <span th:if="${userProfile.emailVerified}" class="inline-flex items-center gap-0.5 bg-primary/10 text-primary px-1.5 py-0.5 rounded-md font-bold ml-1 whitespace-nowrap">
                                             <span class="material-symbols-outlined text-[12px]">verified</span>
                                             <span class="text-[10px] leading-tight">Đã xác thực</span>
@@ -125,8 +148,9 @@
                                 </div>
                             </div>
 
-                            <div class="p-4 rounded-xl bg-surface-container-low/60 flex items-center gap-4">
-                                <div class="w-12 h-12 rounded-xl bg-surface-container-lowest flex items-center justify-center text-primary-container shadow-xs">
+                            <!-- Số dư Ví Coin -->
+                            <div class="p-4 rounded-xl bg-surface-container-low/60 flex items-center gap-4 opacity-80">
+                                <div class="w-12 h-12 rounded-xl bg-surface-container-lowest flex items-center justify-center text-primary-container shadow-xs shrink-0">
                                     <span class="material-symbols-outlined text-[24px]">monetization_on</span>
                                 </div>
                                 <div>
@@ -135,8 +159,9 @@
                                 </div>
                             </div>
 
-                            <div class="p-4 rounded-xl bg-surface-container-low/60 flex items-center gap-4">
-                                <div class="w-12 h-12 rounded-xl bg-surface-container-lowest flex items-center justify-center text-primary shadow-xs">
+                            <!-- Truyện trong tủ sách -->
+                            <div class="p-4 rounded-xl bg-surface-container-low/60 flex items-center gap-4 opacity-80">
+                                <div class="w-12 h-12 rounded-xl bg-surface-container-lowest flex items-center justify-center text-primary shadow-xs shrink-0">
                                     <span class="material-symbols-outlined text-[24px]">collections_bookmark</span>
                                 </div>
                                 <div>
@@ -178,7 +203,7 @@
                         </div>
                     </div>
                 </section>
-            </div>
+            </form>
         </div>
     </main>
 

@@ -68,7 +68,10 @@
 
             <!-- Error and Success Messages -->
             <div th:if="${param.error}" class="mb-4 p-3 text-sm text-on-error-container bg-error-container rounded-lg border border-error/20" role="alert">
-                <span>Email hoặc mật khẩu không đúng, hoặc tài khoản chưa được kích hoạt.</span>
+                <th:block th:switch="${param.error[0]}">
+                    <span th:case="'disabled'">Tài khoản chưa được kích hoạt. Vui lòng kiểm tra email để xác thực.</span>
+                    <span th:case="*">Email hoặc mật khẩu không đúng.</span>
+                </th:block>
             </div>
             
             <div th:if="${successMessage}" class="mb-4 p-3 text-sm text-[#0f5132] bg-[#d1e7dd] rounded-lg border border-[#badbcc]" role="alert">

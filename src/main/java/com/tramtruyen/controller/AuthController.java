@@ -1,9 +1,11 @@
 package com.tramtruyen.controller;
 
+import com.tramtruyen.dto.AccountLockedInfoDTO;
 import com.tramtruyen.dto.RegisterRequestDTO;
 import com.tramtruyen.service.AuthService;
 import com.tramtruyen.security.CustomAuthenticationSuccessHandler;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -122,5 +124,17 @@ public class AuthController {
             model.addAttribute("email", email);
             return "authentication/verify-otp";
         }
+    }
+
+    @GetMapping("/account-locked")
+    public String showAccountLockedPage(HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession(false);
+        Object lockedInfoObj = session != null ? session.getAttribute("LOCKED_USER_INFO") : null;
+        if (lockedInfoObj instanceof AccountLockedInfoDTO lockedInfo) {
+            session.removeAttribute("LOCKED_USER_INFO");
+            model.addAttribute("lockedInfo", lockedInfo);
+            return "authentication/account-locked";
+        }
+        return "redirect:/login";
     }
 }
