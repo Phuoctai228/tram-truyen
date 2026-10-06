@@ -313,10 +313,3 @@ CREATE TABLE user_reader_themes (
     audio_speed DECIMAL(3,1) DEFAULT 1.0, -- Tốc độ đọc (1.0x, 1.25x...)
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
--- ================================================================================
--- LỆNH BỔ SUNG: CHỐNG XUNG ĐỘT ID TỰ TĂNG
--- Đẩy sequence của users lên 100 để khi tạo account mới (tự tăng) 
--- không bị trùng với các ID (1, 2, 3...) được set cứng trong dữ liệu mẫu.
--- ================================================================================
-ALTER SEQUENCE users_id_seq RESTART WITH 100;
