@@ -18,4 +18,6 @@ public interface RatingService {
      * Get a user's existing rating for a novel (if any).
      */
     NovelRating getUserRating(String email, Integer novelId);
+
+    java.util.List<NovelRating> getRatingsByNovel(Integer novelId);
 }

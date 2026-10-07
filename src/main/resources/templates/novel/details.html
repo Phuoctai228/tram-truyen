@@ -65,7 +65,7 @@
                 </div>
                 <div>
                   <div class="font-bold text-xl text-on-surface" th:text="${favoriteCount != null ? favoriteCount : 0}">0</div>
-                  <div class="text-xs text-outline font-medium uppercase tracking-wider mt-1">Yêu thích</div>
+                  <div class="text-xs text-outline font-medium uppercase tracking-wider mt-1">Lượt lưu</div>
                 </div>
               </div>
               
@@ -141,6 +141,7 @@
             <button class="pb-3 border-b-2 border-primary text-primary font-bold text-lg tab-btn" onclick="switchTab('intro')">Giới thiệu</button>
             <button class="pb-3 border-b-2 border-transparent text-tertiary hover:text-on-surface font-semibold text-lg tab-btn transition-colors" onclick="switchTab('chapters')">D.s chương</button>
             <button class="pb-3 border-b-2 border-transparent text-tertiary hover:text-on-surface font-semibold text-lg tab-btn transition-colors" onclick="switchTab('comments')">Bình luận</button>
+            <button class="pb-3 border-b-2 border-transparent text-tertiary hover:text-on-surface font-semibold text-lg tab-btn transition-colors" onclick="switchTab('ratings')">Đánh giá</button>
           </div>
           
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
@@ -166,12 +167,12 @@
               <div id="tab-chapters" class="tab-content hidden">
                 <div class="flex items-center justify-between mb-6">
                   <h3 class="font-bold text-xl text-on-surface">Danh sách chương (<span th:text="${#lists.size(chapters)}">0</span>)</h3>
-                  <button class="flex items-center gap-1 text-sm font-medium text-tertiary hover:text-primary">
-                    <span class="material-symbols-outlined text-[18px]">sort</span> Cũ → Mới
+                  <button id="sortChaptersBtn" class="flex items-center gap-1 text-sm font-medium text-tertiary hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined text-[18px]">sort</span> <span id="sortChaptersText">Cũ → Mới</span>
                   </button>
                 </div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">
+                <div id="chaptersContainer" class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">
                   <a th:each="chap : ${chapters}" th:href="@{/truyen/{slug}/chuong-{chapterNumber}(slug=${novel.slug}, chapterNumber=${chap.chapterNumber})}" 
                      class="flex items-center py-2.5 border-b border-outline-variant/20 hover:text-primary group transition-colors">
                     <span class="text-sm font-medium text-on-surface-variant group-hover:text-primary truncate" th:text="'Chương ' + ${chap.chapterNumber} + ': ' + ${chap.title}">
@@ -189,6 +190,39 @@
                 <div class="text-center text-tertiary py-12 border-2 border-dashed border-outline-variant rounded-xl">
                   <span class="material-symbols-outlined text-4xl mb-2 text-outline">forum</span>
                   <p>Tính năng bình luận đang được xây dựng.</p>
+                </div>
+              </div>
+              
+              <!-- Tab: Đánh giá -->
+              <div id="tab-ratings" class="tab-content hidden">
+                <div class="flex items-center justify-between mb-6">
+                  <h3 class="font-bold text-xl text-on-surface">Đánh giá từ độc giả (<span th:text="${allRatings != null ? #lists.size(allRatings) : 0}">0</span>)</h3>
+                </div>
+                <div class="space-y-6">
+                  <div th:each="rating : ${allRatings}" class="bg-surface-container-lowest p-5 rounded-xl border border-outline-variant/30 shadow-sm">
+                    <div class="flex items-center justify-between mb-3">
+                      <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold text-lg">
+                          <span th:text="${#strings.substring(rating.user.fullName, 0, 1)}">U</span>
+                        </div>
+                        <div>
+                          <div class="font-bold text-on-surface text-sm" th:text="${rating.user.fullName}">Tên user</div>
+                          <div class="text-xs text-tertiary" th:text="${#temporals.format(rating.updatedAt, 'dd/MM/yyyy HH:mm')}">Thời gian</div>
+                        </div>
+                      </div>
+                      <div class="flex text-yellow-400 text-[14px]">
+                        <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                          <span th:if="${rating.rating >= i}" class="material-symbols-outlined icon-fill">star</span>
+                          <span th:if="${rating.rating < i}" class="material-symbols-outlined text-outline/30">star</span>
+                        </th:block>
+                      </div>
+                    </div>
+                    <p class="text-on-surface-variant text-sm leading-relaxed" th:text="${rating.reviewText != null and !rating.reviewText.isEmpty() ? rating.reviewText : 'Người dùng không để lại nhận xét.'}">Nhận xét</p>
+                  </div>
+                  <div th:if="${allRatings == null or #lists.isEmpty(allRatings)}" class="text-center text-tertiary py-12 border-2 border-dashed border-outline-variant rounded-xl">
+                    <span class="material-symbols-outlined text-4xl mb-2 text-outline">star_rate</span>
+                    <p>Chưa có đánh giá nào cho truyện này.</p>
+                  </div>
                 </div>
               </div>
               
@@ -381,6 +415,36 @@
            });
          }
        }
+    });
+
+    // Chapter sorting logic
+    document.addEventListener('DOMContentLoaded', () => {
+      const sortBtn = document.getElementById('sortChaptersBtn');
+      const sortText = document.getElementById('sortChaptersText');
+      const container = document.getElementById('chaptersContainer');
+      if(sortBtn && container) {
+        let isAsc = true;
+        sortBtn.addEventListener('click', () => {
+          isAsc = !isAsc;
+          sortText.textContent = isAsc ? 'Cũ → Mới' : 'Mới → Cũ';
+          
+          // Lấy tất cả các thẻ a (chương truyện) trong container
+          const chapters = Array.from(container.querySelectorAll('a'));
+          // Nếu không có chương nào thì thoát
+          if(chapters.length === 0) return;
+          
+          // Đảo ngược mảng
+          chapters.reverse();
+          
+          // Xóa tất cả các element hiện có trong container
+          const emptyMsg = container.querySelector('div'); // Nếu có thông báo rỗng
+          container.innerHTML = '';
+          
+          // Render lại theo thứ tự mới
+          chapters.forEach(chap => container.appendChild(chap));
+          if(emptyMsg) container.appendChild(emptyMsg);
+        });
+      }
     });
   </script>
 </body>

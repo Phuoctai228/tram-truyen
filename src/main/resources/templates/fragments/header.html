@@ -99,6 +99,48 @@
             </div>
         </div>
 
+        <!-- Global Toast Notifications -->
+        <div th:if="${successMessage != null or successMsg != null or errorMessage != null or errorMsg != null}" 
+             id="global-toast" class="fixed top-24 right-6 z-[100] flex flex-col gap-3 animate-fade-in pointer-events-none">
+            
+            <!-- Success Message -->
+            <div th:if="${successMessage != null or successMsg != null}" 
+                 class="bg-surface-container-high border-l-4 border-primary rounded-r-xl p-4 text-on-surface flex items-start gap-3 shadow-lg max-w-sm pointer-events-auto">
+                <span class="material-symbols-outlined text-primary text-[24px] mt-0.5">check_circle</span>
+                <div class="flex flex-col">
+                    <span class="font-label-lg text-label-lg font-bold" th:text="${successMessage != null ? successMessage : successMsg}">Thành công</span>
+                </div>
+                <button type="button" onclick="this.parentElement.remove()" class="text-outline hover:text-on-surface transition-colors ml-auto">
+                    <span class="material-symbols-outlined text-[20px]">close</span>
+                </button>
+            </div>
+
+            <!-- Error Message -->
+            <div th:if="${errorMessage != null or errorMsg != null}" 
+                 class="bg-error-container border-l-4 border-error rounded-r-xl p-4 text-on-error-container flex items-start gap-3 shadow-lg max-w-sm pointer-events-auto">
+                <span class="material-symbols-outlined text-error text-[24px] mt-0.5">error</span>
+                <div class="flex flex-col">
+                    <span class="font-label-lg text-label-lg font-bold" th:text="${errorMessage != null ? errorMessage : errorMsg}">Lỗi</span>
+                </div>
+                <button type="button" onclick="this.parentElement.remove()" class="text-error opacity-70 hover:opacity-100 transition-opacity ml-auto">
+                    <span class="material-symbols-outlined text-[20px]">close</span>
+                </button>
+            </div>
+        </div>
+        <script>
+            // Auto-hide toast after 5 seconds
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(function() {
+                    const toast = document.getElementById('global-toast');
+                    if (toast) {
+                        toast.style.opacity = '0';
+                        toast.style.transition = 'opacity 0.5s ease';
+                        setTimeout(() => toast.remove(), 500);
+                    }
+                }, 5000);
+            });
+        </script>
+
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 // Update Login & Register buttons to preserve current page return URL
