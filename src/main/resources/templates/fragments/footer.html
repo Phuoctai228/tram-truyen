@@ -1,94 +1,101 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
 <body>
-  <!-- Footer Fragment -->
-  <div th:fragment="main-footer">
-    <footer class="w-full bg-surface-container-low shadow-[0_-1px_12px_rgba(107,91,75,0.03)] mt-auto">
-        <div class="max-w-7xl mx-auto px-6 lg:px-12 py-12 flex flex-col md:flex-row items-center justify-between gap-6">
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-primary-container/20 flex items-center justify-center text-primary">
-                    <span class="material-symbols-outlined text-[20px]">auto_stories</span>
+    <!-- Footer Fragment -->
+    <div th:fragment="main-footer">
+        <footer class="w-full bg-surface-container-low shadow-[0_-1px_12px_rgba(107,91,75,0.03)] mt-auto">
+            <div
+                class="max-w-7xl mx-auto px-6 lg:px-12 py-12 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="flex items-center gap-3">
+                    <div
+                        class="w-8 h-8 rounded-lg bg-primary-container/20 flex items-center justify-center text-primary">
+                        <span class="material-symbols-outlined text-[20px]">auto_stories</span>
+                    </div>
+                    <span class="font-headline-sm text-headline-sm text-on-surface font-bold">Trạm Truyện</span>
                 </div>
-                <span class="font-headline-sm text-headline-sm text-on-surface font-bold">Trạm Truyện</span>
+                <nav class="flex flex-wrap items-center justify-center gap-8">
+                    <a class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors"
+                        href="#">Liên hệ</a>
+                    <a class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors"
+                        href="#">Điều khoản dịch vụ</a>
+                    <a class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors"
+                        href="#">Chính sách bảo mật</a>
+                </nav>
+                <div class="text-on-surface-variant font-body-md text-body-md text-center md:text-right">© 2026 Trạm
+                    Truyện.
+                    Mọi quyền được bảo lưu.</div>
             </div>
-            <nav class="flex flex-wrap items-center justify-center gap-8">
-                <a class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors"
-                    href="#">Liên hệ</a>
-                <a class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors"
-                    href="#">Điều khoản dịch vụ</a>
-                <a class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors"
-                    href="#">Chính sách bảo mật</a>
-            </nav>
-            <div class="text-on-surface-variant font-body-md text-body-md text-center md:text-right">© 2025 Trạm Truyện.
-                Mọi quyền được bảo lưu.</div>
-        </div>
-    </footer>
+        </footer>
 
-    <!-- Logout Modal -->
-    <div sec:authorize="isAuthenticated()" id="logoutModal" class="modal fixed inset-0 z-[100] items-center justify-center bg-black/40 backdrop-blur-sm hidden">
-        <div
-            class="bg-surface rounded-2xl p-8 max-w-[400px] w-[90%] flex flex-col items-center text-center shadow-2xl animate-fade-in-up">
-            <div class="w-16 h-16 rounded-full bg-[#f3e8d5] flex items-center justify-center mb-4">
-                <span class="material-symbols-outlined text-[#bc7d39] text-[32px]">menu_book</span>
-            </div>
+        <!-- Logout Modal -->
+        <div sec:authorize="isAuthenticated()" id="logoutModal"
+            class="modal fixed inset-0 z-[100] items-center justify-center bg-black/40 backdrop-blur-sm hidden">
+            <div
+                class="bg-surface rounded-2xl p-8 max-w-[400px] w-[90%] flex flex-col items-center text-center shadow-2xl animate-fade-in-up">
+                <div class="w-16 h-16 rounded-full bg-[#f3e8d5] flex items-center justify-center mb-4">
+                    <span class="material-symbols-outlined text-[#bc7d39] text-[32px]">menu_book</span>
+                </div>
 
-            <div class="flex items-center justify-center gap-2 mb-2 w-full">
-                <span class="w-[60px] h-[1px] bg-[#e5e7eb] inline-block"></span>
-                <span class="w-1.5 h-1.5 rounded-full bg-[#d97706] inline-block"></span>
-                <span class="w-[60px] h-[1px] bg-[#e5e7eb] inline-block"></span>
-            </div>
+                <div class="flex items-center justify-center gap-2 mb-2 w-full">
+                    <span class="w-[60px] h-[1px] bg-[#e5e7eb] inline-block"></span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#d97706] inline-block"></span>
+                    <span class="w-[60px] h-[1px] bg-[#e5e7eb] inline-block"></span>
+                </div>
 
-            <h2 class="text-3xl font-bold font-serif text-[#333333] mb-3">Rời Trạm Truyện?</h2>
+                <h2 class="text-3xl font-bold font-serif text-[#333333] mb-3">Rời Trạm Truyện?</h2>
 
-            <p class="text-[15px] text-[#666666] mb-8 leading-relaxed px-2">
-                Bạn có chắc muốn đăng xuất? Tiến độ đọc của bạn đã được lưu và luôn sẵn sàng khi quay lại.
-            </p>
+                <p class="text-[15px] text-[#666666] mb-8 leading-relaxed px-2">
+                    Bạn có chắc muốn đăng xuất? Tiến độ đọc của bạn đã được lưu và luôn sẵn sàng khi quay lại.
+                </p>
 
-            <form action="/logout" method="post" class="w-full">
-                <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                <button type="submit"
-                    class="w-full py-3 bg-[#bd5d38] hover:bg-[#a34b29] text-white font-bold rounded-lg shadow-md transition-colors mb-3">
-                    Đăng xuất
+                <form action="/logout" method="post" class="w-full">
+                    <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}"
+                        th:value="${_csrf.token}">
+                    <button type="submit"
+                        class="w-full py-3 bg-[#bd5d38] hover:bg-[#a34b29] text-white font-bold rounded-lg shadow-md transition-colors mb-3">
+                        Đăng xuất
+                    </button>
+                </form>
+                <button id="cancelLogoutBtn"
+                    class="w-full py-3 bg-white hover:bg-gray-50 text-[#333333] font-bold rounded-lg border border-gray-200 shadow-sm transition-colors">
+                    Hủy · Quay lại đọc truyện
                 </button>
-            </form>
-            <button id="cancelLogoutBtn"
-                class="w-full py-3 bg-white hover:bg-gray-50 text-[#333333] font-bold rounded-lg border border-gray-200 shadow-sm transition-colors">
-                Hủy · Quay lại đọc truyện
-            </button>
+            </div>
         </div>
-    </div>
 
-    <script>
-        // Modal Logic
-        const logoutBtn = document.getElementById('logoutBtn');
-        const logoutModal = document.getElementById('logoutModal');
-        const cancelLogoutBtn = document.getElementById('cancelLogoutBtn');
+        <script>
+            // Modal Logic
+            const logoutBtn = document.getElementById('logoutBtn');
+            const logoutModal = document.getElementById('logoutModal');
+            const cancelLogoutBtn = document.getElementById('cancelLogoutBtn');
 
-        if (logoutBtn && logoutModal && cancelLogoutBtn) {
-            logoutBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                const userDropdown = document.getElementById('userDropdown');
-                if (userDropdown) userDropdown.classList.add('hidden');
-                logoutModal.classList.remove('hidden');
-                logoutModal.classList.add('flex');
-            });
+            if (logoutBtn && logoutModal && cancelLogoutBtn) {
+                logoutBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const userDropdown = document.getElementById('userDropdown');
+                    if (userDropdown) userDropdown.classList.add('hidden');
+                    logoutModal.classList.remove('hidden');
+                    logoutModal.classList.add('flex');
+                });
 
-            cancelLogoutBtn.addEventListener('click', () => {
-                logoutModal.classList.remove('flex');
-                logoutModal.classList.add('hidden');
-            });
-
-            logoutModal.addEventListener('click', (e) => {
-                if (e.target === logoutModal) {
+                cancelLogoutBtn.addEventListener('click', () => {
                     logoutModal.classList.remove('flex');
                     logoutModal.classList.add('hidden');
-                }
-            });
-        }
-    </script>
+                });
 
-    <!-- Login Required Popup Modal -->
-    <div th:replace="~{fragments/auth-modal :: login-modal}"></div>
-  </div>
+                logoutModal.addEventListener('click', (e) => {
+                    if (e.target === logoutModal) {
+                        logoutModal.classList.remove('flex');
+                        logoutModal.classList.add('hidden');
+                    }
+                });
+            }
+        </script>
+
+        <!-- Login Required Popup Modal -->
+        <div th:replace="~{fragments/auth-modal :: login-modal}"></div>
+    </div>
 </body>
+
 </html>
