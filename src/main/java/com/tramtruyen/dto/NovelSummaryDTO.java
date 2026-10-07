@@ -20,6 +20,8 @@ public class NovelSummaryDTO {
     private String coverUrl;
     private String status;
     private Integer views;
+    private Long favoriteCount;
     private BigDecimal averageRating;
     private LocalDateTime updatedAt;
+    private java.util.List<LatestChapterDTO> latestChapters;
 }

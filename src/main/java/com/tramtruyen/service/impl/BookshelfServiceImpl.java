@@ -22,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -249,6 +248,26 @@ public class BookshelfServiceImpl implements BookshelfService {
 
     @Override
     @Transactional(readOnly = true)
+    public boolean isChapterRead(String email, Integer chapterId) {
+        if (email == null || chapterId == null) {
+            return false;
+        }
+        try {
+            User user = getUserByEmail(email);
+            Optional<Chapter> chapterOpt = chapterRepository.findById(chapterId);
+            if (chapterOpt.isEmpty()) {
+                return false;
+            }
+            return userChapterActivityRepository.findByUserAndChapter(user, chapterOpt.get())
+                    .map(act -> Boolean.TRUE.equals(act.getIsRead()))
+                    .orElse(false);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public UserProfileDTO getUserProfile(String email) {
         User user = getUserByEmail(email);
         return UserProfileDTO.builder()
@@ -293,17 +312,26 @@ public class BookshelfServiceImpl implements BookshelfService {
             }
         }
 
-        // Calculate progress percentage
+        // Calculate progress percentage & completed / caught-up lifecycle
         int progressPercentage = 0;
         boolean isCompleted = false;
+        boolean isCaughtUp = false;
 
+        int effectiveRead = Math.max((int) readCount, currentChapterNumber);
         if (totalChapters > 0) {
-            if (readCount >= totalChapters || (readCount > 0 && "COMPLETED".equalsIgnoreCase(novel.getStatus()) && readCount >= totalChapters)) {
+            if ("COMPLETED".equalsIgnoreCase(novel.getStatus()) && effectiveRead >= totalChapters) {
                 progressPercentage = 100;
                 isCompleted = true;
+                isCaughtUp = false;
                 currentChapterNumber = totalChapters;
-            } else if (readCount > 0) {
-                progressPercentage = (int) Math.min(99, Math.round(((double) readCount / totalChapters) * 100));
+            } else if (effectiveRead >= totalChapters) {
+                // Ongoing novel but reader has caught up with all currently published chapters
+                progressPercentage = 100;
+                isCompleted = false;
+                isCaughtUp = true;
+                currentChapterNumber = totalChapters;
+            } else if (effectiveRead > 0) {
+                progressPercentage = (int) Math.min(99, Math.round(((double) effectiveRead / totalChapters) * 100));
             }
         }
 
@@ -315,6 +343,9 @@ public class BookshelfServiceImpl implements BookshelfService {
         } else if (isCompleted) {
             // Read again from chapter 1
             readUrl = "/truyen/" + novelSlug + "/chuong-1";
+        } else if (isCaughtUp) {
+            // Reader read all available chapters; re-read from latest or chapter 1
+            readUrl = "/truyen/" + novelSlug + "/chuong-" + totalChapters;
         } else if (currentChapterNumber > 0 && currentChapterNumber < totalChapters) {
             readUrl = "/truyen/" + novelSlug + "/chuong-" + (currentChapterNumber + 1);
         } else {
@@ -333,42 +364,12 @@ public class BookshelfServiceImpl implements BookshelfService {
                 .currentChapterNumber(currentChapterNumber)
                 .progressPercentage(progressPercentage)
                 .isCompleted(isCompleted)
+                .isCaughtUp(isCaughtUp)
                 .hasVipChapters(hasVip)
                 .addedAt(bookshelf.getAddedAt())
-                .relativeTime(formatRelativeTime(lastTime))
+                .relativeTime(com.tramtruyen.util.DateTimeUtils.formatRelativeTime(lastTime))
                 .readUrl(readUrl)
                 .build();
-    }
-
-    private String formatRelativeTime(LocalDateTime dateTime) {
-        if (dateTime == null) {
-            return "Gần đây";
-        }
-        Duration duration = Duration.between(dateTime, LocalDateTime.now());
-        long seconds = duration.getSeconds();
-        if (seconds < 60) {
-            return "Vừa xong";
-        }
-        long minutes = duration.toMinutes();
-        if (minutes < 60) {
-            return minutes + " phút trước";
-        }
-        long hours = duration.toHours();
-        if (hours < 24) {
-            return hours + " giờ trước";
-        }
-        long days = duration.toDays();
-        if (days == 1) {
-            return "Hôm qua";
-        }
-        if (days < 30) {
-            return days + " ngày trước";
-        }
-        long months = days / 30;
-        if (months < 12) {
-            return months + " tháng trước";
-        }
-        return (months / 12) + " năm trước";
     }
 
     private User getUserByEmail(String email) {

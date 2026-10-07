@@ -316,10 +316,16 @@
                                             <div class="pt-1 max-w-md">
                                                 <div class="flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant mb-1.5">
                                                     <span class="font-medium" th:if="${item.isCompleted}">
-                                                        Tiến độ: Chương <span th:text="${item.totalChapters}">0</span> / <span th:text="${item.totalChapters}">0</span> (Hoàn thành)
+                                                        Tiến độ: Chương <span th:text="${item.totalChapters}">0</span> / <span th:text="${item.totalChapters}">0</span> (Hoàn thành trọn bộ)
                                                     </span>
-                                                    <span class="font-medium" th:unless="${item.isCompleted}">
+                                                    <span class="font-medium" th:if="${!item.isCompleted and item.isCaughtUp}">
+                                                        Tiến độ: Chương <span th:text="${item.totalChapters}">0</span> / <span th:text="${item.totalChapters}">0</span> (Đã kịp tác giả)
+                                                    </span>
+                                                    <span class="font-medium" th:if="${!item.isCompleted and !item.isCaughtUp and item.currentChapterNumber > 0}">
                                                         Tiến độ: Chương <span th:text="${item.currentChapterNumber}">0</span> / <span th:text="${item.totalChapters}">0</span>
+                                                    </span>
+                                                    <span class="font-medium" th:if="${!item.isCompleted and !item.isCaughtUp and item.currentChapterNumber == 0}">
+                                                        Chưa đọc • Tổng <span th:text="${item.totalChapters}">0</span> chương
                                                     </span>
                                                     <span class="font-semibold text-primary" th:text="${item.progressPercentage} + '%'">0%</span>
                                                 </div>
@@ -333,14 +339,21 @@
 
                                     <!-- Action Buttons & Dropdown -->
                                     <div class="flex items-center justify-end gap-3 pt-3 md:pt-0">
-                                        <!-- Primary action: Đọc tiếp or Đọc lại -->
+                                        <!-- Primary action: Đọc tiếp or Đọc lại or Chờ chương mới -->
                                         <a th:if="${item.isCompleted}"
                                            th:href="${item.readUrl}"
                                            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-surface-container-high hover:bg-surface-container text-on-surface font-label-lg text-label-lg transition-colors shadow-sm">
                                             <span class="material-symbols-outlined text-[18px]">restart_alt</span>
                                             <span>Đọc lại</span>
                                         </a>
-                                        <a th:unless="${item.isCompleted}"
+                                        <a th:if="${!item.isCompleted and item.isCaughtUp}"
+                                           th:href="${item.readUrl}"
+                                           class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-surface-container-high hover:bg-surface-container text-on-surface-variant font-label-lg text-label-lg transition-colors shadow-sm"
+                                           title="Bạn đã đọc hết các chương hiện có. Bấm để xem lại chương mới nhất hoặc chờ tác giả ra chương tiếp!">
+                                            <span class="material-symbols-outlined text-[18px]">done_all</span>
+                                            <span>Chờ chương mới</span>
+                                        </a>
+                                        <a th:if="${!item.isCompleted and !item.isCaughtUp}"
                                            th:href="${item.readUrl}"
                                            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary-container hover:bg-primary text-surface-container-lowest font-label-lg text-label-lg transition-colors shadow-sm">
                                             <span class="material-symbols-outlined text-[18px]">play_arrow</span>
@@ -487,6 +500,7 @@
 
             <!-- Action Footer Form -->
             <form id="deleteForm" method="POST" action="">
+                <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                 <div class="flex flex-col-reverse sm:flex-row items-center gap-3 pt-2">
                     <button type="button" onclick="closeDeleteModal()"
                             class="w-full sm:flex-1 py-3 px-5 rounded-lg bg-transparent hover:bg-surface-container font-label-lg text-label-lg text-tertiary hover:text-on-surface transition-all text-center focus:outline-none shadow-sm">

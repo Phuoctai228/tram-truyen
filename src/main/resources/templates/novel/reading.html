@@ -4,6 +4,8 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title th:text="${chapter.title} + ' - ' + ${novel.title} + ' - Trạm Truyện'">Trạm Truyện</title>
+  <meta name="_csrf" th:if="${_csrf != null}" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:if="${_csrf != null}" th:content="${_csrf.headerName}"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
   <link href="https://fonts.googleapis.com" rel="preconnect">
   <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
@@ -12,7 +14,9 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script th:src="@{/js/novel/tailwind-config.js}"></script>
 </head>
-<body class="font-body-reading antialiased">
+<body class="font-body-reading antialiased"
+      th:data-chapter-id="${chapter.id}"
+      th:data-is-read="${isChapterRead}">
   <header class="fixed top-0 w-full z-50 backdrop-blur-md shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
     <div class="h-14 max-w-5xl mx-auto px-4 sm:px-6 flex items-center gap-4">
       <div class="flex items-center gap-3 min-w-0">
@@ -315,11 +319,13 @@
           </div>
           
           <div class="flex items-center gap-2">
-            <a th:if="${!isLatestChapter}" th:href="@{/truyen/{slug}/chuong-{chapterNumber}(slug=${novel.slug}, chapterNumber=${nextChapterNumber})}" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md shadow-sm transition-transform active:scale-95">
+            <a th:if="${!isLatestChapter}" th:href="@{/truyen/{slug}/chuong-{chapterNumber}(slug=${novel.slug}, chapterNumber=${nextChapterNumber})}"
+               onclick="if(window.saveReadingProgressBeforeLeave) window.saveReadingProgressBeforeLeave();"
+               class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md shadow-sm transition-transform active:scale-95">
               <span class="font-medium">Chương sau</span>
               <span class="material-symbols-outlined text-[18px]">chevron_right</span>
             </a>
-            <button th:if="${isLatestChapter}" type="button" onclick="openEndOfChapterModal()" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md shadow-sm transition-transform active:scale-95 group relative" title="Đã hết chương mới nhất">
+            <button th:if="${isLatestChapter}" type="button" onclick="if(window.saveReadingProgressBeforeLeave) window.saveReadingProgressBeforeLeave(); openEndOfChapterModal();" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md shadow-sm transition-transform active:scale-95 group relative" title="Đã hết chương mới nhất">
               <span class="font-medium">Chương sau</span>
               <span class="material-symbols-outlined text-[18px]">chevron_right</span>
               <span class="absolute -top-9 right-0 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
@@ -371,20 +377,74 @@
   
   <script>
     (function() {
-      // 1. Progress Bar
+      // 1. High-Water Mark Progress Bar & Database Completion Sync
+      const bodyEl = document.body;
+      const chapterId = bodyEl.getAttribute('data-chapter-id');
+      const isInitiallyRead = bodyEl.getAttribute('data-is-read') === 'true';
+
+      let maxProgress = isInitiallyRead ? 100 : 0;
+      let hasSavedComplete = isInitiallyRead;
+
+      const progressBar = document.getElementById('reading-bar');
+      const progressLabel = document.getElementById('progress-percent');
+
+      function updateProgressBarUI(pct) {
+        if (progressBar && progressLabel) {
+          progressBar.style.width = pct + '%';
+          progressLabel.textContent = pct + '% hoàn thành';
+        }
+      }
+
+      function saveChapterCompletionToDatabase() {
+        if (hasSavedComplete || !chapterId) return;
+        hasSavedComplete = true;
+
+        const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content') || 'X-CSRF-TOKEN';
+
+        fetch('/api/user/reading/complete-chapter', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(csrfToken && { [csrfHeader]: csrfToken })
+          },
+          body: JSON.stringify({ chapterId: parseInt(chapterId) })
+        }).catch(err => console.error('Failed to save chapter progress:', err));
+      }
+
+      // Initial progress render
+      if (isInitiallyRead) {
+        updateProgressBarUI(100);
+      }
+
       window.addEventListener('scroll', function() {
         const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
         const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        const scrolled = height > 0 ? Math.min(100, Math.max(0, Math.round((winScroll / height) * 100))) : 0;
-        
-        const progressBar = document.getElementById('reading-bar');
-        const progressLabel = document.getElementById('progress-percent');
-        
-        if (progressBar && progressLabel) {
-          progressBar.style.width = scrolled + '%';
-          progressLabel.textContent = scrolled + '% hoàn thành';
+        const currentScrolled = height > 0 ? Math.min(100, Math.max(0, Math.round((winScroll / height) * 100))) : 0;
+
+        // High-water mark: only increases, never regresses when scrolling back up!
+        if (currentScrolled > maxProgress) {
+          maxProgress = currentScrolled;
+        }
+
+        updateProgressBarUI(maxProgress);
+
+        // When reaching completion (>= 95% or 100%)
+        if (maxProgress >= 95 && !hasSavedComplete) {
+          maxProgress = 100;
+          updateProgressBarUI(100);
+          saveChapterCompletionToDatabase();
         }
       }, { passive: true });
+
+      // Expose globally so "Chương sau" or other navigation triggers save completion
+      window.saveReadingProgressBeforeLeave = function() {
+        if (!hasSavedComplete) {
+          maxProgress = 100;
+          updateProgressBarUI(100);
+          saveChapterCompletionToDatabase();
+        }
+      };
 
       // 2. Reading Settings & LocalStorage
       const article = document.getElementById('reader-body');
