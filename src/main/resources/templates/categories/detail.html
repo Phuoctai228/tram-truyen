@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi" class="h-full">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${category.name + ' | Trạm Truyện'}">Thể loại | Trạm Truyện</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script th:src="@{/js/home/tailwind-config.js}"></script>
+</head>
+
+<body class="bg-[#FAFAFA] font-sans text-[#333333] flex flex-col min-h-screen">
+
+    <div th:replace="~{fragments/header :: main-header}"></div>
+    <div class="h-20"></div>
+
+    <main class="flex-grow max-w-7xl mx-auto px-6 lg:px-12 py-12 w-full">
+        <!-- Breadcrumb & Back -->
+        <div class="mb-8 flex items-center gap-4">
+            <a th:href="@{/the-loai}"
+                class="flex items-center gap-2 text-[#b5803a] hover:text-[#875200] transition-colors font-medium text-[15px]">
+                <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+                Trở lại Thể loại
+            </a>
+        </div>
+
+        <!-- Category Header -->
+        <div
+            class="bg-gradient-to-r from-[#FFF5F0] to-white rounded-3xl p-8 md:p-12 shadow-sm border border-[#F5EAE0] mb-12">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="material-symbols-outlined text-[#c08d41] text-[28px]">bookmark</span>
+                <span class="text-[13px] font-bold text-[#b5803a] tracking-widest uppercase">Danh mục</span>
+            </div>
+            <h1 class="font-serif text-3xl md:text-5xl font-bold text-[#231A11] mb-6" th:text="${category.name}">Tên thể
+                loại</h1>
+            <p class="text-[16px] md:text-[18px] text-[#6B5B4B] max-w-3xl leading-relaxed"
+                th:text="${category.description != null ? category.description : 'Khám phá thế giới của những tác phẩm trong thể loại này.'}">
+            </p>
+        </div>
+
+        <!-- Empty State (No novels yet) -->
+        <div class="text-center py-24 bg-white rounded-3xl border border-dashed border-[#D1C2B4]">
+            <span class="material-symbols-outlined text-[64px] text-[#E0D5CB] mb-4">auto_stories</span>
+            <h3 class="text-[20px] font-semibold text-[#231A11] mb-2">Chưa có truyện nào</h3>
+            <p class="text-[#8C7A68]">Hiện tại chưa có tác phẩm nào được liên kết với thể loại này.</p>
+        </div>
+    </main>
+
+    <div th:replace="~{fragments/footer :: main-footer}"></div>
+
+</body>
+
+</html>
