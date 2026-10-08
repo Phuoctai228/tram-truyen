@@ -40,10 +40,10 @@ public class NovelController {
         Integer maxChapters = null;
         if (chapterRange != null) {
             switch (chapterRange) {
-                case "lt100": maxChapters = 99; break;
-                case "100-500": minChapters = 100; maxChapters = 500; break;
-                case "500-1500": minChapters = 500; maxChapters = 1500; break;
-                case "gt1500": minChapters = 1501; break;
+                case "lt5": maxChapters = 4; break;
+                case "5-10": minChapters = 5; maxChapters = 10; break;
+                case "10-50": minChapters = 11; maxChapters = 50; break;
+                case "gt50": minChapters = 51; break;
             }
         }
 

@@ -146,32 +146,32 @@
             <h4 class="font-bold text-[14px] text-[#231A11] mb-3">Số lượng chương</h4>
             <div class="grid grid-cols-2 gap-2 mt-4">
               <label class="cursor-pointer">
-                <input type="radio" name="chapterRange" value="lt100" th:checked="${selectedChapterRange == 'lt100'}"
+                <input type="radio" name="chapterRange" value="lt5" th:checked="${selectedChapterRange == 'lt5'}"
                   class="peer hidden">
                 <div
                   class="py-1.5 rounded-lg bg-[#f5eae0] text-[#8c7a68] text-[12px] font-medium text-center peer-checked:bg-[#ebd9c7] peer-checked:text-[#4d3b2a] peer-checked:font-bold peer-checked:border peer-checked:border-[#c08d41]">
-                  &lt; 100 ch.</div>
+                  &lt; 5 ch.</div>
               </label>
               <label class="cursor-pointer">
-                <input type="radio" name="chapterRange" value="100-500"
-                  th:checked="${selectedChapterRange == '100-500'}" class="peer hidden">
+                <input type="radio" name="chapterRange" value="5-10"
+                  th:checked="${selectedChapterRange == '5-10'}" class="peer hidden">
                 <div
                   class="py-1.5 rounded-lg bg-[#f5eae0] text-[#8c7a68] text-[12px] font-medium text-center peer-checked:bg-[#ebd9c7] peer-checked:text-[#4d3b2a] peer-checked:font-bold peer-checked:border peer-checked:border-[#c08d41]">
-                  100 - 500 ch.</div>
+                  5 - 10 ch.</div>
               </label>
               <label class="cursor-pointer">
-                <input type="radio" name="chapterRange" value="500-1500"
-                  th:checked="${selectedChapterRange == '500-1500'}" class="peer hidden">
+                <input type="radio" name="chapterRange" value="10-50"
+                  th:checked="${selectedChapterRange == '10-50'}" class="peer hidden">
                 <div
                   class="py-1.5 rounded-lg bg-[#f5eae0] text-[#8c7a68] text-[12px] font-medium text-center peer-checked:bg-[#ebd9c7] peer-checked:text-[#4d3b2a] peer-checked:font-bold peer-checked:border peer-checked:border-[#c08d41]">
-                  500 - 1500 ch.</div>
+                  10 - 50 ch.</div>
               </label>
               <label class="cursor-pointer">
-                <input type="radio" name="chapterRange" value="gt1500" th:checked="${selectedChapterRange == 'gt1500'}"
+                <input type="radio" name="chapterRange" value="gt50" th:checked="${selectedChapterRange == 'gt50'}"
                   class="peer hidden">
                 <div
                   class="py-1.5 rounded-lg bg-[#f5eae0] text-[#8c7a68] text-[12px] font-medium text-center peer-checked:bg-[#ebd9c7] peer-checked:text-[#4d3b2a] peer-checked:font-bold peer-checked:border peer-checked:border-[#c08d41]">
-                  &gt; 1500 ch.</div>
+                  &gt; 50 ch.</div>
               </label>
             </div>
           </div>
