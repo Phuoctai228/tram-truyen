@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.tramtruyen.service.CategoryService;
+
 /** Handles the internal Novel CMS views and form submissions. */
 @Controller
 @RequestMapping("/admin/novels")
@@ -22,6 +24,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class NovelAdminController {
 
     private final NovelService novelService;
+    private final CategoryService categoryService;
 
     @GetMapping
     public String listNovels(@RequestParam(required = false) String query,
@@ -38,6 +41,7 @@ public class NovelAdminController {
         model.addAttribute("novelForm", new NovelForm());
         model.addAttribute("pageTitle", "Tạo truyện");
         model.addAttribute("formAction", "/admin/novels");
+        model.addAttribute("allCategories", categoryService.getAllCategories());
         return "admin/novels/form";
     }
 
@@ -47,6 +51,7 @@ public class NovelAdminController {
         if (bindingResult.hasErrors()) {
             model.addAttribute("pageTitle", "Tạo truyện");
             model.addAttribute("formAction", "/admin/novels");
+            model.addAttribute("allCategories", categoryService.getAllCategories());
             return "admin/novels/form";
         }
         novelService.createNovel(form);
@@ -62,6 +67,7 @@ public class NovelAdminController {
             model.addAttribute("novelId", id);
             model.addAttribute("pageTitle", "Cập nhật truyện");
             model.addAttribute("formAction", "/admin/novels/" + id);
+            model.addAttribute("allCategories", categoryService.getAllCategories());
             return "admin/novels/form";
         } catch (ResourceNotFoundException exception) {
             redirectAttributes.addFlashAttribute("errorMessage", exception.getMessage());
@@ -77,6 +83,7 @@ public class NovelAdminController {
             model.addAttribute("novelId", id);
             model.addAttribute("pageTitle", "Cập nhật truyện");
             model.addAttribute("formAction", "/admin/novels/" + id);
+            model.addAttribute("allCategories", categoryService.getAllCategories());
             return "admin/novels/form";
         }
         try {
@@ -105,6 +112,9 @@ public class NovelAdminController {
         form.setAuthor(novel.getAuthor());
         form.setSummary(novel.getSummary());
         form.setStatus(novel.getStatus());
+        if (novel.getCategories() != null) {
+            form.setCategoryIds(novel.getCategories().stream().map(com.tramtruyen.entity.Category::getId).collect(java.util.stream.Collectors.toList()));
+        }
         return form;
     }
 }

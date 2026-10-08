@@ -22,13 +22,27 @@
                         th:href="@{/user/bookshelf}">Tủ sách</a>
                 </nav>
             </div>
-            <div class="flex-1 max-w-md hidden sm:block">
-                <form class="relative flex items-center w-full" th:action="@{/search}" method="GET">
+            <div class="flex-1 max-w-xl hidden sm:block relative">
+                <form class="relative flex items-center w-full" th:action="@{/search}" method="GET" id="searchForm">
                     <span class="material-symbols-outlined absolute left-3.5 text-outline pointer-events-none text-[20px]">search</span>
-                    <input name="q" th:value="${query}"
-                        class="w-full pl-10 pr-4 py-2 rounded-lg bg-surface-container-lowest text-on-surface placeholder:text-outline font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-primary-container shadow-[0_2px_12px_rgba(107,91,75,0.04)] transition-all"
+                    <input name="q" id="searchInput" th:value="${query}" autocomplete="off"
+                        class="w-full pl-10 pr-4 py-2.5 rounded-full bg-surface-container-lowest border border-outline-variant/30 text-on-surface placeholder:text-outline font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-[#c08d41] focus:border-transparent shadow-sm transition-all"
                         placeholder="Tìm kiếm truyện, tác giả, dịch giả..." type="text">
                 </form>
+                
+                <!-- Search Suggestions Popup -->
+                <div id="searchSuggestions" class="hidden absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] border border-outline-variant/20 overflow-hidden z-[100] max-h-[80vh] flex flex-col">
+                    <div class="px-5 py-3 border-b border-outline-variant/20 flex justify-between items-center bg-[#faf8f5]">
+                        <span class="text-[12px] font-bold text-[#8c7a68] uppercase tracking-wider">Gợi ý tìm kiếm cho "<span id="suggestKeyword" class="text-[#c08d41]"></span>"</span>
+                        <span id="suggestCount" class="text-[12px] font-medium text-[#c08d41] bg-[#f5eae0] px-2 py-0.5 rounded-full">0 kết quả nổi bật</span>
+                    </div>
+                    <div id="suggestList" class="overflow-y-auto p-2">
+                        <!-- Items will be injected here -->
+                    </div>
+                    <a href="#" id="suggestSeeAll" class="block text-center py-3 border-t border-outline-variant/20 text-[13px] font-semibold text-[#8c7a68] hover:bg-[#faf8f5] hover:text-[#c08d41] transition-colors">
+                        Nhấn <kbd class="bg-[#f5eae0] px-1.5 py-0.5 rounded text-[#c08d41] mx-1">Enter</kbd> để xem toàn bộ kết quả tìm kiếm <span class="material-symbols-outlined text-[14px] align-middle ml-1">arrow_forward</span>
+                    </a>
+                </div>
             </div>
             <div class="flex items-center gap-3 shrink-0">
                 <!-- If Not Authenticated -->
@@ -169,6 +183,80 @@
                     document.addEventListener('keydown', function(e) {
                         if (e.key === 'Escape') {
                             dropdown.classList.add('hidden');
+                        }
+                    });
+                }
+
+                // Live search suggestions
+                const searchInput = document.getElementById('searchInput');
+                const searchPopup = document.getElementById('searchSuggestions');
+                const suggestKeyword = document.getElementById('suggestKeyword');
+                const suggestCount = document.getElementById('suggestCount');
+                const suggestList = document.getElementById('suggestList');
+                const suggestSeeAll = document.getElementById('suggestSeeAll');
+                
+                let debounceTimer;
+
+                if (searchInput && searchPopup) {
+                    searchInput.addEventListener('input', function() {
+                        clearTimeout(debounceTimer);
+                        const query = this.value.trim();
+                        
+                        if (query.length === 0) {
+                            searchPopup.classList.add('hidden');
+                            return;
+                        }
+                        
+                        debounceTimer = setTimeout(() => {
+                            fetch(`/api/search/suggestions?q=${encodeURIComponent(query)}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    suggestKeyword.textContent = query;
+                                    suggestCount.textContent = `${data.results.length} kết quả nổi bật`;
+                                    
+                                    suggestList.innerHTML = '';
+                                    if (data.results.length === 0) {
+                                        suggestList.innerHTML = `<div class="p-4 text-center text-[#8c7a68] text-sm">Không tìm thấy kết quả nào</div>`;
+                                    } else {
+                                        data.results.forEach(novel => {
+                                            const a = document.createElement('a');
+                                            a.href = `/truyen/${novel.slug}`;
+                                            a.className = "flex items-center gap-4 p-3 hover:bg-[#faf8f5] rounded-xl transition-colors group";
+                                            a.innerHTML = `
+                                                <div class="w-12 h-16 shrink-0 rounded-md overflow-hidden bg-gray-100 border border-outline-variant/30">
+                                                    <img src="${novel.coverUrl || '/images/default-cover.jpg'}" alt="Cover" class="w-full h-full object-cover">
+                                                </div>
+                                                <div class="flex-1 min-w-0">
+                                                    <h4 class="font-bold text-[#231A11] text-[15px] mb-0.5 truncate group-hover:text-[#c08d41] transition-colors">${novel.title}</h4>
+                                                    <p class="text-[#8c7a68] text-[13px] truncate">${novel.author}</p>
+                                                </div>
+                                                <div class="shrink-0 bg-[#f5eae0] text-[#c08d41] text-[11px] font-bold px-2 py-1 rounded-full uppercase tracking-wider flex items-center gap-1">
+                                                    ${novel.category} <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                                                </div>
+                                            `;
+                                            suggestList.appendChild(a);
+                                        });
+                                    }
+                                    
+                                    searchPopup.classList.remove('hidden');
+                                });
+                        }, 300);
+                    });
+
+                    suggestSeeAll.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        document.getElementById('searchForm').submit();
+                    });
+
+                    document.addEventListener('click', function(e) {
+                        if (!searchInput.contains(e.target) && !searchPopup.contains(e.target)) {
+                            searchPopup.classList.add('hidden');
+                        }
+                    });
+                    
+                    searchInput.addEventListener('focus', function() {
+                        if (this.value.trim().length > 0 && suggestList.innerHTML !== '') {
+                            searchPopup.classList.remove('hidden');
                         }
                     });
                 }

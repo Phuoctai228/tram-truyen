@@ -22,12 +22,84 @@ public class NovelController {
     private final com.tramtruyen.service.BookshelfService bookshelfService;
     private final com.tramtruyen.service.RatingService ratingService;
 
+    private final com.tramtruyen.service.CategoryService categoryService;
+
     @GetMapping("/search")
-    public String searchNovels(@RequestParam(required = false) String q, Model model) {
-        List<Novel> results = novelService.searchPublicNovels(q);
-        model.addAttribute("novels", results);
+    public String searchNovels(
+            @RequestParam(required = false) String q,
+            @RequestParam(required = false) List<Integer> categories,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String chapterRange,
+            @RequestParam(required = false) Double minRating,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "12") int size,
+            @RequestParam(defaultValue = "updatedAt,desc") String sort,
+            Model model) {
+            
+        Integer minChapters = null;
+        Integer maxChapters = null;
+        if (chapterRange != null) {
+            switch (chapterRange) {
+                case "lt100": maxChapters = 99; break;
+                case "100-500": minChapters = 100; maxChapters = 500; break;
+                case "500-1500": minChapters = 500; maxChapters = 1500; break;
+                case "gt1500": minChapters = 1501; break;
+            }
+        }
+
+        String[] sortParams = sort.split(",");
+        org.springframework.data.domain.Sort.Direction direction = sortParams.length > 1 && sortParams[1].equalsIgnoreCase("asc") ? 
+                org.springframework.data.domain.Sort.Direction.ASC : org.springframework.data.domain.Sort.Direction.DESC;
+        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(page, size, org.springframework.data.domain.Sort.by(direction, sortParams[0]));
+
+        org.springframework.data.domain.Page<Novel> results = novelService.advancedSearch(q, categories, status, minChapters, maxChapters, minRating, pageable);
+        
+        model.addAttribute("novelPage", results);
+        model.addAttribute("novels", results.getContent());
         model.addAttribute("query", q);
+        model.addAttribute("allCategories", categoryService.getAllCategories());
+        
+        // Pass back current filters for UI state
+        model.addAttribute("selectedCategories", categories != null ? categories : new java.util.ArrayList<>());
+        model.addAttribute("selectedStatus", status);
+        model.addAttribute("selectedChapterRange", chapterRange);
+        model.addAttribute("selectedMinRating", minRating);
+        model.addAttribute("currentSort", sort);
+
         return "home/search";
+    }
+
+    @GetMapping("/api/search/suggestions")
+    @org.springframework.web.bind.annotation.ResponseBody
+    public java.util.Map<String, Object> searchSuggestions(@RequestParam(required = false) String q) {
+        List<Novel> results = novelService.searchPublicNovels(q);
+        // limit to 5
+        if (results != null && results.size() > 5) {
+            results = results.subList(0, 5);
+        }
+        
+        List<java.util.Map<String, Object>> suggestions = new java.util.ArrayList<>();
+        if (results != null) {
+            for (Novel n : results) {
+                java.util.Map<String, Object> map = new java.util.HashMap<>();
+                map.put("slug", n.getSlug());
+                map.put("title", n.getTitle());
+                map.put("author", n.getAuthor());
+                map.put("coverUrl", n.getCoverUrl());
+                // category logic (pick first)
+                if (n.getCategories() != null && !n.getCategories().isEmpty()) {
+                    map.put("category", n.getCategories().iterator().next().getName());
+                } else {
+                    map.put("category", "Khác");
+                }
+                suggestions.add(map);
+            }
+        }
+        
+        java.util.Map<String, Object> response = new java.util.HashMap<>();
+        response.put("results", suggestions);
+        response.put("total", novelService.searchPublicNovels(q).size());
+        return response;
     }
 
     @GetMapping("/truyen/{slug}")

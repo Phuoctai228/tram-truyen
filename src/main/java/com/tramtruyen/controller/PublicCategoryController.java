@@ -9,11 +9,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.tramtruyen.service.NovelService;
+
 @Controller
 @RequiredArgsConstructor
 public class PublicCategoryController {
     
     private final CategoryService categoryService;
+    private final NovelService novelService;
 
     @GetMapping("/the-loai")
     public String showCategories(@RequestParam(value = "query", required = false) String query, Model model) {
@@ -28,8 +31,9 @@ public class PublicCategoryController {
 
     @GetMapping("/the-loai/{slug}")
     public String showCategoryDetail(@PathVariable String slug, Model model) {
-        model.addAttribute("category", categoryService.getCategoryBySlug(slug));
-        // Hiện tại chưa có Novel nên không load danh sách truyện
+        var category = categoryService.getCategoryBySlug(slug);
+        model.addAttribute("category", category);
+        model.addAttribute("novels", novelService.getNovelsByCategory(category.getId()));
         return "categories/detail";
     }
 }
