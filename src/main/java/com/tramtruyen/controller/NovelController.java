@@ -27,7 +27,7 @@ public class NovelController {
         List<Novel> results = novelService.searchPublicNovels(q);
         model.addAttribute("novels", results);
         model.addAttribute("query", q);
-        return "novel/search";
+        return "home/search";
     }
 
     @GetMapping("/truyen/{slug}")
@@ -47,6 +47,7 @@ public class NovelController {
 
         long favoriteCount = bookshelfService.countNovelFavorites(novel.getId());
         List<Novel> sameAuthorNovels = novelService.getNovelsBySameAuthor(novel.getAuthor(), novel.getId());
+        List<com.tramtruyen.entity.NovelRating> allRatings = ratingService.getRatingsByNovel(novel.getId());
 
         model.addAttribute("novel", novel);
         model.addAttribute("chapters", chapters);
@@ -54,6 +55,7 @@ public class NovelController {
         model.addAttribute("favoriteCount", favoriteCount);
         model.addAttribute("sameAuthorNovels", sameAuthorNovels);
         model.addAttribute("userRating", userRating);
+        model.addAttribute("allRatings", allRatings);
         return "novel/details";
     }
 
@@ -69,8 +71,14 @@ public class NovelController {
             return "redirect:/login";
         }
         Novel novel = novelService.getPublicNovelBySlug(slug);
-        ratingService.submitRating(authentication.getName(), novel.getId(), rating, reviewText);
-        redirectAttributes.addFlashAttribute("successMessage", "Cảm ơn bạn đã gửi đánh giá cho bộ truyện!");
+        try {
+            ratingService.submitRating(authentication.getName(), novel.getId(), rating, reviewText);
+            redirectAttributes.addFlashAttribute("successMessage", "Cảm ơn bạn đã gửi đánh giá cho bộ truyện!");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Đã xảy ra lỗi khi gửi đánh giá. Vui lòng thử lại sau.");
+        }
         return "redirect:/truyen/" + novel.getSlug();
     }
 
@@ -107,9 +115,10 @@ public class NovelController {
             return "redirect:/login?redirect=/truyen/" + novel.getSlug() + "/chuong-" + chapterNumber;
         }
 
+        boolean isChapterRead = false;
         boolean inBookshelf = false;
         if (isLoggedIn) {
-            bookshelfService.recordChapterRead(authentication.getName(), chapter.getId());
+            isChapterRead = bookshelfService.isChapterRead(authentication.getName(), chapter.getId());
             inBookshelf = bookshelfService.isNovelInBookshelf(authentication.getName(), novel.getId());
         }
 
@@ -136,6 +145,7 @@ public class NovelController {
         model.addAttribute("nextChapterNumber", nextChapterNumber);
         model.addAttribute("isLatestChapter", isLatestChapter);
         model.addAttribute("inBookshelf", inBookshelf);
+        model.addAttribute("isChapterRead", isChapterRead);
         return "novel/reading";
     }
 

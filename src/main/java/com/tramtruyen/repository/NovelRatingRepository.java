@@ -20,4 +20,6 @@ public interface NovelRatingRepository extends JpaRepository<NovelRating, Intege
 
     @Query("SELECT AVG(r.rating) FROM NovelRating r WHERE r.novel.id = :novelId")
     Double calculateAverageRatingByNovelId(@Param("novelId") Integer novelId);
+
+    java.util.List<NovelRating> findByNovelIdOrderByUpdatedAtDesc(Integer novelId);
 }

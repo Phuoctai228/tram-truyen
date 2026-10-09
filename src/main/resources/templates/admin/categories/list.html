@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý danh mục thể loại | Trạm Truyện</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/novel-admin.css}">
+    <link rel="stylesheet" th:href="@{/css/category/category-admin.css}">
+</head>
+<body>
+<div th:replace="~{admin/fragments/layout :: sidebar('the-loai')}"></div>
+<main class="page-shell">
+    <div th:replace="~{admin/fragments/layout :: topbar}"></div>
+    <section class="content">
+        <div class="page-heading">
+            <div>
+                <p class="eyebrow">VỀ MẢNG VẬN HÀNH - PHÂN LOẠI TRUYỆN CHỮ</p>
+                <h1>Quản lý danh mục thể loại</h1>
+                <p class="muted">Thêm mới, cập nhật và quản lý các thể loại truyện trong hệ thống.</p>
+            </div>
+            <button class="button button-primary" onclick="openModal()">＋ Thêm thể loại</button>
+        </div>
+
+        <div th:if="${successMessage}" class="alert success" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="alert error" th:text="${errorMessage}"></div>
+
+        <section class="table-panel" style="margin-top: 24px;">
+            <div class="table-caption">
+                <div>
+                    <h2>Danh sách thể loại</h2>
+                    <span class="muted" th:text="${'Tổng cộng: ' + #lists.size(categories) + ' danh mục thể loại'}"></span>
+                </div>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Tên thể loại</th><th>Slug đường dẫn</th><th>Thao tác</th></tr></thead>
+                    <tbody>
+                    <tr th:each="category : ${categories}">
+                        <td class="cat-cell">
+                            <div class="cat-icon">▣</div>
+                            <div class="cat-info">
+                                <strong th:text="${category.name}"></strong>
+                                <span th:text="${#strings.abbreviate(category.description, 50)}"></span>
+                            </div>
+                        </td>
+                        <td><code style="color: var(--muted);" th:text="${'/the-loai/' + category.slug}"></code></td>
+                        <td class="actions">
+                            <button class="icon-button" title="Chỉnh sửa" 
+                               th:data-id="${category.id}" 
+                               th:data-name="${category.name}"
+                               th:data-slug="${category.slug}"
+                               th:data-desc="${category.description}"
+                               onclick="openEditModal(this)">✎</button>
+                            <form th:action="@{/admin/categories/{id}/delete(id=${category.id})}" method="post" onsubmit="return confirm('Bạn có chắc muốn xóa thể loại này?');">
+                                <button class="icon-button danger" title="Xóa" type="submit">⌫</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(categories)}"><td class="empty" colspan="3">Chưa có danh mục thể loại nào.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </section>
+</main>
+
+<!-- Modal Thêm/Sửa Thể Loại -->
+<div class="modal-overlay" id="categoryModal" th:classappend="${openAddModal != null or editModalId != null} ? 'active' : ''">
+    <div class="modal-box">
+        <div class="modal-header">
+            <div class="modal-title-group">
+                <div class="modal-title-icon">▤</div>
+                <div class="modal-title">
+                    <h2 id="modalTitle">Thêm thể loại mới</h2>
+                    <p>Khai báo danh mục văn học</p>
+                </div>
+            </div>
+            <button class="modal-close" onclick="closeModal()">×</button>
+        </div>
+        
+        <form id="categoryForm" method="post" th:action="@{/admin/categories}" th:object="${categoryRequestDTO}">
+            <div class="form-group">
+                <label>Tên thể loại <span style="color:red">*</span> <small>Tối đa 100 ký tự</small></label>
+                <input type="text" th:field="*{name}" id="catName" placeholder="Ví dụ: Huyền Huyễn Kỳ Ảo" required>
+                <span class="error-message" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+            </div>
+            
+            <div class="form-group">
+                <label>Slug đường dẫn <span style="color:red">*</span> <small style="color: var(--amber);">⚡ Tự sinh tự động</small></label>
+                <div class="slug-input">
+                    <div class="slug-prefix">/the-loai/</div>
+                    <input type="text" th:field="*{slug}" id="catSlug" placeholder="huyen-huyen-ky-ao" required>
+                </div>
+                <span class="error-message" th:if="${#fields.hasErrors('slug')}" th:errors="*{slug}"></span>
+            </div>
+            
+            <div class="form-group">
+                <label>Mô tả thể loại <small>Đoạn tóm tắt trên danh mục</small></label>
+                <textarea th:field="*{description}" id="catDesc" rows="3" placeholder="Nhập tóm tắt giới thiệu thể loại..."></textarea>
+            </div>
+            
+            <div class="modal-actions">
+                <button type="button" class="button button-secondary" onclick="closeModal()">Hủy bỏ</button>
+                <button type="submit" class="button button-primary">Lưu thể loại</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    const modal = document.getElementById('categoryModal');
+    const form = document.getElementById('categoryForm');
+    const modalTitle = document.getElementById('modalTitle');
+    
+    const nameInput = document.getElementById('catName');
+    const slugInput = document.getElementById('catSlug');
+    const descInput = document.getElementById('catDesc');
+    
+    function openModal() {
+        form.action = '/admin/categories';
+        modalTitle.textContent = 'Thêm thể loại mới';
+        
+        const hasOpenAddModalError = /*[[${openAddModal != null}]]*/ false;
+        const hasEditModalError = /*[[${editModalId != null}]]*/ false;
+        
+        if (!hasOpenAddModalError && !hasEditModalError) {
+             nameInput.value = '';
+             slugInput.value = '';
+             descInput.value = '';
+             document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+        }
+        
+        modal.classList.add('active');
+    }
+
+    function openEditModal(button) {
+        const id = button.getAttribute('data-id');
+        form.action = '/admin/categories/' + id + '/update';
+        modalTitle.textContent = 'Cập nhật thể loại';
+        
+        nameInput.value = button.getAttribute('data-name');
+        slugInput.value = button.getAttribute('data-slug');
+        descInput.value = button.getAttribute('data-desc') || '';
+        
+        document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+        modal.classList.add('active');
+    }
+
+    function closeModal() {
+        modal.classList.remove('active');
+        if (/*[[${openAddModal != null || editModalId != null}]]*/ false) {
+             window.location.href = '/admin/categories';
+        }
+    }
+    
+    nameInput.addEventListener('input', function() {
+        if (modalTitle.textContent === 'Thêm thể loại mới') {
+            slugInput.value = generateSlug(this.value);
+        }
+    });
+    
+    function generateSlug(text) {
+        return text.toString().toLowerCase()
+            .replace(/\s+/g, '-')
+            .replace(/[àáạảãâầấậẩẫăằắặẳẵ]/g, 'a')
+            .replace(/[èéẹẻẽêềếệểễ]/g, 'e')
+            .replace(/[ìíịỉĩ]/g, 'i')
+            .replace(/[òóọỏõôồốộổỗơờớợởỡ]/g, 'o')
+            .replace(/[ùúụủũưừứựửữ]/g, 'u')
+            .replace(/[ỳýỵỷỹ]/g, 'y')
+            .replace(/đ/g, 'd')
+            .replace(/[^\w\-]+/g, '')
+            .replace(/\-\-+/g, '-')
+            .replace(/^-+/, '')
+            .replace(/-+$/, '');
+    }
+    
+    const editModalId = /*[[${editModalId}]]*/ null;
+    if (editModalId) {
+        form.action = '/admin/categories/' + editModalId + '/update';
+        modalTitle.textContent = 'Cập nhật thể loại';
+    }
+</script>
+</body>
+</html>

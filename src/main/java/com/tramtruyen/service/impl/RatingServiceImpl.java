@@ -74,4 +74,13 @@ public class RatingServiceImpl implements RatingService {
                 .flatMap(user -> novelRatingRepository.findByNovelIdAndUserId(novelId, user.getId()))
                 .orElse(null);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public java.util.List<NovelRating> getRatingsByNovel(Integer novelId) {
+        if (novelId == null) {
+            return java.util.Collections.emptyList();
+        }
+        return novelRatingRepository.findByNovelIdOrderByUpdatedAtDesc(novelId);
+    }
 }

@@ -1,5 +1,6 @@
 package com.tramtruyen.service.impl;
 
+import com.tramtruyen.dto.BookshelfItemDTO;
 import com.tramtruyen.dto.BookshelfPageDTO;
 import com.tramtruyen.dto.UserProfileDTO;
 import com.tramtruyen.entity.Bookshelf;
@@ -177,5 +178,113 @@ class BookshelfServiceImplTest {
         assertThat(profile.getFullName()).isEqualTo("Độc giả Mẫu");
         assertThat(profile.getEmail()).isEqualTo("reader@test.com");
         assertThat(profile.getWalletBalance()).isEqualTo(500);
+    }
+
+    @Test
+    void getBookshelfPageMarksOngoingNovelAsCaughtUpWhenAllChaptersRead() {
+        when(userRepository.findByEmail("reader@test.com")).thenReturn(Optional.of(sampleUser));
+        sampleNovel.setStatus("ONGOING");
+
+        Bookshelf entry = Bookshelf.builder()
+                .id(101)
+                .user(sampleUser)
+                .novel(sampleNovel)
+                .addedAt(LocalDateTime.now().minusHours(1))
+                .build();
+
+        when(bookshelfRepository.findAllByUserWithNovel(sampleUser)).thenReturn(List.of(entry));
+        when(chapterRepository.countByNovelIdAndIsDeletedFalse(10)).thenReturn(5L);
+        when(chapterRepository.existsByNovelIdAndPriceGreaterThanAndIsDeletedFalse(10, 0)).thenReturn(false);
+        when(userChapterActivityRepository.countByUserAndChapter_NovelAndIsReadTrue(sampleUser, sampleNovel)).thenReturn(5L);
+
+        Chapter chap5 = Chapter.builder().id(5).chapterNumber(5).title("Chương 5").build();
+        UserChapterActivity activity = UserChapterActivity.builder()
+                .user(sampleUser)
+                .chapter(chap5)
+                .isRead(true)
+                .readAt(LocalDateTime.now())
+                .build();
+
+        when(userChapterActivityRepository.findFirstByUserAndChapter_NovelAndIsReadTrueOrderByReadAtDescChapter_ChapterNumberDesc(sampleUser, sampleNovel))
+                .thenReturn(Optional.of(activity));
+
+        BookshelfPageDTO page = bookshelfService.getBookshelfPage("reader@test.com", "ALL", null, "recent", 1, 8);
+
+        assertThat(page.getItems()).hasSize(1);
+        BookshelfItemDTO item = page.getItems().get(0);
+        assertThat(item.getProgressPercentage()).isEqualTo(100);
+        assertThat(item.isCompleted()).isFalse();
+        assertThat(item.isCaughtUp()).isTrue();
+        assertThat(page.getCompletedCount()).isZero();
+        assertThat(page.getReadingCount()).isEqualTo(1);
+    }
+
+    @Test
+    void getBookshelfPageMarksCompletedNovelAsCompletedWhenAllChaptersRead() {
+        when(userRepository.findByEmail("reader@test.com")).thenReturn(Optional.of(sampleUser));
+        sampleNovel.setStatus("COMPLETED");
+
+        Bookshelf entry = Bookshelf.builder()
+                .id(102)
+                .user(sampleUser)
+                .novel(sampleNovel)
+                .addedAt(LocalDateTime.now().minusHours(1))
+                .build();
+
+        when(bookshelfRepository.findAllByUserWithNovel(sampleUser)).thenReturn(List.of(entry));
+        when(chapterRepository.countByNovelIdAndIsDeletedFalse(10)).thenReturn(5L);
+        when(chapterRepository.existsByNovelIdAndPriceGreaterThanAndIsDeletedFalse(10, 0)).thenReturn(false);
+        when(userChapterActivityRepository.countByUserAndChapter_NovelAndIsReadTrue(sampleUser, sampleNovel)).thenReturn(5L);
+
+        Chapter chap5 = Chapter.builder().id(5).chapterNumber(5).title("Chương 5").build();
+        UserChapterActivity activity = UserChapterActivity.builder()
+                .user(sampleUser)
+                .chapter(chap5)
+                .isRead(true)
+                .readAt(LocalDateTime.now())
+                .build();
+
+        when(userChapterActivityRepository.findFirstByUserAndChapter_NovelAndIsReadTrueOrderByReadAtDescChapter_ChapterNumberDesc(sampleUser, sampleNovel))
+                .thenReturn(Optional.of(activity));
+
+        BookshelfPageDTO page = bookshelfService.getBookshelfPage("reader@test.com", "ALL", null, "recent", 1, 8);
+
+        assertThat(page.getItems()).hasSize(1);
+        BookshelfItemDTO item = page.getItems().get(0);
+        assertThat(item.getProgressPercentage()).isEqualTo(100);
+        assertThat(item.isCompleted()).isTrue();
+        assertThat(item.isCaughtUp()).isFalse();
+        assertThat(page.getCompletedCount()).isEqualTo(1);
+        assertThat(page.getReadingCount()).isZero();
+    }
+
+    @Test
+    void isChapterReadReturnsTrueWhenActivityHasIsReadTrue() {
+        when(userRepository.findByEmail("reader@test.com")).thenReturn(Optional.of(sampleUser));
+        Chapter chap = Chapter.builder().id(20).build();
+        when(chapterRepository.findById(20)).thenReturn(Optional.of(chap));
+
+        UserChapterActivity activity = UserChapterActivity.builder()
+                .user(sampleUser)
+                .chapter(chap)
+                .isRead(true)
+                .build();
+        when(userChapterActivityRepository.findByUserAndChapter(sampleUser, chap)).thenReturn(Optional.of(activity));
+
+        boolean read = bookshelfService.isChapterRead("reader@test.com", 20);
+
+        assertThat(read).isTrue();
+    }
+
+    @Test
+    void isChapterReadReturnsFalseWhenNoActivityOrNotRead() {
+        when(userRepository.findByEmail("reader@test.com")).thenReturn(Optional.of(sampleUser));
+        Chapter chap = Chapter.builder().id(21).build();
+        when(chapterRepository.findById(21)).thenReturn(Optional.of(chap));
+        when(userChapterActivityRepository.findByUserAndChapter(sampleUser, chap)).thenReturn(Optional.empty());
+
+        boolean read = bookshelfService.isChapterRead("reader@test.com", 21);
+
+        assertThat(read).isFalse();
     }
 }

@@ -72,6 +72,9 @@ public class BookshelfController {
         if (source != null && source.startsWith("/") && CustomAuthenticationSuccessHandler.isValidRedirectUrl(source)) {
             return "redirect:" + source;
         }
+        if ("home".equals(source)) {
+            return "redirect:/";
+        }
         if ("bookshelf".equals(source)) {
             return "redirect:/user/bookshelf";
         }
@@ -101,10 +104,65 @@ public class BookshelfController {
         if (source != null && source.startsWith("/") && CustomAuthenticationSuccessHandler.isValidRedirectUrl(source)) {
             return "redirect:" + source;
         }
+        if ("home".equals(source)) {
+            return "redirect:/";
+        }
         if ("details".equals(source)) {
             return "redirect:/novel/" + novelId;
         }
         return "redirect:/user/bookshelf";
+    }
+
+    @PostMapping(value = "/api/user/bookshelf/{novelId}/toggle", produces = org.springframework.http.MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public org.springframework.http.ResponseEntity<?> toggleBookshelfAjax(
+            @PathVariable Integer novelId,
+            Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
+            return org.springframework.http.ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED)
+                    .body(java.util.Map.of("success", false, "message", "Vui lòng đăng nhập để thao tác Tủ sách."));
+        }
+        String email = authentication.getName();
+        try {
+            boolean inBookshelf = bookshelfService.isNovelInBookshelf(email, novelId);
+            if (inBookshelf) {
+                bookshelfService.removeNovelFromBookshelf(email, novelId);
+                return org.springframework.http.ResponseEntity.ok(
+                        java.util.Map.of("success", true, "inBookshelf", false, "message", "Đã xóa truyện khỏi Tủ sách!"));
+            } else {
+                bookshelfService.addNovelToBookshelf(email, novelId);
+                return org.springframework.http.ResponseEntity.ok(
+                        java.util.Map.of("success", true, "inBookshelf", true, "message", "Đã thêm truyện vào Tủ sách!"));
+            }
+        } catch (Exception e) {
+            return org.springframework.http.ResponseEntity.badRequest()
+                    .body(java.util.Map.of("success", false, "message", e.getMessage()));
+        }
+    }
+
+    @PostMapping(value = "/api/user/reading/complete-chapter", consumes = org.springframework.http.MediaType.APPLICATION_JSON_VALUE, produces = org.springframework.http.MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public org.springframework.http.ResponseEntity<?> completeChapter(
+            @RequestBody java.util.Map<String, Integer> payload,
+            Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
+            return org.springframework.http.ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED)
+                    .body(java.util.Map.of("success", false, "message", "Vui lòng đăng nhập để lưu tiến độ."));
+        }
+        Integer chapterId = payload != null ? payload.get("chapterId") : null;
+        if (chapterId == null) {
+            return org.springframework.http.ResponseEntity.badRequest()
+                    .body(java.util.Map.of("success", false, "message", "Thiếu chapterId"));
+        }
+        String email = authentication.getName();
+        try {
+            bookshelfService.recordChapterRead(email, chapterId);
+            return org.springframework.http.ResponseEntity.ok(
+                    java.util.Map.of("success", true, "chapterId", chapterId, "message", "Đã lưu hoàn thành chương!"));
+        } catch (Exception e) {
+            return org.springframework.http.ResponseEntity.status(org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(java.util.Map.of("success", false, "message", "Lỗi khi lưu tiến độ: " + e.getMessage()));
+        }
     }
 
     @PostMapping("/user/bookshelf/{novelId}/mark-read")

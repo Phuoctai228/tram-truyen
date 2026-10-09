@@ -25,6 +25,8 @@ public interface BookshelfService {
 
     void recordChapterRead(String email, Integer chapterId);
 
+    boolean isChapterRead(String email, Integer chapterId);
+
     UserProfileDTO getUserProfile(String email);
 
     long countNovelFavorites(Integer novelId);

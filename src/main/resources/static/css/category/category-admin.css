@@ -1,0 +1,230 @@
+.cat-cell {
+    align-items: center;
+    display: flex;
+    gap: 12px;
+}
+
+.cat-icon {
+    background: var(--amber-soft);
+    border-radius: 8px;
+    color: #875200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    height: 48px;
+    width: 48px;
+}
+
+.cat-info {
+    display: grid;
+    gap: 3px;
+}
+
+.cat-info strong {
+    font-size: 15px;
+}
+
+.cat-info span {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+/* Modal Styles cập nhật chống tràn */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(35, 26, 17, 0.4);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 20px;
+    /* Thêm khoảng đệm để modal không dính sát viền màn hình */
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-box {
+    background: var(--surface);
+    border-radius: 16px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 520px;
+    padding: 32px;
+    max-height: 90vh;
+    /* Giới hạn chiều cao tối đa bằng 90% chiều cao màn hình */
+    display: flex;
+    flex-direction: column;
+    animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    flex-shrink: 0;
+    /* Không bị co giãn header */
+}
+
+/* Biến phần thân form thành vùng có thể cuộn khi nội dung dài */
+#categoryForm {
+    overflow-y: auto;
+    padding-right: 4px;
+    flex-grow: 1;
+}
+
+/* Tùy chỉnh thanh cuộn cho đẹp mắt */
+#categoryForm::-webkit-scrollbar {
+    width: 6px;
+}
+
+#categoryForm::-webkit-scrollbar-thumb {
+    background: #d1c2b4;
+    border-radius: 4px;
+}
+
+.modal-title-group {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.modal-title-icon {
+    background: var(--wash);
+    color: var(--amber);
+    border-radius: 8px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+.modal-title h2 {
+    font-family: Inter, sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.modal-title p {
+    margin: 2px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: var(--muted);
+    cursor: pointer;
+    line-height: 1;
+}
+
+.modal-close:hover {
+    color: var(--ink);
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.form-group label small {
+    color: var(--muted);
+    font-weight: 400;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    background: var(--paper);
+    border: 1px solid transparent;
+    transition: border-color 0.2s;
+    padding: 10px 12px;
+    border-radius: 8px;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    border-color: var(--amber);
+    background: var(--surface);
+    outline: none;
+}
+
+.slug-input {
+    display: flex;
+    align-items: stretch;
+}
+
+.slug-prefix {
+    background: var(--paper);
+    border: 1px solid transparent;
+    border-right: none;
+    color: var(--muted);
+    padding: 0 12px;
+    border-radius: 8px 0 0 8px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+}
+
+.slug-input input {
+    border-radius: 0 8px 8px 0;
+}
+
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    flex-shrink: 0;
+    /* Giữ cố định vùng nút bấm luôn hiển thị */
+    background: var(--surface);
+}
+
+.error-message {
+    color: var(--red);
+    font-size: 12px;
+    margin-top: 4px;
+    display: block;
+}

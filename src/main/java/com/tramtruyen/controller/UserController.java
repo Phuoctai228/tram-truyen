@@ -61,9 +61,16 @@ public class UserController {
         }
         
         String email = authentication.getName();
-        userService.updateProfile(email, fullName, avatar);
-        
-        redirectAttributes.addFlashAttribute("successMessage", "Cập nhật hồ sơ thành công");
+        try {
+            userService.updateProfile(email, fullName, avatar);
+            redirectAttributes.addFlashAttribute("successMessage", "Cập nhật hồ sơ thành công");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/user/edit-profile";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Đã xảy ra lỗi khi cập nhật hồ sơ. Vui lòng thử lại sau.");
+            return "redirect:/user/edit-profile";
+        }
         return "redirect:/user/profile";
     }
 

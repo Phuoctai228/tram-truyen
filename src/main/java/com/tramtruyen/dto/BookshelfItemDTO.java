@@ -28,6 +28,7 @@ public class BookshelfItemDTO {
     private int currentChapterNumber;
     private int progressPercentage;
     private boolean isCompleted;
+    private boolean isCaughtUp;
     private boolean hasVipChapters;
     private LocalDateTime addedAt;
     private String relativeTime;

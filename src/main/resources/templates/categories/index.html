@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="vi"
+    class="h-full">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Khám phá thể loại | Trạm Truyện</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script th:src="@{/js/home/tailwind-config.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/category/category.css}">
+</head>
+
+<body class="bg-[#FAFAFA] font-sans text-[#333333] flex flex-col min-h-screen">
+
+    <div th:replace="~{fragments/header :: main-header}"></div>
+
+    <div class="h-20"></div> <!-- Spacer for fixed header -->
+
+    <main class="flex-grow bg-gradient-to-b from-[#FFF3EB] via-[#FCF9F7] to-[#FAFAFA]">
+
+        <!-- Hero Section -->
+        <section class="max-w-7xl mx-auto px-6 lg:px-12 pt-16 pb-12 text-center">
+            <div class="flex items-center justify-center gap-4 mb-4">
+                <div class="h-[1px] w-12 bg-[#D1C2B4]"></div>
+                <span class="text-[13px] font-bold text-[#b5803a] tracking-widest uppercase">Bảng phân loại tác
+                    phẩm</span>
+                <div class="h-[1px] w-12 bg-[#D1C2B4]"></div>
+            </div>
+            <h1 class="font-serif text-4xl md:text-5xl lg:text-[54px] font-bold text-[#231A11] mb-6 leading-tight">
+                Khám phá thể loại
+            </h1>
+            <p class="text-[17px] md:text-[19px] text-[#6B5B4B] max-w-2xl mx-auto leading-relaxed">
+                Hơn 12.000 tác phẩm được phân loại tỉ mỉ theo từng thế giới, cảm xúc và đề tài yêu thích của bạn.
+            </p>
+        </section>
+
+        <!-- Filters & Search -->
+        <section class="max-w-7xl mx-auto px-6 lg:px-12 mb-10">
+            <div
+                class="bg-white/60 backdrop-blur-md rounded-2xl p-2 md:p-3 flex flex-col md:flex-row items-center justify-between gap-4 shadow-[0_2px_16px_rgba(0,0,0,0.03)] border border-white">
+
+                <!-- Tabs -->
+                <div class="flex items-center gap-2 overflow-x-auto w-full md:w-auto nav-tabs pb-1 md:pb-0">
+                    <button
+                        class="shrink-0 px-5 py-2.5 rounded-xl bg-[#c08d41] text-white font-semibold text-[14.5px] shadow-sm">
+                        Tất cả thể loại (<span th:text="${#lists.size(categories)}">24</span>)
+                    </button>
+                </div>
+
+                <!-- Search -->
+                <form class="relative w-full md:w-[280px] shrink-0" th:action="@{/the-loai}" method="get">
+                    <span
+                        class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[#875200] text-[20px]">search</span>
+                    <input type="text" name="query" th:value="${query}" placeholder="Tìm thể loại truyện..."
+                        class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#FFF6EF] border border-transparent focus:border-[#c08d41] focus:bg-white focus:outline-none transition-colors text-[14.5px] placeholder:text-[#a08b79] font-medium text-[#4D3B2A]">
+                </form>
+            </div>
+        </section>
+
+        <!-- Grid of Categories -->
+        <section class="max-w-7xl mx-auto px-6 lg:px-12 pb-20">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+
+                <a th:each="category, stat : ${categories}" th:href="@{/the-loai/{slug}(slug=${category.slug})}"
+                    class="bg-white rounded-3xl p-7 shadow-[0_4px_24px_rgba(35,26,17,0.04)] border border-white hover:border-[#ebd9c7] transition-all duration-300 hover:-translate-y-1 group flex flex-col h-full">
+
+                    <div class="flex items-start justify-between mb-5">
+                        <div
+                            class="w-[46px] h-[46px] rounded-2xl flex items-center justify-center cat-icon bg-[#FFF5E6] text-[#b5803a] transition-transform group-hover:scale-110">
+                            <!-- Dynamic Icon based on index logic for visual flavor -->
+                            <span class="material-symbols-outlined text-[24px]"
+                                th:if="${stat.index % 8 == 0}">favorite</span>
+                            <span class="material-symbols-outlined text-[24px]"
+                                th:if="${stat.index % 8 == 1}">auto_fix</span>
+                            <span class="material-symbols-outlined text-[24px]"
+                                th:if="${stat.index % 8 == 2}">visibility</span>
+                            <span class="material-symbols-outlined text-[24px]"
+                                th:if="${stat.index % 8 == 3}">spa</span>
+                            <span class="material-symbols-outlined text-[24px]"
+                                th:if="${stat.index % 8 == 4}">dark_mode</span>
+                            <span class="material-symbols-outlined text-[24px]"
+                                th:if="${stat.index % 8 == 5}">swords</span>
+                            <span class="material-symbols-outlined text-[24px]"
+                                th:if="${stat.index % 8 == 6}">menu_book</span>
+                            <span class="material-symbols-outlined text-[24px]"
+                                th:if="${stat.index % 8 == 7}">hourglass_empty</span>
+                        </div>
+                        <div class="px-2.5 py-1 rounded-lg bg-[#F9F7F5] text-[#8C7A68] text-[11px] font-bold tracking-wider cat-index"
+                            th:text="${'#' + (stat.index + 1 < 10 ? '0' + (stat.index + 1) : (stat.index + 1))}">
+                            #01
+                        </div>
+                    </div>
+
+                    <h3 class="font-sans text-[22px] font-bold text-[#231A11] mb-1.5" th:text="${category.name}">Lãng
+                        mạn</h3>
+
+                    <p class="text-[14px] leading-relaxed text-[#6B5B4B] mb-6 text-muted line-clamp-3"
+                        th:text="${category.description != null ? category.description : 'Khám phá những câu chuyện thú vị trong thể loại này.'}">
+                        Những rung động ngọt ngào, sâu lắng và chuyện tình vượt thời gian.
+                    </p>
+
+                </a>
+
+            </div>
+
+            <!-- Quote -->
+            <div class="mt-20 text-center relative max-w-3xl mx-auto px-6">
+                <span
+                    class="material-symbols-outlined text-[64px] text-[#F0E6DD] absolute -top-6 left-1/2 -translate-x-1/2 -z-10 rotate-180">format_quote</span>
+                <p class="font-serif text-[22px] md:text-[26px] italic text-[#6B5B4B] leading-snug">
+                    “Mỗi thể loại là một cánh cửa mở ra một vũ trụ tâm tưởng hoàn toàn khác biệt.”
+                </p>
+                <div
+                    class="mt-6 text-[13px] font-bold text-[#A59585] tracking-[0.2em] uppercase flex items-center justify-center gap-4">
+                    <span class="w-8 h-[1px] bg-[#D1C2B4]"></span>
+                    Trạm Truyện
+                    <span class="w-8 h-[1px] bg-[#D1C2B4]"></span>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <div th:replace="~{fragments/footer :: main-footer}"></div>
+
+</body>
+
+</html>

@@ -13,17 +13,20 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final AccountLockService accountLockService;
 
-    public CustomOAuth2UserService(UserRepository userRepository, RoleRepository roleRepository) {
+    public CustomOAuth2UserService(UserRepository userRepository,
+                                   RoleRepository roleRepository,
+                                   AccountLockService accountLockService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.accountLockService = accountLockService;
     }
 
     @Override
@@ -41,11 +44,15 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         if (userOptional.isPresent()) {
             user = userOptional.get();
 
-            // If a user is banned, block them immediately; do not update or save anything
-            // to the database
+            // Kiểm tra và tự động mở khóa nếu đã hết hạn
+            if ("BANNED".equalsIgnoreCase(user.getStatus())) {
+                accountLockService.checkAndAutoUnban(user);
+            }
+
+            // Nếu vẫn đang bị khóa, chặn ngay lập tức, không cập nhật DB
             if ("BANNED".equalsIgnoreCase(user.getStatus())) {
                 throw new OAuth2AuthenticationException(
-                        new OAuth2Error("account_locked", "Tài khoản của bạn đã bị khóa.", null));
+                        new OAuth2Error("account_locked", email, null));
             }
 
             // Update avatar if needed

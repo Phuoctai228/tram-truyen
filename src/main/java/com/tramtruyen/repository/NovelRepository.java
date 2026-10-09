@@ -32,4 +32,7 @@ public interface NovelRepository extends JpaRepository<Novel, Integer> {
 
     // Lấy truyện cùng tác giả (loại trừ truyện hiện tại)
     List<Novel> findTop5ByAuthorIgnoreCaseAndIdNotAndIsDeletedFalseOrderByViewsDesc(String author, Integer id);
+
+    // Truyện đề cử tự động (dựa trên điểm đánh giá cao nhất)
+    List<Novel> findTop10ByIsDeletedFalseOrderByAverageRatingDesc();
 }
