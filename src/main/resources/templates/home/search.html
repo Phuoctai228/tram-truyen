@@ -1,96 +1,333 @@
 <!DOCTYPE html>
 <html class="h-full" lang="vi" xmlns:th="http://www.thymeleaf.org">
+
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Tìm kiếm truyện - Trạm Truyện</title>
-  
+  <title>Tìm kiếm & Khám phá - Trạm Truyện</title>
+
   <link href="https://fonts.googleapis.com" rel="preconnect">
   <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Lora:ital,wght@0,400;0,700;1,400&amp;display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Lora:ital,wght@0,400;0,700;1,400&amp;display=swap"
+    rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    rel="stylesheet">
 
   <link rel="stylesheet" th:href="@{/css/home/search.css}">
   <script src="https://cdn.tailwindcss.com"></script>
   <script th:src="@{/js/home/tailwind-config.js}"></script>
 </head>
-<body class="bg-background font-body-md text-on-surface min-h-full flex flex-col">
+
+<body class="bg-[#faf8f5] font-sans text-[#231A11] min-h-full flex flex-col">
   <div th:replace="~{fragments/header :: main-header}"></div>
-  <main class="w-full pt-20 flex-1 bg-surface">
-    <div class="flex flex-col w-full">
-      <section class="w-full bg-surface-container-low/70 py-8 px-6 lg:px-12">
-        <div class="max-w-7xl mx-auto flex flex-col gap-4">
-          <nav class="flex items-center gap-2 font-label-md text-label-md text-on-surface-variant">
-            <a class="hover:text-primary transition-colors" th:href="@{/}">Trang chủ</a>
-            <span class="text-outline-variant">/</span>
-            <span class="text-primary font-bold">Kết quả tìm kiếm</span>
-          </nav>
-          <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
-            <div>
-              <h1 class="font-headline-xl text-headline-xl text-on-surface font-bold tracking-tight">
-                Kết quả tìm kiếm cho: <span class="text-primary italic" th:text="${query != null ? '“' + query + '”' : 'Tất cả'}">“kiếm hiệp”</span>
-              </h1>
-              <p class="font-body-md text-body-md text-on-surface-variant mt-1">
-                Tìm thấy <strong class="text-on-surface font-bold" th:text="${novels.size()}">0</strong> tác phẩm phù hợp.
-              </p>
+  <main class="w-full pt-20 flex-1">
+
+    <!-- Header Section -->
+    <section class="w-full bg-[#fdfaf7] border-b border-[#f5eae0] pt-8 pb-6 px-6 lg:px-12">
+      <div class="max-w-7xl mx-auto flex flex-col gap-1">
+        <nav class="flex items-center gap-2 font-medium text-[13px] text-[#8c7a68] mb-1">
+          <a class="hover:text-[#c08d41] transition-colors" th:href="@{/}">Trang chủ</a>
+          <span class="text-[#d1c2b4]">/</span>
+          <a class="hover:text-[#c08d41] transition-colors" th:href="@{/the-loai}">Tìm kiếm & Khám phá</a>
+          <span class="text-[#d1c2b4]">/</span>
+          <span class="text-[#c08d41] font-bold">Kết quả tìm kiếm</span>
+        </nav>
+        <div class="text-[12px] font-bold text-[#c08d41] uppercase tracking-widest mt-2 mb-1 flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-[#c08d41]"></span> TỔNG HỢP TÁC PHẨM PHONG PHÚ
+        </div>
+        <h1 class="font-sans text-3xl md:text-4xl lg:text-[42px] font-bold text-[#231A11] tracking-tight">
+          Kết quả tìm kiếm cho: <span class="text-[#c08d41] italic"
+            th:text="${query != null ? '“' + query + '”' : 'Tất cả'}">“kiếm hiệp”</span>
+        </h1>
+        <p class="text-[15px] text-[#6b5b4b] mt-2">
+          Tìm thấy <strong class="text-[#231a11]" th:text="${novels.size()}">128</strong> tác phẩm phù hợp với tiêu chí
+          lọc đã chọn.
+        </p>
+      </div>
+    </section>
+
+    <form th:action="@{/search}" method="get" id="filterForm"
+      class="max-w-7xl mx-auto w-full px-6 lg:px-12 py-8 flex flex-col lg:flex-row gap-8 items-start">
+      <input type="hidden" name="q" th:value="${query}" th:if="${query != null}" />
+
+      <!-- Left Sidebar: Advanced Filter -->
+      <aside
+        class="w-full lg:w-[280px] shrink-0 bg-white rounded-2xl shadow-[0_2px_12px_rgba(35,26,17,0.03)] border border-[#f5eae0] overflow-hidden sticky top-24">
+        <!-- Filter Header -->
+        <div class="p-5 flex items-center justify-between border-b border-[#f5eae0] bg-[#faf8f5]">
+          <div class="flex items-center gap-2 font-bold text-[16px] text-[#231A11]">
+            <span class="material-symbols-outlined text-[#c08d41] text-[20px]">tune</span> Bộ lọc nâng cao
+          </div>
+          <a th:href="@{/search}"
+            class="text-[12px] font-semibold text-[#8c7a68] hover:text-[#c08d41] transition-colors">Xóa tất cả</a>
+        </div>
+
+        <!-- Filter Body -->
+        <div class="p-5 flex flex-col gap-6 max-h-[calc(100vh-200px)] overflow-y-auto">
+
+          <!-- Category -->
+          <div>
+            <h4 class="font-bold text-[14px] text-[#231A11] mb-3">Thể loại (Chọn nhiều)</h4>
+            <div class="flex flex-wrap gap-2">
+              <label class="cursor-pointer" th:each="cat : ${allCategories}">
+                <input type="checkbox" name="categories" th:value="${cat.id}"
+                  th:checked="${selectedCategories != null and selectedCategories.contains(cat.id)}" class="peer hidden">
+                <span
+                  class="px-3 py-1.5 rounded-lg bg-[#f5eae0] text-[#4d3b2a] text-[13px] font-medium peer-checked:bg-[#c08d41] peer-checked:text-white transition-colors border border-transparent peer-checked:border-[#b5803a] flex items-center gap-1"><span
+                    th:text="${cat.name}">Tiên hiệp</span> <span
+                    class="material-symbols-outlined text-[14px] peer-checked:inline hidden">check</span></span>
+              </label>
             </div>
+          </div>
+
+          <div class="h-px bg-[#f5eae0]"></div>
+
+          <!-- Status -->
+          <div>
+            <h4 class="font-bold text-[14px] text-[#231A11] mb-3">Tình trạng tác phẩm</h4>
+            <div class="grid grid-cols-3 gap-2">
+              <label class="cursor-pointer">
+                <input type="radio" name="status" value=""
+                  th:checked="${selectedStatus == null or selectedStatus == ''}" class="peer hidden">
+                <div
+                  class="py-1.5 rounded-lg bg-[#f5eae0] text-[#8c7a68] text-[13px] font-medium peer-checked:bg-[#c08d41] peer-checked:text-white peer-checked:font-bold text-center transition-colors">
+                  Tất cả</div>
+              </label>
+              <label class="cursor-pointer">
+                <input type="radio" name="status" value="ONGOING" th:checked="${selectedStatus == 'ONGOING'}"
+                  class="peer hidden">
+                <div
+                  class="py-1.5 rounded-lg bg-[#f5eae0] text-[#8c7a68] text-[13px] font-medium peer-checked:bg-[#c08d41] peer-checked:text-white peer-checked:font-bold text-center transition-colors">
+                  Đang ra</div>
+              </label>
+              <label class="cursor-pointer">
+                <input type="radio" name="status" value="COMPLETED" th:checked="${selectedStatus == 'COMPLETED'}"
+                  class="peer hidden">
+                <div
+                  class="py-1.5 rounded-lg bg-[#f5eae0] text-[#8c7a68] text-[13px] font-medium peer-checked:bg-[#c08d41] peer-checked:text-white peer-checked:font-bold text-center transition-colors">
+                  Hoàn thành</div>
+              </label>
+            </div>
+          </div>
+
+          <div class="h-px bg-[#f5eae0]"></div>
+
+          <!-- Access Type -->
+          <div>
+            <h4 class="font-bold text-[14px] text-[#231A11] mb-3">Phân loại truy cập</h4>
+            <div class="grid grid-cols-3 gap-2">
+              <label class="cursor-pointer">
+                <input type="radio" name="vip" value="" checked class="peer hidden">
+                <div
+                  class="py-1.5 rounded-lg bg-[#f5eae0] text-[#8c7a68] text-[13px] font-medium peer-checked:bg-[#c08d41] peer-checked:text-white peer-checked:font-bold text-center transition-colors">
+                  Tất cả</div>
+              </label>
+              <label class="cursor-pointer opacity-50">
+                <input type="radio" name="vip" value="VIP" disabled class="peer hidden">
+                <div
+                  class="py-1.5 rounded-lg bg-[#f5eae0] text-[#8c7a68] text-[13px] font-medium peer-checked:bg-[#a64032] peer-checked:text-white peer-checked:font-bold text-center transition-colors">
+                  VIP</div>
+              </label>
+              <label class="cursor-pointer opacity-50">
+                <input type="radio" name="vip" value="FREE" disabled class="peer hidden">
+                <div
+                  class="py-1.5 rounded-lg bg-[#f5eae0] text-[#8c7a68] text-[13px] font-medium peer-checked:bg-[#c08d41] peer-checked:text-white peer-checked:font-bold text-center transition-colors">
+                  Miễn phí</div>
+              </label>
+            </div>
+          </div>
+
+          <div class="h-px bg-[#f5eae0]"></div>
+
+          <!-- Chapter Count -->
+          <div>
+            <h4 class="font-bold text-[14px] text-[#231A11] mb-3">Số lượng chương</h4>
+            <div class="grid grid-cols-2 gap-2 mt-4">
+              <label class="cursor-pointer">
+                <input type="radio" name="chapterRange" value="lt5" th:checked="${selectedChapterRange == 'lt5'}"
+                  class="peer hidden">
+                <div
+                  class="py-1.5 rounded-lg bg-[#f5eae0] text-[#8c7a68] text-[12px] font-medium text-center peer-checked:bg-[#ebd9c7] peer-checked:text-[#4d3b2a] peer-checked:font-bold peer-checked:border peer-checked:border-[#c08d41]">
+                  &lt; 5 ch.</div>
+              </label>
+              <label class="cursor-pointer">
+                <input type="radio" name="chapterRange" value="5-10"
+                  th:checked="${selectedChapterRange == '5-10'}" class="peer hidden">
+                <div
+                  class="py-1.5 rounded-lg bg-[#f5eae0] text-[#8c7a68] text-[12px] font-medium text-center peer-checked:bg-[#ebd9c7] peer-checked:text-[#4d3b2a] peer-checked:font-bold peer-checked:border peer-checked:border-[#c08d41]">
+                  5 - 10 ch.</div>
+              </label>
+              <label class="cursor-pointer">
+                <input type="radio" name="chapterRange" value="10-50"
+                  th:checked="${selectedChapterRange == '10-50'}" class="peer hidden">
+                <div
+                  class="py-1.5 rounded-lg bg-[#f5eae0] text-[#8c7a68] text-[12px] font-medium text-center peer-checked:bg-[#ebd9c7] peer-checked:text-[#4d3b2a] peer-checked:font-bold peer-checked:border peer-checked:border-[#c08d41]">
+                  10 - 50 ch.</div>
+              </label>
+              <label class="cursor-pointer">
+                <input type="radio" name="chapterRange" value="gt50" th:checked="${selectedChapterRange == 'gt50'}"
+                  class="peer hidden">
+                <div
+                  class="py-1.5 rounded-lg bg-[#f5eae0] text-[#8c7a68] text-[12px] font-medium text-center peer-checked:bg-[#ebd9c7] peer-checked:text-[#4d3b2a] peer-checked:font-bold peer-checked:border peer-checked:border-[#c08d41]">
+                  &gt; 50 ch.</div>
+              </label>
+            </div>
+          </div>
+
+          <div class="h-px bg-[#f5eae0]"></div>
+
+          <!-- Other criteria -->
+          <div>
+            <h4 class="font-bold text-[14px] text-[#231A11] mb-3">Tiêu chí khác</h4>
+            <div class="flex flex-col gap-3">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" name="minRating" value="4.5"
+                  th:checked="${selectedMinRating != null and selectedMinRating == 4.5}"
+                  class="w-4 h-4 text-[#c08d41] border-[#d1c2b4] rounded focus:ring-[#c08d41]">
+                <span class="text-[13px] text-[#4d3b2a] font-medium">Đánh giá từ 4.5 sao</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer opacity-50">
+                <input type="checkbox" disabled
+                  class="w-4 h-4 text-[#c08d41] border-[#d1c2b4] rounded focus:ring-[#c08d41]">
+                <span class="text-[13px] text-[#4d3b2a] font-medium">Bản dịch độc quyền</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Buttons -->
+          <div class="flex flex-col gap-2 mt-2">
+            <button type="submit"
+              class="w-full py-2.5 rounded-xl bg-[#c08d41] text-white font-bold text-[14px] shadow-sm flex items-center justify-center gap-2 hover:bg-[#a67a38] transition-colors"><span
+                class="material-symbols-outlined text-[18px]">check_circle</span> Áp dụng bộ lọc</button>
+            <a th:href="@{/search}"
+              class="w-full py-2.5 rounded-xl bg-[#f5eae0] text-[#8c7a68] font-bold text-[14px] hover:bg-[#ebd9c7] transition-colors text-center inline-block">Đặt
+              lại mặc định</a>
           </div>
         </div>
-      </section>
+      </aside>
 
-      <section class="max-w-7xl mx-auto w-full px-6 lg:px-12 py-8 flex flex-col lg:flex-row gap-8 items-start">
-        <aside class="w-full lg:w-72 shrink-0 bg-surface-container-lowest rounded-xl p-5 shadow-sm sticky top-24">
-          <div class="flex items-center justify-between pb-4">
-            <div class="flex items-center gap-2 text-on-surface font-headline-sm text-headline-sm font-bold">
-              <span class="material-symbols-outlined text-primary text-[22px]">tune</span>
-              <span>Bộ lọc nâng cao</span>
+      <!-- Right Main Content -->
+      <main class="flex-1 w-full flex flex-col gap-5 min-w-0">
+
+        <!-- Toolbar: Active Filters & Sort -->
+        <div
+          class="bg-white rounded-2xl p-4 shadow-[0_2px_12px_rgba(35,26,17,0.03)] border border-[#f5eae0] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="text-[13px] text-[#6b5b4b] font-medium mr-1">Đang hiển thị <strong class="text-[#231A11]">1 -
+                12</strong> trong tổng số <strong class="text-[#231A11]" th:text="${novels.size()}">128</strong> tác
+              phẩm</span>
+
+            <!-- Pills -->
+            <div class="hidden md:flex flex-wrap items-center gap-2 mt-2 sm:mt-0 w-full sm:w-auto">
+              <span th:if="${selectedStatus == 'ONGOING'}"
+                class="px-2.5 py-1 bg-[#f5eae0] text-[#6b5b4b] text-[12px] font-semibold rounded flex items-center gap-1">Đang
+                ra</span>
+              <span th:if="${selectedStatus == 'COMPLETED'}"
+                class="px-2.5 py-1 bg-[#f5eae0] text-[#6b5b4b] text-[12px] font-semibold rounded flex items-center gap-1">Hoàn
+                thành</span>
+              <span th:if="${selectedChapterRange != null}"
+                class="px-2.5 py-1 bg-[#f5eae0] text-[#6b5b4b] text-[12px] font-semibold rounded flex items-center gap-1">Lọc
+                số chương</span>
+              <span th:if="${selectedMinRating != null}"
+                class="px-2.5 py-1 bg-[#f5eae0] text-[#6b5b4b] text-[12px] font-semibold rounded flex items-center gap-1">Đánh
+                giá cao</span>
+              <a th:href="@{/search}"
+                th:if="${selectedStatus != null or selectedChapterRange != null or selectedMinRating != null or (selectedCategories != null and !selectedCategories.isEmpty())}"
+                class="text-[12px] text-[#c08d41] font-semibold hover:underline ml-1">Xóa bộ lọc</a>
             </div>
-            <button class="font-label-sm text-label-sm text-secondary hover:underline cursor-pointer">Xóa tất cả</button>
           </div>
-          <div class="text-on-surface-variant text-sm italic">
-            Tính năng bộ lọc sẽ được cập nhật trong phiên bản sau.
-          </div>
-        </aside>
 
-        <main class="flex-1 w-full flex flex-col gap-6">
-          <div th:if="${novels.isEmpty()}" class="p-8 text-center bg-surface-container-lowest rounded-xl shadow-sm">
-             <p class="text-on-surface-variant font-body-md">Không tìm thấy truyện nào phù hợp với từ khóa của bạn.</p>
+          <div class="flex items-center gap-2 shrink-0">
+            <span class="text-[13px] text-[#6b5b4b] font-medium">Sắp xếp:</span>
+            <select name="sort" onchange="this.form.submit()"
+              class="bg-[#faf8f5] border border-[#f5eae0] rounded-lg px-3 py-1.5 text-[13px] font-bold text-[#231A11] focus:outline-none focus:border-[#c08d41]">
+              <option value="updatedAt,desc" th:selected="${currentSort == 'updatedAt,desc'}">Mới cập nhật</option>
+              <option value="views,desc" th:selected="${currentSort == 'views,desc'}">Lượt đọc nhiều nhất</option>
+              <option value="averageRating,desc" th:selected="${currentSort == 'averageRating,desc'}">Đánh giá cao nhất
+              </option>
+            </select>
           </div>
-          
-          <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5" th:if="${!novels.isEmpty()}">
-            <article class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col group" th:each="novel : ${novels}">
-              <a th:href="@{/truyen/{slug}(slug=${novel.slug})}" class="block w-full h-full">
-                <div class="relative w-full aspect-[2/3] overflow-hidden bg-surface-container">
-                  <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" th:src="${novel.coverUrl != null ? novel.coverUrl : '/images/default-cover.jpg'}" onerror="this.onerror=null;this.src='/images/default-cover.jpg';" alt="Cover">
-                  <div class="absolute inset-0 bg-gradient-to-t from-on-background/80 via-transparent to-transparent"></div>
-                  <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded bg-surface/90 text-on-surface font-label-sm text-label-sm backdrop-blur-sm" th:text="${novel.status == 'COMPLETED' ? 'Hoàn thành' : 'Đang ra'}">Đang ra</span>
-                  <span class="absolute bottom-2.5 left-2.5 font-label-sm text-label-sm text-on-primary/90 font-medium">
-                     <span class="material-symbols-outlined text-[14px] align-middle">visibility</span> <span th:text="${novel.views}" class="align-middle"></span>
-                  </span>
-                </div>
-                <div class="p-3.5 flex flex-col flex-1 justify-between gap-2">
-                  <div>
-                    <h2 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors line-clamp-1 font-bold" th:text="${novel.title}">
-                      Title
-                    </h2>
-                    <p class="font-body-md text-body-md text-on-surface-variant font-medium" th:text="${novel.author}">Author</p>
-                    <p class="font-body-md text-body-md text-on-surface-variant/80 line-clamp-2 mt-1" th:text="${novel.summary}">
-                      Summary
-                    </p>
-                  </div>
-                  <div class="pt-2 flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm">
-                    <span class="flex items-center text-primary font-semibold">★ <span th:text="${novel.averageRating}">0</span></span>
-                    <span th:text="${novel.ratingCount + ' đánh giá'}">0 đánh giá</span>
-                  </div>
-                </div>
-              </a>
-            </article>
-          </div>
-        </main>
-      </section>
-    </div>
+        </div>
+
+        <!-- No Results -->
+        <div th:if="${novels.isEmpty()}"
+          class="p-12 text-center bg-white rounded-2xl border border-dashed border-[#d1c2b4]">
+          <span class="material-symbols-outlined text-[48px] text-[#d1c2b4] mb-3">search_off</span>
+          <p class="text-[#6b5b4b] text-[16px] font-medium">Không tìm thấy kết quả nào phù hợp với bộ lọc hiện tại.</p>
+        </div>
+
+        <!-- Results Grid (Vertical Cards) -->
+        <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5" th:if="${!novels.isEmpty()}">
+          <article
+            class="bg-white rounded-2xl p-3.5 shadow-[0_2px_12px_rgba(35,26,17,0.03)] border border-[#f5eae0] hover:shadow-md hover:border-[#ebd9c7] transition-all group flex flex-col h-full"
+            th:each="novel : ${novels}">
+
+            <!-- Cover Image -->
+            <a th:href="@{/truyen/{slug}(slug=${novel.slug})}"
+              class="block w-full aspect-[2/3] relative rounded-xl overflow-hidden bg-[#f5eae0] mb-3 shrink-0">
+              <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                th:src="${novel.coverUrl != null ? novel.coverUrl : '/images/default-cover.jpg'}"
+                onerror="this.onerror=null;this.src='/images/default-cover.jpg';" alt="Cover">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+
+              <!-- Badges -->
+              <div class="absolute top-2 left-2 flex flex-col gap-1.5">
+                <span
+                  class="px-2 py-0.5 rounded-md bg-white/90 backdrop-blur-sm text-[#231a11] text-[10px] font-bold uppercase tracking-wider shadow-sm"
+                  th:text="${novel.status == 'COMPLETED' ? 'Hoàn thành' : 'Đang ra'}">Đang ra</span>
+              </div>
+              
+              <div class="absolute bottom-2 left-2 font-bold text-white text-[11px] flex items-center gap-1">
+                Ch. <span th:text="${novel.chapterCount != null ? novel.chapterCount : '0'}">580</span>
+              </div>
+            </a>
+
+            <!-- Content -->
+            <div class="flex flex-col flex-1">
+              <h2
+                class="text-[16px] text-[#231A11] group-hover:text-[#c08d41] transition-colors line-clamp-1 font-bold mb-1">
+                <a th:href="@{/truyen/{slug}(slug=${novel.slug})}" th:text="${novel.title}">Kiếm Đạo Đệ Nhất Tiên</a>
+              </h2>
+              <p class="text-[12px] text-[#8c7a68] mb-2 truncate" th:text="${novel.author}">Tiêu Cẩn Du</p>
+
+              <p class="text-[12px] text-[#6b5b4b] line-clamp-2 leading-relaxed flex-1" th:text="${novel.summary}">
+                Kiếm tu phi thăng trọng sinh vào thân thể thiếu...
+              </p>
+
+              <!-- Stats -->
+              <div class="pt-3 mt-3 border-t border-[#f5eae0] flex items-center justify-between text-[12px] font-bold">
+                <span class="flex items-center gap-1 text-[#c08d41]"><span
+                    class="material-symbols-outlined text-[14px]">star</span> <span
+                    th:text="${novel.averageRating}">4.9</span></span>
+                <span class="text-[#8c7a68]"><span th:text="${novel.views}">1.8M</span> đọc</span>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <!-- Pagination -->
+        <div class="mt-8 flex justify-center items-center gap-2" th:if="${novelPage.totalPages > 1}">
+          <button type="submit" name="page" th:value="${novelPage.number - 1}" th:if="${novelPage.hasPrevious()}"
+            class="px-3 py-1.5 rounded-lg bg-[#f5eae0] text-[#8c7a68] text-[13px] font-bold flex items-center gap-1 hover:bg-[#ebd9c7] transition-colors"><span
+              class="material-symbols-outlined text-[16px]">chevron_left</span> Trước</button>
+
+          <th:block th:each="pageNum : ${#numbers.sequence(0, novelPage.totalPages - 1)}">
+            <button type="submit" name="page" th:value="${pageNum}"
+              th:class="${pageNum == novelPage.number} ? 'w-8 h-8 rounded-lg bg-[#c08d41] text-white text-[13px] font-bold shadow-sm' : 'w-8 h-8 rounded-lg bg-white border border-[#f5eae0] text-[#6b5b4b] text-[13px] font-bold hover:border-[#c08d41] hover:text-[#c08d41] transition-colors'"
+              th:text="${pageNum + 1}">1</button>
+          </th:block>
+
+          <button type="submit" name="page" th:value="${novelPage.number + 1}" th:if="${novelPage.hasNext()}"
+            class="px-3 py-1.5 rounded-lg bg-[#f5eae0] text-[#8c7a68] text-[13px] font-bold flex items-center gap-1 hover:bg-[#ebd9c7] transition-colors">Sau
+            <span class="material-symbols-outlined text-[16px]">chevron_right</span></button>
+        </div>
+
+      </main>
+    </form>
   </main>
   <div th:replace="~{fragments/footer :: main-footer}"></div>
 </body>
+
 </html>

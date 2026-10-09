@@ -23,4 +23,7 @@ public class Category {
 
     @Column(columnDefinition = "TEXT")
     private String description;
+
+    @org.hibernate.annotations.Formula("(SELECT COUNT(*) FROM novel_categories nc JOIN novels n ON nc.novel_id = n.id WHERE nc.category_id = id AND n.is_deleted = false)")
+    private Integer novelCount;
 }

@@ -39,18 +39,43 @@
                 <span class="material-symbols-outlined text-[#c08d41] text-[28px]">bookmark</span>
                 <span class="text-[13px] font-bold text-[#b5803a] tracking-widest uppercase">Danh mục</span>
             </div>
-            <h1 class="font-serif text-3xl md:text-5xl font-bold text-[#231A11] mb-6" th:text="${category.name}">Tên thể
-                loại</h1>
+            <h1 class="text-3xl md:text-5xl font-bold text-[#231A11] mb-2" th:text="${category.name}">Tên thể loại</h1>
+            <p class="text-[14px] font-semibold text-[#875200] uppercase tracking-wider mb-6" th:text="${(category.novelCount != null ? category.novelCount : 0) + ' TÁC PHẨM'}">0 TÁC PHẨM</p>
             <p class="text-[16px] md:text-[18px] text-[#6B5B4B] max-w-3xl leading-relaxed"
                 th:text="${category.description != null ? category.description : 'Khám phá thế giới của những tác phẩm trong thể loại này.'}">
             </p>
         </div>
 
         <!-- Empty State (No novels yet) -->
-        <div class="text-center py-24 bg-white rounded-3xl border border-dashed border-[#D1C2B4]">
+        <div th:if="${novels.isEmpty()}" class="text-center py-24 bg-white rounded-3xl border border-dashed border-[#D1C2B4]">
             <span class="material-symbols-outlined text-[64px] text-[#E0D5CB] mb-4">auto_stories</span>
             <h3 class="text-[20px] font-semibold text-[#231A11] mb-2">Chưa có truyện nào</h3>
             <p class="text-[#8C7A68]">Hiện tại chưa có tác phẩm nào được liên kết với thể loại này.</p>
+        </div>
+
+        <!-- Novels Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" th:if="${!novels.isEmpty()}">
+            <article th:each="novel : ${novels}"
+                class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-[#F5EAE0] flex flex-col group">
+                <a th:href="@{/truyen/{slug}(slug=${novel.slug})}" class="block aspect-[2/3] overflow-hidden relative">
+                    <img th:src="${novel.coverUrl != null ? novel.coverUrl : '/images/default-cover.jpg'}" onerror="this.onerror=null;this.src='/images/default-cover.jpg';"
+                        alt="Bìa truyện" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    <span class="absolute top-3 left-3 bg-white/90 backdrop-blur text-[#231A11] text-[11px] font-bold px-2 py-1 rounded-full uppercase tracking-wider" th:text="${novel.status == 'COMPLETED' ? 'Hoàn thành' : 'Đang ra'}">
+                        Đang ra
+                    </span>
+                </a>
+                <div class="p-5 flex flex-col flex-grow">
+                    <h2 class="text-[18px] font-bold text-[#231A11] mb-1 group-hover:text-[#b5803a] transition-colors line-clamp-1" th:text="${novel.title}">
+                        Tên truyện
+                    </h2>
+                    <p class="text-[#8C7A68] text-[14px] mb-3" th:text="${novel.author}">Tác giả</p>
+                    <div class="mt-auto flex items-center justify-between text-[13px] text-[#6B5B4B] border-t border-[#F5EAE0] pt-3">
+                        <span class="flex items-center gap-1 font-medium"><span class="material-symbols-outlined text-[16px] text-[#c08d41]">star</span><span th:text="${novel.averageRating}">0</span></span>
+                        <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">visibility</span><span th:text="${novel.views}">0</span></span>
+                    </div>
+                </div>
+            </article>
         </div>
     </main>
 
