@@ -41,7 +41,7 @@ ON CONFLICT (slug) DO NOTHING;
 
 -- 5. Seed system_settings (Cấu hình tỷ giá nạp Coin, thông tin liên hệ và chính sách bản quyền)
 INSERT INTO system_settings (setting_key, setting_value, description) VALUES 
-('vnd_to_coin_rate', '1', 'Tỷ giá nạp tiền: 1 VNĐ = 1 Coin (ví dụ nạp 10.000 VNĐ nhận 10.000 Coin - không hỗ trợ hoàn tiền)'),
+('vnd_to_coin_rate', '10', 'Tỷ giá nạp tiền: 1.000 VNĐ = 10 Coin (tương đương 100 VNĐ / 1 Coin khi nạp)'),
 ('support_email', 'support@tramtruyen.com', 'Email tiếp nhận khiếu nại bản quyền và hỗ giả'),
 ('contact_phone', '1900-1234', 'Hotline hỗ trợ kỹ thuật và chăm sóc khách hàng 24/7'),
 ('notice_takedown_policy', 'Cam kết thẩm tra và tạm ẩn tác phẩm vi phạm bản quyền trong vòng 24h kể từ khi nhận được khiếu nại hợp lệ')

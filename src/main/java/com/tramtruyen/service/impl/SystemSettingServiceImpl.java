@@ -14,6 +14,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -65,10 +69,7 @@ public class SystemSettingServiceImpl implements SystemSettingService {
             formattedTime = latestUpdate.format(DateTimeFormatter.ofPattern("HH:mm - dd/MM/yyyy"));
         }
 
-        int vndRate = 1;
-        try {
-            vndRate = Integer.parseInt(map.getOrDefault(KEY_VND_TO_COIN_RATE, "1"));
-        } catch (NumberFormatException ignored) {}
+        int vndRate = getVndToCoinRate();
 
         return SystemSettingsDTO.builder()
                 .vndToCoinRate(vndRate)
@@ -153,5 +154,45 @@ public class SystemSettingServiceImpl implements SystemSettingService {
         }
 
         return true;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public int getVndToCoinRate() {
+        try {
+            Optional<SystemSetting> settingOpt = systemSettingRepository.findById(KEY_VND_TO_COIN_RATE);
+            if (settingOpt.isPresent()) {
+                String val = settingOpt.get().getSettingValue();
+                if (val != null && !val.trim().isEmpty()) {
+                    int parsed = Integer.parseInt(val.trim());
+                    if (parsed >= 1 && parsed <= 1000) {
+                        return parsed;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.warn("Không thể đọc tỷ giá vnd_to_coin_rate từ DB, dùng fallback 10: {}", e.getMessage());
+        }
+        return 10;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public String getVndPerCoinFormatted() {
+        int rate = getVndToCoinRate();
+        try {
+            BigDecimal thousand = new BigDecimal("1000");
+            BigDecimal rateBd = new BigDecimal(rate);
+            BigDecimal vndPerCoin = thousand.divide(rateBd, 2, RoundingMode.HALF_UP).stripTrailingZeros();
+
+            DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale("vi", "VN"));
+            symbols.setGroupingSeparator('.');
+            symbols.setDecimalSeparator(',');
+            DecimalFormat df = new DecimalFormat("#,##0.##", symbols);
+            return df.format(vndPerCoin) + "đ / 1 Coin";
+        } catch (Exception e) {
+            log.warn("Lỗi tính chuỗi vndPerCoinFormatted: {}", e.getMessage());
+            return "100đ / 1 Coin";
+        }
     }
 }

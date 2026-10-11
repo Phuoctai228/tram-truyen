@@ -70,9 +70,9 @@
                         <label class="text-sm font-bold text-[#2b2118]">
                             Tỷ giá quy đổi tiền mặt VNĐ → Coin *
                         </label>
-                        <span class="text-xs text-[#8a7664] bg-[#faf7f2] px-2 py-0.5 rounded-md border border-[#eae2d5]">Tự động áp dụng</span>
+                        <span class="text-xs text-[#8a7664] bg-[#faf7f2] px-2 py-0.5 rounded-md border border-[#eae2d5]">Hiển thị tham chiếu</span>
                     </div>
-                    <p class="text-xs text-[#8a7664]">Tỷ giá chuẩn áp dụng cho tất cả các cổng nạp ngân hàng và ví điện tử nội địa.</p>
+                    <p class="text-xs text-[#8a7664]">Tỷ giá được hiển thị ở trang Ví và Nạp Coin. Số Coin của từng gói nạp được cấu hình riêng và không thay đổi khi chỉnh tỷ giá.</p>
 
                     <div class="p-4 rounded-2xl bg-[#fffaf4] border border-[#f4ece1] flex items-center justify-between gap-4">
                         <div class="flex-1">
@@ -86,12 +86,12 @@
                         </div>
                         <div class="flex-1">
                             <label class="text-[11px] font-semibold text-[#8a7664] block mb-1">Quy đổi nhận được (Coin)</label>
-                            <input type="number" th:field="*{vndToCoinRate}" min="1" max="1000000" required
+                            <input type="number" th:field="*{vndToCoinRate}" min="1" max="1000" required
                                    class="w-full px-4 py-2.5 bg-white rounded-xl border border-[#eae2d5] font-bold text-sm text-[#bc7d39] focus:outline-none focus:ring-2 focus:ring-[#bc7d39]">
                         </div>
                     </div>
                     <p class="text-[11px] text-[#8a7664] italic">
-                        ⓘ Tỷ giá quy đổi số Coin nhận được tương ứng với mỗi đơn vị nạp VNĐ.
+                        ⓘ Số Coin nhận được khi nạp mỗi 1.000 VNĐ (ví dụ 10 nghĩa là 1.000 VNĐ = 10 Coin).
                     </p>
                 </div>
             </div>

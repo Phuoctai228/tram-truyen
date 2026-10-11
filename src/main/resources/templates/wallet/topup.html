@@ -51,7 +51,8 @@
             <div class="text-center space-y-3 mb-10">
                 <div class="w-1.5 h-1.5 rounded-full bg-[#B45309] mx-auto"></div>
                 <h1 class="text-3xl sm:text-4xl font-bold font-serif text-[#2B231D] tracking-tight">Nạp Coin vào tài khoản</h1>
-                <p class="text-sm sm:text-base text-[#7D7065]">
+                <p class="text-sm sm:text-base text-[#7D7065]"
+                   th:text="'Quy đổi chuẩn 1.000đ = ' + ${vndToCoinRate} + ' Coin • Coin không giới hạn thời gian sử dụng'">
                     Quy đổi chuẩn 1.000đ = 10 Coin &bull; Coin không giới hạn thời gian sử dụng
                 </p>
                 <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#F3EDE2] text-sm text-[#2B231D] font-medium border border-[#E8DFC8]">

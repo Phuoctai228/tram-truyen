@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 public class SystemSettingsDTO {
 
     @NotNull(message = "Tỷ giá quy đổi VNĐ sang Coin không được để trống")
-    @Min(value = 1, message = "Tỷ giá phải là số nguyên dương lớn hơn 0")
-    @Max(value = 1000000, message = "Tỷ giá không vượt quá 1.000.000")
+    @Min(value = 1, message = "Tỷ giá tối thiểu là 1 Coin cho mỗi 1.000 VNĐ")
+    @Max(value = 1000, message = "Tỷ giá tối đa là 1.000 Coin cho mỗi 1.000 VNĐ")
     private Integer vndToCoinRate;
 
     @NotBlank(message = "Hotline hỗ trợ không được để trống")
