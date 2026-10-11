@@ -10,10 +10,10 @@
     <link rel="stylesheet" th:href="@{/css/novel-admin.css}">
 </head>
 <body>
-<div th:replace="~{admin/fragments/layout :: sidebar('chuong')}"></div>
-<div class="page-shell">
-    <div th:replace="~{admin/fragments/layout :: topbar}"></div>
-    <main class="form-shell chapter-editor-page">
+<div th:replace="~{admin/fragments/layout :: sidebar('truyen')}"></div>
+<main class="page-shell chapter-page-shell">
+    <section class="content chapter-editor-content">
+    <div class="form-shell chapter-editor-page">
         <a class="back-link" th:href="@{/admin/novels/{id}/chapters(id=${novel.id})}">← Quay lại mục lục</a>
         <div class="form-heading">
             <p class="eyebrow">CHAPTER CMS</p>
@@ -62,10 +62,23 @@
                                 <option value="Verdana">Verdana</option>
                             </select>
                             <div class="font-size-control">
-                                <input type="number" min="8" max="96" value="18" data-font-size
-                                       aria-label="Cỡ chữ theo pixel">
-                                <span aria-hidden="true">px</span>
-                                <button type="button" data-apply-font-size>Áp dụng</button>
+                                <select data-font-size aria-label="Cỡ chữ" title="Cỡ chữ">
+                                    <option value="">Cỡ chữ</option>
+                                    <option value="8">8 px</option>
+                                    <option value="10">10 px</option>
+                                    <option value="12">12 px</option>
+                                    <option value="14">14 px</option>
+                                    <option value="16">16 px</option>
+                                    <option value="18">18 px</option>
+                                    <option value="20">20 px</option>
+                                    <option value="24">24 px</option>
+                                    <option value="28">28 px</option>
+                                    <option value="32">32 px</option>
+                                    <option value="36">36 px</option>
+                                    <option value="48">48 px</option>
+                                    <option value="72">72 px</option>
+                                    <option value="96">96 px</option>
+                                </select>
                             </div>
                         </div>
                         <div class="toolbar-group" aria-label="Danh sách">
@@ -99,8 +112,9 @@
                         th:text="${pageTitle == 'Tạo chương mới' ? 'Lưu chương' : 'Lưu thay đổi'}">Lưu chương</button>
             </div>
         </form>
-    </main>
-</div>
+    </div>
+    </section>
+</main>
 <script th:src="@{/js/admin/chapter-editor.js}"></script>
 </body>
 </html>

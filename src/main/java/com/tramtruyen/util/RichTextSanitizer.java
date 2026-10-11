@@ -34,7 +34,7 @@ public class RichTextSanitizer {
     );
     private static final Set<String> ALLOWED_FONT_SIZES = Set.of("1", "2", "3", "4", "5", "6", "7");
     private static final Pattern HEX_COLOR = Pattern.compile("#[0-9a-fA-F]{6}");
-    private static final Pattern FONT_SIZE = Pattern.compile("font-size:\\s*(8|9|[1-8][0-9]|96)px", Pattern.CASE_INSENSITIVE);
+    private static final Pattern FONT_SIZE = Pattern.compile("^(8|9|[1-8][0-9]|96)px$", Pattern.CASE_INSENSITIVE);
 
     /**
      * Removes tags and attributes that are not supported by the chapter editor.
@@ -95,11 +95,33 @@ public class RichTextSanitizer {
         if (!element.hasAttr("style")) {
             return;
         }
-        String style = element.attr("style").trim();
-        if (FONT_SIZE.matcher(style).matches()) {
-            element.attr("style", style.toLowerCase());
-        } else {
+
+        String sanitizedStyle = Stream.of(element.attr("style").split(";"))
+                .map(String::trim)
+                .map(this::sanitizeStyleDeclaration)
+                .filter(java.util.Objects::nonNull)
+                .collect(Collectors.joining("; "));
+        if (sanitizedStyle.isBlank()) {
             element.removeAttr("style");
+            return;
         }
+        element.attr("style", sanitizedStyle);
+    }
+
+    private String sanitizeStyleDeclaration(String declaration) {
+        String[] parts = declaration.split(":", 2);
+        if (parts.length != 2) {
+            return null;
+        }
+
+        String property = parts[0].trim().toLowerCase();
+        String value = parts[1].trim().toLowerCase();
+        if ("font-size".equals(property) && FONT_SIZE.matcher(value).matches()) {
+            return property + ": " + value;
+        }
+        if ("line-height".equals(property) && "inherit".equals(value)) {
+            return property + ": " + value;
+        }
+        return null;
     }
 }

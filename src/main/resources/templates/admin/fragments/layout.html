@@ -3,11 +3,14 @@
 <body>
 <aside th:fragment="sidebar(active)" class="sidebar">
     <div>
-        <div class="brand"><span class="brand-mark">▣</span><span>Trạm Truyện</span><small>Admin</small></div>
+        <div class="brand">
+            <img class="brand-logo" src="/images/logo.jpg" alt="Logo Trạm Truyện">
+            <span>Trạm Truyện</span>
+            <small>CMS</small>
+        </div>
         <nav>
             <a class="nav-link" th:classappend="${active == 'tong-quan' ? ' active' : ''}" th:href="@{/admin}"><span>▦</span> Tổng quan</a>
             <a class="nav-link" th:classappend="${active == 'truyen' ? ' active' : ''}" th:href="@{/admin/novels}"><span>▤</span> Truyện</a>
-            <a class="nav-link" th:classappend="${active == 'chuong' ? ' active' : ''}" th:href="@{#}"><span>▥</span> Chương</a>
             <a class="nav-link" th:classappend="${active == 'the-loai' ? ' active' : ''}" th:href="@{/admin/categories}"><span>◈</span> Thể loại</a>
             <a class="nav-link" th:classappend="${active == 'bao-cao' ? ' active' : ''}" th:href="@{#}"><span>⚑</span> Báo cáo</a>
             <a class="nav-link" th:classappend="${active == 'nguoi-dung' ? ' active' : ''}" th:href="@{/admin/users}"><span>👥</span> Người dùng</a>

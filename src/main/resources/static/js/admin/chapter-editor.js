@@ -6,7 +6,6 @@
         const source = editor.querySelector('[data-editor-source]');
         const form = editor.closest('form');
         const sizeInput = editor.querySelector('[data-font-size]');
-        const sizeButton = editor.querySelector('[data-apply-font-size]');
         const sourceToggle = editor.querySelector('[data-source-toggle]');
         let savedRange = null;
         let toolbarPointerDown = false;
@@ -48,20 +47,11 @@
         sizeInput.addEventListener('blur', function () {
             toolbarPointerDown = false;
         });
-        sizeInput.addEventListener('keydown', function (event) {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                applyFontSize();
-            }
-        });
-        sizeButton.addEventListener('mousedown', function (event) {
-            event.preventDefault();
-            toolbarPointerDown = true;
-            saveSelection();
-        });
-        sizeButton.addEventListener('click', function () {
+        sizeInput.addEventListener('change', function () {
             toolbarPointerDown = false;
-            applyFontSize();
+            if (sizeInput.value) {
+                applyFontSize(sizeInput.value);
+            }
         });
 
         sourceToggle.addEventListener('mousedown', function (event) {
@@ -127,10 +117,10 @@
             updateToolbar();
         }
 
-        function applyFontSize() {
-            const size = Number.parseInt(sizeInput.value, 10);
+        function applyFontSize(value) {
+            const size = Number.parseInt(value, 10);
             if (!Number.isInteger(size) || size < 8 || size > 96) {
-                sizeInput.value = '18';
+                sizeInput.value = '';
                 return;
             }
 
@@ -150,6 +140,7 @@
             saveSelection();
             syncSource();
             updateToolbar();
+            sizeInput.value = String(size);
         }
 
         function wrapSelectedContent(range, size) {
@@ -300,7 +291,7 @@
             }
             const styled = node && node.closest ? node.closest('[style*="font-size"]') : null;
             if (!styled || !surface.contains(styled)) {
-                sizeInput.value = String(DEFAULT_FONT_SIZE);
+                sizeInput.value = '';
                 return;
             }
             const match = styled.style.fontSize.match(/(\d+(?:\.\d+)?)px/);
