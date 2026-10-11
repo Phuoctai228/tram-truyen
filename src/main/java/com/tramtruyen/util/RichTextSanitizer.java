@@ -23,7 +23,7 @@ public class RichTextSanitizer {
                     "h1", "h2", "h3", "ul", "ol", "li", "blockquote",
                     "div", "span", "font")
             .addAttributes("div", "align")
-            .addAttributes("span", "class")
+            .addAttributes("span", "class", "style")
             .addAttributes("font", "face", "size", "color");
     private static final Set<String> ALLOWED_CLASSES = Set.of(
             "font-serif", "font-sans", "font-mono",
@@ -34,6 +34,7 @@ public class RichTextSanitizer {
     );
     private static final Set<String> ALLOWED_FONT_SIZES = Set.of("1", "2", "3", "4", "5", "6", "7");
     private static final Pattern HEX_COLOR = Pattern.compile("#[0-9a-fA-F]{6}");
+    private static final Pattern FONT_SIZE = Pattern.compile("font-size:\\s*(8|9|[1-8][0-9]|96)px", Pattern.CASE_INSENSITIVE);
 
     /**
      * Removes tags and attributes that are not supported by the chapter editor.
@@ -48,6 +49,7 @@ public class RichTextSanitizer {
         for (Element element : clean.body().getAllElements()) {
             sanitizeClasses(element);
             sanitizeFontAttributes(element);
+            sanitizeFontSize(element);
             sanitizeAlignment(element);
         }
         return clean.body().html().trim();
@@ -86,6 +88,18 @@ public class RichTextSanitizer {
         if ("div".equals(element.tagName())
                 && !Set.of("left", "center", "right", "justify").contains(element.attr("align"))) {
             element.removeAttr("align");
+        }
+    }
+
+    private void sanitizeFontSize(Element element) {
+        if (!element.hasAttr("style")) {
+            return;
+        }
+        String style = element.attr("style").trim();
+        if (FONT_SIZE.matcher(style).matches()) {
+            element.attr("style", style.toLowerCase());
+        } else {
+            element.removeAttr("style");
         }
     }
 }
