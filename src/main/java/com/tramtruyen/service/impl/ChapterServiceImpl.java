@@ -8,6 +8,7 @@ import com.tramtruyen.exception.ResourceNotFoundException;
 import com.tramtruyen.repository.ChapterRepository;
 import com.tramtruyen.repository.NovelRepository;
 import com.tramtruyen.service.ChapterService;
+import com.tramtruyen.util.RichTextSanitizer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,7 @@ public class ChapterServiceImpl implements ChapterService {
 
     private final ChapterRepository chapterRepository;
     private final NovelRepository novelRepository;
+    private final RichTextSanitizer richTextSanitizer;
 
     @Override
     @Transactional(readOnly = true)
@@ -44,7 +46,7 @@ public class ChapterServiceImpl implements ChapterService {
                 .novel(novel)
                 .chapterNumber(form.getChapterNumber())
                 .title(form.getTitle().trim())
-                .content(form.getContent().trim())
+                .content(richTextSanitizer.sanitize(form.getContent()))
                 .status(DEFAULT_STATUS)
                 .price(DEFAULT_PRICE)
                 .build();
@@ -55,7 +57,7 @@ public class ChapterServiceImpl implements ChapterService {
     @Transactional(readOnly = true)
     public Chapter getEditableChapter(Integer novelId, Integer chapterId) {
         findActiveNovel(novelId);
-        return findActiveChapter(novelId, chapterId);
+        return sanitizeChapter(findActiveChapter(novelId, chapterId));
     }
 
     @Override
@@ -70,7 +72,7 @@ public class ChapterServiceImpl implements ChapterService {
 
         chapter.setChapterNumber(form.getChapterNumber());
         chapter.setTitle(form.getTitle().trim());
-        chapter.setContent(form.getContent().trim());
+        chapter.setContent(richTextSanitizer.sanitize(form.getContent()));
         return chapterRepository.save(chapter);
     }
 
@@ -89,6 +91,7 @@ public class ChapterServiceImpl implements ChapterService {
         Novel novel = findActiveNovel(novelId);
         Chapter chapter = chapterRepository.findByNovelIdAndChapterNumberAndIsDeletedFalseAndStatus(novelId, chapterNumber, "PUBLISHED")
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy chương"));
+        sanitizeChapter(chapter);
 
         // Lượt đọc chỉ tăng khi truy cập vào đọc từng chương
         chapter.setViews((chapter.getViews() != null ? chapter.getViews() : 0) + 1);
@@ -115,5 +118,10 @@ public class ChapterServiceImpl implements ChapterService {
     private Novel findActiveNovel(Integer novelId) {
         return novelRepository.findByIdAndIsDeletedFalse(novelId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy truyện"));
+    }
+
+    private Chapter sanitizeChapter(Chapter chapter) {
+        chapter.setContent(richTextSanitizer.sanitize(chapter.getContent()));
+        return chapter;
     }
 }

@@ -14,11 +14,55 @@
         <a class="back-link" th:href="@{/admin/novels/{id}/chapters(id=${novel.id})}">← Quay lại mục lục</a>
         <div class="form-heading"><p class="eyebrow">CHAPTER CMS</p><h1 th:text="${pageTitle}"></h1><p class="muted">Tác phẩm: <strong th:text="${novel.title}"></strong></p></div>
         <form class="novel-form" method="post" th:action="${formAction}" th:object="${chapterForm}">
-            <div class="form-grid"><label>Số chương <input type="number" min="1" th:field="*{chapterNumber}" placeholder="Ví dụ: 1"><small class="field-error" th:errors="*{chapterNumber}"></small></label><label>Tiêu đề chương <input th:field="*{title}" placeholder="Ví dụ: Khởi đầu"><small class="field-error" th:errors="*{title}"></small></label><label class="full-width">Nội dung chương <textarea th:field="*{content}" rows="18" placeholder="Nhập nội dung chương..."></textarea><small class="field-error" th:errors="*{content}"></small></label></div>
+            <div class="form-grid">
+                <label>Số chương <input type="number" min="1" th:field="*{chapterNumber}" placeholder="Ví dụ: 1"><small class="field-error" th:errors="*{chapterNumber}"></small></label>
+                <label>Tiêu đề chương <input th:field="*{title}" placeholder="Ví dụ: Khởi đầu"><small class="field-error" th:errors="*{title}"></small></label>
+                <label class="full-width">Nội dung chương
+                    <div class="rich-editor" data-rich-editor>
+                        <div class="editor-toolbar" role="toolbar" aria-label="Công cụ định dạng nội dung">
+                            <button type="button" data-command="bold" title="Đậm"><strong>B</strong></button>
+                            <button type="button" data-command="italic" title="Nghiêng"><em>I</em></button>
+                            <button type="button" data-command="underline" title="Gạch chân"><u>U</u></button>
+                            <button type="button" data-command="strikeThrough" title="Gạch ngang"><s>S</s></button>
+                            <select data-command="formatBlock" aria-label="Kiểu đoạn">
+                                <option value="p">Đoạn văn</option>
+                                <option value="h2">Tiêu đề lớn</option>
+                                <option value="h3">Tiêu đề nhỏ</option>
+                                <option value="blockquote">Trích dẫn</option>
+                            </select>
+                            <select data-command="fontName" aria-label="Font chữ">
+                                <option value="Arial">Arial</option>
+                                <option value="Georgia">Georgia</option>
+                                <option value="Tahoma">Tahoma</option>
+                                <option value="Times New Roman">Times New Roman</option>
+                                <option value="Verdana">Verdana</option>
+                            </select>
+                            <select data-command="fontSize" aria-label="Cỡ chữ">
+                                <option value="3">Bình thường</option>
+                                <option value="4">Lớn</option>
+                                <option value="5">Rất lớn</option>
+                            </select>
+                            <button type="button" data-command="insertUnorderedList" title="Danh sách">• List</button>
+                            <button type="button" data-command="insertOrderedList" title="Danh sách đánh số">1. List</button>
+                            <button type="button" data-command="justifyLeft" title="Căn trái">←</button>
+                            <button type="button" data-command="justifyCenter" title="Căn giữa">↔</button>
+                            <button type="button" data-command="justifyRight" title="Căn phải">→</button>
+                            <button type="button" data-command="removeFormat" title="Xóa định dạng">Tx</button>
+                        </div>
+                        <div class="editor-surface" contenteditable="true" data-editor-surface
+                             th:utext="*{content}" data-placeholder="Nhập nội dung chương..."></div>
+                        <textarea class="editor-source" th:field="*{content}" rows="18"
+                                  data-editor-source aria-label="HTML nội dung chương"></textarea>
+                    </div>
+                    <small class="editor-help">Nội dung sẽ được lọc HTML an toàn trước khi lưu.</small>
+                    <small class="field-error" th:errors="*{content}"></small>
+                </label>
+            </div>
             <p class="form-note">Chương mới được lưu ở trạng thái Bản nháp và miễn phí. Thiết lập xuất bản hoặc VIP thuộc chức năng riêng.</p>
             <div class="form-actions"><a class="button button-secondary" th:href="@{/admin/novels/{id}/chapters(id=${novel.id})}">Hủy</a><button class="button button-primary" type="submit" th:text="${pageTitle == 'Tạo chương mới' ? 'Lưu chương' : 'Lưu thay đổi'}"></button></div>
         </form>
     </main>
 </div>
 </body>
+<script th:src="@{/js/admin/chapter-editor.js}"></script>
 </html>
