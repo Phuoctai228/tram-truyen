@@ -103,4 +103,62 @@ public class AuthServiceImpl implements AuthService {
 
         tokenRepository.deleteByUser(user);
     }
+
+    @Override
+    @Transactional
+    public void sendForgotPasswordOtp(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy tài khoản với email này."));
+
+        if (!"LOCAL".equals(user.getAuthProvider())) {
+            throw new IllegalArgumentException("Vui lòng đăng nhập bằng " + user.getAuthProvider() + " để đổi mật khẩu.");
+        }
+
+        if ("BANNED".equals(user.getStatus())) {
+            throw new IllegalArgumentException("Tài khoản đã bị khóa, không thể gửi yêu cầu quên mật khẩu.");
+        }
+
+        tokenRepository.deleteByUser(user); // Delete old tokens
+
+        String otp = String.format("%06d", new Random().nextInt(1000000));
+        
+        EmailVerificationToken token = EmailVerificationToken.builder()
+                .user(user)
+                .otpCode(otp)
+                .expiryDate(LocalDateTime.now().plusMinutes(15))
+                .build();
+                
+        tokenRepository.save(token);
+        emailService.sendForgotPasswordOtpEmail(user.getEmail(), otp);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void verifyForgotPasswordOtp(String email, String otp) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy tài khoản với email này."));
+
+        EmailVerificationToken token = tokenRepository.findByOtpCodeAndUser(otp, user)
+                .orElseThrow(() -> new IllegalArgumentException("Mã OTP không chính xác."));
+
+        if (token.getExpiryDate().isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("Mã OTP đã hết hạn.");
+        }
+    }
+
+    @Override
+    @Transactional
+    public void resetPassword(String email, String newPassword) {
+        if (newPassword == null || newPassword.length() < 8 || !newPassword.matches(".*[A-Z].*")) {
+            throw new IllegalArgumentException("Mật khẩu phải có ít nhất 8 ký tự và chứa ít nhất một chữ cái hoa.");
+        }
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy tài khoản với email này."));
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        tokenRepository.deleteByUser(user);
+    }
 }

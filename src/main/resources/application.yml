@@ -50,3 +50,11 @@ cloudinary:
   api-key: ${CLOUDINARY_API_KEY:}
   api-secret: ${CLOUDINARY_API_SECRET:}
   upload-preset: ${CLOUDINARY_UPLOAD_PRESET:}
+
+vnpay:
+  tmn-code: ${VNPAY_TMN_CODE:1OETROUK}
+  hash-secret: ${VNPAY_HASH_SECRET:ADELFZVPQBQPRDCWVWAABZCNVYXUWZWS}
+  pay-url: ${VNPAY_PAY_URL:https://sandbox.vnpayment.vn/paymentv2/vpcpay.html}
+  return-url: ${VNPAY_RETURN_URL:http://localhost:8080/payment/vnpay-return}
+  version: "2.1.0"
+  command: "pay"

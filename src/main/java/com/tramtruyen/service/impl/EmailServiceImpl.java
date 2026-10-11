@@ -23,4 +23,14 @@ public class EmailServiceImpl implements EmailService {
                 "\n\nMã này có hiệu lực trong vòng 15 phút.\nVui lòng không chia sẻ mã này cho bất kỳ ai.\n\nTrân trọng,\nĐội ngũ Trạm Truyện.");
         mailSender.send(message);
     }
+
+    @Override
+    public void sendForgotPasswordOtpEmail(String toEmail, String otpCode) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(toEmail);
+        message.setSubject("Mã xác nhận quên mật khẩu tài khoản Trạm Truyện");
+        message.setText("Chào bạn,\n\nMã xác nhận (OTP) để khôi phục mật khẩu của bạn là: " + otpCode + 
+                "\n\nMã này có hiệu lực trong vòng 15 phút.\nVui lòng không chia sẻ mã này cho bất kỳ ai.\n\nTrân trọng,\nĐội ngũ Trạm Truyện.");
+        mailSender.send(message);
+    }
 }
