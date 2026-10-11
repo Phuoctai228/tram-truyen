@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Giao dịch chưa hoàn tất - Trạm Truyện</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script th:src="@{/js/novel/tailwind-config.js}"></script>
+</head>
+<body class="bg-[#FAF7F2] font-body-md text-[#2B231D] min-h-screen flex flex-col antialiased">
+    <!-- Header -->
+    <div th:replace="~{fragments/header :: main-header}"></div>
+
+    <main class="w-full pt-28 pb-16 flex-1 flex items-center justify-center px-4">
+        <div class="w-full max-w-lg">
+            
+            <!-- Failure Modal Card -->
+            <div class="bg-white rounded-3xl p-6 sm:p-10 shadow-[0_15px_40px_-10px_rgba(107,91,75,0.12)] border border-[#EAE3D2] text-center">
+                
+                <!-- Subtitle Badge -->
+                <div class="text-[11px] font-bold tracking-widest uppercase text-[#B45309] mb-6">
+                    &bull; THÔNG BÁO GIAO DỊCH &bull;
+                </div>
+
+                <!-- Warning Icon -->
+                <div class="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full bg-[#FEE2E2] flex items-center justify-center mb-6 shadow-inner">
+                    <span class="material-symbols-outlined text-[#DC2626] text-3xl sm:text-4xl font-bold">priority_high</span>
+                </div>
+
+                <!-- Heading -->
+                <h1 class="text-2xl sm:text-3xl font-bold font-serif text-[#2B231D] mb-3">Giao dịch chưa hoàn tất</h1>
+                <p class="text-xs sm:text-sm text-[#7D7065] leading-relaxed mb-8 max-w-sm mx-auto">
+                    Hệ thống chưa thể ghi nhận khoản thanh toán hoặc phiên làm việc đã gián đoạn từ cổng đối tác. Vui lòng kiểm tra ứng dụng ngân hàng hoặc tiến hành thử lại.
+                </p>
+
+                <!-- Receipt Details Box -->
+                <div class="rounded-2xl bg-[#FCFAF6] border border-[#EFE9DC] p-5 sm:p-6 text-left space-y-4 mb-8">
+                    <!-- Transaction Code -->
+                    <div class="flex items-center justify-between text-xs sm:text-sm">
+                        <span class="text-[#8C7E72]">Mã giao dịch</span>
+                        <div class="flex items-center gap-1.5 font-mono font-semibold text-[#2B231D]">
+                            <span id="orderCodeText" th:text="${result.orderCode}">#TT123456-ERR</span>
+                            <button type="button" onclick="copyOrderCode()" title="Sao chép" class="hover:text-[#B45309] transition-colors">
+                                <span class="material-symbols-outlined text-sm">content_copy</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Requested Amount -->
+                    <div class="flex items-center justify-between text-xs sm:text-sm">
+                        <span class="text-[#8C7E72]">Số tiền yêu cầu</span>
+                        <span class="font-bold text-[#2B231D]" th:text="${#numbers.formatInteger(result.amountVnd, 0, 'POINT')} + ' đ'">100.000 đ</span>
+                    </div>
+
+                    <!-- Payment Method -->
+                    <div class="flex items-center justify-between text-xs sm:text-sm">
+                        <span class="text-[#8C7E72]">Phương thức</span>
+                        <span class="inline-flex items-center gap-1 font-medium text-[#2B231D]">
+                            <span class="material-symbols-outlined text-sm text-[#B45309]">qr_code_2</span>
+                            <span th:text="${result.paymentMethod}">VNPay QR</span>
+                        </span>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="flex items-center justify-between text-xs sm:text-sm">
+                        <span class="text-[#8C7E72]">Trạng thái</span>
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#FEF2F2] border border-[#FCA5A5] text-[#DC2626] text-xs font-semibold">
+                            <span class="w-1.5 h-1.5 rounded-full bg-[#DC2626]"></span>
+                            <span th:text="${result.statusText}">Hết hạn / Chưa trừ tiền</span>
+                        </span>
+                    </div>
+
+                    <!-- Creation Time -->
+                    <div class="flex items-center justify-between text-xs sm:text-sm">
+                        <span class="text-[#8C7E72]">Thời gian tạo</span>
+                        <span class="text-[#7D7065]" th:text="${result.formattedTime}">14:38 &mdash; 24/10/2025</span>
+                    </div>
+
+                    <!-- Reason box -->
+                    <div class="pt-2">
+                        <div class="p-3 rounded-xl bg-[#FFF8EE] border border-[#FDE68A] text-[#92400E] text-xs flex items-start gap-2">
+                            <span class="material-symbols-outlined text-sm shrink-0 mt-0.5 text-[#B45309]">info</span>
+                            <p>
+                                <strong>Lý do dự kiến:</strong>
+                                <span th:text="${result.failureReason != null ? result.failureReason : 'Hết thời gian chờ thanh toán (Timeout) hoặc phiên xác thực đã bị gián đoạn.'}">
+                                    Hết thời gian chờ thanh toán (Timeout) hoặc người dùng hủy phiên thanh toán.
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="space-y-3 mb-6">
+                    <a th:href="@{/wallet/topup}"
+                       class="w-full inline-flex items-center justify-center gap-2 py-3.5 rounded-xl bg-[#B45309] hover:bg-[#92400E] active:scale-[0.98] text-white font-semibold text-sm shadow-[0_4px_14px_rgba(180,83,9,0.35)] transition-all">
+                        <span class="material-symbols-outlined text-base">refresh</span>
+                        <span>Thử lại giao dịch</span>
+                    </a>
+
+                    <a th:href="@{/wallet}"
+                       class="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl bg-[#F8F5EE] hover:bg-[#EFE9DC] active:scale-[0.98] text-[#2B231D] font-medium text-sm border border-[#EAE3D2] transition-all">
+                        <span class="material-symbols-outlined text-base">account_balance_wallet</span>
+                        <span>Quay về Ví Coin</span>
+                    </a>
+                </div>
+
+                <!-- Secondary Support Links -->
+                <div class="flex items-center justify-center gap-4 text-xs text-[#7D7065] mb-6">
+                    <a th:href="@{/wallet}" class="inline-flex items-center gap-1 hover:text-[#B45309] transition-colors">
+                        <span class="material-symbols-outlined text-sm">history</span>
+                        <span>Lịch sử giao dịch</span>
+                    </a>
+                    <span>&bull;</span>
+                    <a href="mailto:hotro@tramtruyen.vn" class="inline-flex items-center gap-1 hover:text-[#B45309] transition-colors">
+                        <span class="material-symbols-outlined text-sm">mail</span>
+                        <span>hotro@tramtruyen.vn</span>
+                    </a>
+                </div>
+
+                <!-- Security guarantee -->
+                <div class="pt-4 border-t border-[#F2ECE1] text-[11px] text-[#8C7E72] flex items-center justify-center gap-1.5">
+                    <span class="material-symbols-outlined text-sm text-[#B45309]">verified_user</span>
+                    <span>Bảo chứng an toàn & kiểm duyệt giao dịch bởi Trạm Truyện</span>
+                </div>
+
+            </div>
+
+            <!-- Warm reassuring statement -->
+            <div class="text-center mt-6 space-y-1">
+                <p class="text-xs text-[#8C7E72] italic font-serif">
+                    &ldquo;Đừng lo lắng, số dư tài khoản ngân hàng của bạn luôn được bảo toàn nguyên vẹn khi phiên giao dịch chưa được ghi nhận.&rdquo;
+                </p>
+                <p class="text-[10px] font-bold tracking-wider text-[#A89A8E] uppercase">HỖ TRỢ ĐỐI SOÁT 24/7</p>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script>
+        function copyOrderCode() {
+            const text = document.getElementById('orderCodeText').innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Đã sao chép mã giao dịch: ' + text);
+            });
+        }
+    </script>
+</body>
+</html>

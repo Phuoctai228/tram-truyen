@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .requestMatchers("/register", "/verify-otp", "/login", "/account-locked", "/css/**", "/js/**", "/images/**").permitAll()
                 .requestMatchers("/api/**").permitAll()
                 .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
-                .requestMatchers("/user/**", "/tu-sach").authenticated()
+                .requestMatchers("/user/**", "/tu-sach", "/wallet", "/wallet/**").authenticated()
                 .anyRequest().permitAll()
         ).formLogin(form -> form
                 .loginPage("/login")

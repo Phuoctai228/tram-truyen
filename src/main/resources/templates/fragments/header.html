@@ -41,12 +41,13 @@
 
                 <!-- If Authenticated -->
                 <div sec:authorize="isAuthenticated()" class="flex items-center gap-3">
-                    <!-- Coin Balance -->
-                    <div class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-container-high text-on-surface">
-                        <span class="material-symbols-outlined text-primary-container text-[18px]">monetization_on</span>
+                    <!-- Coin Balance & Quick Topup -->
+                    <a th:href="@{/wallet/topup}" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-container-high hover:bg-surface-container-highest text-on-surface transition-all group" title="Nạp Coin vào tài khoản">
+                        <span class="material-symbols-outlined text-primary-container text-[18px] group-hover:scale-110 transition-transform">monetization_on</span>
                         <span class="font-label-md text-label-md text-on-primary-container font-semibold"
                               th:text="${#authentication.principal.user.walletBalance != null ? #authentication.principal.user.walletBalance : 0} + ' Coin'">0 Coin</span>
-                    </div>
+                        <span class="material-symbols-outlined text-primary text-[16px] ml-0.5">add_circle</span>
+                    </a>
 
                     <div class="relative">
                         <button id="userMenuBtn" type="button"
@@ -80,6 +81,10 @@
                             <a th:href="@{/user/bookshelf}"
                                 class="block px-4 py-2 text-sm text-primary font-semibold hover:bg-surface-container-low transition-colors flex items-center gap-2">
                                 <span class="material-symbols-outlined text-[18px]">bookmark</span> Tủ sách của tôi
+                            </a>
+                            <a th:href="@{/wallet/topup}"
+                                class="block px-4 py-2 text-sm text-on-surface hover:bg-surface-container-low transition-colors flex items-center gap-2">
+                                <span class="material-symbols-outlined text-[18px] text-primary">payments</span> Nạp Coin
                             </a>
                             <a sec:authorize="hasAuthority('ROLE_ADMIN')" th:href="@{/admin/novels}"
                                 class="block px-4 py-2 text-sm text-on-surface hover:bg-surface-container-low transition-colors flex items-center gap-2 text-primary">
