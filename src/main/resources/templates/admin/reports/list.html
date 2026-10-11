@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Quản lý báo cáo | Trạm Truyện Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script th:src="@{/js/authentication/tailwind-config.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/novel-admin.css}">
+    <style>
+        .font-serif-title { font-family: 'Lora', serif; }
+        .tab-active { border-bottom: 2px solid #bc7d39; color: #bc7d39; font-weight: 700; }
+        .status-pill-active { background-color: #bc7d39; color: #fff; font-weight: 600; }
+    </style>
+</head>
+<body class="bg-[#fff8f5] text-[#231a11] font-sans antialiased min-h-screen">
+
+<!-- Admin Sidebar (Reusing layout.html) -->
+<div th:replace="~{admin/fragments/layout :: sidebar('bao-cao')}"></div>
+
+<main class="page-shell">
+    <!-- Admin Topbar (Reusing layout.html) -->
+    <div th:replace="~{admin/fragments/layout :: topbar}"></div>
+
+    <section class="content max-w-7xl mx-auto px-4 md:px-8 py-8 space-y-6">
+
+        <!-- Page Heading -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+                <div class="flex items-center gap-1.5 text-xs font-bold tracking-wider text-[#875200] uppercase mb-1">
+                    <span class="material-symbols-outlined text-[16px]">flag</span>
+                    <span>KIỂM DUYỆT CỘNG ĐỒNG & NỘI DUNG</span>
+                </div>
+                <h1 class="font-serif-title text-3xl font-bold text-[#231a11] tracking-tight">
+                    Quản lý báo cáo vi phạm
+                </h1>
+                <p class="text-sm text-[#75695d] mt-0.5">
+                    Thẩm duyệt các khiếu nại, phản ánh về bình luận và nội dung chương truyện do độc giả gửi lên.
+                </p>
+            </div>
+        </div>
+
+
+        <!-- 2 Main Tabs: Comment Reports vs Content Reports -->
+        <div class="bg-white rounded-2xl border border-[#eae2d5] shadow-sm overflow-hidden">
+            <div class="flex border-b border-[#eae2d5] px-6 pt-4 gap-8">
+                <a th:href="@{/admin/reports(tab='comment', status=${currentStatus})}"
+                   class="pb-4 text-sm font-semibold flex items-center gap-2 transition-colors"
+                   th:classappend="${activeTab == 'comment' ? 'tab-active' : 'text-[#756555] hover:text-[#2b2118] border-b-2 border-transparent'}">
+                    <span class="material-symbols-outlined text-[20px]">chat</span>
+                    <span>Báo cáo bình luận</span>
+                    <span th:if="${counts.pendingComments > 0}"
+                          class="px-2 py-0.5 text-xs font-bold rounded-full bg-[#f4ece1] text-[#875200]"
+                          th:text="${counts.pendingComments}">0</span>
+                </a>
+
+                <a th:href="@{/admin/reports(tab='content', status=${currentStatus})}"
+                   class="pb-4 text-sm font-semibold flex items-center gap-2 transition-colors"
+                   th:classappend="${activeTab == 'content' ? 'tab-active' : 'text-[#756555] hover:text-[#2b2118] border-b-2 border-transparent'}">
+                    <span class="material-symbols-outlined text-[20px]">auto_stories</span>
+                    <span>Báo cáo nội dung</span>
+                    <span th:if="${counts.pendingContents > 0}"
+                          class="px-2 py-0.5 text-xs font-bold rounded-full bg-[#f4ece1] text-[#875200]"
+                          th:text="${counts.pendingContents}">0</span>
+                </a>
+            </div>
+
+            <!-- Status Filter Bar -->
+            <div class="p-4 bg-[#faf7f2] border-b border-[#eae2d5] flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-bold uppercase tracking-wider text-[#8a7664] mr-2">Trạng thái:</span>
+                    <a th:href="@{/admin/reports(tab=${activeTab}, status='RECEIVED')}"
+                       class="px-3 py-1.5 rounded-xl text-xs transition-colors"
+                       th:classappend="${currentStatus == 'RECEIVED' ? 'status-pill-active' : 'bg-white text-[#6b5849] hover:bg-[#f4ece1] border border-[#eae2d5]'}">
+                        Chờ xử lý
+                    </a>
+                    <a th:href="@{/admin/reports(tab=${activeTab}, status='PROCESSED')}"
+                       class="px-3 py-1.5 rounded-xl text-xs transition-colors"
+                       th:classappend="${currentStatus == 'PROCESSED' ? 'status-pill-active' : 'bg-white text-[#6b5849] hover:bg-[#f4ece1] border border-[#eae2d5]'}">
+                        Đã xử lý
+                    </a>
+                    <a th:href="@{/admin/reports(tab=${activeTab}, status='REJECTED')}"
+                       class="px-3 py-1.5 rounded-xl text-xs transition-colors"
+                       th:classappend="${currentStatus == 'REJECTED' ? 'status-pill-active' : 'bg-white text-[#6b5849] hover:bg-[#f4ece1] border border-[#eae2d5]'}">
+                        Từ chối
+                    </a>
+                    <a th:href="@{/admin/reports(tab=${activeTab}, status='ALL')}"
+                       class="px-3 py-1.5 rounded-xl text-xs transition-colors"
+                       th:classappend="${currentStatus == 'ALL' ? 'status-pill-active' : 'bg-white text-[#6b5849] hover:bg-[#f4ece1] border border-[#eae2d5]'}">
+                        Tất cả
+                    </a>
+                </div>
+            </div>
+
+            <!-- TAB 1: COMMENT REPORTS TABLE -->
+            <div th:if="${activeTab == 'comment'}" class="overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead>
+                        <tr class="border-b border-[#eae2d5] text-xs font-bold text-[#8a7664] uppercase tracking-wider bg-[#faf7f2]">
+                            <th class="py-3.5 px-4">Mã</th>
+                            <th class="py-3.5 px-4">Người báo cáo</th>
+                            <th class="py-3.5 px-4">Nội dung bình luận bị báo cáo</th>
+                            <th class="py-3.5 px-4">Lý do & Mô tả</th>
+                            <th class="py-3.5 px-4">Thời gian</th>
+                            <th class="py-3.5 px-4">Trạng thái</th>
+                            <th class="py-3.5 px-4 text-right">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-[#f2ebe1]">
+                        <th:block th:if="${commentReports != null and !#lists.isEmpty(commentReports.content)}">
+                            <tr th:each="r : ${commentReports.content}" class="hover:bg-[#faf7f2] transition-colors">
+                                <td class="py-3.5 px-4 font-mono text-xs font-bold text-[#875200]" th:text="'#CR-' + ${r.id}">
+                                    #CR-1
+                                </td>
+                                <td class="py-3.5 px-4">
+                                    <div class="font-bold text-xs text-[#2b2118]" th:text="${r.user != null ? r.user.fullName : 'Người dùng ẩn'}">Lê Hoàng</div>
+                                    <div class="text-[11px] text-[#8a7664]" th:text="${r.user != null ? r.user.email : ''}">email@domain.com</div>
+                                </td>
+                                <td class="py-3.5 px-4 max-w-xs">
+                                    <div class="p-2.5 rounded-xl bg-[#faf6f0] border border-[#f0e8dc] text-xs space-y-1">
+                                        <div class="flex items-center justify-between text-[11px] text-[#8a7664]">
+                                            <span class="font-semibold" th:text="${r.comment != null and r.comment.user != null ? r.comment.user.fullName : 'Tác giả ẩn'}">Người viết</span>
+                                            <span th:if="${r.comment != null}" class="text-[10px] px-1.5 py-0.2 rounded"
+                                                  th:classappend="${r.comment.status == 'VISIBLE' ? 'bg-emerald-100 text-emerald-800' : (r.comment.status == 'HIDDEN' ? 'bg-amber-100 text-amber-800' : 'bg-red-100 text-red-800')}"
+                                                  th:text="${r.comment.status}">VISIBLE</span>
+                                        </div>
+                                        <p class="text-[#3d3025] italic line-clamp-2" th:text="${r.comment != null ? r.comment.content : 'Bình luận không còn tồn tại'}">
+                                            "Trích đoạn nội dung..."
+                                        </p>
+                                    </div>
+                                </td>
+                                <td class="py-3.5 px-4 max-w-xs">
+                                    <div class="text-xs text-[#2b2118] line-clamp-2" th:text="${r.reason}">
+                                        [SPAM] Quảng cáo website cờ bạc...
+                                    </div>
+                                </td>
+                                <td class="py-3.5 px-4 text-xs text-[#8a7664]" th:text="${#temporals.format(r.createdAt, 'dd/MM/yyyy HH:mm')}">
+                                    14:30 - 24/10/2026
+                                </td>
+                                <td class="py-3.5 px-4">
+                                    <span th:if="${r.status == 'RECEIVED'}" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">Chờ xử lý</span>
+                                    <span th:if="${r.status == 'PROCESSED'}" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">Đã xử lý</span>
+                                    <span th:if="${r.status == 'REJECTED'}" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700">Từ chối</span>
+                                </td>
+                                <td class="py-3.5 px-4 text-right">
+                                    <button type="button"
+                                            onclick="openCommentResolveModal(this)"
+                                            th:data-id="${r.id}"
+                                            th:data-status="${r.status}"
+                                            th:data-reporter="${r.user != null ? r.user.fullName : ''}"
+                                            th:data-comment="${r.comment != null ? r.comment.content : ''}"
+                                            th:data-reason="${r.reason}"
+                                            th:data-note="${r.adminNote != null ? r.adminNote : ''}"
+                                            class="px-3 py-1.5 rounded-xl bg-[#f4ece1] text-[#875200] hover:bg-[#eae2d5] text-xs font-bold transition-colors">
+                                        Xem & Xử lý
+                                    </button>
+                                </td>
+                            </tr>
+                        </th:block>
+                        <tr th:if="${commentReports == null or #lists.isEmpty(commentReports.content)}">
+                            <td colspan="7" class="py-12 text-center text-xs text-[#8a7664]">
+                                Không có báo cáo bình luận nào trong danh mục này.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- TAB 2: CONTENT REPORTS TABLE -->
+            <div th:if="${activeTab == 'content'}" class="overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead>
+                        <tr class="border-b border-[#eae2d5] text-xs font-bold text-[#8a7664] uppercase tracking-wider bg-[#faf7f2]">
+                            <th class="py-3.5 px-4">Mã</th>
+                            <th class="py-3.5 px-4">Người báo cáo</th>
+                            <th class="py-3.5 px-4">Tác phẩm & Chương bị báo cáo</th>
+                            <th class="py-3.5 px-4">Lý do & Mô tả lỗi</th>
+                            <th class="py-3.5 px-4">Thời gian</th>
+                            <th class="py-3.5 px-4">Trạng thái</th>
+                            <th class="py-3.5 px-4 text-right">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-[#f2ebe1]">
+                        <th:block th:if="${contentReports != null and !#lists.isEmpty(contentReports.content)}">
+                            <tr th:each="r : ${contentReports.content}" class="hover:bg-[#faf7f2] transition-colors">
+                                <td class="py-3.5 px-4 font-mono text-xs font-bold text-[#875200]" th:text="'#TR-' + ${r.id}">
+                                    #TR-1
+                                </td>
+                                <td class="py-3.5 px-4">
+                                    <div class="font-bold text-xs text-[#2b2118]" th:text="${r.user != null ? r.user.fullName : 'Người dùng ẩn'}">Hoàng Long</div>
+                                    <div class="text-[11px] text-[#8a7664]" th:text="${r.user != null ? r.user.email : ''}">email@domain.com</div>
+                                </td>
+                                <td class="py-3.5 px-4 max-w-xs">
+                                    <div class="p-2.5 rounded-xl bg-[#faf6f0] border border-[#f0e8dc] text-xs space-y-1">
+                                        <div class="font-bold text-[#2b2118] truncate" th:text="${r.chapter != null and r.chapter.novel != null ? r.chapter.novel.title : 'Truyện'}">Tên truyện</div>
+                                        <div class="text-[#bc7d39] font-semibold text-[11px] truncate" th:text="${r.chapter != null ? 'Chương ' + r.chapter.chapterNumber + ': ' + r.chapter.title : 'Chương không khả dụng'}">Chương 1</div>
+                                    </div>
+                                </td>
+                                <td class="py-3.5 px-4 max-w-xs">
+                                    <div class="text-xs text-[#2b2118] line-clamp-2" th:text="${r.reason}">
+                                        [CHAPTER_ERROR] Trùng chương, nội dung bị lặp...
+                                    </div>
+                                </td>
+                                <td class="py-3.5 px-4 text-xs text-[#8a7664]" th:text="${#temporals.format(r.createdAt, 'dd/MM/yyyy HH:mm')}">
+                                    14:30 - 24/10/2026
+                                </td>
+                                <td class="py-3.5 px-4">
+                                    <span th:if="${r.status == 'RECEIVED'}" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">Chờ xử lý</span>
+                                    <span th:if="${r.status == 'PROCESSED'}" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">Đã xử lý</span>
+                                    <span th:if="${r.status == 'REJECTED'}" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700">Từ chối</span>
+                                </td>
+                                <td class="py-3.5 px-4 text-right">
+                                    <button type="button"
+                                            onclick="openContentResolveModal(this)"
+                                            th:data-id="${r.id}"
+                                            th:data-status="${r.status}"
+                                            th:data-reporter="${r.user != null ? r.user.fullName : ''}"
+                                            th:data-novel="${r.chapter != null and r.chapter.novel != null ? r.chapter.novel.title : ''}"
+                                            th:data-chapter="${r.chapter != null ? 'Chương ' + r.chapter.chapterNumber + ': ' + r.chapter.title : ''}"
+                                            th:data-reason="${r.reason}"
+                                            th:data-note="${r.adminNote != null ? r.adminNote : ''}"
+                                            class="px-3 py-1.5 rounded-xl bg-[#f4ece1] text-[#875200] hover:bg-[#eae2d5] text-xs font-bold transition-colors">
+                                        Xem & Xử lý
+                                    </button>
+                                </td>
+                            </tr>
+                        </th:block>
+                        <tr th:if="${contentReports == null or #lists.isEmpty(contentReports.content)}">
+                            <td colspan="7" class="py-12 text-center text-xs text-[#8a7664]">
+                                Không có báo cáo nội dung nào trong danh mục này.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination Bar -->
+            <div class="p-4 bg-[#faf7f2] border-t border-[#eae2d5] flex items-center justify-between text-xs text-[#8a7664]">
+                <span>Phân trang báo cáo vi phạm</span>
+                <div class="flex items-center gap-2">
+                    <a th:if="${currentPage > 0}"
+                       th:href="@{/admin/reports(tab=${activeTab}, status=${currentStatus}, page=${currentPage - 1})}"
+                       class="px-3 py-1.5 rounded-lg bg-white border border-[#eae2d5] text-[#2b2118] hover:bg-[#f4ece1]">
+                        Trang trước
+                    </a>
+                    <span th:text="'Trang ' + (${currentPage} + 1)">Trang 1</span>
+                    <a th:href="@{/admin/reports(tab=${activeTab}, status=${currentStatus}, page=${currentPage + 1})}"
+                       class="px-3 py-1.5 rounded-lg bg-white border border-[#eae2d5] text-[#2b2118] hover:bg-[#f4ece1]">
+                        Trang sau
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </section>
+</main>
+
+<!-- Resolve Comment Report Modal -->
+<div id="resolveCommentModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm hidden animate-fade-in">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-[92%] shadow-2xl border border-[#eae2d5] space-y-6 max-h-[90vh] overflow-y-auto">
+        <div class="flex items-center justify-between pb-3 border-b border-[#eae2d5]">
+            <h3 class="font-bold text-lg text-[#2b2118] flex items-center gap-2">
+                <span class="material-symbols-outlined text-[#bc7d39]">gavel</span>
+                <span id="modalCommentTitle">Xử lý báo cáo bình luận</span>
+            </h3>
+            <button type="button" onclick="closeResolveCommentModal()" class="text-[#8a7664] hover:text-[#2b2118]">
+                <span class="material-symbols-outlined text-[22px]">close</span>
+            </button>
+        </div>
+
+        <div class="p-4 rounded-xl bg-[#faf6f0] border border-[#f0e8dc] space-y-2 text-xs">
+            <div class="flex justify-between text-[#8a7664]">
+                <span class="font-semibold text-[#875200]">Người báo cáo: <span id="mCommentReporter" class="font-normal text-[#2b2118]"></span></span>
+            </div>
+            <div>
+                <span class="font-semibold text-[#8a7664]">Bình luận bị báo cáo:</span>
+                <p id="mCommentContent" class="italic text-[#3d3025] mt-0.5 bg-white p-2.5 rounded-lg border border-[#eae2d5]"></p>
+            </div>
+            <div>
+                <span class="font-semibold text-[#8a7664]">Lý do từ người báo cáo:</span>
+                <p id="mCommentReason" class="font-medium text-[#875200] mt-0.5"></p>
+            </div>
+        </div>
+
+        <!-- Resolve Form -->
+        <form id="commentResolveForm" method="post" class="space-y-4">
+            <input type="hidden" name="status" th:value="${currentStatus}">
+            <input type="hidden" name="page" th:value="${currentPage}">
+            <input type="hidden" id="commentDecisionInput" name="decision" value="PROCESSED">
+
+            <div id="commentActionSection">
+                <label class="text-xs font-bold text-[#8a7664] uppercase tracking-wider block mb-2">
+                    Biện pháp xử lý vi phạm
+                </label>
+                <div class="space-y-2">
+                    <label class="flex items-center gap-2.5 p-3 rounded-xl border border-[#eae2d5] hover:bg-[#faf7f2] cursor-pointer text-xs font-semibold text-[#2b2118]">
+                        <input type="radio" name="action" value="HIDE" class="text-[#bc7d39] focus:ring-[#bc7d39]" checked>
+                        <span>Ẩn bình luận (status = HIDDEN)</span>
+                    </label>
+                    <label class="flex items-center gap-2.5 p-3 rounded-xl border border-[#eae2d5] hover:bg-[#faf7f2] cursor-pointer text-xs font-semibold text-[#2b2118]">
+                        <input type="radio" name="action" value="DELETE" class="text-[#bc7d39] focus:ring-[#bc7d39]">
+                        <span>Xóa bình luận hoàn toàn (status = DELETED)</span>
+                    </label>
+                    <label class="flex items-center gap-2.5 p-3 rounded-xl border border-[#eae2d5] hover:bg-[#faf7f2] cursor-pointer text-xs font-semibold text-[#2b2118]">
+                        <input type="radio" name="action" value="NO_CHANGE" class="text-[#bc7d39] focus:ring-[#bc7d39]">
+                        <span>Chỉ ghi nhận phản hồi, không đổi bình luận</span>
+                    </label>
+                </div>
+            </div>
+
+            <div>
+                <label class="text-xs font-bold text-[#2b2118] block mb-1">Ghi chú xử lý / Lý do từ chối * (Tối đa 500 ký tự)</label>
+                <textarea id="commentAdminNote" name="adminNote" rows="3" maxlength="500" required
+                          placeholder="Nhập ghi chú phản hồi gửi tới hòm thư người báo cáo..."
+                          class="w-full px-3 py-2 text-xs border border-[#eae2d5] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#bc7d39]"></textarea>
+            </div>
+
+            <div id="commentModalActions" class="flex items-center justify-end gap-3 pt-2">
+                <button type="button" onclick="closeResolveCommentModal()" class="px-4 py-2 rounded-xl bg-[#f4ece1] text-[#6b5849] hover:bg-[#eae2d5] text-xs font-bold">
+                    Đóng
+                </button>
+                <button type="button" onclick="submitCommentDecision('REJECTED')" class="px-4 py-2 rounded-xl bg-gray-200 hover:bg-gray-300 text-gray-800 text-xs font-bold">
+                    Từ chối báo cáo
+                </button>
+                <button type="button" onclick="submitCommentDecision('PROCESSED')" class="px-5 py-2 rounded-xl bg-[#d97706] hover:bg-[#b45309] text-white text-xs font-bold shadow-md">
+                    Xử lý vi phạm
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Resolve Content Report Modal -->
+<div id="resolveContentModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm hidden animate-fade-in">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-[92%] shadow-2xl border border-[#eae2d5] space-y-6 max-h-[90vh] overflow-y-auto">
+        <div class="flex items-center justify-between pb-3 border-b border-[#eae2d5]">
+            <h3 class="font-bold text-lg text-[#2b2118] flex items-center gap-2">
+                <span class="material-symbols-outlined text-[#bc7d39]">gavel</span>
+                <span id="modalContentTitle">Xử lý báo cáo nội dung chương</span>
+            </h3>
+            <button type="button" onclick="closeResolveContentModal()" class="text-[#8a7664] hover:text-[#2b2118]">
+                <span class="material-symbols-outlined text-[22px]">close</span>
+            </button>
+        </div>
+
+        <div class="p-4 rounded-xl bg-[#faf6f0] border border-[#f0e8dc] space-y-2 text-xs">
+            <div class="flex justify-between text-[#8a7664]">
+                <span class="font-semibold text-[#875200]">Người báo cáo: <span id="mContentReporter" class="font-normal text-[#2b2118]"></span></span>
+            </div>
+            <div>
+                <span class="font-semibold text-[#8a7664]">Tác phẩm:</span>
+                <span id="mContentNovel" class="font-bold text-[#2b2118] ml-1"></span>
+            </div>
+            <div>
+                <span class="font-semibold text-[#8a7664]">Chương bị báo cáo:</span>
+                <span id="mContentChapter" class="font-semibold text-[#bc7d39] ml-1"></span>
+            </div>
+            <div>
+                <span class="font-semibold text-[#8a7664]">Lý do từ người báo cáo:</span>
+                <p id="mContentReason" class="font-medium text-[#875200] mt-0.5"></p>
+            </div>
+        </div>
+
+        <!-- Resolve Form -->
+        <form id="contentResolveForm" method="post" class="space-y-4">
+            <input type="hidden" name="status" th:value="${currentStatus}">
+            <input type="hidden" name="page" th:value="${currentPage}">
+            <input type="hidden" id="contentDecisionInput" name="decision" value="PROCESSED">
+
+            <div id="contentActionSection">
+                <label class="text-xs font-bold text-[#8a7664] uppercase tracking-wider block mb-2">
+                    Biện pháp xử lý vi phạm nội dung
+                </label>
+                <div class="space-y-2">
+                    <label class="flex items-center gap-2.5 p-3 rounded-xl border border-[#eae2d5] hover:bg-[#faf7f2] cursor-pointer text-xs font-semibold text-[#2b2118]">
+                        <input type="radio" name="action" value="DRAFT_CHAPTER" class="text-[#bc7d39] focus:ring-[#bc7d39]" checked>
+                        <span>Ẩn chương (Chuyển trạng thái sang DRAFT)</span>
+                    </label>
+                    <label class="flex items-center gap-2.5 p-3 rounded-xl border border-[#eae2d5] hover:bg-[#faf7f2] cursor-pointer text-xs font-semibold text-[#2b2118]">
+                        <input type="radio" name="action" value="RECORD_ONLY" class="text-[#bc7d39] focus:ring-[#bc7d39]">
+                        <span>Chỉ ghi nhận, không thay đổi nội dung</span>
+                    </label>
+                </div>
+            </div>
+
+            <div>
+                <label class="text-xs font-bold text-[#2b2118] block mb-1">Ghi chú xử lý / Lý do từ chối * (Tối đa 500 ký tự)</label>
+                <textarea id="contentAdminNote" name="adminNote" rows="3" maxlength="500" required
+                          placeholder="Nhập ghi chú phản hồi gửi tới hòm thư người báo cáo..."
+                          class="w-full px-3 py-2 text-xs border border-[#eae2d5] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#bc7d39]"></textarea>
+            </div>
+
+            <div id="contentModalActions" class="flex items-center justify-end gap-3 pt-2">
+                <button type="button" onclick="closeResolveContentModal()" class="px-4 py-2 rounded-xl bg-[#f4ece1] text-[#6b5849] hover:bg-[#eae2d5] text-xs font-bold">
+                    Đóng
+                </button>
+                <button type="button" onclick="submitContentDecision('REJECTED')" class="px-4 py-2 rounded-xl bg-gray-200 hover:bg-gray-300 text-gray-800 text-xs font-bold">
+                    Từ chối báo cáo
+                </button>
+                <button type="button" onclick="submitContentDecision('PROCESSED')" class="px-5 py-2 rounded-xl bg-[#d97706] hover:bg-[#b45309] text-white text-xs font-bold shadow-md">
+                    Xử lý vi phạm
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openCommentResolveModal(el) {
+        let id, status, reporter, comment, reason, note;
+        if (el && el.dataset) {
+            id = el.dataset.id;
+            status = el.dataset.status;
+            reporter = el.dataset.reporter;
+            comment = el.dataset.comment;
+            reason = el.dataset.reason;
+            note = el.dataset.note;
+        } else if (arguments.length > 1) {
+            id = arguments[0];
+            status = arguments[1];
+            reporter = arguments[2];
+            comment = arguments[3];
+            reason = arguments[4];
+            note = arguments[5];
+        }
+        document.getElementById('modalCommentTitle').textContent = 'Xử lý báo cáo bình luận #CR-' + id;
+        document.getElementById('mCommentReporter').textContent = reporter || 'Độc giả';
+        document.getElementById('mCommentContent').textContent = '"' + (comment || '') + '"';
+        document.getElementById('mCommentReason').textContent = reason || '';
+        document.getElementById('commentAdminNote').value = note || '';
+
+        const form = document.getElementById('commentResolveForm');
+        form.action = '/admin/reports/comment/' + id + '/resolve';
+
+        const isReadOnly = (status !== 'RECEIVED');
+        document.getElementById('commentActionSection').style.display = isReadOnly ? 'none' : 'block';
+        document.getElementById('commentModalActions').style.display = isReadOnly ? 'none' : 'flex';
+        document.getElementById('commentAdminNote').readOnly = isReadOnly;
+
+        document.getElementById('resolveCommentModal').classList.remove('hidden');
+    }
+
+    function closeResolveCommentModal() {
+        document.getElementById('resolveCommentModal').classList.add('hidden');
+    }
+
+    function submitCommentDecision(decision) {
+        document.getElementById('commentDecisionInput').value = decision;
+        const note = document.getElementById('commentAdminNote').value.trim();
+        if (!note) {
+            alert('Vui lòng nhập ghi chú xử lý / lý do từ chối.');
+            return;
+        }
+        document.getElementById('commentResolveForm').submit();
+    }
+
+    function openContentResolveModal(el) {
+        let id, status, reporter, novel, chapter, reason, note;
+        if (el && el.dataset) {
+            id = el.dataset.id;
+            status = el.dataset.status;
+            reporter = el.dataset.reporter;
+            novel = el.dataset.novel;
+            chapter = el.dataset.chapter;
+            reason = el.dataset.reason;
+            note = el.dataset.note;
+        } else if (arguments.length > 1) {
+            id = arguments[0];
+            status = arguments[1];
+            reporter = arguments[2];
+            novel = arguments[3];
+            chapter = arguments[4];
+            reason = arguments[5];
+            note = arguments[6];
+        }
+        document.getElementById('modalContentTitle').textContent = 'Xử lý báo cáo nội dung #TR-' + id;
+        document.getElementById('mContentReporter').textContent = reporter || 'Độc giả';
+        document.getElementById('mContentNovel').textContent = novel || '';
+        document.getElementById('mContentChapter').textContent = chapter || '';
+        document.getElementById('mContentReason').textContent = reason || '';
+        document.getElementById('contentAdminNote').value = note || '';
+
+        const form = document.getElementById('contentResolveForm');
+        form.action = '/admin/reports/content/' + id + '/resolve';
+
+        const isReadOnly = (status !== 'RECEIVED');
+        document.getElementById('contentActionSection').style.display = isReadOnly ? 'none' : 'block';
+        document.getElementById('contentModalActions').style.display = isReadOnly ? 'none' : 'flex';
+        document.getElementById('contentAdminNote').readOnly = isReadOnly;
+
+        document.getElementById('resolveContentModal').classList.remove('hidden');
+    }
+
+    function closeResolveContentModal() {
+        document.getElementById('resolveContentModal').classList.add('hidden');
+    }
+
+    function submitContentDecision(decision) {
+        document.getElementById('contentDecisionInput').value = decision;
+        const note = document.getElementById('contentAdminNote').value.trim();
+        if (!note) {
+            alert('Vui lòng nhập ghi chú xử lý / lý do từ chối.');
+            return;
+        }
+        document.getElementById('contentResolveForm').submit();
+    }
+</script>
+
+<!-- Admin Flash Toast Notification (UC-43) -->
+<div th:replace="~{admin/fragments/layout :: flash-toast}"></div>
+
+</body>
+</html>

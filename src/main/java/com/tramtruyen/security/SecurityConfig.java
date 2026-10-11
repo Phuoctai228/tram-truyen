@@ -42,8 +42,9 @@ public class SecurityConfig {
         ).authorizeHttpRequests(auth -> auth
                 .requestMatchers("/register", "/verify-otp", "/login", "/account-locked", "/css/**", "/js/**", "/images/**").permitAll()
                 .requestMatchers("/api/**").permitAll()
+                .requestMatchers("/admin/notifications/**", "/admin/reports/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_STAFF")
                 .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
-                .requestMatchers("/user/**", "/tu-sach").authenticated()
+                .requestMatchers("/user/**", "/tu-sach", "/reports/**").authenticated()
                 .anyRequest().permitAll()
         ).formLogin(form -> form
                 .loginPage("/login")
