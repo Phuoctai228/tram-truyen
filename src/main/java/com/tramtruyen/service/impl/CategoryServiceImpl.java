@@ -12,11 +12,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import com.tramtruyen.repository.NovelRepository;
+
 @Service
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final NovelRepository novelRepository;
 
     @Override
     public List<Category> getAllCategories() {
@@ -63,6 +66,9 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public void deleteCategory(Integer id) {
+        if (novelRepository.existsByCategoriesIdAndIsDeletedFalse(id)) {
+            throw new IllegalStateException("Không thể xóa thể loại đã được liên kết với truyện.");
+        }
         Category category = getCategoryById(id);
         categoryRepository.delete(category);
     }

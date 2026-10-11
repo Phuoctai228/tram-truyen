@@ -24,7 +24,7 @@
         </div>
 
         <div th:if="${successMessage}" class="alert success" th:text="${successMessage}"></div>
-        <div th:if="${errorMessage}" class="alert error" th:text="${errorMessage}"></div>
+        <div th:if="${errorMessage}" class="alert error" style="border-left: 5px solid #d32f2f; font-weight: bold; font-size: 1.15em; color: #b71c1c; background-color: #ffebee; padding: 16px; margin-bottom: 24px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-radius: 4px;" th:text="${errorMessage}"></div>
 
         <section class="table-panel" style="margin-top: 24px;">
             <div class="table-caption">
@@ -35,7 +35,7 @@
             </div>
             <div class="table-wrap">
                 <table>
-                    <thead><tr><th>Tên thể loại</th><th>Slug đường dẫn</th><th>Thao tác</th></tr></thead>
+                    <thead><tr><th>Tên thể loại</th><th>Slug đường dẫn</th><th>Tổng truyện</th><th>Thao tác</th></tr></thead>
                     <tbody>
                     <tr th:each="category : ${categories}">
                         <td class="cat-cell">
@@ -46,6 +46,7 @@
                             </div>
                         </td>
                         <td><code style="color: var(--muted);" th:text="${'/the-loai/' + category.slug}"></code></td>
+                        <td><a th:href="@{'/the-loai/' + ${category.slug}}" target="_blank" style="display: inline-block; padding: 2px 8px; border-radius: 12px; background: #e0f2f1; color: #00695c; font-weight: 600; font-size: 0.9em; text-decoration: none;" th:text="${category.novelCount != null ? category.novelCount : 0}"></a></td>
                         <td class="actions">
                             <button class="icon-button" title="Chỉnh sửa" 
                                th:data-id="${category.id}" 
@@ -58,7 +59,7 @@
                             </form>
                         </td>
                     </tr>
-                    <tr th:if="${#lists.isEmpty(categories)}"><td class="empty" colspan="3">Chưa có danh mục thể loại nào.</td></tr>
+                    <tr th:if="${#lists.isEmpty(categories)}"><td class="empty" colspan="4">Chưa có danh mục thể loại nào.</td></tr>
                     </tbody>
                 </table>
             </div>

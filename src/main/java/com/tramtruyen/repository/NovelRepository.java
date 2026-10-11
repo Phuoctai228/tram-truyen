@@ -7,8 +7,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+
 @Repository
-public interface NovelRepository extends JpaRepository<Novel, Integer> {
+public interface NovelRepository extends JpaRepository<Novel, Integer>, JpaSpecificationExecutor<Novel> {
 
     List<Novel> findAllByIsDeletedFalseOrderByUpdatedAtDesc();
 
@@ -35,4 +37,8 @@ public interface NovelRepository extends JpaRepository<Novel, Integer> {
 
     // Truyện đề cử tự động (dựa trên điểm đánh giá cao nhất)
     List<Novel> findTop10ByIsDeletedFalseOrderByAverageRatingDesc();
+
+    boolean existsByCategoriesIdAndIsDeletedFalse(Integer categoryId);
+
+    List<Novel> findByCategoriesIdAndIsDeletedFalseOrderByUpdatedAtDesc(Integer categoryId);
 }

@@ -4,6 +4,7 @@ import com.tramtruyen.dto.NovelForm;
 import com.tramtruyen.entity.Novel;
 import com.tramtruyen.repository.NovelRepository;
 import com.tramtruyen.service.MediaStorageService;
+import com.tramtruyen.repository.CategoryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,11 +27,14 @@ class NovelServiceImplTest {
     @Mock
     private MediaStorageService mediaStorageService;
 
+    @Mock
+    private CategoryRepository categoryRepository;
+
     private NovelServiceImpl novelService;
 
     @BeforeEach
     void setUp() {
-        novelService = new NovelServiceImpl(novelRepository, mediaStorageService);
+        novelService = new NovelServiceImpl(novelRepository, mediaStorageService, categoryRepository);
     }
 
     @Test

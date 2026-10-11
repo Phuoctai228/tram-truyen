@@ -102,6 +102,7 @@
 
                     <h3 class="font-sans text-[22px] font-bold text-[#231A11] mb-1.5" th:text="${category.name}">Lãng
                         mạn</h3>
+                    <p class="text-[13px] text-[#875200] font-semibold mb-3 tracking-wide" th:text="${(category.novelCount != null ? category.novelCount : 0) + ' TÁC PHẨM'}"></p>
 
                     <p class="text-[14px] leading-relaxed text-[#6B5B4B] mb-6 text-muted line-clamp-3"
                         th:text="${category.description != null ? category.description : 'Khám phá những câu chuyện thú vị trong thể loại này.'}">

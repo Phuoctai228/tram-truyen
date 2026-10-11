@@ -13,6 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Set;
 
+import com.tramtruyen.repository.CategoryRepository;
+import com.tramtruyen.entity.Category;
+
 /** Default business implementation for Novel CMS operations. */
 @Service
 @RequiredArgsConstructor
@@ -22,6 +25,7 @@ public class NovelServiceImpl implements NovelService {
 
     private final NovelRepository novelRepository;
     private final MediaStorageService mediaStorageService;
+    private final CategoryRepository categoryRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -103,6 +107,57 @@ public class NovelServiceImpl implements NovelService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public org.springframework.data.domain.Page<Novel> advancedSearch(String query, List<Integer> categoryIds, String status, Integer minChapters, Integer maxChapters, Double minRating, org.springframework.data.domain.Pageable pageable) {
+        org.springframework.data.jpa.domain.Specification<Novel> spec = (root, cq, cb) -> {
+            java.util.List<jakarta.persistence.criteria.Predicate> predicates = new java.util.ArrayList<>();
+            predicates.add(cb.isFalse(root.get("isDeleted")));
+
+            if (query != null && !query.isBlank()) {
+                String likeQuery = "%" + query.trim().toLowerCase() + "%";
+                predicates.add(cb.or(
+                    cb.like(cb.lower(root.get("title")), likeQuery),
+                    cb.like(cb.lower(root.get("author")), likeQuery)
+                ));
+            }
+
+            if (status != null && !status.isBlank() && NOVEL_STATUSES.contains(status)) {
+                predicates.add(cb.equal(root.get("status"), status));
+            }
+
+            if (minRating != null) {
+                predicates.add(cb.greaterThanOrEqualTo(root.get("averageRating"), minRating));
+            }
+
+            if (minChapters != null) {
+                predicates.add(cb.greaterThanOrEqualTo(root.get("chapterCount"), minChapters));
+            }
+            if (maxChapters != null) {
+                predicates.add(cb.lessThanOrEqualTo(root.get("chapterCount"), maxChapters));
+            }
+
+            if (categoryIds != null && !categoryIds.isEmpty()) {
+                jakarta.persistence.criteria.Join<Novel, Category> categoryJoin = root.join("categories");
+                predicates.add(categoryJoin.get("id").in(categoryIds));
+            }
+
+            // Distinct is needed when joining collections to prevent duplicate rows
+            cq.distinct(true);
+            return cb.and(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
+        };
+        return novelRepository.findAll(spec, pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Novel> getNovelsByCategory(Integer categoryId) {
+        if (categoryId == null) {
+            return java.util.Collections.emptyList();
+        }
+        return novelRepository.findByCategoriesIdAndIsDeletedFalseOrderByUpdatedAtDesc(categoryId);
+    }
+
+    @Override
     @Transactional
     public Novel createNovel(NovelForm form) {
         validateStatus(form.getStatus());
@@ -146,6 +201,13 @@ public class NovelServiceImpl implements NovelService {
 
         if (novel.getSlug() == null || novel.getSlug().isBlank()) {
             novel.setSlug(com.tramtruyen.util.SlugUtils.toSlug(form.getTitle().trim()));
+        }
+
+        if (form.getCategoryIds() != null && !form.getCategoryIds().isEmpty()) {
+            Set<Category> categories = new java.util.HashSet<>(categoryRepository.findAllById(form.getCategoryIds()));
+            novel.setCategories(categories);
+        } else {
+            novel.setCategories(new java.util.HashSet<>());
         }
     }
 

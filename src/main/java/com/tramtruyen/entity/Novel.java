@@ -60,6 +60,9 @@ public class Novel {
     @Column(name = "updated_at", insertable = false, updatable = false)
     private LocalDateTime updatedAt;
 
+    @org.hibernate.annotations.Formula("(SELECT COUNT(c.id) FROM chapters c WHERE c.novel_id = id AND c.is_deleted = false)")
+    private Integer chapterCount;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "novel_categories",

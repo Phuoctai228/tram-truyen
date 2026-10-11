@@ -368,7 +368,7 @@
                                     th:text="${#lists.size(categories)} + ' phân loại'">13 phân loại</span>
                             </div>
                             <div class="flex flex-wrap gap-2">
-                                <a th:each="category : ${categories}" th:href="@{'/category/' + ${category.slug}}"
+                                <a th:each="category : ${categories}" th:href="@{'/the-loai/' + ${category.slug}}"
                                     class="px-3 py-1.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:bg-primary-container hover:text-on-primary transition-colors shadow-sm"
                                     th:text="${category.name}">
                                     Tiên Hiệp

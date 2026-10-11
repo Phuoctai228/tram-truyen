@@ -74,6 +74,8 @@ public class CategoryController {
         try {
             categoryService.deleteCategory(id);
             redirectAttributes.addFlashAttribute("successMessage", "Xóa thể loại thành công!");
+        } catch (IllegalStateException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Không thể xóa thể loại. Có thể do ràng buộc dữ liệu.");
         }

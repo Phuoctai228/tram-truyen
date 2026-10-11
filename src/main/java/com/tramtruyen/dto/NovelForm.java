@@ -30,4 +30,6 @@ public class NovelForm {
     private String status = "ONGOING";
 
     private MultipartFile cover;
+
+    private java.util.List<Integer> categoryIds = new java.util.ArrayList<>();
 }

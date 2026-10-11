@@ -17,6 +17,8 @@ public interface NovelService {
     Novel getPublicNovelBySlug(String slug);
     
     List<Novel> searchPublicNovels(String query);
+    
+    org.springframework.data.domain.Page<Novel> advancedSearch(String query, java.util.List<Integer> categoryIds, String status, Integer minChapters, Integer maxChapters, Double minRating, org.springframework.data.domain.Pageable pageable);
 
     Novel createNovel(NovelForm form);
 
@@ -25,4 +27,6 @@ public interface NovelService {
     void deleteNovel(Integer id);
 
     List<Novel> getNovelsBySameAuthor(String author, Integer currentNovelId);
+
+    List<Novel> getNovelsByCategory(Integer categoryId);
 }
