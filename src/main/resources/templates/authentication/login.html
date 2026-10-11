@@ -109,7 +109,12 @@
                             <span class="material-symbols-outlined text-[20px]" id="passwordEyeIcon">visibility</span>
                         </button>
                     </div>
-                    <div class="flex justify-end mt-1.5">
+                    <div class="flex items-center justify-between mt-2.5">
+                        <label class="flex items-center gap-2 cursor-pointer select-none group">
+                            <input type="checkbox" name="remember-me" id="remember-me" value="true"
+                                   class="w-4 h-4 rounded border-outline-variant text-primary-container focus:ring-primary-container/20 accent-[#c08d41] cursor-pointer">
+                            <span class="text-sm text-tertiary group-hover:text-on-surface transition-colors select-none font-medium">Ghi nhớ đăng nhập</span>
+                        </label>
                         <a th:href="@{/forgot-password}" class="text-sm font-medium text-primary hover:underline">Quên mật khẩu?</a>
                     </div>
                 </div>

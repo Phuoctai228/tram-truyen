@@ -17,17 +17,20 @@ public class SecurityConfig {
     private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
     private final UserRepository userRepository;
     private final AccountLockService accountLockService;
+    private final CustomUserDetailsService customUserDetailsService;
 
     public SecurityConfig(CustomOAuth2UserService customOAuth2UserService,
                           CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler,
                           CustomAuthenticationFailureHandler customAuthenticationFailureHandler,
                           UserRepository userRepository,
-                          AccountLockService accountLockService) {
+                          AccountLockService accountLockService,
+                          CustomUserDetailsService customUserDetailsService) {
         this.customOAuth2UserService = customOAuth2UserService;
         this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
         this.customAuthenticationFailureHandler = customAuthenticationFailureHandler;
         this.userRepository = userRepository;
         this.accountLockService = accountLockService;
+        this.customUserDetailsService = customUserDetailsService;
     }
 
     @Bean
@@ -58,9 +61,16 @@ public class SecurityConfig {
                 )
                 .successHandler(customAuthenticationSuccessHandler)
                 .failureHandler(customAuthenticationFailureHandler)
+        ).rememberMe(remember -> remember
+                .key("tramtruyen-remember-me-secret-key-swp391-2025")
+                .tokenValiditySeconds(30 * 24 * 60 * 60)
+                .userDetailsService(customUserDetailsService)
+                .rememberMeParameter("remember-me")
+                .rememberMeCookieName("remember-me")
         ).logout(logout -> logout
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/")
+                .deleteCookies("JSESSIONID", "remember-me")
                 .permitAll()
         );
         UserStatusCheckFilter userStatusCheckFilter = new UserStatusCheckFilter(userRepository, accountLockService);

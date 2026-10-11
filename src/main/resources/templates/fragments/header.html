@@ -96,9 +96,9 @@
                                 class="block px-4 py-2 text-sm text-primary font-semibold hover:bg-surface-container-low transition-colors flex items-center gap-2">
                                 <span class="material-symbols-outlined text-[18px]">bookmark</span> Tủ sách của tôi
                             </a>
-                            <a th:href="@{/wallet/topup}"
+                            <a th:href="@{/wallet}"
                                 class="block px-4 py-2 text-sm text-on-surface hover:bg-surface-container-low transition-colors flex items-center gap-2">
-                                <span class="material-symbols-outlined text-[18px] text-primary">payments</span> Nạp Coin
+                                <span class="material-symbols-outlined text-[18px]">account_balance_wallet</span> Ví của Tôi
                             </a>
                             <a sec:authorize="hasAuthority('ROLE_ADMIN')" th:href="@{/admin/novels}"
                                 class="block px-4 py-2 text-sm text-on-surface hover:bg-surface-container-low transition-colors flex items-center gap-2 text-primary">
