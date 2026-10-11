@@ -48,6 +48,16 @@ INSERT INTO system_settings (setting_key, setting_value, description) VALUES
 ON CONFLICT (setting_key) DO UPDATE 
 SET setting_value = EXCLUDED.setting_value, description = EXCLUDED.description;
 
+-- 6. Seed coin_packages (6 gói nạp Coin chuẩn thiết kế Figma)
+INSERT INTO coin_packages (name, price, coin_amount, status) VALUES 
+('Gói Khởi Điểm', 20000, 200, 'ACTIVE'),
+('Gói Tân Thủ (+10 Tặng)', 50000, 510, 'ACTIVE'),
+('Gói Tiêu Chuẩn (+50 Tặng)', 100000, 1050, 'ACTIVE'),
+('Gói Trưởng Thành (+150 Tặng)', 200000, 2150, 'ACTIVE'),
+('Gói Tiết Kiệm (+500 Tặng)', 500000, 5500, 'ACTIVE'),
+('Gói Đại Gia VIP (+1.200 Tặng)', 1000000, 11200, 'ACTIVE')
+ON CONFLICT DO NOTHING;
+
 -- 6. Tự động đồng bộ tất cả sequences về MAX(id) nếu có bất kỳ dữ liệu nào được chèn trước đó
 DO $$
 DECLARE
