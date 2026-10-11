@@ -9,12 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. Initialize dynamic progress bar widths from data-progress
     initProgressBars();
 
-    // 2. Close dropdowns on outside click
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('.action-menu-container')) {
-            document.querySelectorAll('.action-dropdown').forEach(d => d.classList.add('hidden'));
-        }
-    });
+    // 2. Synchronize "Đọc tiếp" URLs with localStorage reading history
+    syncContinueReadingButtons();
 
     // 3. Modal backdrop click to close
     const backdrop = document.getElementById('deleteModalBackdrop');
@@ -47,27 +43,31 @@ function initProgressBars() {
 }
 
 /**
- * Toggle novel card 3-dots action dropdown
+ * Synchronize "Đọc tiếp" buttons with latest chapter and reading position saved in localStorage
  */
-function toggleDropdown(button) {
-    const container = button.closest('.action-menu-container');
-    const dropdown = container.querySelector('.action-dropdown');
-
-    document.querySelectorAll('.action-dropdown').forEach(d => {
-        if (d !== dropdown) d.classList.add('hidden');
+function syncContinueReadingButtons() {
+    document.querySelectorAll('.bookshelf-continue-read-btn[data-novel-slug]').forEach(btn => {
+        const slug = btn.getAttribute('data-novel-slug');
+        if (!slug) return;
+        try {
+            const raw = localStorage.getItem('tramtruyen_last_read_' + slug);
+            if (!raw) return;
+            const data = JSON.parse(raw);
+            if (data && data.readUrl) {
+                btn.href = data.readUrl;
+            }
+        } catch (e) {
+            // Ignore parse errors
+        }
     });
-
-    dropdown.classList.toggle('hidden');
 }
+
 
 /**
  * Notify subscription toast/alert
  */
 function notifySubscription(btn) {
     alert('Bạn đã bật tính năng nhận thông báo khi có chương mới!');
-    const container = btn.closest('.action-menu-container');
-    const dropdown = container.querySelector('.action-dropdown');
-    if (dropdown) dropdown.classList.add('hidden');
 }
 
 /**
@@ -112,8 +112,6 @@ function openDeleteModalFromBtn(btn) {
         });
     }
 
-    // Close any open dropdowns
-    document.querySelectorAll('.action-dropdown').forEach(d => d.classList.add('hidden'));
 }
 
 /**
