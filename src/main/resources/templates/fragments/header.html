@@ -120,6 +120,10 @@
                                 class="block px-4 py-2 text-sm text-on-surface hover:bg-surface-container-low transition-colors flex items-center gap-2 text-primary">
                                 <span class="material-symbols-outlined text-[18px]">admin_panel_settings</span> Trang quản trị
                             </a>
+                            <a sec:authorize="hasAuthority('ROLE_STAFF') and !hasAuthority('ROLE_ADMIN')" th:href="@{/staff/novels}"
+                                class="block px-4 py-2 text-sm text-on-surface hover:bg-surface-container-low transition-colors flex items-center gap-2 text-primary">
+                                <span class="material-symbols-outlined text-[18px]">badge</span> Bàn làm việc Nhân viên
+                            </a>
                             <div class="my-1 border-t border-outline-variant"></div>
                             <form action="/logout" method="post" id="headerLogoutForm" class="m-0">
                                 <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">

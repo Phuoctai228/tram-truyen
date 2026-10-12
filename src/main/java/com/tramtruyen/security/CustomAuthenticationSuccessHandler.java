@@ -47,34 +47,95 @@ public class CustomAuthenticationSuccessHandler extends SavedRequestAwareAuthent
             }
         }
 
-        // 3. If redirectUrl is a safe internal relative path, redirect to it
-        if (redirectUrl != null && !redirectUrl.isBlank() && isValidRedirectUrl(redirectUrl)) {
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(authority -> "ROLE_ADMIN".equals(authority.getAuthority()));
+        boolean isStaff = authentication.getAuthorities().stream()
+                .anyMatch(authority -> "ROLE_STAFF".equals(authority.getAuthority()));
+
+        SavedRequest savedRequest = this.requestCache.getRequest(request, response);
+
+        // Case 1: ROLE_ADMIN -> Direct to admin dashboard (or specific admin sub-page if requested)
+        if (isAdmin) {
+            if (redirectUrl != null && redirectUrl.startsWith("/admin") && isValidRedirectUrl(redirectUrl)) {
+                clearAuthenticationAttributes(request);
+                getRedirectStrategy().sendRedirect(request, response, redirectUrl);
+                return;
+            }
+            if (savedRequest != null) {
+                String targetUrl = extractRelativePath(savedRequest.getRedirectUrl());
+                if (targetUrl.startsWith("/admin") && isValidRedirectUrl(targetUrl)) {
+                    clearAuthenticationAttributes(request);
+                    getRedirectStrategy().sendRedirect(request, response, targetUrl);
+                    return;
+                }
+            }
             clearAuthenticationAttributes(request);
-            getRedirectStrategy().sendRedirect(request, response, redirectUrl);
+            getRedirectStrategy().sendRedirect(request, response, "/admin/novels");
             return;
         }
 
-        // 4. Check Spring Security's saved request (for intercepted requests like /user/bookshelf)
-        SavedRequest savedRequest = this.requestCache.getRequest(request, response);
+        // Case 2: ROLE_STAFF -> Direct to staff dashboard (or specific staff sub-page if requested)
+        if (isStaff) {
+            if (redirectUrl != null && redirectUrl.startsWith("/staff") && isValidRedirectUrl(redirectUrl)) {
+                clearAuthenticationAttributes(request);
+                getRedirectStrategy().sendRedirect(request, response, redirectUrl);
+                return;
+            }
+            if (savedRequest != null) {
+                String targetUrl = extractRelativePath(savedRequest.getRedirectUrl());
+                if (targetUrl.startsWith("/staff") && isValidRedirectUrl(targetUrl)) {
+                    clearAuthenticationAttributes(request);
+                    getRedirectStrategy().sendRedirect(request, response, targetUrl);
+                    return;
+                }
+            }
+            clearAuthenticationAttributes(request);
+            getRedirectStrategy().sendRedirect(request, response, "/staff/novels");
+            return;
+        }
+
+        // Case 3: Standard Member / User -> Redirect to requested page or home page
+        if (redirectUrl != null && !redirectUrl.isBlank() && isValidRedirectUrl(redirectUrl)) {
+            if (!redirectUrl.startsWith("/admin") && !redirectUrl.startsWith("/staff")) {
+                clearAuthenticationAttributes(request);
+                getRedirectStrategy().sendRedirect(request, response, redirectUrl);
+                return;
+            }
+        }
+
         if (savedRequest != null) {
-            String targetUrl = savedRequest.getRedirectUrl();
-            if (targetUrl != null && !targetUrl.contains("/login") && !targetUrl.contains("/register")) {
+            String targetUrl = extractRelativePath(savedRequest.getRedirectUrl());
+            if (!targetUrl.startsWith("/admin") && !targetUrl.startsWith("/staff") && isValidRedirectUrl(targetUrl)) {
                 clearAuthenticationAttributes(request);
                 getRedirectStrategy().sendRedirect(request, response, targetUrl);
                 return;
             }
         }
 
-        // 5. Content managers land in the CMS when there is no saved destination.
         clearAuthenticationAttributes(request);
-        String defaultTarget = hasContentManagementRole(authentication) ? "/admin/novels" : "/";
-        getRedirectStrategy().sendRedirect(request, response, defaultTarget);
+        getRedirectStrategy().sendRedirect(request, response, "/");
     }
 
-    private boolean hasContentManagementRole(Authentication authentication) {
-        return authentication.getAuthorities().stream()
-                .anyMatch(authority -> "ROLE_ADMIN".equals(authority.getAuthority())
-                        || "ROLE_STAFF".equals(authority.getAuthority()));
+    private boolean isUrlAllowedForRole(String url, boolean isAdmin, boolean isStaff) {
+        if (url == null) return false;
+        if (url.startsWith("/admin")) {
+            return isAdmin;
+        }
+        if (url.startsWith("/staff")) {
+            return isStaff || isAdmin;
+        }
+        return true;
+    }
+
+    private String extractRelativePath(String fullUrl) {
+        if (fullUrl == null) return "/";
+        try {
+            java.net.URI uri = java.net.URI.create(fullUrl);
+            String path = uri.getPath();
+            return path != null ? path : fullUrl;
+        } catch (Exception e) {
+            return fullUrl;
+        }
     }
 
     /**
