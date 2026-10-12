@@ -18,22 +18,19 @@ public class SecurityConfig {
     private final UserRepository userRepository;
     private final AccountLockService accountLockService;
     private final CustomUserDetailsService customUserDetailsService;
-    private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
     public SecurityConfig(CustomOAuth2UserService customOAuth2UserService,
                           CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler,
                           CustomAuthenticationFailureHandler customAuthenticationFailureHandler,
                           UserRepository userRepository,
                           AccountLockService accountLockService,
-                          CustomUserDetailsService customUserDetailsService,
-                          CustomAccessDeniedHandler customAccessDeniedHandler) {
+                          CustomUserDetailsService customUserDetailsService) {
         this.customOAuth2UserService = customOAuth2UserService;
         this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
         this.customAuthenticationFailureHandler = customAuthenticationFailureHandler;
         this.userRepository = userRepository;
         this.accountLockService = accountLockService;
         this.customUserDetailsService = customUserDetailsService;
-        this.customAccessDeniedHandler = customAccessDeniedHandler;
     }
 
     @Bean
@@ -48,12 +45,10 @@ public class SecurityConfig {
         ).authorizeHttpRequests(auth -> auth
                 .requestMatchers("/register", "/verify-otp", "/login", "/account-locked", "/css/**", "/js/**", "/images/**").permitAll()
                 .requestMatchers("/api/**").permitAll()
-                .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
-                .requestMatchers("/staff/**").hasAnyAuthority("ROLE_STAFF", "ROLE_ADMIN")
+                .requestMatchers("/admin/users/**").hasAuthority("ROLE_ADMIN")
+                .requestMatchers("/admin/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_STAFF")
                 .requestMatchers("/user/**", "/tu-sach", "/wallet", "/wallet/**").authenticated()
                 .anyRequest().permitAll()
-        ).exceptionHandling(ex -> ex
-                .accessDeniedHandler(customAccessDeniedHandler)
         ).formLogin(form -> form
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
