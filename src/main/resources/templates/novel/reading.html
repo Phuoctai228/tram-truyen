@@ -56,11 +56,8 @@
           </h1>
         </header>
 
-        <article class="space-y-6 text-on-surface font-body-reading text-body-reading leading-[1.95] select-text" id="reader-body">
-           <th:block th:each="para : ${#strings.arraySplit(#strings.replace(chapter.content, '&#13;', ''), '&#10;')}">
-              <p th:if="${!#strings.isEmpty(#strings.trim(para))}" class="indent-8 text-justify" th:text="${para}">Nội dung</p>
-           </th:block>
-        </article>
+        <article class="space-y-6 text-on-surface font-body-reading text-body-reading leading-[1.95] select-text" id="reader-body"
+                 th:utext="${chapter.content}">Nội dung</article>
 
 
       </main>
