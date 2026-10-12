@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Nhật ký hệ thống | Trạm Truyện Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script th:src="@{/js/authentication/tailwind-config.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/novel-admin.css}">
+    <style>
+        .font-serif-title { font-family: 'Lora', serif; }
+    </style>
+</head>
+<body class="bg-[#fff8f5] text-[#231a11] font-sans antialiased min-h-screen">
+
+<!-- Admin Sidebar (Reusing layout.html) -->
+<div th:replace="~{admin/fragments/layout :: sidebar('nhat-ky')}"></div>
+
+<main class="page-shell">
+    <!-- Admin Topbar (Reusing layout.html) -->
+    <div th:replace="~{admin/fragments/layout :: topbar}"></div>
+
+    <!-- Flash Toast Thông báo lỗi / thành công -->
+    <div th:replace="~{admin/fragments/layout :: flash-toast}"></div>
+
+    <section class="content max-w-7xl mx-auto px-4 md:px-8 py-8">
+
+        <!-- Page Heading -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+            <div>
+                <div class="flex items-center gap-1.5 text-xs font-bold tracking-wider text-[#875200] uppercase mb-1.5">
+                    <span>HỆ THỐNG</span>
+                    <span>›</span>
+                    <span>NHẬT KÝ VẬN HÀNH (AUDIT LOGS)</span>
+                </div>
+                <h1 class="font-serif-title text-3xl md:text-4xl font-bold text-[#231a11] tracking-tight mb-2">
+                    Nhật ký hệ thống <span class="text-xl md:text-2xl font-normal italic text-[#75695d]">(System Audit Log)</span>
+                </h1>
+                <p class="text-sm text-[#75695d]">
+                    Theo dõi và truy vết chi tiết mọi hoạt động can thiệp dữ liệu, phân quyền và thay đổi cấu hình bảo mật trên nền tảng.
+                </p>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <a th:href="@{/admin/audit-logs}"
+                   class="px-4 py-2.5 rounded-2xl bg-white border border-[#ead8cb] text-xs font-bold text-[#231a11] hover:bg-[#faf6f2] shadow-sm transition-all flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[16px] text-[#875200]">sync</span>
+                    <span>Làm mới</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- 3 System Overview Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <!-- Card 1: Tổng số bản ghi -->
+            <div class="bg-white border border-[#ead8cb] rounded-3xl p-6 shadow-sm flex items-center justify-between">
+                <div>
+                    <span class="text-xs font-bold text-[#75695d] uppercase tracking-wider block mb-1">TỔNG SỰ KIỆN GHI NHẬN</span>
+                    <h2 class="text-3xl font-extrabold text-[#231a11]" th:text="${#numbers.formatDecimal(stats.totalRecords, 0, 'POINT', 0, 'POINT')}">0</h2>
+                    <span class="text-xs text-[#a09081] mt-1 block">Toàn bộ lịch sử hệ thống</span>
+                </div>
+                <div class="w-12 h-12 rounded-2xl bg-[#fff0df] flex items-center justify-center text-[#c07c2a]">
+                    <span class="material-symbols-outlined text-[26px]">format_list_bulleted</span>
+                </div>
+            </div>
+
+            <!-- Card 2: Sự kiện hôm nay -->
+            <div class="bg-white border border-[#ead8cb] rounded-3xl p-6 shadow-sm flex items-center justify-between">
+                <div>
+                    <span class="text-xs font-bold text-[#75695d] uppercase tracking-wider block mb-1">SỰ KIỆN HÔM NAY</span>
+                    <h2 class="text-3xl font-extrabold text-[#875200]" th:text="${#numbers.formatDecimal(stats.todayRecords, 0, 'POINT', 0, 'POINT')}">0</h2>
+                    <div class="flex items-center gap-1 text-xs text-[#1b7a42] mt-1">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                        <span>Từ 00:00 hôm nay</span>
+                    </div>
+                </div>
+                <div class="w-12 h-12 rounded-2xl bg-[#e8f7ee] flex items-center justify-center text-[#1b7a42]">
+                    <span class="material-symbols-outlined text-[26px]">today</span>
+                </div>
+            </div>
+
+            <!-- Card 3: Quản trị viên thao tác 24h qua -->
+            <div class="bg-white border border-[#ead8cb] rounded-3xl p-6 shadow-sm flex items-center justify-between">
+                <div>
+                    <span class="text-xs font-bold text-[#75695d] uppercase tracking-wider block mb-1">QUẢN TRỊ VIÊN THAO TÁC (24H)</span>
+                    <h2 class="text-3xl font-extrabold text-[#231a11]" th:text="${#numbers.formatDecimal(stats.activeAdminsLast24h, 0, 'POINT', 0, 'POINT')}">0</h2>
+                    <span class="text-xs text-[#a09081] mt-1 block">Tài khoản quản trị chủ động</span>
+                </div>
+                <div class="w-12 h-12 rounded-2xl bg-[#feebe8] flex items-center justify-center text-[#c53d26]">
+                    <span class="material-symbols-outlined text-[26px]">shield_person</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Toolbar -->
+        <div class="bg-white border border-[#ead8cb] rounded-3xl p-5 shadow-sm mb-6">
+            <form id="auditFilterForm" method="get" th:action="@{/admin/audit-logs}"
+                  th:with="actionLabels = (${ {
+                      'BAN_USER': 'Khóa tài khoản',
+                      'UNBAN_USER': 'Mở khóa tài khoản',
+                      'AUTO_UNBAN': 'Tự động mở khóa',
+                      'CHANGE_USER_ROLE': 'Phân quyền thành viên',
+                      'UPDATE_SYSTEM_SETTINGS': 'Cập nhật cấu hình',
+                      'RESOLVE_COMMENT_REPORT': 'Duyệt báo cáo bình luận',
+                      'REJECT_COMMENT_REPORT': 'Từ chối báo cáo bình luận',
+                      'RESOLVE_CONTENT_REPORT': 'Duyệt báo cáo nội dung',
+                      'REJECT_CONTENT_REPORT': 'Từ chối báo cáo nội dung',
+                      'SEND_NOTIFICATION': 'Gửi thông báo hệ thống'
+                  } }),
+                  entityLabels = (${ {
+                      'USERS': 'Người dùng',
+                      'SYSTEM_SETTINGS': 'Cấu hình hệ thống',
+                      'COMMENT_REPORTS': 'Báo cáo bình luận',
+                      'comment_reports': 'Báo cáo bình luận',
+                      'CONTENT_REPORTS': 'Báo cáo nội dung',
+                      'content_reports': 'Báo cáo nội dung',
+                      'NOTIFICATIONS': 'Thông báo hệ thống',
+                      'notifications': 'Thông báo hệ thống',
+                      'NOVELS': 'Truyện',
+                      'novels': 'Truyện',
+                      'CHAPTERS': 'Chương truyện',
+                      'chapters': 'Chương truyện'
+                  } })">
+                <input type="hidden" name="size" th:value="${pageSize}">
+
+                <!-- Row 1: Search, Action Type, Target Entity -->
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-3 mb-4">
+                    <!-- Search by performer / name / email -->
+                    <div class="md:col-span-4 relative flex items-center bg-[#faf6f2] border border-[#ead8cb] rounded-2xl px-3.5 py-2.5 focus-within:border-[#875200] focus-within:bg-white transition-all">
+                        <span class="material-symbols-outlined text-[#75695d] text-[20px] mr-2">search</span>
+                        <input type="text" name="performer" th:value="${performer}"
+                               placeholder="Tìm theo email, tên người thực hiện..."
+                               class="w-full bg-transparent border-0 outline-none text-xs md:text-sm text-[#231a11] placeholder:text-[#a09081]" />
+                    </div>
+
+                    <!-- Action type select -->
+                    <div class="md:col-span-3 flex items-center bg-[#faf6f2] border border-[#ead8cb] rounded-2xl px-3 py-2">
+                        <span class="material-symbols-outlined text-[#75695d] text-[20px] mr-2">category</span>
+                        <select name="actionType" class="bg-transparent border-0 outline-none text-xs text-[#231a11] w-full cursor-pointer">
+                            <option value="">Tất cả loại hành động</option>
+                            <option th:each="act : ${availableActionTypes}"
+                                    th:value="${act}"
+                                    th:text="${actionLabels != null and actionLabels[act] != null ? actionLabels[act] : (actionLabels != null and actionLabels[#strings.toUpperCase(act)] != null ? actionLabels[#strings.toUpperCase(act)] : act)}"
+                                    th:selected="${act == actionType}"></option>
+                        </select>
+                    </div>
+
+                    <!-- Target entity select -->
+                    <div class="md:col-span-3 flex items-center bg-[#faf6f2] border border-[#ead8cb] rounded-2xl px-3 py-2">
+                        <span class="material-symbols-outlined text-[#75695d] text-[20px] mr-2">dataset</span>
+                        <select name="targetEntity" class="bg-transparent border-0 outline-none text-xs text-[#231a11] w-full cursor-pointer">
+                            <option value="">Tất cả đối tượng tác động</option>
+                            <option th:each="ent : ${availableTargetEntities}"
+                                    th:value="${ent}"
+                                    th:text="${entityLabels[ent] != null ? entityLabels[ent] : (entityLabels[#strings.toUpperCase(ent)] != null ? entityLabels[#strings.toUpperCase(ent)] : ent)}"
+                                    th:selected="${ent == targetEntity}"></option>
+                        </select>
+                    </div>
+
+                    <!-- Target ID -->
+                    <div class="md:col-span-2 flex items-center bg-[#faf6f2] border border-[#ead8cb] rounded-2xl px-3 py-2">
+                        <span class="text-[#75695d] text-xs font-bold mr-1">#ID:</span>
+                        <input type="number" name="targetId" th:value="${targetId}"
+                               placeholder="Mã ID"
+                               class="bg-transparent border-0 outline-none text-xs text-[#231a11] w-full" />
+                    </div>
+                </div>
+
+                <!-- Row 2: Date Range, Quick Presets & Buttons -->
+                <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[#f4eae1]">
+                    <!-- Date Pickers -->
+                    <div class="flex items-center gap-2 bg-[#faf6f2] border border-[#ead8cb] rounded-2xl px-3 py-2">
+                        <span class="material-symbols-outlined text-[#75695d] text-[18px]">date_range</span>
+                        <input type="date" name="startDate" id="logStartDate" th:value="${startDate}"
+                               class="bg-transparent border-0 outline-none text-xs text-[#231a11]" title="Từ ngày" />
+                        <span class="text-[#75695d] text-xs">→</span>
+                        <input type="date" name="endDate" id="logEndDate" th:value="${endDate}"
+                               class="bg-transparent border-0 outline-none text-xs text-[#231a11]" title="Đến ngày" />
+                    </div>
+
+                    <!-- Quick Date Presets -->
+                    <div class="flex items-center gap-1.5">
+                        <button type="button" onclick="setLogQuickDate('today')"
+                                class="px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-[#faf6f2] text-[#75695d] hover:bg-[#f2e7dc] hover:text-[#231a11] transition-colors border border-[#ead8cb]">
+                            Hôm nay
+                        </button>
+                        <button type="button" onclick="setLogQuickDate('7days')"
+                                class="px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-[#faf6f2] text-[#75695d] hover:bg-[#f2e7dc] hover:text-[#231a11] transition-colors border border-[#ead8cb]">
+                            7 ngày qua
+                        </button>
+                        <button type="button" onclick="setLogQuickDate('month')"
+                                class="px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-[#faf6f2] text-[#75695d] hover:bg-[#f2e7dc] hover:text-[#231a11] transition-colors border border-[#ead8cb]">
+                            Tháng này
+                        </button>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex items-center gap-2">
+                        <button type="submit"
+                                class="px-4 py-2 rounded-xl bg-[#875200] hover:bg-[#6c4100] text-white text-xs font-bold shadow-sm transition-all flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-[16px]">filter_alt</span>
+                            <span>Tìm kiếm</span>
+                        </button>
+                        <a th:href="@{/admin/audit-logs}"
+                           class="px-3 py-2 rounded-xl bg-[#faf6f2] hover:bg-[#f2e7dc] text-[#75695d] text-xs font-semibold border border-[#ead8cb] transition-colors"
+                           title="Đặt lại">
+                            Đặt lại
+                        </a>
+                        <span class="text-xs text-[#75695d] ml-2 hidden sm:inline">
+                            Hiển thị: <b class="text-[#231a11]" th:text="${logs.numberOfElements}">0</b> / <span th:text="${totalElements}">0</span> bản ghi
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Audit Logs Table -->
+        <div class="bg-white border border-[#ead8cb] rounded-3xl shadow-sm overflow-hidden mb-6">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                    <tr class="bg-[#faf6f2] border-b border-[#ead8cb] text-[11px] font-bold text-[#75695d] uppercase tracking-wider">
+                        <th class="py-4 px-4 pl-6">THỜI GIAN</th>
+                        <th class="py-4 px-4">NGƯỜI THỰC HIỆN</th>
+                        <th class="py-4 px-4">HÀNH ĐỘNG</th>
+                        <th class="py-4 px-4">ĐỐI TƯỢNG TÁC ĐỘNG</th>
+                        <th class="py-4 px-4">ĐỊA CHỈ IP</th>
+                        <th class="py-4 px-4 pr-6 text-center">CHI TIẾT</th>
+                    </tr>
+                    </thead>
+                    <tbody class="divide-y divide-[#f4eae1] text-xs">
+                    <tr th:if="${logs.empty}" class="hover:bg-[#fffbf8] transition-colors">
+                        <td colspan="6" class="py-12 text-center text-[#a09081]">
+                            <div class="flex flex-col items-center justify-center">
+                                <span class="material-symbols-outlined text-[48px] text-[#cfc3b7] mb-2">history</span>
+                                <p class="text-sm font-semibold text-[#75695d]">Không tìm thấy bản ghi nhật ký phù hợp</p>
+                                <p class="text-xs text-[#a09081] mt-1">Hãy thử xóa hoặc nới lỏng tiêu chí tìm kiếm.</p>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr th:each="logItem : ${logs.content}" class="hover:bg-[#fffbf8] transition-colors">
+                        <!-- Thời gian -->
+                        <td class="py-3.5 px-4 pl-6 text-[#75695d] whitespace-nowrap">
+                            <span class="font-mono text-xs font-semibold text-[#231a11] block" th:text="${logItem.formattedCreatedAt}">00/00/0000 00:00:00</span>
+                        </td>
+
+                        <!-- Người thực hiện -->
+                        <td class="py-3.5 px-4">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-8 h-8 rounded-full bg-[#fdecdb] text-[#875200] font-bold text-xs flex items-center justify-center overflow-hidden shrink-0">
+                                    <img th:if="${logItem.adminAvatar != null and !logItem.adminAvatar.isEmpty()}"
+                                         th:src="${logItem.adminAvatar}" class="w-full h-full object-cover" alt="avatar" />
+                                    <span th:if="${logItem.adminAvatar == null or logItem.adminAvatar.isEmpty()}"
+                                          th:text="${#strings.substring(logItem.adminName != null ? logItem.adminName : 'A', 0, 1)}">A</span>
+                                </div>
+                                <div class="flex flex-col min-w-0">
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="font-bold text-[#231a11] truncate" th:text="${logItem.adminName}">Họ tên</span>
+                                        <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-[#faf6f2] border border-[#ead8cb] text-[#875200]"
+                                              th:text="${logItem.adminRoleBadge}">Admin</span>
+                                    </div>
+                                    <span class="text-[11px] text-[#a09081] truncate" th:text="${logItem.adminEmail}">email@tramtruyen.com</span>
+                                </div>
+                            </div>
+                        </td>
+
+                        <!-- Hành động -->
+                        <td class="py-3.5 px-4">
+                            <div class="flex flex-col items-start gap-1">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-xl text-[11px] font-bold border"
+                                      th:classappend="${logItem.actionChipClass}"
+                                      th:text="${logItem.actionTypeDisplay}">Hành động</span>
+                                <span class="font-mono text-[10px] text-[#a09081]" th:text="${logItem.actionType}">ACTION_CODE</span>
+                            </div>
+                        </td>
+
+                        <!-- Đối tượng tác động -->
+                        <td class="py-3.5 px-4">
+                            <span class="font-medium text-[#231a11]" th:text="${logItem.targetDisplay}">Đối tượng</span>
+                        </td>
+
+                        <!-- Địa chỉ IP -->
+                        <td class="py-3.5 px-4 font-mono text-xs text-[#75695d]">
+                            <span th:text="${logItem.ipAddress}">127.0.0.1</span>
+                        </td>
+
+                        <!-- Chi tiết -->
+                        <td class="py-3.5 px-4 pr-6 text-center">
+                            <button type="button"
+                                    th:data-log-id="${logItem.id}"
+                                    onclick="openLogDetailModal(this.getAttribute('data-log-id'))"
+                                    class="px-3 py-1.5 rounded-xl bg-[#faf6f2] hover:bg-[#f2e7dc] text-[#875200] border border-[#ead8cb] text-xs font-semibold transition-colors inline-flex items-center gap-1 shadow-sm"
+                                    title="Xem chi tiết can thiệp dữ liệu">
+                                <span class="material-symbols-outlined text-[15px]">visibility</span>
+                                <span>Chi tiết</span>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Footer Pagination -->
+            <div class="bg-[#faf6f2] px-6 py-4 border-t border-[#ead8cb] flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="text-xs text-[#75695d]">
+                    Hiển thị <span class="font-bold text-[#231a11]" th:text="${(currentPage * pageSize) + 1}">1</span>
+                    - <span class="font-bold text-[#231a11]" th:text="${(currentPage * pageSize) + logs.numberOfElements}">20</span>
+                    trên tổng số <span class="font-bold text-[#231a11]" th:text="${totalElements}">0</span> bản ghi
+                </div>
+
+                <div th:if="${totalPages > 1}" class="flex items-center gap-1">
+                    <!-- Prev -->
+                    <a th:if="${currentPage > 0}"
+                       th:href="@{/admin/audit-logs(page=${currentPage - 1}, size=${pageSize}, startDate=${startDate}, endDate=${endDate}, actionType=${actionType}, performer=${performer}, targetEntity=${targetEntity}, targetId=${targetId})}"
+                       class="w-8 h-8 rounded-xl bg-white border border-[#ead8cb] flex items-center justify-center text-[#75695d] hover:bg-[#875200] hover:text-white transition-colors text-xs font-semibold">
+                        &lt;
+                    </a>
+                    <span th:if="${currentPage == 0}"
+                          class="w-8 h-8 rounded-xl bg-[#f4eae1] border border-[#ead8cb] flex items-center justify-center text-[#cfc3b7] text-xs cursor-not-allowed">
+                        &lt;
+                    </span>
+
+                    <!-- Page numbers -->
+                    <th:block th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                        <a th:if="${i >= currentPage - 2 and i <= currentPage + 2}"
+                           th:href="@{/admin/audit-logs(page=${i}, size=${pageSize}, startDate=${startDate}, endDate=${endDate}, actionType=${actionType}, performer=${performer}, targetEntity=${targetEntity}, targetId=${targetId})}"
+                           th:text="${i + 1}"
+                           class="w-8 h-8 rounded-xl border flex items-center justify-center text-xs font-semibold transition-colors"
+                           th:classappend="${i == currentPage ? 'bg-[#875200] text-white border-[#875200]' : 'bg-white text-[#75695d] border-[#ead8cb] hover:bg-[#f2e7dc]'}">
+                            1
+                        </a>
+                    </th:block>
+
+                    <!-- Next -->
+                    <a th:if="${currentPage < totalPages - 1}"
+                       th:href="@{/admin/audit-logs(page=${currentPage + 1}, size=${pageSize}, startDate=${startDate}, endDate=${endDate}, actionType=${actionType}, performer=${performer}, targetEntity=${targetEntity}, targetId=${targetId})}"
+                       class="w-8 h-8 rounded-xl bg-white border border-[#ead8cb] flex items-center justify-center text-[#75695d] hover:bg-[#875200] hover:text-white transition-colors text-xs font-semibold">
+                        &gt;
+                    </a>
+                    <span th:if="${currentPage >= totalPages - 1}"
+                          class="w-8 h-8 rounded-xl bg-[#f4eae1] border border-[#ead8cb] flex items-center justify-center text-[#cfc3b7] text-xs cursor-not-allowed">
+                        &gt;
+                    </span>
+                </div>
+            </div>
+        </div>
+
+    </section>
+</main>
+
+<!-- Modal "Chi tiết Nhật ký" -->
+<div id="logDetailModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-3xl w-full border border-[#ead8cb] shadow-2xl overflow-hidden animate-fade-in">
+        <div class="px-6 py-4 bg-[#faf6f2] border-b border-[#ead8cb] flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[#875200]">find_in_page</span>
+                <h3 class="font-bold text-[#231a11] text-base">Chi tiết nhật ký hệ thống</h3>
+                <span id="detailLogIdBadge" class="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-[#fdecdb] text-[#875200] ml-2"></span>
+            </div>
+            <button type="button" onclick="closeLogDetailModal()" class="text-[#a09081] hover:text-[#231a11] transition-colors">
+                <span class="material-symbols-outlined text-[22px]">close</span>
+            </button>
+        </div>
+
+        <div id="logDetailBody" class="p-6 max-h-[75vh] overflow-y-auto space-y-5">
+            <div class="text-center py-6 text-[#75695d]">
+                <span class="material-symbols-outlined text-[32px] animate-spin text-[#875200]">progress_activity</span>
+                <p class="text-xs mt-2">Đang tải chi tiết...</p>
+            </div>
+        </div>
+
+        <div class="px-6 py-3.5 bg-[#faf6f2] border-t border-[#ead8cb] flex justify-end">
+            <button type="button" onclick="closeLogDetailModal()"
+                    class="px-5 py-2 rounded-xl bg-[#875200] hover:bg-[#6c4100] text-white text-xs font-bold transition-all shadow-sm">
+                Đóng
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function setLogQuickDate(type) {
+        const today = new Date();
+        const formatDate = (d) => {
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        };
+
+        const startInput = document.getElementById('logStartDate');
+        const endInput = document.getElementById('logEndDate');
+
+        if (type === 'today') {
+            const str = formatDate(today);
+            startInput.value = str;
+            endInput.value = str;
+        } else if (type === '7days') {
+            const past7 = new Date();
+            past7.setDate(today.getDate() - 7);
+            startInput.value = formatDate(past7);
+            endInput.value = formatDate(today);
+        } else if (type === 'month') {
+            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+            startInput.value = formatDate(firstDay);
+            endInput.value = formatDate(today);
+        }
+        document.getElementById('auditFilterForm').submit();
+    }
+
+    function openLogDetailModal(logId) {
+        if (!logId) return;
+        const modal = document.getElementById('logDetailModal');
+        const badge = document.getElementById('detailLogIdBadge');
+        const body = document.getElementById('logDetailBody');
+
+        badge.textContent = `#LOG-${logId}`;
+        body.innerHTML = `
+            <div class="text-center py-6 text-[#75695d]">
+                <span class="material-symbols-outlined text-[32px] animate-spin text-[#875200]">progress_activity</span>
+                <p class="text-xs mt-2">Đang tải chi tiết...</p>
+            </div>
+        `;
+        modal.classList.remove('hidden');
+
+        fetch(`/admin/audit-logs/${encodeURIComponent(logId)}/detail`)
+            .then(res => res.json())
+            .then(data => {
+                let diffHtml = '';
+                if (data.jsonDiffAvailable && data.fieldDiffs && data.fieldDiffs.length > 0) {
+                    diffHtml = `
+                        <div class="border border-[#ead8cb] rounded-2xl overflow-hidden mb-4">
+                            <div class="bg-[#faf6f2] px-4 py-2 border-b border-[#ead8cb]">
+                                <span class="text-xs font-bold text-[#875200] uppercase tracking-wider">Các trường thay đổi (Field Diffs)</span>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-xs">
+                                    <thead class="bg-[#fff9f5] border-b border-[#ead8cb] text-[11px] text-[#75695d]">
+                                        <tr>
+                                            <th class="py-2.5 px-3">TÊN TRƯỜNG</th>
+                                            <th class="py-2.5 px-3">GIÁ TRỊ CŨ</th>
+                                            <th class="py-2.5 px-3">GIÁ TRỊ MỚI</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-[#f4eae1]">
+                                        ${data.fieldDiffs.map(d => `
+                                            <tr class="hover:bg-[#fffbf8]">
+                                                <td class="py-2 px-3 font-mono font-bold text-[#875200]">${escapeHtml(d.fieldName)}</td>
+                                                <td class="py-2 px-3 text-[#c53d26] bg-[#fff6f5] font-mono break-all">${escapeHtml(d.oldValue)}</td>
+                                                <td class="py-2 px-3 text-[#1b7a42] bg-[#f5fbf7] font-mono break-all">${escapeHtml(d.newValue)}</td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                body.innerHTML = `
+                    <!-- Summary info grid -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 bg-[#faf6f2] border border-[#ead8cb] rounded-2xl text-xs">
+                        <div>
+                            <span class="text-[#a09081] block text-[11px]">Hành động:</span>
+                            <span class="font-bold text-[#231a11]">${escapeHtml(data.actionTypeDisplay || data.actionType)}</span>
+                            <span class="text-[10px] text-[#75695d] font-mono block">${escapeHtml(data.actionType)}</span>
+                        </div>
+                        <div>
+                            <span class="text-[#a09081] block text-[11px]">Người thực hiện:</span>
+                            <span class="font-bold text-[#231a11]">${escapeHtml(data.adminName)}</span>
+                            <span class="text-[10px] text-[#75695d] block truncate">${escapeHtml(data.adminEmail)}</span>
+                        </div>
+                        <div>
+                            <span class="text-[#a09081] block text-[11px]">Thời gian:</span>
+                            <span class="font-semibold text-[#231a11] font-mono">${escapeHtml(data.formattedCreatedAt)}</span>
+                        </div>
+                        <div>
+                            <span class="text-[#a09081] block text-[11px]">Địa chỉ IP:</span>
+                            <span class="font-mono text-[#231a11]">${escapeHtml(data.ipAddress)}</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <span class="text-[#a09081] text-xs">Đối tượng tác động: </span>
+                        <span class="font-bold text-xs text-[#231a11]">${escapeHtml(data.targetDisplay)}</span>
+                    </div>
+
+                    ${diffHtml}
+
+                    <!-- Old & New raw value boxes -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <div class="flex items-center justify-between mb-1.5">
+                                <span class="text-xs font-bold text-[#75695d] uppercase">Giá trị cũ (Old Value):</span>
+                            </div>
+                            <pre class="bg-[#faf6f2] border border-[#ead8cb] rounded-2xl p-3.5 text-xs font-mono max-h-56 overflow-y-auto whitespace-pre-wrap break-all text-[#231a11]">${escapeHtml(data.prettyOldValue || '(Trống)')}</pre>
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between mb-1.5">
+                                <span class="text-xs font-bold text-[#75695d] uppercase">Giá trị mới (New Value):</span>
+                            </div>
+                            <pre class="bg-[#faf6f2] border border-[#ead8cb] rounded-2xl p-3.5 text-xs font-mono max-h-56 overflow-y-auto whitespace-pre-wrap break-all text-[#231a11]">${escapeHtml(data.prettyNewValue || '(Trống)')}</pre>
+                        </div>
+                    </div>
+                `;
+            })
+            .catch(err => {
+                body.innerHTML = `
+                    <div class="text-center py-6 text-rose-600 text-xs">
+                        Lỗi khi tải chi tiết nhật ký: ${escapeHtml(err.message)}
+                    </div>
+                `;
+            });
+    }
+
+    function closeLogDetailModal() {
+        document.getElementById('logDetailModal').classList.add('hidden');
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+
+    document.getElementById('logDetailModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeLogDetailModal();
+        }
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeLogDetailModal();
+        }
+    });
+</script>
+
+</body>
+</html>

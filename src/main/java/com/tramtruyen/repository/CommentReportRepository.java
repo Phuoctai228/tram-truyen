@@ -13,8 +13,24 @@ public interface CommentReportRepository extends JpaRepository<CommentReport, In
 
     boolean existsByUserIdAndCommentIdAndStatusIn(Integer userId, Integer commentId, Collection<String> statuses);
 
-    Page<CommentReport> findByStatusOrderByCreatedAtDesc(String status, Pageable pageable);
+    @org.springframework.data.jpa.repository.Query(
+            value = "SELECT cr FROM CommentReport cr " +
+                    "LEFT JOIN FETCH cr.user " +
+                    "LEFT JOIN FETCH cr.comment c " +
+                    "LEFT JOIN FETCH c.user " +
+                    "WHERE cr.status = :status ORDER BY cr.createdAt DESC",
+            countQuery = "SELECT COUNT(cr) FROM CommentReport cr WHERE cr.status = :status"
+    )
+    Page<CommentReport> findByStatusOrderByCreatedAtDesc(@org.springframework.data.repository.query.Param("status") String status, Pageable pageable);
 
+    @org.springframework.data.jpa.repository.Query(
+            value = "SELECT cr FROM CommentReport cr " +
+                    "LEFT JOIN FETCH cr.user " +
+                    "LEFT JOIN FETCH cr.comment c " +
+                    "LEFT JOIN FETCH c.user " +
+                    "ORDER BY cr.createdAt DESC",
+            countQuery = "SELECT COUNT(cr) FROM CommentReport cr"
+    )
     Page<CommentReport> findAllByOrderByCreatedAtDesc(Pageable pageable);
 
     long countByStatus(String status);

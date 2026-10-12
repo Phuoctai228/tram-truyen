@@ -10,6 +10,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script th:src="@{/js/authentication/tailwind-config.js}"></script>
     <link rel="stylesheet" th:href="@{/css/novel-admin.css}">
+    <link rel="stylesheet" th:href="@{/css/admin-common.css}">
     <style>
         .font-serif-title { font-family: 'Lora', serif; }
         .tab-active { border-bottom: 2px solid #bc7d39; color: #bc7d39; font-weight: 700; }
@@ -237,20 +238,54 @@
                 </table>
             </div>
 
-            <!-- Pagination Bar -->
-            <div class="p-4 bg-[#faf7f2] border-t border-[#eae2d5] flex items-center justify-between text-xs text-[#8a7664]">
-                <span>Phân trang báo cáo vi phạm</span>
-                <div class="flex items-center gap-2">
+            <!-- Table Footer & Pagination -->
+            <div class="px-6 py-4 bg-[#fffaf8] border-t border-[#ead8cb] flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="text-xs text-[#75695d]">
+                    <span th:if="${totalElements > 0}"
+                          th:text="'Hiển thị ' + (${currentPage * pageSize + 1}) + ' - ' + (${currentPage * pageSize + (activeTab == 'comment' ? (commentReports != null ? commentReports.numberOfElements : 0) : (contentReports != null ? contentReports.numberOfElements : 0))}) + ' trong tổng số ' + ${#numbers.formatDecimal(totalElements, 0, 'POINT', 0, 'POINT')} + ' báo cáo'">
+                    </span>
+                    <span th:if="${totalElements == 0}">Hiển thị 0 báo cáo</span>
+                </div>
+
+                <!-- Pagination controls -->
+                <div th:if="${totalPages > 1}" class="flex items-center gap-1.5">
+                    <!-- Prev Page -->
                     <a th:if="${currentPage > 0}"
                        th:href="@{/admin/reports(tab=${activeTab}, status=${currentStatus}, page=${currentPage - 1})}"
-                       class="px-3 py-1.5 rounded-lg bg-white border border-[#eae2d5] text-[#2b2118] hover:bg-[#f4ece1]">
-                        Trang trước
+                       class="w-8 h-8 rounded-lg border border-[#ead8cb] bg-white flex items-center justify-center text-xs font-bold text-[#524437] hover:bg-[#feeadc] transition-colors">
+                        &lt;
                     </a>
-                    <span th:text="'Trang ' + (${currentPage} + 1)">Trang 1</span>
-                    <a th:href="@{/admin/reports(tab=${activeTab}, status=${currentStatus}, page=${currentPage + 1})}"
-                       class="px-3 py-1.5 rounded-lg bg-white border border-[#eae2d5] text-[#2b2118] hover:bg-[#f4ece1]">
-                        Trang sau
+                    <span th:unless="${currentPage > 0}"
+                          class="w-8 h-8 rounded-lg border border-[#ead8cb] bg-gray-50 flex items-center justify-center text-xs font-bold text-gray-300 cursor-not-allowed">
+                        &lt;
+                    </span>
+
+                    <!-- Page Numbers -->
+                    <th:block th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                        <!-- Show first, last, and window around current page -->
+                        <th:block th:if="${i == 0 or i == totalPages - 1 or (i >= currentPage - 2 and i <= currentPage + 2)}">
+                            <a th:href="@{/admin/reports(tab=${activeTab}, status=${currentStatus}, page=${i})}"
+                               th:text="${i + 1}"
+                               class="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold transition-colors"
+                               th:classappend="${i == currentPage ? 'bg-[#875200] text-white shadow-sm' : 'border border-[#ead8cb] bg-white text-[#524437] hover:bg-[#feeadc]'}">
+                                1
+                            </a>
+                        </th:block>
+                        <th:block th:if="${(i == 1 and currentPage > 3) or (i == totalPages - 2 and currentPage < totalPages - 4)}">
+                            <span class="w-8 h-8 flex items-center justify-center text-xs text-[#75695d]">...</span>
+                        </th:block>
+                    </th:block>
+
+                    <!-- Next Page -->
+                    <a th:if="${currentPage < totalPages - 1}"
+                       th:href="@{/admin/reports(tab=${activeTab}, status=${currentStatus}, page=${currentPage + 1})}"
+                       class="w-8 h-8 rounded-lg border border-[#ead8cb] bg-white flex items-center justify-center text-xs font-bold text-[#524437] hover:bg-[#feeadc] transition-colors">
+                        &gt;
                     </a>
+                    <span th:unless="${currentPage < totalPages - 1}"
+                          class="w-8 h-8 rounded-lg border border-[#ead8cb] bg-gray-50 flex items-center justify-center text-xs font-bold text-gray-300 cursor-not-allowed">
+                        &gt;
+                    </span>
                 </div>
             </div>
         </div>
@@ -296,16 +331,16 @@
                     Biện pháp xử lý vi phạm
                 </label>
                 <div class="space-y-2">
-                    <label class="flex items-center gap-2.5 p-3 rounded-xl border border-[#eae2d5] hover:bg-[#faf7f2] cursor-pointer text-xs font-semibold text-[#2b2118]">
-                        <input type="radio" name="action" value="HIDE" class="text-[#bc7d39] focus:ring-[#bc7d39]" checked>
+                    <label class="flex items-center gap-3 p-3 rounded-xl border border-[#eae2d5] hover:bg-[#faf7f2] cursor-pointer text-xs font-semibold text-[#2b2118] transition-all">
+                        <input type="radio" name="action" value="HIDE" class="!w-4 !h-4 shrink-0 accent-[#875200] text-[#bc7d39] focus:ring-[#bc7d39] cursor-pointer" checked>
                         <span>Ẩn bình luận (status = HIDDEN)</span>
                     </label>
-                    <label class="flex items-center gap-2.5 p-3 rounded-xl border border-[#eae2d5] hover:bg-[#faf7f2] cursor-pointer text-xs font-semibold text-[#2b2118]">
-                        <input type="radio" name="action" value="DELETE" class="text-[#bc7d39] focus:ring-[#bc7d39]">
+                    <label class="flex items-center gap-3 p-3 rounded-xl border border-[#eae2d5] hover:bg-[#faf7f2] cursor-pointer text-xs font-semibold text-[#2b2118] transition-all">
+                        <input type="radio" name="action" value="DELETE" class="!w-4 !h-4 shrink-0 accent-[#875200] text-[#bc7d39] focus:ring-[#bc7d39] cursor-pointer">
                         <span>Xóa bình luận hoàn toàn (status = DELETED)</span>
                     </label>
-                    <label class="flex items-center gap-2.5 p-3 rounded-xl border border-[#eae2d5] hover:bg-[#faf7f2] cursor-pointer text-xs font-semibold text-[#2b2118]">
-                        <input type="radio" name="action" value="NO_CHANGE" class="text-[#bc7d39] focus:ring-[#bc7d39]">
+                    <label class="flex items-center gap-3 p-3 rounded-xl border border-[#eae2d5] hover:bg-[#faf7f2] cursor-pointer text-xs font-semibold text-[#2b2118] transition-all">
+                        <input type="radio" name="action" value="NO_CHANGE" class="!w-4 !h-4 shrink-0 accent-[#875200] text-[#bc7d39] focus:ring-[#bc7d39] cursor-pointer">
                         <span>Chỉ ghi nhận phản hồi, không đổi bình luận</span>
                     </label>
                 </div>
@@ -375,12 +410,12 @@
                     Biện pháp xử lý vi phạm nội dung
                 </label>
                 <div class="space-y-2">
-                    <label class="flex items-center gap-2.5 p-3 rounded-xl border border-[#eae2d5] hover:bg-[#faf7f2] cursor-pointer text-xs font-semibold text-[#2b2118]">
-                        <input type="radio" name="action" value="DRAFT_CHAPTER" class="text-[#bc7d39] focus:ring-[#bc7d39]" checked>
+                    <label class="flex items-center gap-3 p-3 rounded-xl border border-[#eae2d5] hover:bg-[#faf7f2] cursor-pointer text-xs font-semibold text-[#2b2118] transition-all">
+                        <input type="radio" name="action" value="DRAFT_CHAPTER" class="!w-4 !h-4 shrink-0 accent-[#875200] text-[#bc7d39] focus:ring-[#bc7d39] cursor-pointer" checked>
                         <span>Ẩn chương (Chuyển trạng thái sang DRAFT)</span>
                     </label>
-                    <label class="flex items-center gap-2.5 p-3 rounded-xl border border-[#eae2d5] hover:bg-[#faf7f2] cursor-pointer text-xs font-semibold text-[#2b2118]">
-                        <input type="radio" name="action" value="RECORD_ONLY" class="text-[#bc7d39] focus:ring-[#bc7d39]">
+                    <label class="flex items-center gap-3 p-3 rounded-xl border border-[#eae2d5] hover:bg-[#faf7f2] cursor-pointer text-xs font-semibold text-[#2b2118] transition-all">
+                        <input type="radio" name="action" value="RECORD_ONLY" class="!w-4 !h-4 shrink-0 accent-[#875200] text-[#bc7d39] focus:ring-[#bc7d39] cursor-pointer">
                         <span>Chỉ ghi nhận, không thay đổi nội dung</span>
                     </label>
                 </div>

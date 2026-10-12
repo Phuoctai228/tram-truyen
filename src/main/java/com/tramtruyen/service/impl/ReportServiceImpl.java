@@ -147,10 +147,23 @@ public class ReportServiceImpl implements ReportService {
         int safeSize = (size < 1 || size > 50) ? 10 : size;
         Pageable pageable = PageRequest.of(safePage, safeSize);
 
+        Page<CommentReport> result;
         if (status == null || status.isBlank() || "ALL".equalsIgnoreCase(status)) {
-            return commentReportRepository.findAllByOrderByCreatedAtDesc(pageable);
+            result = commentReportRepository.findAllByOrderByCreatedAtDesc(pageable);
+        } else {
+            result = commentReportRepository.findByStatusOrderByCreatedAtDesc(status.toUpperCase(), pageable);
         }
-        return commentReportRepository.findByStatusOrderByCreatedAtDesc(status.toUpperCase(), pageable);
+
+        if (safePage >= result.getTotalPages() && result.getTotalPages() > 0) {
+            int clampedPage = result.getTotalPages() - 1;
+            Pageable clampedPageable = PageRequest.of(clampedPage, safeSize);
+            if (status == null || status.isBlank() || "ALL".equalsIgnoreCase(status)) {
+                result = commentReportRepository.findAllByOrderByCreatedAtDesc(clampedPageable);
+            } else {
+                result = commentReportRepository.findByStatusOrderByCreatedAtDesc(status.toUpperCase(), clampedPageable);
+            }
+        }
+        return result;
     }
 
     @Override
@@ -160,10 +173,23 @@ public class ReportServiceImpl implements ReportService {
         int safeSize = (size < 1 || size > 50) ? 10 : size;
         Pageable pageable = PageRequest.of(safePage, safeSize);
 
+        Page<ContentReport> result;
         if (status == null || status.isBlank() || "ALL".equalsIgnoreCase(status)) {
-            return contentReportRepository.findAllByOrderByCreatedAtDesc(pageable);
+            result = contentReportRepository.findAllByOrderByCreatedAtDesc(pageable);
+        } else {
+            result = contentReportRepository.findByStatusOrderByCreatedAtDesc(status.toUpperCase(), pageable);
         }
-        return contentReportRepository.findByStatusOrderByCreatedAtDesc(status.toUpperCase(), pageable);
+
+        if (safePage >= result.getTotalPages() && result.getTotalPages() > 0) {
+            int clampedPage = result.getTotalPages() - 1;
+            Pageable clampedPageable = PageRequest.of(clampedPage, safeSize);
+            if (status == null || status.isBlank() || "ALL".equalsIgnoreCase(status)) {
+                result = contentReportRepository.findAllByOrderByCreatedAtDesc(clampedPageable);
+            } else {
+                result = contentReportRepository.findByStatusOrderByCreatedAtDesc(status.toUpperCase(), clampedPageable);
+            }
+        }
+        return result;
     }
 
     @Override
