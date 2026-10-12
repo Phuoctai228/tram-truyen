@@ -44,7 +44,9 @@ public class NotificationAdminController {
         }
 
         model.addAttribute("history", recentHistory);
-        model.addAttribute("currentPage", page);
+        model.addAttribute("currentPage", recentHistory.getNumber());
+        model.addAttribute("totalPages", recentHistory.getTotalPages());
+        model.addAttribute("totalElements", recentHistory.getTotalElements());
         model.addAttribute("pageSize", size);
         model.addAttribute("pageTitle", "Gửi thông báo hệ thống | Trạm Truyện Admin");
 

@@ -1,433 +1,536 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${pageTitle}">Gửi thông báo hệ thống | Trạm Truyện Admin</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,600;0,700;1,600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script th:src="@{/js/authentication/tailwind-config.js}"></script>
     <link rel="stylesheet" th:href="@{/css/novel-admin.css}">
     <style>
-        .font-serif-title { font-family: 'Lora', serif; }
-        .scope-card.selected { border-color: #d97706; background-color: #fff9f0; }
+        .font-serif-title {
+            font-family: 'Lora', serif;
+        }
+
+        .scope-card.selected {
+            border-color: #d97706;
+            background-color: #fff9f0;
+        }
     </style>
 </head>
+
 <body class="bg-[#fff8f5] text-[#231a11] font-sans antialiased min-h-screen">
 
-<!-- Admin Sidebar (Reusing layout.html) -->
-<div th:replace="~{admin/fragments/layout :: sidebar('thong-bao')}"></div>
+    <!-- Admin Sidebar (Reusing layout.html) -->
+    <div th:replace="~{admin/fragments/layout :: sidebar('thong-bao')}"></div>
 
-<main class="page-shell">
-    <!-- Admin Topbar (Reusing layout.html) -->
-    <div th:replace="~{admin/fragments/layout :: topbar}"></div>
+    <main class="page-shell">
+        <!-- Admin Topbar (Reusing layout.html) -->
+        <div th:replace="~{admin/fragments/layout :: topbar}"></div>
 
-    <section class="content max-w-7xl mx-auto px-4 md:px-8 py-8 space-y-8">
+        <section class="content max-w-7xl mx-auto px-4 md:px-8 py-8 space-y-8">
 
-        <!-- Breadcrumb & Page Heading -->
-        <div>
-            <div class="flex items-center gap-2 text-xs font-semibold text-[#8a7664] mb-2">
-                <span>Quản trị viên</span>
-                <span>›</span>
-                <span>Truyền thông</span>
-                <span>›</span>
-                <span class="text-[#bc7d39] font-bold">Gửi thông báo</span>
+            <!-- Breadcrumb & Page Heading -->
+            <div>
+                <div class="flex items-center gap-2 text-xs font-semibold text-[#8a7664] mb-2">
+                    <span class="text-[#bc7d39] font-bold">Gửi thông báo</span>
+                </div>
+                <h1 class="font-serif-title text-3xl font-bold text-[#231a11] tracking-tight mb-1">
+                    Gửi thông báo hệ thống
+                </h1>
+                <p class="text-sm text-[#75695d]">
+                    Soạn thảo văn thư, thông điệp sự kiện và tri ân thành viên trong không gian Trạm Truyện.
+                </p>
             </div>
-            <h1 class="font-serif-title text-3xl font-bold text-[#231a11] tracking-tight mb-1">
-                Gửi thông báo hệ thống
-            </h1>
-            <p class="text-sm text-[#75695d]">
-                Soạn thảo văn thư, thông điệp sự kiện và tri ân thành viên trong không gian Trạm Truyện.
-            </p>
-        </div>
 
 
-        <!-- Main Form & Preview Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <!-- Main Form & Preview Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
-            <!-- Left: Compose Form (8 Cols) -->
-            <div class="lg:col-span-8 bg-white p-6 sm:p-8 rounded-2xl border border-[#eae2d5] shadow-sm space-y-6">
-                <form th:action="@{/admin/notifications/send}" th:object="${sendRequest}" method="post" id="notificationForm" class="space-y-6">
+                <!-- Left: Compose Form (8 Cols) -->
+                <div class="lg:col-span-8 bg-white p-6 sm:p-8 rounded-2xl border border-[#eae2d5] shadow-sm space-y-6">
+                    <form th:action="@{/admin/notifications/send}" th:object="${sendRequest}" method="post"
+                        id="notificationForm" class="space-y-6">
 
-                    <!-- 1. Scope Selection -->
-                    <div>
-                        <div class="flex items-center justify-between mb-3">
-                            <label class="text-sm font-bold text-[#2b2118] flex items-center gap-2">
-                                <span class="material-symbols-outlined text-[18px] text-[#bc7d39]">group</span>
-                                <span>Đối tượng người nhận</span>
-                            </label>
-                            <span class="text-xs font-semibold text-red-600">Bắt buộc</span>
-                        </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <!-- All Users Option -->
-                            <label class="scope-card border-2 border-[#eae2d5] rounded-xl p-4 flex items-start gap-3 cursor-pointer transition-all hover:border-[#bc7d39]"
-                                   id="scopeAllCard">
-                                <input type="radio" th:field="*{scope}" value="ALL" class="mt-1 text-[#bc7d39] focus:ring-[#bc7d39]" onchange="toggleScope('ALL')">
-                                <div>
-                                    <span class="text-sm font-bold text-[#2b2118] block">Toàn hệ thống</span>
-                                    <span class="text-xs text-[#8a7664] mt-0.5 block">Tất cả độc giả & dịch giả trên hệ thống</span>
-                                </div>
-                            </label>
-
-                            <!-- Specific User Option -->
-                            <label class="scope-card border-2 border-[#eae2d5] rounded-xl p-4 flex items-start gap-3 cursor-pointer transition-all hover:border-[#bc7d39]"
-                                   id="scopeSpecificCard">
-                                <input type="radio" th:field="*{scope}" value="SPECIFIC" class="mt-1 text-[#bc7d39] focus:ring-[#bc7d39]" onchange="toggleScope('SPECIFIC')">
-                                <div>
-                                    <span class="text-sm font-bold text-[#2b2118] block">Người dùng cụ thể •</span>
-                                    <span class="text-xs text-[#8a7664] mt-0.5 block">Chọn theo ID, hộp thư cá nhân</span>
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Autocomplete Recipient Search (Hidden if ALL) -->
-                    <div id="recipientSearchContainer" class="space-y-3 p-4 bg-[#faf7f2] rounded-xl border border-[#eae2d5] hidden">
-                        <label class="text-xs font-bold text-[#8a7664] uppercase tracking-wider block">
-                            Tìm và chọn độc giả nhận thư
-                        </label>
-                        <div class="relative">
-                            <div class="flex items-center gap-2 border border-[#eae2d5] bg-white rounded-xl px-3 py-2">
-                                <span class="material-symbols-outlined text-[#8a7664] text-[20px]">search</span>
-                                <input type="text" id="userSearchInput" placeholder="Tìm theo tên người dùng, email, ID độc giả..."
-                                       autocomplete="off"
-                                       class="w-full text-sm bg-transparent focus:outline-none text-[#2b2118]">
-                                <span id="searchSpinner" class="hidden text-xs text-[#bc7d39] font-medium">Đang tìm...</span>
+                        <!-- 1. Scope Selection -->
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <label class="text-sm font-bold text-[#2b2118] flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-[18px] text-[#bc7d39]">group</span>
+                                    <span>Đối tượng người nhận</span>
+                                </label>
+                                <span class="text-xs font-semibold text-red-600">Bắt buộc</span>
                             </div>
 
-                            <!-- Autocomplete Dropdown -->
-                            <div id="autocompleteDropdown"
-                                 class="hidden absolute left-0 right-0 top-full mt-1 bg-white rounded-xl border border-[#eae2d5] shadow-lg max-h-60 overflow-y-auto z-50 divide-y divide-[#f2ebe1]">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <!-- All Users Option -->
+                                <label
+                                    class="scope-card border-2 border-[#eae2d5] rounded-xl p-4 flex items-start gap-3 cursor-pointer transition-all hover:border-[#bc7d39]"
+                                    id="scopeAllCard">
+                                    <input type="radio" th:field="*{scope}" value="ALL"
+                                        class="mt-1 text-[#bc7d39] focus:ring-[#bc7d39]" onchange="toggleScope('ALL')">
+                                    <div>
+                                        <span class="text-sm font-bold text-[#2b2118] block">Toàn hệ thống</span>
+                                        <span class="text-xs text-[#8a7664] mt-0.5 block">Tất cả độc giả & dịch giả trên
+                                            hệ thống</span>
+                                    </div>
+                                </label>
+
+                                <!-- Specific User Option -->
+                                <label
+                                    class="scope-card border-2 border-[#eae2d5] rounded-xl p-4 flex items-start gap-3 cursor-pointer transition-all hover:border-[#bc7d39]"
+                                    id="scopeSpecificCard">
+                                    <input type="radio" th:field="*{scope}" value="SPECIFIC"
+                                        class="mt-1 text-[#bc7d39] focus:ring-[#bc7d39]"
+                                        onchange="toggleScope('SPECIFIC')">
+                                    <div>
+                                        <span class="text-sm font-bold text-[#2b2118] block">Người dùng cụ thể •</span>
+                                        <span class="text-xs text-[#8a7664] mt-0.5 block">Chọn theo ID, hộp thư cá
+                                            nhân</span>
+                                    </div>
+                                </label>
                             </div>
                         </div>
 
-                        <!-- Selected Recipient Tag -->
-                        <div id="selectedRecipientBadge" class="hidden flex items-center gap-2 pt-1">
-                            <div class="inline-flex items-center gap-2 bg-[#f4ece1] border border-[#eae2d5] px-3 py-1.5 rounded-full text-xs font-semibold text-[#875200]">
-                                <span class="material-symbols-outlined text-[16px]">account_circle</span>
-                                <span id="recipientDisplayName">Chưa chọn</span>
-                                <button type="button" onclick="clearSelectedRecipient()" class="text-[#8a7664] hover:text-red-600 transition-colors ml-1">
-                                    <span class="material-symbols-outlined text-[16px]">close</span>
+                        <!-- Autocomplete Recipient Search (Hidden if ALL) -->
+                        <div id="recipientSearchContainer"
+                            class="space-y-3 p-4 bg-[#faf7f2] rounded-xl border border-[#eae2d5] hidden">
+                            <label class="text-xs font-bold text-[#8a7664] uppercase tracking-wider block">
+                                Tìm và chọn độc giả nhận thư
+                            </label>
+                            <div class="relative">
+                                <div
+                                    class="flex items-center gap-2 border border-[#eae2d5] bg-white rounded-xl px-3 py-2">
+                                    <span class="material-symbols-outlined text-[#8a7664] text-[20px]">search</span>
+                                    <input type="text" id="userSearchInput"
+                                        placeholder="Tìm theo tên người dùng, email, ID độc giả..." autocomplete="off"
+                                        class="w-full text-sm bg-transparent focus:outline-none text-[#2b2118]">
+                                    <span id="searchSpinner" class="hidden text-xs text-[#bc7d39] font-medium">Đang
+                                        tìm...</span>
+                                </div>
+
+                                <!-- Autocomplete Dropdown -->
+                                <div id="autocompleteDropdown"
+                                    class="hidden absolute left-0 right-0 top-full mt-1 bg-white rounded-xl border border-[#eae2d5] shadow-lg max-h-60 overflow-y-auto z-50 divide-y divide-[#f2ebe1]">
+                                </div>
+                            </div>
+
+                            <!-- Selected Recipient Tag -->
+                            <div id="selectedRecipientBadge" class="hidden flex items-center gap-2 pt-1">
+                                <div
+                                    class="inline-flex items-center gap-2 bg-[#f4ece1] border border-[#eae2d5] px-3 py-1.5 rounded-full text-xs font-semibold text-[#875200]">
+                                    <span class="material-symbols-outlined text-[16px]">account_circle</span>
+                                    <span id="recipientDisplayName">Chưa chọn</span>
+                                    <button type="button" onclick="clearSelectedRecipient()"
+                                        class="text-[#8a7664] hover:text-red-600 transition-colors ml-1">
+                                        <span class="material-symbols-outlined text-[16px]">close</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <input type="hidden" th:field="*{recipientId}" id="recipientIdInput">
+                        </div>
+
+
+
+                        <!-- 3. Title -->
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <label class="text-sm font-bold text-[#2b2118] flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-[18px] text-[#bc7d39]">title</span>
+                                    <span>Tiêu đề thông báo</span>
+                                </label>
+                                <span id="titleCounter" class="text-xs text-[#8a7664]">0/255 ký tự</span>
+                            </div>
+                            <input type="text" th:field="*{title}" id="titleInput" maxlength="255" required
+                                placeholder="Nhập tiêu đề thông báo..."
+                                class="w-full px-4 py-2.5 rounded-xl border border-[#eae2d5] bg-white text-sm font-medium text-[#2b2118] focus:outline-none focus:ring-2 focus:ring-[#bc7d39]">
+                            <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}"
+                                class="text-xs text-red-600 mt-1"></p>
+                        </div>
+
+                        <!-- 4. Content Textarea -->
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <label class="text-sm font-bold text-[#2b2118] flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-[18px] text-[#bc7d39]">article</span>
+                                    <span>Nội dung văn thư</span>
+                                </label>
+                                <span id="contentCounter" class="text-xs text-[#8a7664]">0/2000 ký tự</span>
+                            </div>
+
+                            <!-- Formatting Toolbar Helper -->
+                            <div
+                                class="flex items-center gap-1 p-2 bg-[#faf7f2] border border-[#eae2d5] rounded-t-xl text-[#6b5849]">
+                                <button type="button" onclick="insertFormat('**', '**')" title="In đậm"
+                                    class="p-1 hover:bg-[#eae2d5] rounded"><span
+                                        class="material-symbols-outlined text-[18px]">format_bold</span></button>
+                                <button type="button" onclick="insertFormat('*', '*')" title="In nghiêng"
+                                    class="p-1 hover:bg-[#eae2d5] rounded"><span
+                                        class="material-symbols-outlined text-[18px]">format_italic</span></button>
+                                <button type="button" onclick="insertFormat('• ', '')" title="Danh sách"
+                                    class="p-1 hover:bg-[#eae2d5] rounded"><span
+                                        class="material-symbols-outlined text-[18px]">format_list_bulleted</span></button>
+                                <button type="button" onclick="insertFormat('&gt; ', '')" title="Trích dẫn"
+                                    class="p-1 hover:bg-[#eae2d5] rounded"><span
+                                        class="material-symbols-outlined text-[18px]">format_quote</span></button>
+                            </div>
+
+                            <textarea th:field="*{content}" id="contentInput" rows="7" maxlength="2000" required
+                                placeholder="Soạn nội dung thông điệp gửi tới độc giả..."
+                                class="w-full px-4 py-3 border border-t-0 border-[#eae2d5] rounded-b-xl bg-white text-sm text-[#2b2118] leading-relaxed focus:outline-none focus:ring-2 focus:ring-[#bc7d39]"></textarea>
+                            <p th:if="${#fields.hasErrors('content')}" th:errors="*{content}"
+                                class="text-xs text-red-600 mt-1"></p>
+                        </div>
+
+
+
+                        <!-- 6. Action Buttons -->
+                        <div class="pt-4 border-t border-[#eae2d5] flex flex-wrap items-center justify-between gap-4">
+                            <button type="reset" onclick="resetForm()"
+                                class="px-5 py-2.5 rounded-xl border border-[#eae2d5] text-[#6b5849] hover:bg-[#faf7f2] text-sm font-semibold transition-colors">
+                                Hủy bỏ
+                            </button>
+                            <div class="flex items-center gap-3">
+                                <button type="button" onclick="updatePreview()"
+                                    class="px-5 py-2.5 rounded-xl bg-[#f4ece1] text-[#875200] hover:bg-[#eae2d5] text-sm font-semibold transition-colors flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                    <span>Xem trước</span>
+                                </button>
+                                <button type="submit"
+                                    class="px-6 py-2.5 rounded-xl bg-[#d97706] hover:bg-[#b45309] text-white text-sm font-bold transition-colors shadow-md flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-[18px]">send</span>
+                                    <span>Gửi thông báo ngay</span>
                                 </button>
                             </div>
                         </div>
+                    </form>
+                </div>
 
-                        <input type="hidden" th:field="*{recipientId}" id="recipientIdInput">
-                    </div>
+                <!-- Right: Preview & Guidelines (4 Cols) -->
+                <div class="lg:col-span-4 space-y-6">
 
-
-
-                    <!-- 3. Title -->
-                    <div>
-                        <div class="flex items-center justify-between mb-2">
-                            <label class="text-sm font-bold text-[#2b2118] flex items-center gap-2">
-                                <span class="material-symbols-outlined text-[18px] text-[#bc7d39]">title</span>
-                                <span>Tiêu đề thông báo</span>
-                            </label>
-                            <span id="titleCounter" class="text-xs text-[#8a7664]">0/255 ký tự</span>
-                        </div>
-                        <input type="text" th:field="*{title}" id="titleInput" maxlength="255" required
-                               placeholder="Nhập tiêu đề thông báo..."
-                               class="w-full px-4 py-2.5 rounded-xl border border-[#eae2d5] bg-white text-sm font-medium text-[#2b2118] focus:outline-none focus:ring-2 focus:ring-[#bc7d39]">
-                        <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="text-xs text-red-600 mt-1"></p>
-                    </div>
-
-                    <!-- 4. Content Textarea -->
-                    <div>
-                        <div class="flex items-center justify-between mb-2">
-                            <label class="text-sm font-bold text-[#2b2118] flex items-center gap-2">
-                                <span class="material-symbols-outlined text-[18px] text-[#bc7d39]">article</span>
-                                <span>Nội dung văn thư</span>
-                            </label>
-                            <span id="contentCounter" class="text-xs text-[#8a7664]">0/2000 ký tự</span>
+                    <!-- Live Preview Card -->
+                    <div class="bg-white p-6 rounded-2xl border border-[#eae2d5] shadow-sm space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold uppercase tracking-wider text-[#8a7664]">XEM TRƯỚC THÔNG BÁO
+                                ĐỘC GIẢ</span>
+                            <span
+                                class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#f4ece1] text-[#875200]">Trực
+                                quan</span>
                         </div>
 
-                        <!-- Formatting Toolbar Helper -->
-                        <div class="flex items-center gap-1 p-2 bg-[#faf7f2] border border-[#eae2d5] rounded-t-xl text-[#6b5849]">
-                            <button type="button" onclick="insertFormat('**', '**')" title="In đậm" class="p-1 hover:bg-[#eae2d5] rounded"><span class="material-symbols-outlined text-[18px]">format_bold</span></button>
-                            <button type="button" onclick="insertFormat('*', '*')" title="In nghiêng" class="p-1 hover:bg-[#eae2d5] rounded"><span class="material-symbols-outlined text-[18px]">format_italic</span></button>
-                            <button type="button" onclick="insertFormat('• ', '')" title="Danh sách" class="p-1 hover:bg-[#eae2d5] rounded"><span class="material-symbols-outlined text-[18px]">format_list_bulleted</span></button>
-                            <button type="button" onclick="insertFormat('&gt; ', '')" title="Trích dẫn" class="p-1 hover:bg-[#eae2d5] rounded"><span class="material-symbols-outlined text-[18px]">format_quote</span></button>
-                        </div>
-
-                        <textarea th:field="*{content}" id="contentInput" rows="7" maxlength="2000" required
-                                  placeholder="Soạn nội dung thông điệp gửi tới độc giả..."
-                                  class="w-full px-4 py-3 border border-t-0 border-[#eae2d5] rounded-b-xl bg-white text-sm text-[#2b2118] leading-relaxed focus:outline-none focus:ring-2 focus:ring-[#bc7d39]"></textarea>
-                        <p th:if="${#fields.hasErrors('content')}" th:errors="*{content}" class="text-xs text-red-600 mt-1"></p>
-                    </div>
-
-
-
-                    <!-- 6. Action Buttons -->
-                    <div class="pt-4 border-t border-[#eae2d5] flex flex-wrap items-center justify-between gap-4">
-                        <button type="reset" onclick="resetForm()" class="px-5 py-2.5 rounded-xl border border-[#eae2d5] text-[#6b5849] hover:bg-[#faf7f2] text-sm font-semibold transition-colors">
-                            Hủy bỏ
-                        </button>
-                        <div class="flex items-center gap-3">
-                            <button type="button" onclick="updatePreview()" class="px-5 py-2.5 rounded-xl bg-[#f4ece1] text-[#875200] hover:bg-[#eae2d5] text-sm font-semibold transition-colors flex items-center gap-2">
-                                <span class="material-symbols-outlined text-[18px]">visibility</span>
-                                <span>Xem trước</span>
-                            </button>
-                            <button type="submit" class="px-6 py-2.5 rounded-xl bg-[#d97706] hover:bg-[#b45309] text-white text-sm font-bold transition-colors shadow-md flex items-center gap-2">
-                                <span class="material-symbols-outlined text-[18px]">send</span>
-                                <span>Gửi thông báo ngay</span>
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Right: Preview & Guidelines (4 Cols) -->
-            <div class="lg:col-span-4 space-y-6">
-
-                <!-- Live Preview Card -->
-                <div class="bg-white p-6 rounded-2xl border border-[#eae2d5] shadow-sm space-y-4">
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs font-bold uppercase tracking-wider text-[#8a7664]">XEM TRƯỚC THÔNG BÁO ĐỘC GIẢ</span>
-                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#f4ece1] text-[#875200]">Trực quan</span>
-                    </div>
-
-                    <!-- Mini Notification Card Preview -->
-                    <div class="p-4 rounded-xl bg-[#fffaf4] border border-[#f4ece1] space-y-2.5 shadow-sm">
-                        <div class="flex items-center justify-between text-xs">
-                            <div class="flex items-center gap-2 font-bold text-[#875200]">
-                                <span class="material-symbols-outlined text-[18px]">auto_stories</span>
-                                <span>Trạm Truyện</span>
+                        <!-- Mini Notification Card Preview -->
+                        <div class="p-4 rounded-xl bg-[#fffaf4] border border-[#f4ece1] space-y-2.5 shadow-sm">
+                            <div class="flex items-center justify-between text-xs">
+                                <div class="flex items-center gap-2 font-bold text-[#875200]">
+                                    <span class="material-symbols-outlined text-[18px]">auto_stories</span>
+                                    <span>Trạm Truyện</span>
+                                </div>
+                                <span class="text-[11px] text-[#a4917f]">Vừa xong</span>
                             </div>
-                            <span class="text-[11px] text-[#a4917f]">Vừa xong</span>
+                            <h4 id="previewTitle" class="text-sm font-bold text-[#2b2118] line-clamp-1">
+                                Tiêu đề thông báo xem trước
+                            </h4>
+                            <p id="previewContent" class="text-xs text-[#6b5849] line-clamp-3 leading-relaxed">
+                                Nội dung bức thư sẽ xuất hiện tại đây khi bạn nhập vào biểu mẫu soạn thảo bên cạnh...
+                            </p>
+                            <div class="pt-2 text-right">
+                                <span class="text-xs font-semibold text-[#bc7d39] inline-flex items-center gap-1">
+                                    Đọc thư <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                                </span>
+                            </div>
                         </div>
-                        <h4 id="previewTitle" class="text-sm font-bold text-[#2b2118] line-clamp-1">
-                            Tiêu đề thông báo xem trước
-                        </h4>
-                        <p id="previewContent" class="text-xs text-[#6b5849] line-clamp-3 leading-relaxed">
-                            Nội dung bức thư sẽ xuất hiện tại đây khi bạn nhập vào biểu mẫu soạn thảo bên cạnh...
+                        <p class="text-[11px] text-[#8a7664] italic text-center">
+                            Thông báo này sẽ xuất hiện trên hòm thư cá nhân và biểu tượng chuông thông báo trên website.
                         </p>
-                        <div class="pt-2 text-right">
-                            <span class="text-xs font-semibold text-[#bc7d39] inline-flex items-center gap-1">
-                                Đọc thư <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
-                            </span>
-                        </div>
                     </div>
-                    <p class="text-[11px] text-[#8a7664] italic text-center">
-                        Thông báo này sẽ xuất hiện trên hòm thư cá nhân và biểu tượng chuông thông báo trên website.
-                    </p>
+
+                    <!-- Guidelines Card -->
+                    <div class="bg-white p-6 rounded-2xl border border-[#eae2d5] shadow-sm space-y-3">
+                        <h4 class="font-bold text-sm text-[#2b2118] flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[#bc7d39] text-[20px]">lightbulb</span>
+                            <span>Quy chuẩn văn phong Trạm Truyện</span>
+                        </h4>
+                        <ul class="text-xs text-[#6b5849] space-y-2.5 leading-relaxed">
+                            <li class="flex items-start gap-2">
+                                <span
+                                    class="material-symbols-outlined text-emerald-600 text-[16px] shrink-0 mt-0.5">check</span>
+                                <span>Dùng lời xưng hô nhã nhặn ("Bạn đọc", "Quý độc giả", "Độc giả tri âm").</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span
+                                    class="material-symbols-outlined text-emerald-600 text-[16px] shrink-0 mt-0.5">check</span>
+                                <span>Tránh viết hoa toàn bộ tựa đề để bảo toàn nét thanh lịch thư hương.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+
+
                 </div>
-
-                <!-- Guidelines Card -->
-                <div class="bg-white p-6 rounded-2xl border border-[#eae2d5] shadow-sm space-y-3">
-                    <h4 class="font-bold text-sm text-[#2b2118] flex items-center gap-2">
-                        <span class="material-symbols-outlined text-[#bc7d39] text-[20px]">lightbulb</span>
-                        <span>Quy chuẩn văn phong Trạm Truyện</span>
-                    </h4>
-                    <ul class="text-xs text-[#6b5849] space-y-2.5 leading-relaxed">
-                        <li class="flex items-start gap-2">
-                            <span class="material-symbols-outlined text-emerald-600 text-[16px] shrink-0 mt-0.5">check</span>
-                            <span>Dùng lời xưng hô nhã nhặn ("Bạn đọc", "Quý độc giả", "Độc giả tri âm").</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span class="material-symbols-outlined text-emerald-600 text-[16px] shrink-0 mt-0.5">check</span>
-                            <span>Tránh viết hoa toàn bộ tựa đề để bảo toàn nét thanh lịch thư hương.</span>
-                        </li>
-                    </ul>
-                </div>
-
-
-
-            </div>
-        </div>
-
-        <!-- Recent Notifications History Table -->
-        <div class="bg-white rounded-2xl border border-[#eae2d5] shadow-sm p-6 space-y-4">
-            <div class="flex items-center justify-between">
-                <h3 class="font-bold text-base text-[#2b2118] flex items-center gap-2">
-                    <span class="material-symbols-outlined text-[#bc7d39] text-[20px]">history</span>
-                    <span>Lịch sử gửi thông báo gần đây</span>
-                </h3>
             </div>
 
-            <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm">
-                    <thead>
-                        <tr class="border-b border-[#eae2d5] text-xs font-bold text-[#8a7664] uppercase tracking-wider bg-[#faf7f2]">
-                            <th class="py-3 px-4">Tiêu đề thông báo</th>
-                            <th class="py-3 px-4">Đối tượng nhận</th>
-                            <th class="py-3 px-4">Thời gian gửi</th>
-                            <th class="py-3 px-4 text-right">Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-[#f2ebe1]">
-                        <th:block th:if="${history != null and !#lists.isEmpty(history.content)}">
-                            <tr th:each="item : ${history.content}" class="hover:bg-[#faf7f2] transition-colors">
-                                <td class="py-3.5 px-4 font-medium text-[#2b2118] max-w-xs truncate" th:text="${item.title}">
-                                    Tiêu đề
-                                </td>
-                                <td class="py-3.5 px-4">
-                                    <span th:if="${item.isSystem}" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-[#f4ece1] text-[#875200]">
-                                        Toàn hệ thống
-                                    </span>
-                                    <span th:unless="${item.isSystem}" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-[#e9ecef] text-[#495057]"
-                                          th:text="${item.recipientName}">
-                                        Tên người nhận
-                                    </span>
-                                </td>
-                                <td class="py-3.5 px-4 text-xs text-[#8a7664]" th:text="${item.timeFormatted}">
-                                    10:30 - 24/05/2026
-                                </td>
-                                <td class="py-3.5 px-4 text-right">
-                                    <button type="button"
+            <!-- Recent Notifications History Table -->
+            <div class="bg-white rounded-2xl border border-[#eae2d5] shadow-sm p-6 space-y-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-bold text-base text-[#2b2118] flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[#bc7d39] text-[20px]">history</span>
+                        <span>Lịch sử gửi thông báo gần đây</span>
+                    </h3>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead>
+                            <tr
+                                class="border-b border-[#eae2d5] text-xs font-bold text-[#8a7664] uppercase tracking-wider bg-[#faf7f2]">
+                                <th class="py-3 px-4">Tiêu đề thông báo</th>
+                                <th class="py-3 px-4">Đối tượng nhận</th>
+                                <th class="py-3 px-4">Thời gian gửi</th>
+                                <th class="py-3 px-4 text-right">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-[#f2ebe1]">
+                            <th:block th:if="${history != null and !#lists.isEmpty(history.content)}">
+                                <tr th:each="item : ${history.content}" class="hover:bg-[#faf7f2] transition-colors">
+                                    <td class="py-3.5 px-4 font-medium text-[#2b2118] max-w-xs truncate"
+                                        th:text="${item.title}">
+                                        Tiêu đề
+                                    </td>
+                                    <td class="py-3.5 px-4">
+                                        <span th:if="${item.isSystem}"
+                                            class="px-2.5 py-1 rounded-full text-xs font-semibold bg-[#f4ece1] text-[#875200]">
+                                            Toàn hệ thống
+                                        </span>
+                                        <span th:unless="${item.isSystem}"
+                                            class="px-2.5 py-1 rounded-full text-xs font-semibold bg-[#e9ecef] text-[#495057]"
+                                            th:text="${item.recipientName}">
+                                            Tên người nhận
+                                        </span>
+                                    </td>
+                                    <td class="py-3.5 px-4 text-xs text-[#8a7664]" th:text="${item.timeFormatted}">
+                                        10:30 - 24/05/2026
+                                    </td>
+                                    <td class="py-3.5 px-4 text-right">
+                                        <button type="button"
                                             class="history-action-btn p-1.5 rounded-lg text-[#a4917f] hover:text-[#2b2118] hover:bg-[#eae2d5] transition-colors focus:outline-none"
-                                            title="Thao tác"
-                                            onclick="openHistoryMenu(this, event)"
-                                            th:data-title="${item.title}"
-                                            th:data-content="${item.content}"
+                                            title="Thao tác" onclick="openHistoryMenu(this, event)"
+                                            th:data-title="${item.title}" th:data-content="${item.content}"
                                             th:data-recipient="${item.isSystem ? 'Toàn hệ thống' : (item.recipientName + (item.recipientEmail != null ? ' (' + item.recipientEmail + ')' : ''))}"
                                             th:data-time="${item.sentTimeFormatted}">
-                                        <span class="material-symbols-outlined text-[18px] block">more_vert</span>
-                                    </button>
+                                            <span class="material-symbols-outlined text-[18px] block">more_vert</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </th:block>
+                            <tr th:if="${history == null or #lists.isEmpty(history.content)}">
+                                <td colspan="4" class="py-8 text-center text-xs text-[#8a7664]">
+                                    Chưa có thông báo nào được gửi gần đây.
                                 </td>
                             </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Table Footer & Pagination -->
+                <div class="px-6 py-4 bg-[#fffaf8] border-t border-[#ead8cb] flex flex-col md:flex-row items-center justify-between gap-4 -mx-6 -mb-6 mt-4 rounded-b-2xl">
+                    <div class="text-xs text-[#75695d]">
+                        <span th:if="${totalElements > 0}"
+                              th:text="'Hiển thị ' + (${currentPage * pageSize + 1}) + ' - ' + (${currentPage * pageSize + history.numberOfElements}) + ' trong tổng số ' + ${#numbers.formatDecimal(totalElements, 0, 'POINT', 0, 'POINT')} + ' thông báo'">
+                        </span>
+                        <span th:if="${totalElements == 0}">Hiển thị 0 thông báo</span>
+                    </div>
+
+                    <!-- Pagination controls -->
+                    <div th:if="${totalPages > 1}" class="flex items-center gap-1.5">
+                        <!-- Prev Page -->
+                        <a th:if="${currentPage > 0}"
+                           th:href="@{/admin/notifications(page=${currentPage - 1})}"
+                           class="w-8 h-8 rounded-lg border border-[#ead8cb] bg-white flex items-center justify-center text-xs font-bold text-[#524437] hover:bg-[#feeadc] transition-colors">
+                            &lt;
+                        </a>
+                        <span th:unless="${currentPage > 0}"
+                              class="w-8 h-8 rounded-lg border border-[#ead8cb] bg-gray-50 flex items-center justify-center text-xs font-bold text-gray-300 cursor-not-allowed">
+                            &lt;
+                        </span>
+
+                        <!-- Page Numbers -->
+                        <th:block th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                            <!-- Show first, last, and window around current page -->
+                            <th:block th:if="${i == 0 or i == totalPages - 1 or (i >= currentPage - 2 and i <= currentPage + 2)}">
+                                <a th:href="@{/admin/notifications(page=${i})}"
+                                   th:text="${i + 1}"
+                                   class="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold transition-colors"
+                                   th:classappend="${i == currentPage ? 'bg-[#875200] text-white shadow-sm' : 'border border-[#ead8cb] bg-white text-[#524437] hover:bg-[#feeadc]'}">
+                                    1
+                                </a>
+                            </th:block>
+                            <th:block th:if="${(i == 1 and currentPage > 3) or (i == totalPages - 2 and currentPage < totalPages - 4)}">
+                                <span class="w-8 h-8 flex items-center justify-center text-xs text-[#75695d]">...</span>
+                            </th:block>
                         </th:block>
-                        <tr th:if="${history == null or #lists.isEmpty(history.content)}">
-                            <td colspan="4" class="py-8 text-center text-xs text-[#8a7664]">
-                                Chưa có thông báo nào được gửi gần đây.
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
 
-        <!-- Floating Dropdown Menu for History Actions (position fixed để không bị cắt bởi overflow-x-auto) -->
-        <div id="historyActionDropdown" class="fixed hidden z-50 w-44 bg-white rounded-xl shadow-xl border border-[#eae2d5] py-1.5 text-left animate-fade-in">
-            <button type="button" onclick="handleMenuDetail()"
-                    class="w-full px-3.5 py-2 text-xs font-medium text-[#2b2118] hover:bg-[#faf7f2] flex items-center gap-2 transition-colors">
-                <span class="material-symbols-outlined text-[16px] text-[#bc7d39]">visibility</span>
-                <span>Xem chi tiết</span>
-            </button>
-            <button type="button" onclick="handleMenuTemplate()"
-                    class="w-full px-3.5 py-2 text-xs font-medium text-[#2b2118] hover:bg-[#faf7f2] flex items-center gap-2 transition-colors">
-                <span class="material-symbols-outlined text-[16px] text-[#875200]">edit_note</span>
-                <span>Dùng làm mẫu</span>
-            </button>
-        </div>
-
-        <!-- Modal: Xem chi tiết thông báo đã gửi (UC-44) -->
-        <div id="notificationDetailModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm hidden animate-fade-in p-4">
-            <div id="notificationDetailModalCard" class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-[#eae2d5] space-y-5 max-h-[90vh] flex flex-col">
-                <!-- Header -->
-                <div class="flex items-center justify-between pb-3 border-b border-[#eae2d5]">
-                    <h3 class="font-bold text-lg text-[#2b2118] flex items-center gap-2">
-                        <span class="material-symbols-outlined text-[#bc7d39]">mail</span>
-                        <span>Chi tiết thông báo đã gửi</span>
-                    </h3>
-                    <button type="button" onclick="closeDetailModal()" class="text-[#8a7664] hover:text-[#2b2118] p-1 rounded-lg hover:bg-[#faf7f2] transition-colors" title="Đóng">
-                        <span class="material-symbols-outlined text-[22px]">close</span>
-                    </button>
-                </div>
-
-                <!-- Meta info -->
-                <div class="p-4 rounded-xl bg-[#faf6f0] border border-[#f0e8dc] space-y-2 text-xs">
-                    <div class="flex items-center justify-between">
-                        <span class="text-[#8a7664]">Đối tượng nhận:</span>
-                        <span id="detailRecipient" class="font-bold text-[#875200]">Toàn hệ thống</span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span class="text-[#8a7664]">Thời gian gửi:</span>
-                        <span id="detailTime" class="font-medium text-[#2b2118]">--</span>
+                        <!-- Next Page -->
+                        <a th:if="${currentPage < totalPages - 1}"
+                           th:href="@{/admin/notifications(page=${currentPage + 1})}"
+                           class="w-8 h-8 rounded-lg border border-[#ead8cb] bg-white flex items-center justify-center text-xs font-bold text-[#524437] hover:bg-[#feeadc] transition-colors">
+                            &gt;
+                        </a>
+                        <span th:unless="${currentPage < totalPages - 1}"
+                              class="w-8 h-8 rounded-lg border border-[#ead8cb] bg-gray-50 flex items-center justify-center text-xs font-bold text-gray-300 cursor-not-allowed">
+                            &gt;
+                        </span>
                     </div>
                 </div>
+            </div>
 
-                <!-- Body content with scrolling if long -->
-                <div class="space-y-2 flex-1 overflow-hidden flex flex-col">
-                    <label class="text-xs font-bold text-[#8a7664] uppercase tracking-wider">Tiêu đề thông báo:</label>
-                    <h4 id="detailTitle" class="text-sm font-bold text-[#2b2118] p-3 rounded-xl bg-[#faf7f2] border border-[#eae2d5] break-words"></h4>
+            <!-- Floating Dropdown Menu for History Actions (position fixed để không bị cắt bởi overflow-x-auto) -->
+            <div id="historyActionDropdown"
+                class="fixed hidden z-50 w-44 bg-white rounded-xl shadow-xl border border-[#eae2d5] py-1.5 text-left animate-fade-in">
+                <button type="button" onclick="handleMenuDetail()"
+                    class="w-full px-3.5 py-2 text-xs font-medium text-[#2b2118] hover:bg-[#faf7f2] flex items-center gap-2 transition-colors">
+                    <span class="material-symbols-outlined text-[16px] text-[#bc7d39]">visibility</span>
+                    <span>Xem chi tiết</span>
+                </button>
+                <button type="button" onclick="handleMenuTemplate()"
+                    class="w-full px-3.5 py-2 text-xs font-medium text-[#2b2118] hover:bg-[#faf7f2] flex items-center gap-2 transition-colors">
+                    <span class="material-symbols-outlined text-[16px] text-[#875200]">edit_note</span>
+                    <span>Dùng làm mẫu</span>
+                </button>
+            </div>
 
-                    <label class="text-xs font-bold text-[#8a7664] uppercase tracking-wider mt-2">Nội dung văn thư:</label>
-                    <div class="overflow-y-auto max-h-[300px] p-3.5 rounded-xl bg-[#faf7f2] border border-[#eae2d5] text-xs text-[#2b2118] leading-relaxed whitespace-pre-line break-words" id="detailContent"></div>
-                </div>
+            <!-- Modal: Xem chi tiết thông báo đã gửi (UC-44) -->
+            <div id="notificationDetailModal"
+                class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm hidden animate-fade-in p-4">
+                <div id="notificationDetailModalCard"
+                    class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-[#eae2d5] space-y-5 max-h-[90vh] flex flex-col">
+                    <!-- Header -->
+                    <div class="flex items-center justify-between pb-3 border-b border-[#eae2d5]">
+                        <h3 class="font-bold text-lg text-[#2b2118] flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[#bc7d39]">mail</span>
+                            <span>Chi tiết thông báo đã gửi</span>
+                        </h3>
+                        <button type="button" onclick="closeDetailModal()"
+                            class="text-[#8a7664] hover:text-[#2b2118] p-1 rounded-lg hover:bg-[#faf7f2] transition-colors"
+                            title="Đóng">
+                            <span class="material-symbols-outlined text-[22px]">close</span>
+                        </button>
+                    </div>
 
-                <!-- Footer button -->
-                <div class="pt-3 border-t border-[#eae2d5] flex justify-end">
-                    <button type="button" onclick="closeDetailModal()" class="px-5 py-2.5 rounded-xl border border-[#eae2d5] text-xs font-bold text-[#6b5849] hover:bg-[#faf7f2] transition-colors">
-                        Đóng
-                    </button>
+                    <!-- Meta info -->
+                    <div class="p-4 rounded-xl bg-[#faf6f0] border border-[#f0e8dc] space-y-2 text-xs">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[#8a7664]">Đối tượng nhận:</span>
+                            <span id="detailRecipient" class="font-bold text-[#875200]">Toàn hệ thống</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-[#8a7664]">Thời gian gửi:</span>
+                            <span id="detailTime" class="font-medium text-[#2b2118]">--</span>
+                        </div>
+                    </div>
+
+                    <!-- Body content with scrolling if long -->
+                    <div class="space-y-2 flex-1 overflow-hidden flex flex-col">
+                        <label class="text-xs font-bold text-[#8a7664] uppercase tracking-wider">Tiêu đề thông
+                            báo:</label>
+                        <h4 id="detailTitle"
+                            class="text-sm font-bold text-[#2b2118] p-3 rounded-xl bg-[#faf7f2] border border-[#eae2d5] break-words">
+                        </h4>
+
+                        <label class="text-xs font-bold text-[#8a7664] uppercase tracking-wider mt-2">Nội dung văn
+                            thư:</label>
+                        <div class="overflow-y-auto max-h-[300px] p-3.5 rounded-xl bg-[#faf7f2] border border-[#eae2d5] text-xs text-[#2b2118] leading-relaxed whitespace-pre-line break-words"
+                            id="detailContent"></div>
+                    </div>
+
+                    <!-- Footer button -->
+                    <div class="pt-3 border-t border-[#eae2d5] flex justify-end">
+                        <button type="button" onclick="closeDetailModal()"
+                            class="px-5 py-2.5 rounded-xl border border-[#eae2d5] text-xs font-bold text-[#6b5849] hover:bg-[#faf7f2] transition-colors">
+                            Đóng
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
 
-    </section>
-</main>
+        </section>
+    </main>
 
-<script>
-    function toggleScope(scope) {
-        const container = document.getElementById('recipientSearchContainer');
-        const cardAll = document.getElementById('scopeAllCard');
-        const cardSpec = document.getElementById('scopeSpecificCard');
+    <script>
+        function toggleScope(scope) {
+            const container = document.getElementById('recipientSearchContainer');
+            const cardAll = document.getElementById('scopeAllCard');
+            const cardSpec = document.getElementById('scopeSpecificCard');
 
-        if (scope === 'SPECIFIC') {
-            container.classList.remove('hidden');
-            cardSpec.classList.add('selected');
-            cardAll.classList.remove('selected');
-        } else {
-            container.classList.add('hidden');
-            cardAll.classList.add('selected');
-            cardSpec.classList.remove('selected');
-            clearSelectedRecipient();
-        }
-    }
-
-    // Init scope state
-    document.addEventListener('DOMContentLoaded', function() {
-        const checked = document.querySelector('input[name="scope"]:checked');
-        if (checked && checked.value === 'SPECIFIC') {
-            toggleScope('SPECIFIC');
-        } else {
-            toggleScope('ALL');
+            if (scope === 'SPECIFIC') {
+                container.classList.remove('hidden');
+                cardSpec.classList.add('selected');
+                cardAll.classList.remove('selected');
+            } else {
+                container.classList.add('hidden');
+                cardAll.classList.add('selected');
+                cardSpec.classList.remove('selected');
+                clearSelectedRecipient();
+            }
         }
 
-        // Live preview listeners
-        document.getElementById('titleInput').addEventListener('input', function() {
-            document.getElementById('titleCounter').textContent = this.value.length + '/255 ký tự';
-            document.getElementById('previewTitle').textContent = this.value || 'Tiêu đề thông báo xem trước';
-        });
-
-        document.getElementById('contentInput').addEventListener('input', function() {
-            document.getElementById('contentCounter').textContent = this.value.length + '/2000 ký tự';
-            document.getElementById('previewContent').textContent = this.value || 'Nội dung bức thư sẽ xuất hiện tại đây khi bạn nhập vào biểu mẫu soạn thảo bên cạnh...';
-        });
-
-        // User autocomplete search
-        const searchInput = document.getElementById('userSearchInput');
-        const dropdown = document.getElementById('autocompleteDropdown');
-        const spinner = document.getElementById('searchSpinner');
-        let debounceTimer;
-
-        searchInput.addEventListener('input', function() {
-            clearTimeout(debounceTimer);
-            const q = this.value.trim();
-            if (q.length < 2) {
-                dropdown.classList.add('hidden');
-                dropdown.innerHTML = '';
-                return;
+        // Init scope state
+        document.addEventListener('DOMContentLoaded', function () {
+            const checked = document.querySelector('input[name="scope"]:checked');
+            if (checked && checked.value === 'SPECIFIC') {
+                toggleScope('SPECIFIC');
+            } else {
+                toggleScope('ALL');
             }
 
-            spinner.classList.remove('hidden');
-            debounceTimer = setTimeout(() => {
-                fetch('/admin/notifications/search-users?q=' + encodeURIComponent(q))
-                    .then(res => res.json())
-                    .then(data => {
-                        spinner.classList.add('hidden');
-                        dropdown.innerHTML = '';
-                        if (!data || data.length === 0) {
-                            dropdown.innerHTML = '<div class="p-3 text-xs text-[#8a7664] text-center">Không tìm thấy người dùng phù hợp</div>';
-                        } else {
-                            data.forEach(user => {
-                                const item = document.createElement('div');
-                                item.className = 'p-3 hover:bg-[#faf7f2] cursor-pointer flex items-center justify-between text-xs';
-                                item.innerHTML = `
+            // Live preview listeners
+            document.getElementById('titleInput').addEventListener('input', function () {
+                document.getElementById('titleCounter').textContent = this.value.length + '/255 ký tự';
+                document.getElementById('previewTitle').textContent = this.value || 'Tiêu đề thông báo xem trước';
+            });
+
+            document.getElementById('contentInput').addEventListener('input', function () {
+                document.getElementById('contentCounter').textContent = this.value.length + '/2000 ký tự';
+                document.getElementById('previewContent').textContent = this.value || 'Nội dung bức thư sẽ xuất hiện tại đây khi bạn nhập vào biểu mẫu soạn thảo bên cạnh...';
+            });
+
+            // User autocomplete search
+            const searchInput = document.getElementById('userSearchInput');
+            const dropdown = document.getElementById('autocompleteDropdown');
+            const spinner = document.getElementById('searchSpinner');
+            let debounceTimer;
+
+            searchInput.addEventListener('input', function () {
+                clearTimeout(debounceTimer);
+                const q = this.value.trim();
+                if (q.length < 2) {
+                    dropdown.classList.add('hidden');
+                    dropdown.innerHTML = '';
+                    return;
+                }
+
+                spinner.classList.remove('hidden');
+                debounceTimer = setTimeout(() => {
+                    fetch('/admin/notifications/search-users?q=' + encodeURIComponent(q))
+                        .then(res => res.json())
+                        .then(data => {
+                            spinner.classList.add('hidden');
+                            dropdown.innerHTML = '';
+                            if (!data || data.length === 0) {
+                                dropdown.innerHTML = '<div class="p-3 text-xs text-[#8a7664] text-center">Không tìm thấy người dùng phù hợp</div>';
+                            } else {
+                                data.forEach(user => {
+                                    const item = document.createElement('div');
+                                    item.className = 'p-3 hover:bg-[#faf7f2] cursor-pointer flex items-center justify-between text-xs';
+                                    item.innerHTML = `
                                     <div class="flex items-center gap-2">
                                         <div class="w-7 h-7 rounded-full bg-[#f4ece1] text-[#875200] font-bold flex items-center justify-center text-xs">
                                             ${user.initial || 'U'}
@@ -439,175 +542,176 @@
                                     </div>
                                     <span class="text-[#bc7d39] font-semibold text-[11px]">Chọn</span>
                                 `;
-                                item.onclick = () => selectRecipient(user);
-                                dropdown.appendChild(item);
-                            });
-                        }
-                        dropdown.classList.remove('hidden');
-                    })
-                    .catch(() => spinner.classList.add('hidden'));
-            }, 300);
+                                    item.onclick = () => selectRecipient(user);
+                                    dropdown.appendChild(item);
+                                });
+                            }
+                            dropdown.classList.remove('hidden');
+                        })
+                        .catch(() => spinner.classList.add('hidden'));
+                }, 300);
+            });
+
+            document.addEventListener('click', function (e) {
+                if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
+                    dropdown.classList.add('hidden');
+                }
+            });
         });
 
-        document.addEventListener('click', function(e) {
-            if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
-                dropdown.classList.add('hidden');
+        function selectRecipient(user) {
+            document.getElementById('recipientIdInput').value = user.id;
+            document.getElementById('recipientDisplayName').textContent = `${user.fullName} (${user.email})`;
+            document.getElementById('selectedRecipientBadge').classList.remove('hidden');
+            document.getElementById('userSearchInput').value = '';
+            document.getElementById('autocompleteDropdown').classList.add('hidden');
+        }
+
+        function clearSelectedRecipient() {
+            document.getElementById('recipientIdInput').value = '';
+            document.getElementById('recipientDisplayName').textContent = '';
+            document.getElementById('selectedRecipientBadge').classList.add('hidden');
+        }
+
+        function insertFormat(startTag, endTag) {
+            const textarea = document.getElementById('contentInput');
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const sel = textarea.value.substring(start, end);
+            const rep = startTag + sel + endTag;
+            textarea.value = textarea.value.substring(0, start) + rep + textarea.value.substring(end);
+            textarea.focus();
+            textarea.setSelectionRange(start + startTag.length, end + startTag.length);
+            updatePreview();
+        }
+
+        function updatePreview() {
+            document.getElementById('previewTitle').textContent = document.getElementById('titleInput').value || 'Tiêu đề thông báo xem trước';
+            document.getElementById('previewContent').textContent = document.getElementById('contentInput').value || 'Nội dung bức thư sẽ xuất hiện tại đây...';
+        }
+
+        function resetForm() {
+            document.getElementById('notificationForm').reset();
+            clearSelectedRecipient();
+            toggleScope('ALL');
+            updatePreview();
+        }
+
+        // === HISTORY ACTIONS & DETAIL MODAL LOGIC ===
+        let currentHistoryTarget = null;
+        const historyDropdown = document.getElementById('historyActionDropdown');
+        const detailModal = document.getElementById('notificationDetailModal');
+
+        function openHistoryMenu(btn, e) {
+            e.stopPropagation();
+            if (historyDropdown && !historyDropdown.classList.contains('hidden') && currentHistoryTarget === btn) {
+                closeHistoryMenu();
+                return;
+            }
+            currentHistoryTarget = btn;
+            const rect = btn.getBoundingClientRect();
+            const menuWidth = 176;
+            const menuHeight = 85;
+
+            // Position: Align right with the button
+            let left = rect.right - menuWidth;
+            if (left < 10) left = 10;
+
+            // Open upwards if near bottom of viewport
+            let top = rect.bottom + 4;
+            if (top + menuHeight > window.innerHeight) {
+                top = rect.top - menuHeight - 4;
+            }
+
+            historyDropdown.style.top = `${top}px`;
+            historyDropdown.style.left = `${left}px`;
+            historyDropdown.classList.remove('hidden');
+        }
+
+        function closeHistoryMenu() {
+            if (historyDropdown) {
+                historyDropdown.classList.add('hidden');
+            }
+            currentHistoryTarget = null;
+        }
+
+        function openDetailModal() {
+            if (detailModal) {
+                detailModal.classList.remove('hidden');
+            }
+        }
+
+        function closeDetailModal() {
+            if (detailModal) {
+                detailModal.classList.add('hidden');
+            }
+        }
+
+        function handleMenuDetail() {
+            if (!currentHistoryTarget) return;
+            const d = currentHistoryTarget.dataset;
+            document.getElementById('detailTitle').textContent = d.title || '';
+            document.getElementById('detailContent').textContent = d.content || '';
+            document.getElementById('detailRecipient').textContent = d.recipient || 'Toàn hệ thống';
+            document.getElementById('detailTime').textContent = d.time || '--';
+            closeHistoryMenu();
+            openDetailModal();
+        }
+
+        function handleMenuTemplate() {
+            if (!currentHistoryTarget) return;
+            const d = currentHistoryTarget.dataset;
+            const titleInput = document.getElementById('titleInput');
+            const contentInput = document.getElementById('contentInput');
+
+            titleInput.value = d.title || '';
+            contentInput.value = d.content || '';
+
+            document.getElementById('titleCounter').textContent = titleInput.value.length + '/255 ký tự';
+            document.getElementById('contentCounter').textContent = contentInput.value.length + '/2000 ký tự';
+            updatePreview();
+
+            closeHistoryMenu();
+
+            titleInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            titleInput.focus();
+        }
+
+        // Đóng dropdown khi click ra ngoài
+        document.addEventListener('click', function (e) {
+            if (historyDropdown && !historyDropdown.contains(e.target)) {
+                closeHistoryMenu();
             }
         });
-    });
 
-    function selectRecipient(user) {
-        document.getElementById('recipientIdInput').value = user.id;
-        document.getElementById('recipientDisplayName').textContent = `${user.fullName} (${user.email})`;
-        document.getElementById('selectedRecipientBadge').classList.remove('hidden');
-        document.getElementById('userSearchInput').value = '';
-        document.getElementById('autocompleteDropdown').classList.add('hidden');
-    }
-
-    function clearSelectedRecipient() {
-        document.getElementById('recipientIdInput').value = '';
-        document.getElementById('recipientDisplayName').textContent = '';
-        document.getElementById('selectedRecipientBadge').classList.add('hidden');
-    }
-
-    function insertFormat(startTag, endTag) {
-        const textarea = document.getElementById('contentInput');
-        const start = textarea.selectionStart;
-        const end = textarea.selectionEnd;
-        const sel = textarea.value.substring(start, end);
-        const rep = startTag + sel + endTag;
-        textarea.value = textarea.value.substring(0, start) + rep + textarea.value.substring(end);
-        textarea.focus();
-        textarea.setSelectionRange(start + startTag.length, end + startTag.length);
-        updatePreview();
-    }
-
-    function updatePreview() {
-        document.getElementById('previewTitle').textContent = document.getElementById('titleInput').value || 'Tiêu đề thông báo xem trước';
-        document.getElementById('previewContent').textContent = document.getElementById('contentInput').value || 'Nội dung bức thư sẽ xuất hiện tại đây...';
-    }
-
-    function resetForm() {
-        document.getElementById('notificationForm').reset();
-        clearSelectedRecipient();
-        toggleScope('ALL');
-        updatePreview();
-    }
-
-    // === HISTORY ACTIONS & DETAIL MODAL LOGIC ===
-    let currentHistoryTarget = null;
-    const historyDropdown = document.getElementById('historyActionDropdown');
-    const detailModal = document.getElementById('notificationDetailModal');
-
-    function openHistoryMenu(btn, e) {
-        e.stopPropagation();
-        if (historyDropdown && !historyDropdown.classList.contains('hidden') && currentHistoryTarget === btn) {
+        // Đóng dropdown khi cuộn trang
+        window.addEventListener('scroll', function () {
             closeHistoryMenu();
-            return;
-        }
-        currentHistoryTarget = btn;
-        const rect = btn.getBoundingClientRect();
-        const menuWidth = 176;
-        const menuHeight = 85;
+        }, { passive: true });
 
-        // Position: Align right with the button
-        let left = rect.right - menuWidth;
-        if (left < 10) left = 10;
-
-        // Open upwards if near bottom of viewport
-        let top = rect.bottom + 4;
-        if (top + menuHeight > window.innerHeight) {
-            top = rect.top - menuHeight - 4;
-        }
-
-        historyDropdown.style.top = `${top}px`;
-        historyDropdown.style.left = `${left}px`;
-        historyDropdown.classList.remove('hidden');
-    }
-
-    function closeHistoryMenu() {
-        if (historyDropdown) {
-            historyDropdown.classList.add('hidden');
-        }
-        currentHistoryTarget = null;
-    }
-
-    function openDetailModal() {
+        // 3 cách đóng modal "Xem chi tiết":
+        // 1. Nút X và nút Đóng (onclick="closeDetailModal()")
+        // 2. Click nền tối (backdrop)
         if (detailModal) {
-            detailModal.classList.remove('hidden');
+            detailModal.addEventListener('click', function (e) {
+                if (e.target === detailModal) {
+                    closeDetailModal();
+                }
+            });
         }
-    }
 
-    function closeDetailModal() {
-        if (detailModal) {
-            detailModal.classList.add('hidden');
-        }
-    }
-
-    function handleMenuDetail() {
-        if (!currentHistoryTarget) return;
-        const d = currentHistoryTarget.dataset;
-        document.getElementById('detailTitle').textContent = d.title || '';
-        document.getElementById('detailContent').textContent = d.content || '';
-        document.getElementById('detailRecipient').textContent = d.recipient || 'Toàn hệ thống';
-        document.getElementById('detailTime').textContent = d.time || '--';
-        closeHistoryMenu();
-        openDetailModal();
-    }
-
-    function handleMenuTemplate() {
-        if (!currentHistoryTarget) return;
-        const d = currentHistoryTarget.dataset;
-        const titleInput = document.getElementById('titleInput');
-        const contentInput = document.getElementById('contentInput');
-
-        titleInput.value = d.title || '';
-        contentInput.value = d.content || '';
-
-        document.getElementById('titleCounter').textContent = titleInput.value.length + '/255 ký tự';
-        document.getElementById('contentCounter').textContent = contentInput.value.length + '/2000 ký tự';
-        updatePreview();
-
-        closeHistoryMenu();
-
-        titleInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        titleInput.focus();
-    }
-
-    // Đóng dropdown khi click ra ngoài
-    document.addEventListener('click', function(e) {
-        if (historyDropdown && !historyDropdown.contains(e.target)) {
-            closeHistoryMenu();
-        }
-    });
-
-    // Đóng dropdown khi cuộn trang
-    window.addEventListener('scroll', function() {
-        closeHistoryMenu();
-    }, { passive: true });
-
-    // 3 cách đóng modal "Xem chi tiết":
-    // 1. Nút X và nút Đóng (onclick="closeDetailModal()")
-    // 2. Click nền tối (backdrop)
-    if (detailModal) {
-        detailModal.addEventListener('click', function(e) {
-            if (e.target === detailModal) {
+        // 3. Phím Escape (đóng cả modal và dropdown)
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                closeHistoryMenu();
                 closeDetailModal();
             }
         });
-    }
+    </script>
 
-    // 3. Phím Escape (đóng cả modal và dropdown)
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            closeHistoryMenu();
-            closeDetailModal();
-        }
-    });
-</script>
-
-<!-- Admin Flash Toast Notification (UC-44) -->
-<div th:replace="~{admin/fragments/layout :: flash-toast}"></div>
+    <!-- Admin Flash Toast Notification (UC-44) -->
+    <div th:replace="~{admin/fragments/layout :: flash-toast}"></div>
 
 </body>
+
 </html>

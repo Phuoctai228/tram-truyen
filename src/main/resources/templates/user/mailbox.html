@@ -169,7 +169,7 @@
                                             <form th:if="${!mail.isSystem}" th:action="@{/user/mailbox/{id}/delete(id=${mail.id})}" method="post" class="m-0"
                                                   onsubmit="return confirm('Bạn có chắc muốn xóa thư này khỏi hòm thư?');">
                                                 <input type="hidden" name="tab" th:value="${activeTab}">
-                                                <input type="hidden" name="page" th:value="${currentPage}">
+                                                <input type="hidden" name="page" th:value="${notifications != null ? notifications.number : 0}">
                                                 <button type="submit" title="Xóa thông báo này"
                                                         class="opacity-0 group-hover:opacity-100 p-1 text-[#a4917f] hover:text-red-600 transition-all">
                                                     <span class="material-symbols-outlined text-[16px]">delete</span>
@@ -190,20 +190,55 @@
                                 </div>
                             </div>
 
-                            <!-- Pagination -->
-                            <div th:if="${notifications != null and notifications.totalPages > 1}"
-                                 class="p-3 bg-[#faf7f2] border-t border-[#eae2d5] flex items-center justify-between text-xs">
-                                <a th:if="${notifications.hasPrevious()}"
-                                   th:href="@{/user/mailbox(tab=${activeTab}, page=${notifications.number - 1})}"
-                                   class="px-2.5 py-1 rounded bg-white border border-[#eae2d5] text-[#5c3e07] hover:bg-[#f4ece1]">
-                                    Trước
-                                </a>
-                                <span class="text-[#8a7664]" th:text="'Trang ' + (${notifications.number} + 1) + ' / ' + ${notifications.totalPages}">Trang 1 / 1</span>
-                                <a th:if="${notifications.hasNext()}"
-                                   th:href="@{/user/mailbox(tab=${activeTab}, page=${notifications.number + 1})}"
-                                   class="px-2.5 py-1 rounded bg-white border border-[#eae2d5] text-[#5c3e07] hover:bg-[#f4ece1]">
-                                    Sau
-                                </a>
+                            <!-- Table Footer & Pagination -->
+                            <div class="px-4 py-3 bg-[#fffaf8] border-t border-[#ead8cb] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                                <div class="text-[#75695d]">
+                                    <span th:if="${notifications != null and notifications.totalElements > 0}"
+                                          th:text="'Hiển thị ' + (${notifications.number * notifications.size + 1}) + ' - ' + (${notifications.number * notifications.size + notifications.numberOfElements}) + ' trong tổng số ' + ${#numbers.formatDecimal(notifications.totalElements, 0, 'POINT', 0, 'POINT')} + ' thư'">
+                                    </span>
+                                    <span th:if="${notifications == null or notifications.totalElements == 0}">Hiển thị 0 thư</span>
+                                </div>
+
+                                <!-- Pagination controls -->
+                                <div th:if="${notifications != null and notifications.totalPages > 1}" class="flex items-center gap-1">
+                                    <!-- Prev Page -->
+                                    <a th:if="${notifications.number > 0}"
+                                       th:href="@{/user/mailbox(tab=${activeTab}, page=${notifications.number - 1})}"
+                                       class="w-7 h-7 rounded-lg border border-[#ead8cb] bg-white flex items-center justify-center text-xs font-bold text-[#524437] hover:bg-[#feeadc] transition-colors">
+                                        &lt;
+                                    </a>
+                                    <span th:unless="${notifications.number > 0}"
+                                          class="w-7 h-7 rounded-lg border border-[#ead8cb] bg-gray-50 flex items-center justify-center text-xs font-bold text-gray-300 cursor-not-allowed">
+                                        &lt;
+                                    </span>
+
+                                    <!-- Page Numbers -->
+                                    <th:block th:each="i : ${#numbers.sequence(0, notifications.totalPages - 1)}">
+                                        <!-- Show first, last, and window around current page -->
+                                        <th:block th:if="${i == 0 or i == notifications.totalPages - 1 or (i >= notifications.number - 2 and i <= notifications.number + 2)}">
+                                            <a th:href="@{/user/mailbox(tab=${activeTab}, page=${i})}"
+                                               th:text="${i + 1}"
+                                               class="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold transition-colors"
+                                               th:classappend="${i == notifications.number ? 'bg-[#875200] text-white shadow-sm' : 'border border-[#ead8cb] bg-white text-[#524437] hover:bg-[#feeadc]'}">
+                                                1
+                                            </a>
+                                        </th:block>
+                                        <th:block th:if="${(i == 1 and notifications.number > 3) or (i == notifications.totalPages - 2 and notifications.number < notifications.totalPages - 4)}">
+                                            <span class="w-7 h-7 flex items-center justify-center text-xs text-[#75695d]">...</span>
+                                        </th:block>
+                                    </th:block>
+
+                                    <!-- Next Page -->
+                                    <a th:if="${notifications.number < notifications.totalPages - 1}"
+                                       th:href="@{/user/mailbox(tab=${activeTab}, page=${notifications.number + 1})}"
+                                       class="w-7 h-7 rounded-lg border border-[#ead8cb] bg-white flex items-center justify-center text-xs font-bold text-[#524437] hover:bg-[#feeadc] transition-colors">
+                                        &gt;
+                                    </a>
+                                    <span th:unless="${notifications.number < notifications.totalPages - 1}"
+                                          class="w-7 h-7 rounded-lg border border-[#ead8cb] bg-gray-50 flex items-center justify-center text-xs font-bold text-gray-300 cursor-not-allowed">
+                                        &gt;
+                                    </span>
+                                </div>
                             </div>
                         </div>
 
@@ -225,7 +260,7 @@
                                         <form th:if="${!selectedNotification.isSystem}" th:action="@{/user/mailbox/{id}/delete(id=${selectedNotification.id})}" method="post" class="m-0"
                                               onsubmit="return confirm('Bạn có chắc muốn xóa thư này?');">
                                             <input type="hidden" name="tab" th:value="${activeTab}">
-                                            <input type="hidden" name="page" th:value="${currentPage}">
+                                            <input type="hidden" name="page" th:value="${notifications != null ? notifications.number : 0}">
                                             <button type="submit" title="Xóa thư này" class="p-1.5 hover:text-red-600 rounded-lg hover:bg-[#faf7f2] transition-colors">
                                                 <span class="material-symbols-outlined text-[20px]">delete</span>
                                             </button>

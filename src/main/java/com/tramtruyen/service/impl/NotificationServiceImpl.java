@@ -52,8 +52,26 @@ public class NotificationServiceImpl implements NotificationService {
             entityPage = notificationRepository.findGeneralNotifications(userId, REPORT_NOTIFICATION_PREFIX, pageable);
         }
 
+        if (safePage >= entityPage.getTotalPages() && entityPage.getTotalPages() > 0) {
+            int clampedPage = entityPage.getTotalPages() - 1;
+            pageable = PageRequest.of(clampedPage, safeSize);
+            if ("reports".equalsIgnoreCase(tab)) {
+                entityPage = notificationRepository.findReportNotifications(userId, REPORT_NOTIFICATION_PREFIX, pageable);
+            } else {
+                entityPage = notificationRepository.findGeneralNotifications(userId, REPORT_NOTIFICATION_PREFIX, pageable);
+            }
+        }
+
+        Set<Integer> userIds = entityPage.getContent().stream()
+                .map(Notification::getUserId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+        Map<Integer, User> userMap = userIds.isEmpty() ? Collections.emptyMap() :
+                userRepository.findAllById(userIds).stream()
+                        .collect(Collectors.toMap(User::getId, u -> u, (a, b) -> a));
+
         List<NotificationDTO> dtos = entityPage.getContent().stream()
-                .map(this::mapToDTO)
+                .map(n -> mapToDTO(n, userMap))
                 .collect(Collectors.toList());
 
         return new PageImpl<>(dtos, pageable, entityPage.getTotalElements());
@@ -188,13 +206,32 @@ public class NotificationServiceImpl implements NotificationService {
         int safeSize = (size < 1 || size > 50) ? 10 : size;
         Pageable pageable = PageRequest.of(safePage, safeSize);
         Page<Notification> pageResult = notificationRepository.findAllByOrderByCreatedAtDesc(pageable);
+
+        if (safePage >= pageResult.getTotalPages() && pageResult.getTotalPages() > 0) {
+            int clampedPage = pageResult.getTotalPages() - 1;
+            pageable = PageRequest.of(clampedPage, safeSize);
+            pageResult = notificationRepository.findAllByOrderByCreatedAtDesc(pageable);
+        }
+
+        Set<Integer> userIds = pageResult.getContent().stream()
+                .map(Notification::getUserId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+        Map<Integer, User> userMap = userIds.isEmpty() ? Collections.emptyMap() :
+                userRepository.findAllById(userIds).stream()
+                        .collect(Collectors.toMap(User::getId, u -> u, (a, b) -> a));
+
         List<NotificationDTO> dtos = pageResult.getContent().stream()
-                .map(this::mapToDTO)
+                .map(n -> mapToDTO(n, userMap))
                 .collect(Collectors.toList());
         return new PageImpl<>(dtos, pageable, pageResult.getTotalElements());
     }
 
     private NotificationDTO mapToDTO(Notification n) {
+        return mapToDTO(n, Collections.emptyMap());
+    }
+
+    private NotificationDTO mapToDTO(Notification n, Map<Integer, User> userMap) {
         boolean isSys = (n.getUserId() == null);
         String formattedTime = formatTime(n.getCreatedAt());
 
@@ -230,12 +267,18 @@ public class NotificationServiceImpl implements NotificationService {
         String recipientName = "Toàn hệ thống";
         String recipientEmail = null;
         if (!isSys) {
-            Optional<User> uOpt = userRepository.findById(n.getUserId());
-            if (uOpt.isPresent()) {
-                recipientName = uOpt.get().getFullName();
-                recipientEmail = uOpt.get().getEmail();
+            User u = userMap.get(n.getUserId());
+            if (u != null) {
+                recipientName = u.getFullName();
+                recipientEmail = u.getEmail();
             } else {
-                recipientName = "Người dùng #" + n.getUserId();
+                Optional<User> uOpt = userRepository.findById(n.getUserId());
+                if (uOpt.isPresent()) {
+                    recipientName = uOpt.get().getFullName();
+                    recipientEmail = uOpt.get().getEmail();
+                } else {
+                    recipientName = "Người dùng #" + n.getUserId();
+                }
             }
         }
 

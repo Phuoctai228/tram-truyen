@@ -43,10 +43,20 @@ public class ReportAdminController {
         Page<CommentReport> commentReports = null;
         Page<ContentReport> contentReports = null;
 
+        int totalPages = 0;
+        long totalElements = 0;
+        int currentPage = 0;
+
         if ("comment".equals(safeTab)) {
             commentReports = reportService.getCommentReports(safeStatus, page, size);
+            totalPages = commentReports.getTotalPages();
+            totalElements = commentReports.getTotalElements();
+            currentPage = commentReports.getNumber();
         } else {
             contentReports = reportService.getContentReports(safeStatus, page, size);
+            totalPages = contentReports.getTotalPages();
+            totalElements = contentReports.getTotalElements();
+            currentPage = contentReports.getNumber();
         }
 
         Map<String, Long> counts = reportService.getReportCounts();
@@ -56,7 +66,9 @@ public class ReportAdminController {
         model.addAttribute("commentReports", commentReports);
         model.addAttribute("contentReports", contentReports);
         model.addAttribute("counts", counts);
-        model.addAttribute("currentPage", page);
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("totalElements", totalElements);
         model.addAttribute("pageSize", size);
         model.addAttribute("pageTitle", "Quản lý & Xử lý báo cáo vi phạm | Trạm Truyện Admin");
 

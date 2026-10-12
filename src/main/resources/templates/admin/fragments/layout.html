@@ -12,7 +12,9 @@
             <a class="nav-link" th:classappend="${active == 'bao-cao' ? ' active' : ''}" th:href="@{/admin/reports}"><span>⚑</span> Báo cáo</a>
             <a class="nav-link" th:classappend="${active == 'thong-bao' ? ' active' : ''}" th:href="@{/admin/notifications}"><span>🔔</span> Thông báo</a>
             <a class="nav-link" th:classappend="${active == 'nguoi-dung' ? ' active' : ''}" th:href="@{/admin/users}"><span>👥</span> Người dùng</a>
+            <a class="nav-link" th:classappend="${active == 'giao-dich' ? ' active' : ''}" th:href="@{/admin/transactions}"><span>🪙</span> Giao dịch</a>
             <a class="nav-link" th:classappend="${active == 'cau-hinh' ? ' active' : ''}" th:href="@{/admin/settings}"><span>⚙</span> Cấu hình</a>
+            <a class="nav-link" th:classappend="${active == 'nhat-ky' ? ' active' : ''}" th:href="@{/admin/audit-logs}"><span>📋</span> Nhật ký</a>
             <a class="nav-link" th:classappend="${active == 'trang-chu' ? ' active' : ''}" th:href="@{/}"><span>⮌</span> Về trang chủ</a>
         </nav>
     </div>
