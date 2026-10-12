@@ -65,9 +65,16 @@ public class CustomAuthenticationSuccessHandler extends SavedRequestAwareAuthent
             }
         }
 
-        // 5. Default fallback to home
+        // 5. Content managers land in the CMS when there is no saved destination.
         clearAuthenticationAttributes(request);
-        getRedirectStrategy().sendRedirect(request, response, "/");
+        String defaultTarget = hasContentManagementRole(authentication) ? "/admin/novels" : "/";
+        getRedirectStrategy().sendRedirect(request, response, defaultTarget);
+    }
+
+    private boolean hasContentManagementRole(Authentication authentication) {
+        return authentication.getAuthorities().stream()
+                .anyMatch(authority -> "ROLE_ADMIN".equals(authority.getAuthority())
+                        || "ROLE_STAFF".equals(authority.getAuthority()));
     }
 
     /**

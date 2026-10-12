@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- Fragment: Modal Báo cáo Bình luận (UC-22) & Modal Báo cáo Nội dung (UC-21) -->
+<div th:fragment="report-modals">
+
+    <!-- 
+      [HƯỚNG DẪN TÍCH HỢP CHO MODULE BÌNH LUẬN]:
+      Để gắn nút "Báo cáo" vào từng card bình luận an toàn (tương thích Thymeleaf 3.1+), dùng:
+        <button type="button"
+                onclick="openReportCommentModal(this)"
+                th:data-comment-id="${comment.id}"
+                th:data-author-name="${comment.user != null ? comment.user.fullName : 'Độc giả'}"
+                th:data-author-initial="DG"
+                th:data-time-ago="vừa xong"
+                th:data-comment-content="${comment.content}">
+          Báo cáo
+        </button>
+    -->
+
+    <!-- 1. Report Comment Modal (UC-22) -->
+    <div id="reportCommentModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm hidden animate-fade-in">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-[92%] shadow-2xl border border-[#eae2d5] space-y-6 max-h-[90vh] overflow-y-auto">
+            <!-- Header -->
+            <div class="flex items-center justify-between pb-3 border-b border-[#f2ebe1]">
+                <h3 class="font-bold text-xl text-[#2b2118] flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[#bc7d39] text-[24px]">flag</span>
+                    <span>Báo cáo bình luận</span>
+                </h3>
+                <button type="button" onclick="closeReportCommentModal()" class="text-[#8a7664] hover:text-[#2b2118] p-1 rounded-full transition-colors">
+                    <span class="material-symbols-outlined text-[22px]">close</span>
+                </button>
+            </div>
+
+            <!-- Reported Comment Preview Box -->
+            <div class="p-4 rounded-2xl bg-[#faf6f0] border border-[#f0e8dc] space-y-2">
+                <div class="flex items-center gap-2.5">
+                    <div id="commentAuthorInitial" class="w-8 h-8 rounded-full bg-[#f4ece1] text-[#875200] font-bold text-xs flex items-center justify-center">
+                        LH
+                    </div>
+                    <div>
+                        <span id="commentAuthorName" class="font-bold text-xs text-[#2b2118]">Lê Hoàng</span>
+                        <span class="text-[11px] text-[#8a7664]" id="commentTimeAgo">• 2 giờ trước</span>
+                    </div>
+                </div>
+                <p id="commentContentPreview" class="text-xs text-[#5c4a3b] italic line-clamp-3 leading-relaxed">
+                    "Nội dung bình luận..."
+                </p>
+            </div>
+
+            <!-- Form -->
+            <form id="reportCommentForm" onsubmit="submitCommentReport(event)" class="space-y-5">
+                <input type="hidden" id="reportCommentId" name="commentId">
+
+                <!-- Violation Type Selector -->
+                <div>
+                    <label class="text-xs font-bold text-[#8a7664] uppercase tracking-wider block mb-2.5">
+                        LÝ DO BÁO CÁO
+                    </label>
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-3 p-3 rounded-xl border border-[#eae2d5] hover:bg-[#faf7f2] cursor-pointer transition-all">
+                            <input type="radio" name="violationType" value="SPAM" class="text-[#bc7d39] focus:ring-[#bc7d39]" checked>
+                            <span class="text-xs font-semibold text-[#2b2118]">Spam hoặc quảng cáo phiền toái</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 rounded-xl border border-[#eae2d5] hover:bg-[#faf7f2] cursor-pointer transition-all">
+                            <input type="radio" name="violationType" value="HARASSMENT" class="text-[#bc7d39] focus:ring-[#bc7d39]">
+                            <span class="text-xs font-semibold text-[#2b2118]">Nội dung xúc phạm hoặc đả kích cá nhân</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 rounded-xl border border-[#eae2d5] hover:bg-[#faf7f2] cursor-pointer transition-all">
+                            <input type="radio" name="violationType" value="HATE_SPEECH" class="text-[#bc7d39] focus:ring-[#bc7d39]">
+                            <span class="text-xs font-semibold text-[#2b2118]">Ngôn từ thù ghét, quấy rối hoặc bạo lực</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 rounded-xl border border-[#eae2d5] hover:bg-[#faf7f2] cursor-pointer transition-all">
+                            <input type="radio" name="violationType" value="SPOILER" class="text-[#bc7d39] focus:ring-[#bc7d39]">
+                            <span class="text-xs font-semibold text-[#2b2118]">Tiết lộ nội dung truyện (Spoiler) không cảnh báo</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 rounded-xl border border-[#eae2d5] hover:bg-[#faf7f2] cursor-pointer transition-all">
+                            <input type="radio" name="violationType" value="OTHER" class="text-[#bc7d39] focus:ring-[#bc7d39]">
+                            <span class="text-xs font-semibold text-[#2b2118]">Vi phạm quy chuẩn cộng đồng khác</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Description Textarea -->
+                <div>
+                    <div class="flex items-center justify-between mb-1.5">
+                        <label class="text-xs font-bold text-[#2b2118]">Chi tiết lý do *</label>
+                        <span id="commentDescCounter" class="text-[11px] text-[#8a7664]">0/500</span>
+                    </div>
+                    <textarea id="commentReportDesc" name="description" rows="3" maxlength="500" required
+                              placeholder="Mô tả lý do bạn báo cáo bình luận này..."
+                              class="w-full px-4 py-2.5 rounded-xl border border-[#eae2d5] bg-[#faf7f2] text-xs text-[#2b2118] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#bc7d39] resize-none"></textarea>
+                    <p class="text-[11px] text-[#8a7664] mt-1 flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[14px]">info</span>
+                        <span>Tối thiểu 10 ký tự để hỗ trợ kiểm duyệt nhanh chóng.</span>
+                    </p>
+                </div>
+
+                <!-- Error feedback in modal -->
+                <div id="commentReportError" class="hidden p-3 rounded-xl bg-red-50 text-red-700 text-xs font-medium"></div>
+
+                <!-- Buttons -->
+                <div class="flex items-center justify-end gap-3 pt-2">
+                    <button type="button" onclick="closeReportCommentModal()" class="px-5 py-2.5 rounded-xl bg-[#f4ece1] text-[#6b5849] hover:bg-[#eae2d5] text-xs font-bold transition-colors">
+                        Hủy
+                    </button>
+                    <button type="submit" id="btnSubmitCommentReport" class="px-6 py-2.5 rounded-xl bg-[#d97706] hover:bg-[#b45309] text-white text-xs font-bold shadow-md flex items-center gap-1.5 transition-colors">
+                        <span class="material-symbols-outlined text-[16px]">send</span>
+                        <span>Gửi báo cáo</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- 2. Report Content / Chapter Modal (UC-21) -->
+    <div id="reportContentModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm hidden animate-fade-in">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-[92%] shadow-2xl border border-[#eae2d5] space-y-6 max-h-[90vh] overflow-y-auto">
+            <!-- Header -->
+            <div class="flex items-center justify-between pb-3 border-b border-[#f2ebe1]">
+                <h3 class="font-bold text-xl text-[#2b2118] flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[#bc7d39] text-[24px]">flag</span>
+                    <span>Báo cáo nội dung</span>
+                </h3>
+                <button type="button" onclick="closeReportContentModal()" class="text-[#8a7664] hover:text-[#2b2118] p-1 rounded-full transition-colors">
+                    <span class="material-symbols-outlined text-[22px]">close</span>
+                </button>
+            </div>
+
+            <!-- Chapter Info Preview Card -->
+            <div class="p-4 rounded-2xl bg-[#faf6f0] border border-[#f0e8dc] flex items-center gap-3.5">
+                <div class="w-10 h-14 rounded-lg bg-[#f4ece1] flex items-center justify-center text-[#875200] shrink-0 border border-[#eae2d5]">
+                    <span class="material-symbols-outlined text-[24px]">menu_book</span>
+                </div>
+                <div class="min-w-0 flex-1">
+                    <h4 id="contentNovelTitle" class="font-bold text-sm text-[#2b2118] truncate">Tên Truyện</h4>
+                    <p id="contentChapterTitle" class="text-xs font-semibold text-[#bc7d39] truncate">Chương 1: Tiêu đề chương</p>
+                    <p id="contentAuthorName" class="text-[11px] text-[#8a7664] truncate">Tác giả</p>
+                </div>
+            </div>
+
+            <!-- Form -->
+            <form id="reportContentForm" onsubmit="submitContentReport(event)" class="space-y-5">
+                <input type="hidden" id="reportChapterId" name="chapterId">
+
+                <!-- Issue Type Selector -->
+                <div>
+                    <label class="text-xs font-bold text-[#8a7664] uppercase tracking-wider block mb-2.5">
+                        LOẠI VẤN ĐỀ
+                    </label>
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-3 p-3 rounded-xl border border-[#eae2d5] hover:bg-[#faf7f2] cursor-pointer transition-all">
+                            <input type="radio" name="issueType" value="CHAPTER_ERROR" class="text-[#bc7d39] focus:ring-[#bc7d39]" checked>
+                            <span class="text-xs font-semibold text-[#2b2118]">Lỗi chương (thiếu, trùng, sai thứ tự)</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 rounded-xl border border-[#eae2d5] hover:bg-[#faf7f2] cursor-pointer transition-all">
+                            <input type="radio" name="issueType" value="TYPO_FORMAT" class="text-[#bc7d39] focus:ring-[#bc7d39]">
+                            <span class="text-xs font-semibold text-[#2b2118]">Lỗi chính tả / định dạng</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 rounded-xl border border-[#eae2d5] hover:bg-[#faf7f2] cursor-pointer transition-all">
+                            <input type="radio" name="issueType" value="WRONG_INFO" class="text-[#bc7d39] focus:ring-[#bc7d39]">
+                            <span class="text-xs font-semibold text-[#2b2118]">Sai thông tin truyện</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 rounded-xl border border-[#eae2d5] hover:bg-[#faf7f2] cursor-pointer transition-all">
+                            <input type="radio" name="issueType" value="INAPPROPRIATE" class="text-[#bc7d39] focus:ring-[#bc7d39]">
+                            <span class="text-xs font-semibold text-[#2b2118]">Nội dung vi phạm quy chuẩn</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 rounded-xl border border-[#eae2d5] hover:bg-[#faf7f2] cursor-pointer transition-all">
+                            <input type="radio" name="issueType" value="COPYRIGHT" class="text-[#bc7d39] focus:ring-[#bc7d39]">
+                            <span class="text-xs font-semibold text-[#2b2118]">Vi phạm bản quyền</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Description Textarea -->
+                <div>
+                    <div class="flex items-center justify-between mb-1.5">
+                        <label class="text-xs font-bold text-[#2b2118]">Chi tiết vấn đề *</label>
+                        <span id="contentDescCounter" class="text-[11px] text-[#8a7664]">0/500</span>
+                    </div>
+                    <textarea id="contentReportDesc" name="description" rows="3" maxlength="500" required
+                              placeholder="Mô tả lỗi bạn gặp phải, nêu rõ đoạn hoặc vị trí nếu có..."
+                              class="w-full px-4 py-2.5 rounded-xl border border-[#eae2d5] bg-[#faf7f2] text-xs text-[#2b2118] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#bc7d39] resize-none"></textarea>
+                    <p class="text-[11px] text-[#8a7664] mt-1 flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[14px]">info</span>
+                        <span>Ban biên tập sẽ kiểm tra và khắc phục trong vòng 24 giờ làm việc.</span>
+                    </p>
+                </div>
+
+                <!-- Error feedback in modal -->
+                <div id="contentReportError" class="hidden p-3 rounded-xl bg-red-50 text-red-700 text-xs font-medium"></div>
+
+                <!-- Buttons -->
+                <div class="flex items-center justify-end gap-3 pt-2">
+                    <button type="button" onclick="closeReportContentModal()" class="px-5 py-2.5 rounded-xl bg-[#f4ece1] text-[#6b5849] hover:bg-[#eae2d5] text-xs font-bold transition-colors">
+                        Hủy
+                    </button>
+                    <button type="submit" id="btnSubmitContentReport" class="px-6 py-2.5 rounded-xl bg-[#d97706] hover:bg-[#b45309] text-white text-xs font-bold shadow-md flex items-center gap-1.5 transition-colors">
+                        <span class="material-symbols-outlined text-[16px]">send</span>
+                        <span>Gửi báo cáo</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Script for Opening/Submitting Modals -->
+    <script>
+        function openReportCommentModal(el) {
+            let commentId, authorName, authorInitial, timeAgo, content;
+            if (el && el.dataset) {
+                commentId = el.dataset.commentId;
+                authorName = el.dataset.authorName;
+                authorInitial = el.dataset.authorInitial;
+                timeAgo = el.dataset.timeAgo;
+                content = el.dataset.commentContent;
+            } else if (arguments.length > 1) {
+                commentId = arguments[0];
+                authorName = arguments[1];
+                authorInitial = arguments[2];
+                timeAgo = arguments[3];
+                content = arguments[4];
+            }
+            document.getElementById('reportCommentId').value = commentId || '';
+            document.getElementById('commentAuthorName').textContent = authorName || 'Độc giả';
+            document.getElementById('commentAuthorInitial').textContent = authorInitial || 'DG';
+            document.getElementById('commentTimeAgo').textContent = timeAgo ? '• ' + timeAgo : '';
+            document.getElementById('commentContentPreview').textContent = '"' + (content || '') + '"';
+            document.getElementById('commentReportDesc').value = '';
+            document.getElementById('commentDescCounter').textContent = '0/500';
+            document.getElementById('commentReportError').classList.add('hidden');
+            document.getElementById('reportCommentModal').classList.remove('hidden');
+        }
+
+        function closeReportCommentModal() {
+            document.getElementById('reportCommentModal').classList.add('hidden');
+        }
+
+        function openReportContentModal(el) {
+            let chapterId, novelTitle, chapterNumber, chapterTitle, author;
+            if (el && el.dataset) {
+                chapterId = el.dataset.chapterId;
+                novelTitle = el.dataset.novelTitle;
+                chapterNumber = el.dataset.chapterNumber;
+                chapterTitle = el.dataset.chapterTitle;
+                author = el.dataset.author;
+            } else if (arguments.length > 1) {
+                chapterId = arguments[0];
+                novelTitle = arguments[1];
+                chapterNumber = arguments[2];
+                chapterTitle = arguments[3];
+                author = arguments[4];
+            }
+            document.getElementById('reportChapterId').value = chapterId || '';
+            document.getElementById('contentNovelTitle').textContent = novelTitle || 'Tác phẩm';
+            
+            const numText = chapterNumber ? ('Chương ' + chapterNumber) : '';
+            const titleText = chapterTitle ? (numText ? ': ' + chapterTitle : chapterTitle) : '';
+            document.getElementById('contentChapterTitle').textContent = (numText + titleText) || 'Chương truyện';
+
+            document.getElementById('contentAuthorName').textContent = 'Tác giả: ' + (author || 'Trạm Truyện');
+            document.getElementById('contentReportDesc').value = '';
+            document.getElementById('contentDescCounter').textContent = '0/500';
+            document.getElementById('contentReportError').classList.add('hidden');
+            document.getElementById('reportContentModal').classList.remove('hidden');
+        }
+
+        function closeReportContentModal() {
+            document.getElementById('reportContentModal').classList.add('hidden');
+        }
+
+        // Live counter listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            const cDesc = document.getElementById('commentReportDesc');
+            if (cDesc) {
+                cDesc.addEventListener('input', function() {
+                    document.getElementById('commentDescCounter').textContent = this.value.length + '/500';
+                });
+            }
+            const cntDesc = document.getElementById('contentReportDesc');
+            if (cntDesc) {
+                cntDesc.addEventListener('input', function() {
+                    document.getElementById('contentDescCounter').textContent = this.value.length + '/500';
+                });
+            }
+        });
+
+        // CSRF Token Helper
+        function getCsrfTokens() {
+            const tokenMeta = document.querySelector('meta[name="_csrf"]');
+            const headerMeta = document.querySelector('meta[name="_csrf_header"]');
+            return {
+                token: tokenMeta ? tokenMeta.getAttribute('content') : '',
+                header: headerMeta ? headerMeta.getAttribute('content') : 'X-CSRF-TOKEN'
+            };
+        }
+
+        function submitCommentReport(e) {
+            e.preventDefault();
+            const commentId = document.getElementById('reportCommentId').value;
+            const violationType = document.querySelector('input[name="violationType"]:checked').value;
+            const description = document.getElementById('commentReportDesc').value.trim();
+            const errBox = document.getElementById('commentReportError');
+            const btn = document.getElementById('btnSubmitCommentReport');
+
+            if (!description) {
+                errBox.textContent = 'Vui lòng nhập mô tả chi tiết lý do báo cáo.';
+                errBox.classList.remove('hidden');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Đang gửi...';
+
+            const csrf = getCsrfTokens();
+            const headers = { 'Content-Type': 'application/json' };
+            if (csrf.token) headers[csrf.header] = csrf.token;
+
+            fetch('/reports/comment', {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify({ commentId: parseInt(commentId), violationType, description })
+            })
+            .then(res => res.json().then(data => ({ status: res.status, data })))
+            .then(res => {
+                btn.disabled = false;
+                btn.innerHTML = '<span class="material-symbols-outlined text-[16px]">send</span><span>Gửi báo cáo</span>';
+                if (res.status === 200 && res.data.success) {
+                    closeReportCommentModal();
+                    showReportToast(res.data.message || 'Gửi báo cáo bình luận thành công!', 'success');
+                } else if (res.status === 401) {
+                    window.location.href = '/login?redirect=' + encodeURIComponent(window.location.pathname);
+                } else {
+                    errBox.textContent = res.data.message || 'Lỗi khi gửi báo cáo.';
+                    errBox.classList.remove('hidden');
+                }
+            })
+            .catch(() => {
+                btn.disabled = false;
+                btn.innerHTML = '<span class="material-symbols-outlined text-[16px]">send</span><span>Gửi báo cáo</span>';
+                errBox.textContent = 'Lỗi kết nối máy chủ.';
+                errBox.classList.remove('hidden');
+            });
+        }
+
+        function submitContentReport(e) {
+            e.preventDefault();
+            const chapterId = document.getElementById('reportChapterId').value;
+            const issueType = document.querySelector('input[name="issueType"]:checked').value;
+            const description = document.getElementById('contentReportDesc').value.trim();
+            const errBox = document.getElementById('contentReportError');
+            const btn = document.getElementById('btnSubmitContentReport');
+
+            if (!description) {
+                errBox.textContent = 'Vui lòng nhập mô tả chi tiết vấn đề.';
+                errBox.classList.remove('hidden');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Đang gửi...';
+
+            const csrf = getCsrfTokens();
+            const headers = { 'Content-Type': 'application/json' };
+            if (csrf.token) headers[csrf.header] = csrf.token;
+
+            fetch('/reports/content', {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify({ chapterId: parseInt(chapterId), issueType, description })
+            })
+            .then(res => res.json().then(data => ({ status: res.status, data })))
+            .then(res => {
+                btn.disabled = false;
+                btn.innerHTML = '<span class="material-symbols-outlined text-[16px]">send</span><span>Gửi báo cáo</span>';
+                if (res.status === 200 && res.data.success) {
+                    closeReportContentModal();
+                    showReportToast(res.data.message || 'Gửi báo cáo nội dung thành công!', 'success');
+                } else if (res.status === 401) {
+                    window.location.href = '/login?redirect=' + encodeURIComponent(window.location.pathname);
+                } else {
+                    errBox.textContent = res.data.message || 'Lỗi khi gửi báo cáo.';
+                    errBox.classList.remove('hidden');
+                }
+            })
+            .catch(() => {
+                btn.disabled = false;
+                btn.innerHTML = '<span class="material-symbols-outlined text-[16px]">send</span><span>Gửi báo cáo</span>';
+                errBox.textContent = 'Lỗi kết nối máy chủ.';
+                errBox.classList.remove('hidden');
+            });
+        }
+
+        // Standalone Toast Helper for Report Modals (Hoạt động cả khi trang không có header.html)
+        function showReportToast(message, type) {
+            let container = document.getElementById('global-toast');
+            if (!container) {
+                container = document.getElementById('report-toast-container');
+                if (!container) {
+                    container = document.createElement('div');
+                    container.id = 'report-toast-container';
+                    container.className = 'fixed top-24 right-6 z-[100] flex flex-col gap-3 pointer-events-none animate-fade-in';
+                    document.body.appendChild(container);
+                }
+            }
+
+            const toast = document.createElement('div');
+            const isError = (type === 'error');
+            toast.className = isError
+                ? 'bg-[#fff4f2] border-l-4 border-[#9e422c] rounded-r-xl p-4 text-[#7e2b17] flex items-start gap-3 shadow-lg max-w-sm pointer-events-auto transition-opacity duration-500'
+                : 'bg-[#faf6f0] border-l-4 border-[#875200] rounded-r-xl p-4 text-[#2b2118] flex items-start gap-3 shadow-lg max-w-sm pointer-events-auto transition-opacity duration-500';
+
+            const icon = document.createElement('span');
+            icon.className = 'material-symbols-outlined text-[24px] mt-0.5 ' + (isError ? 'text-[#9e422c]' : 'text-[#875200]');
+            icon.textContent = isError ? 'error' : 'check_circle';
+
+            const textWrapper = document.createElement('div');
+            textWrapper.className = 'flex flex-col';
+            const textSpan = document.createElement('span');
+            textSpan.className = 'text-xs font-bold leading-relaxed';
+            textSpan.textContent = message;
+            textWrapper.appendChild(textSpan);
+
+            const closeBtn = document.createElement('button');
+            closeBtn.type = 'button';
+            closeBtn.className = (isError ? 'text-[#9e422c] opacity-70 hover:opacity-100' : 'text-[#8a7664] hover:text-[#2b2118]') + ' transition-colors ml-auto';
+            const closeIcon = document.createElement('span');
+            closeIcon.className = 'material-symbols-outlined text-[20px]';
+            closeIcon.textContent = 'close';
+            closeBtn.appendChild(closeIcon);
+            closeBtn.onclick = function() { toast.remove(); };
+
+            toast.appendChild(icon);
+            toast.appendChild(textWrapper);
+            toast.appendChild(closeBtn);
+
+            container.appendChild(toast);
+
+            setTimeout(function() {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 500);
+            }, 5000);
+        }
+    </script>
+</div>
+
+</body>
+</html>

@@ -1,7 +1,12 @@
 package com.tramtruyen.repository;
 
 import com.tramtruyen.entity.Notification;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -10,4 +15,29 @@ import java.util.List;
 public interface NotificationRepository extends JpaRepository<Notification, Integer> {
 
     List<Notification> findByUserIdOrderByCreatedAtDesc(Integer userId);
+
+    @Query("SELECT n FROM Notification n WHERE (n.userId = :userId OR n.userId IS NULL) " +
+           "AND (n.title IS NULL OR LOWER(n.title) NOT LIKE LOWER(CONCAT(:reportPrefix, '%'))) " +
+           "ORDER BY n.createdAt DESC")
+    Page<Notification> findGeneralNotifications(@Param("userId") Integer userId, @Param("reportPrefix") String reportPrefix, Pageable pageable);
+
+    @Query("SELECT n FROM Notification n WHERE (n.userId = :userId OR n.userId IS NULL) " +
+           "AND LOWER(n.title) LIKE LOWER(CONCAT(:reportPrefix, '%')) " +
+           "ORDER BY n.createdAt DESC")
+    Page<Notification> findReportNotifications(@Param("userId") Integer userId, @Param("reportPrefix") String reportPrefix, Pageable pageable);
+
+    @Query("SELECT n FROM Notification n WHERE (n.userId = :userId OR n.userId IS NULL) ORDER BY n.createdAt DESC")
+    Page<Notification> findUserAndSystemNotifications(@Param("userId") Integer userId, Pageable pageable);
+
+    @Query("SELECT n FROM Notification n WHERE (n.userId = :userId OR n.userId IS NULL) AND LOWER(n.title) LIKE LOWER(CONCAT('%', :keyword, '%')) ORDER BY n.createdAt DESC")
+    Page<Notification> findUserAndSystemNotificationsByKeyword(@Param("userId") Integer userId, @Param("keyword") String keyword, Pageable pageable);
+
+    @Query("SELECT COUNT(n) FROM Notification n WHERE n.userId = :userId AND (n.isRead = false OR n.isRead IS NULL)")
+    long countUnreadByUserId(@Param("userId") Integer userId);
+
+    @Modifying
+    @Query("UPDATE Notification n SET n.isRead = true WHERE n.userId = :userId AND (n.isRead = false OR n.isRead IS NULL)")
+    int markAllAsReadByUserId(@Param("userId") Integer userId);
+
+    Page<Notification> findAllByOrderByCreatedAtDesc(Pageable pageable);
 }

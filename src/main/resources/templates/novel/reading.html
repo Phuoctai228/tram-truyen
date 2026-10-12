@@ -62,40 +62,57 @@
         </header>
 
         <article class="space-y-6 text-on-surface font-body-reading text-body-reading leading-[1.95] select-text" id="reader-body">
-           <th:block th:each="para : ${paragraphs}">
-              <p th:if="${!#strings.isEmpty(#strings.trim(para))}" class="indent-8 text-justify" th:text="${para}">Nội dung</p>
+           <!-- Khi chương đã mở khóa hoặc miễn phí -->
+           <th:block th:if="${isChapterUnlocked}">
+              <!-- Render rich text nếu nội dung có chứa các thẻ định dạng HTML -->
+              <th:block th:if="${#strings.contains(chapter.content, '<p') or #strings.contains(chapter.content, '<br') or #strings.contains(chapter.content, '<div')}">
+                 <div th:utext="${chapter.content}">Nội dung</div>
+              </th:block>
+              <!-- Render từng đoạn nếu là văn bản thuần (plain text) -->
+              <th:block th:unless="${#strings.contains(chapter.content, '<p') or #strings.contains(chapter.content, '<br') or #strings.contains(chapter.content, '<div')}">
+                 <th:block th:each="para : ${paragraphs}">
+                    <p th:if="${!#strings.isEmpty(#strings.trim(para))}" class="indent-8 text-justify" th:text="${para}">Nội dung</p>
+                 </th:block>
+              </th:block>
            </th:block>
 
-           <!-- In-flow VIP Paywall Section (If Chapter is Locked) -->
-           <div th:if="${!isChapterUnlocked}" class="relative pt-6 pb-12 mt-6 select-none" id="vip-paywall-container">
-              <!-- Gradient Fade Over Preview Content -->
-              <div class="absolute -top-28 left-0 right-0 h-28 bg-gradient-to-b from-transparent to-surface pointer-events-none"></div>
+           <!-- Khi chương VIP bị khóa: Chỉ hiển thị các đoạn đọc thử (server-side masked) và Paywall Card -->
+           <th:block th:if="${!isChapterUnlocked}">
+              <th:block th:each="para : ${paragraphs}">
+                 <div th:if="${!#strings.isEmpty(#strings.trim(para))}" class="indent-8 text-justify mb-6" th:utext="${para}">Nội dung</div>
+              </th:block>
 
-              <!-- In-flow Paywall Card matching image10.png theme -->
-              <div class="rounded-3xl p-6 sm:p-8 text-center border border-[#ecd9c2] bg-[#fdfaf6] shadow-xl max-w-lg mx-auto relative z-10 transition-all">
-                 <div class="w-16 h-16 rounded-full bg-[#fbf0e0] border border-[#f3ddc3] flex items-center justify-center mx-auto mb-4 text-[#874b02] shadow-sm">
-                    <span class="material-symbols-outlined text-[30px] icon-fill">lock</span>
-                 </div>
+              <!-- In-flow VIP Paywall Section (If Chapter is Locked) -->
+              <div class="relative pt-6 pb-12 mt-6 select-none" id="vip-paywall-container">
+                 <!-- Gradient Fade Over Preview Content -->
+                 <div class="absolute -top-28 left-0 right-0 h-28 bg-gradient-to-b from-transparent to-surface pointer-events-none"></div>
 
-                 <h3 class="font-serif text-2xl sm:text-3xl font-bold text-[#2d1b09] mb-2 tracking-tight">Chương VIP</h3>
+                 <!-- In-flow Paywall Card matching image10.png theme -->
+                 <div class="rounded-3xl p-6 sm:p-8 text-center border border-[#ecd9c2] bg-[#fdfaf6] shadow-xl max-w-lg mx-auto relative z-10 transition-all">
+                    <div class="w-16 h-16 rounded-full bg-[#fbf0e0] border border-[#f3ddc3] flex items-center justify-center mx-auto mb-4 text-[#874b02] shadow-sm">
+                       <span class="material-symbols-outlined text-[30px] icon-fill">lock</span>
+                    </div>
 
-                 <p class="text-sm text-[#5d4a3b] mb-6 leading-relaxed">
-                    Bạn đang xem bản đọc thử. Hãy mở khóa <strong class="text-[#2d1b09]">Chương <span th:text="${chapter.chapterNumber}">1</span>: <span th:text="${chapter.title}">Tiêu đề</span></strong> với giá <strong class="text-[#874b02]" th:text="${chapter.price} + ' Coin'">50 Coin</strong> để tiếp tục theo dõi trọn vẹn câu chuyện.
-                 </p>
+                    <h3 class="font-serif text-2xl sm:text-3xl font-bold text-[#2d1b09] mb-2 tracking-tight">Chương VIP</h3>
 
-                 <!-- Action Button -->
-                 <button type="button" onclick="openVipUnlockModal()"
-                         class="w-full sm:w-auto px-8 py-3.5 bg-[#874b02] hover:bg-[#723e00] text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all inline-flex items-center justify-center gap-2 text-sm">
-                    <span class="material-symbols-outlined text-[18px]">key</span>
-                    <span th:text="'Mở khóa chương (' + ${chapter.price} + ' Coin)'">Mở khóa chương</span>
-                 </button>
+                    <p class="text-sm text-[#5d4a3b] mb-6 leading-relaxed">
+                       Bạn đang xem bản đọc thử. Hãy mở khóa <strong class="text-[#2d1b09]">Chương <span th:text="${chapter.chapterNumber}">1</span>: <span th:text="${chapter.title}">Tiêu đề</span></strong> với giá <strong class="text-[#874b02]" th:text="${chapter.price} + ' Coin'">50 Coin</strong> để tiếp tục theo dõi trọn vẹn câu chuyện.
+                    </p>
 
-                 <div class="flex items-center justify-center gap-1.5 text-[11px] text-[#8c7a6b] mt-4">
-                    <span class="material-symbols-outlined text-[15px] text-[#874b02]">verified_user</span>
-                    <span>Đã đọc một lần, lưu vĩnh viễn trong tủ sách</span>
+                    <!-- Action Button -->
+                    <button type="button" onclick="openVipUnlockModal()"
+                            class="w-full sm:w-auto px-8 py-3.5 bg-[#874b02] hover:bg-[#723e00] text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all inline-flex items-center justify-center gap-2 text-sm">
+                       <span class="material-symbols-outlined text-[18px]">key</span>
+                       <span th:text="'Mở khóa chương (' + ${chapter.price} + ' Coin)'">Mở khóa chương</span>
+                    </button>
+
+                    <div class="flex items-center justify-center gap-1.5 text-[11px] text-[#8c7a6b] mt-4">
+                       <span class="material-symbols-outlined text-[15px] text-[#874b02]">verified_user</span>
+                       <span>Đã đọc một lần, lưu vĩnh viễn trong tủ sách</span>
+                    </div>
                  </div>
               </div>
-           </div>
+           </th:block>
         </article>
 
 
@@ -186,6 +203,20 @@
              title="Đã hết chương mới nhất">
               <span class="material-symbols-outlined text-[20px]">fast_forward</span>
               <span class="absolute right-12 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Đã hết chương mới nhất</span>
+          </button>
+
+          <!-- 8. Report Content / Chapter (UC-21) -->
+          <button type="button"
+             onclick="openReportContentModal(this)"
+             th:data-chapter-id="${chapter.id}"
+             th:data-novel-title="${novel.title}"
+             th:data-chapter-number="${chapter.chapterNumber}"
+             th:data-chapter-title="${chapter.title}"
+             th:data-author="${novel.author}"
+             class="w-10 h-10 rounded-xl flex items-center justify-center text-[#d97706] hover:bg-surface-container transition-all group relative"
+             title="Báo cáo lỗi / vi phạm chương">
+              <span class="material-symbols-outlined text-[20px]">flag</span>
+              <span class="absolute right-12 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Báo cáo nội dung</span>
           </button>
       </nav>
 
@@ -1265,5 +1296,8 @@
 
   <!-- Login Required Modal -->
   <div th:replace="~{fragments/auth-modal :: login-modal}"></div>
+
+  <!-- Report Modals (UC-21 & UC-22) -->
+  <div th:replace="~{fragments/report-modals :: report-modals}"></div>
 </body>
 </html>

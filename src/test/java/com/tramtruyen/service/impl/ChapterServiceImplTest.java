@@ -1,11 +1,13 @@
 package com.tramtruyen.service.impl;
 
 import com.tramtruyen.dto.ChapterForm;
+import com.tramtruyen.dto.ChapterSaveAction;
 import com.tramtruyen.entity.Novel;
 import com.tramtruyen.exception.DuplicateResourceException;
 import com.tramtruyen.exception.ResourceNotFoundException;
 import com.tramtruyen.repository.ChapterRepository;
 import com.tramtruyen.repository.NovelRepository;
+import com.tramtruyen.util.RichTextSanitizer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,11 +32,14 @@ class ChapterServiceImplTest {
     @Mock
     private NovelRepository novelRepository;
 
+    private RichTextSanitizer richTextSanitizer;
+
     private ChapterServiceImpl chapterService;
 
     @BeforeEach
     void setUp() {
-        chapterService = new ChapterServiceImpl(chapterRepository, novelRepository);
+        richTextSanitizer = new RichTextSanitizer();
+        chapterService = new ChapterServiceImpl(chapterRepository, novelRepository, richTextSanitizer);
     }
 
     @Test
@@ -50,6 +55,18 @@ class ChapterServiceImplTest {
         assertThat(result.getStatus()).isEqualTo("DRAFT");
         assertThat(result.getPrice()).isZero();
         verify(chapterRepository).save(any());
+    }
+
+    @Test
+    void createChapterCanBePublished() {
+        Novel novel = Novel.builder().id(1).isDeleted(false).build();
+        when(novelRepository.findByIdAndIsDeletedFalse(1)).thenReturn(Optional.of(novel));
+        when(chapterRepository.existsByNovelIdAndChapterNumber(1, 1)).thenReturn(false);
+        when(chapterRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        var result = chapterService.createChapter(1, form(), ChapterSaveAction.PUBLISHED);
+
+        assertThat(result.getStatus()).isEqualTo("PUBLISHED");
     }
 
     @Test
@@ -99,6 +116,22 @@ class ChapterServiceImplTest {
     }
 
     @Test
+    void updateChapterCanBePublished() {
+        Novel novel = Novel.builder().id(1).isDeleted(false).build();
+        var chapter = com.tramtruyen.entity.Chapter.builder()
+                .id(5).novel(novel).chapterNumber(1).title("Old title")
+                .content("Old content").status("DRAFT").price(0).isDeleted(false).build();
+        when(chapterRepository.findByIdAndNovelIdAndIsDeletedFalse(5, 1)).thenReturn(Optional.of(chapter));
+        when(novelRepository.findByIdAndIsDeletedFalse(1)).thenReturn(Optional.of(novel));
+        when(chapterRepository.existsByNovelIdAndChapterNumberAndIdNot(1, 2, 5)).thenReturn(false);
+        when(chapterRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        var result = chapterService.updateChapter(1, 5, updatedForm(), ChapterSaveAction.PUBLISHED);
+
+        assertThat(result.getStatus()).isEqualTo("PUBLISHED");
+    }
+
+    @Test
     void deleteChapterSoftDeletesOwnedChapter() {
         Novel novel = Novel.builder().id(1).isDeleted(false).build();
         var chapter = com.tramtruyen.entity.Chapter.builder()
@@ -110,6 +143,21 @@ class ChapterServiceImplTest {
 
         assertThat(chapter.getIsDeleted()).isTrue();
         verify(chapterRepository).save(chapter);
+    }
+
+    @Test
+    void createChapterSanitizesRichText() {
+        Novel novel = Novel.builder().id(1).isDeleted(false).build();
+        when(novelRepository.findByIdAndIsDeletedFalse(1)).thenReturn(Optional.of(novel));
+        when(chapterRepository.existsByNovelIdAndChapterNumber(1, 1)).thenReturn(false);
+        when(chapterRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        ChapterForm chapterForm = form();
+        chapterForm.setContent("<p>Safe</p><script>alert('x')</script>");
+
+        var result = chapterService.createChapter(1, chapterForm);
+
+        assertThat(result.getContent()).isEqualTo("<p>Safe</p>");
     }
 
     private ChapterForm form() {
