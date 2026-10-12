@@ -1,0 +1,183 @@
+/* ================================================================================
+   TRẠM TRUYỆN - USER DAILY CHECK-IN STYLESHEET (UC-32, RDS image38.png)
+   ================================================================================ */
+
+:root {
+    --checkin-gold: #c08d41;
+    --checkin-gold-dark: #875200;
+    --checkin-gold-light: #fdfaf3;
+    --checkin-border: #f1e2ce;
+    --checkin-streak-flame: #ea580c;
+}
+
+/* Hero Streak Card */
+.checkin-hero-card {
+    background: linear-gradient(135deg, #fffdfa 0%, #faf3e8 100%);
+    border: 1px solid var(--checkin-border);
+    border-radius: 1.25rem;
+    box-shadow: 0 4px 20px -2px rgba(107, 91, 75, 0.06);
+    position: relative;
+    overflow: hidden;
+}
+
+.checkin-hero-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 16rem;
+    height: 16rem;
+    background: radial-gradient(circle, rgba(192, 141, 65, 0.12) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+/* Flame Badge */
+.checkin-flame-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.875rem;
+    border-radius: 9999px;
+    background: #ffedd5;
+    color: var(--checkin-streak-flame);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(234, 88, 12, 0.15);
+}
+
+/* 7-Day Roadmap Grid */
+.roadmap-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+    .roadmap-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .roadmap-grid {
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+    }
+}
+
+/* Roadmap Day Card */
+.roadmap-day-card {
+    border-radius: 1rem;
+    padding: 1rem 0.75rem;
+    display: flex;
+    flex-col: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1.5px solid transparent;
+}
+
+/* Status 1: CLAIMED (Đã nhận trong quá khứ) */
+.roadmap-day-card.status-claimed {
+    background-color: #f6fdf7;
+    border-color: #bbf7d0;
+}
+
+.roadmap-day-card.status-claimed .roadmap-icon-circle {
+    background-color: #dcfce7;
+    color: #16a34a;
+}
+
+/* Status 2: TODAY_PENDING (Hôm nay, chờ nhận) */
+.roadmap-day-card.status-today-pending {
+    background-color: #fffbeb;
+    border-color: #f59e0b;
+    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.2);
+    transform: translateY(-2px);
+}
+
+.roadmap-day-card.status-today-pending .roadmap-icon-circle {
+    background-color: #fef3c7;
+    color: #d97706;
+    animation: bounceSlow 2s infinite;
+}
+
+/* Status 3: TODAY_CLAIMED (Hôm nay, vừa nhận xong) */
+.roadmap-day-card.status-today-claimed {
+    background-color: #f0fdf4;
+    border-color: #22c55e;
+    box-shadow: 0 4px 16px rgba(34, 197, 94, 0.15);
+}
+
+.roadmap-day-card.status-today-claimed .roadmap-icon-circle {
+    background-color: #dcfce7;
+    color: #16a34a;
+}
+
+/* Status 4: LOCKED (Các ngày tiếp theo) */
+.roadmap-day-card.status-locked {
+    background-color: #ffffff;
+    border-color: #ede2d3;
+    opacity: 0.85;
+}
+
+.roadmap-day-card.status-locked .roadmap-icon-circle {
+    background-color: #f8f3ec;
+    color: #a89480;
+}
+
+/* Special Milestone Day 7 Jackpot */
+.roadmap-day-card.is-special {
+    background: linear-gradient(145deg, #fffcf5 0%, #fef3d6 100%);
+    border-color: #f59e0b;
+    position: relative;
+}
+
+.roadmap-day-card.is-special::before {
+    content: 'JACKPOT';
+    position: absolute;
+    top: -0.5rem;
+    background: #f59e0b;
+    color: #ffffff;
+    font-size: 0.6rem;
+    font-weight: 800;
+    padding: 0.1rem 0.45rem;
+    border-radius: 9999px;
+    letter-spacing: 0.05em;
+    box-shadow: 0 2px 4px rgba(245, 158, 11, 0.3);
+}
+
+/* Primary Check-in Button */
+.btn-perform-checkin {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.875rem 2rem;
+    border-radius: 0.875rem;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: #ffffff;
+    background: linear-gradient(135deg, #875200 0%, #a66500 100%);
+    box-shadow: 0 4px 14px rgba(135, 82, 0, 0.3);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+}
+
+.btn-perform-checkin:hover:not(:disabled) {
+    background: linear-gradient(135deg, #704400 0%, #875200 100%);
+    box-shadow: 0 6px 20px rgba(135, 82, 0, 0.4);
+    transform: translateY(-2px);
+}
+
+.btn-perform-checkin:disabled {
+    background: #e5e7eb;
+    color: #9ca3af;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+@keyframes bounceSlow {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+}

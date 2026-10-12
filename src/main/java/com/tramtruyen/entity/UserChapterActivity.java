@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,7 +22,10 @@ import java.time.LocalDateTime;
  * Tracks reader activity, reading progress, and VIP unlock status for chapters.
  */
 @Entity
-@Table(name = "user_chapter_activities")
+@Table(
+        name = "user_chapter_activities",
+        uniqueConstraints = @UniqueConstraint(name = "user_chapter_activities_user_id_chapter_id_key", columnNames = {"user_id", "chapter_id"})
+)
 @Getter
 @Setter
 @NoArgsConstructor
