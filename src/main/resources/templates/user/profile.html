@@ -49,10 +49,15 @@
                             <span class="material-symbols-outlined text-[20px]">bookmark</span>
                             <span class="font-label-lg text-label-lg">Tủ sách</span>
                         </a>
-                        <a href="#"
+                        <a th:href="@{/user/history}"
                            class="flex items-center gap-3.5 px-3.5 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all">
                             <span class="material-symbols-outlined text-[20px]">history</span>
                             <span class="font-label-lg text-label-lg">Lịch sử đọc</span>
+                        </a>
+                        <a th:href="@{/user/checkin}"
+                           class="flex items-center gap-3.5 px-3.5 py-3 rounded-lg text-amber-800 hover:bg-amber-50 hover:text-amber-900 transition-all font-semibold">
+                            <span class="material-symbols-outlined text-[20px] text-amber-600">calendar_month</span>
+                            <span class="font-label-lg text-label-lg">Điểm danh nhận Coin</span>
                         </a>
                         <a th:href="@{/user/mailbox}"
                            class="flex items-center gap-3.5 px-3.5 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all">

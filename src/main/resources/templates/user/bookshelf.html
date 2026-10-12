@@ -71,10 +71,15 @@
                             <span class="material-symbols-outlined text-[20px] icon-fill">bookmark</span>
                             <span class="font-label-lg text-label-lg">Tủ sách</span>
                         </a>
-                        <a href="#"
+                        <a th:href="@{/user/history}"
                            class="flex items-center gap-3.5 px-3.5 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all">
                             <span class="material-symbols-outlined text-[20px]">history</span>
                             <span class="font-label-lg text-label-lg">Lịch sử đọc</span>
+                        </a>
+                        <a th:href="@{/user/checkin}"
+                           class="flex items-center gap-3.5 px-3.5 py-3 rounded-lg text-amber-800 hover:bg-amber-50 hover:text-amber-900 transition-all font-semibold">
+                            <span class="material-symbols-outlined text-[20px] text-amber-600">calendar_month</span>
+                            <span class="font-label-lg text-label-lg">Điểm danh nhận Coin</span>
                         </a>
                         <a href="#"
                            class="flex items-center gap-3.5 px-3.5 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all">
@@ -355,51 +360,30 @@
                                         </a>
                                         <a th:if="${!item.isCompleted and !item.isCaughtUp}"
                                            th:href="${item.readUrl}"
-                                           class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary-container hover:bg-primary text-surface-container-lowest font-label-lg text-label-lg transition-colors shadow-sm">
+                                           th:data-novel-slug="${item.slug}"
+                                           class="bookshelf-continue-read-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary-container hover:bg-primary text-surface-container-lowest font-label-lg text-label-lg transition-colors shadow-sm">
                                             <span class="material-symbols-outlined text-[18px]">play_arrow</span>
                                             <span>Đọc tiếp</span>
                                         </a>
 
-                                        <!-- More Actions Dropdown -->
-                                        <div class="relative action-menu-container">
-                                            <button aria-label="Thao tác khác" type="button"
-                                                    class="w-10 h-10 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors"
-                                                    onclick="toggleDropdown(this)">
-                                                <span class="material-symbols-outlined text-[20px]">more_vert</span>
-                                            </button>
+                                        <!-- Báo chương mới -->
+                                        <button type="button" onclick="notifySubscription(this)" 
+                                                class="w-10 h-10 rounded-lg bg-surface-container-high hover:bg-surface-container text-on-surface flex items-center justify-center transition-colors shadow-sm" title="Báo chương mới">
+                                            <span class="material-symbols-outlined text-[20px]">notifications_active</span>
+                                        </button>
 
-                                            <div class="action-dropdown hidden absolute right-0 top-12 w-52 py-2 rounded-xl bg-surface-container-lowest shadow-[0_12px_32px_-4px_rgba(107,91,75,0.12)] z-30 border border-surface-container">
-                                                <!-- Đánh dấu đã đọc -->
-                                                <form th:action="@{/user/bookshelf/{id}/mark-read(id=${item.novelId})}" method="POST" class="m-0">
-                                                    <button type="submit" class="w-full text-left px-4 py-2 font-label-md text-label-md text-on-surface hover:bg-surface-container-low flex items-center gap-2.5">
-                                                        <span class="material-symbols-outlined text-outline text-[18px]">check_circle</span>
-                                                        Đánh dấu đã đọc
-                                                    </button>
-                                                </form>
-
-                                                <!-- Báo chương mới -->
-                                                <button type="button" onclick="notifySubscription(this)" class="w-full text-left px-4 py-2 font-label-md text-label-md text-on-surface hover:bg-surface-container-low flex items-center gap-2.5">
-                                                    <span class="material-symbols-outlined text-outline text-[18px]">notifications_active</span>
-                                                    Báo chương mới
-                                                </button>
-
-                                                <div class="my-1 border-t border-surface-container"></div>
-
-                                                <!-- Xóa khỏi tủ sách (Mở Modal) -->
-                                                <button type="button"
-                                                        th:data-id="${item.novelId}"
-                                                        th:data-title="${item.title}"
-                                                        th:data-author="${item.author}"
-                                                        th:data-cover="${item.coverUrl != null and !#strings.isEmpty(item.coverUrl) ? item.coverUrl : '/images/default-cover.jpg'}"
-                                                        th:data-category="${not #lists.isEmpty(item.categories) ? item.categories[0] : 'Truyện chữ'}"
-                                                        th:data-chapter="${item.currentChapterNumber > 0 ? 'Chương ' + item.currentChapterNumber : 'Chưa đọc'}"
-                                                        onclick="openDeleteModalFromBtn(this)"
-                                                        class="w-full text-left px-4 py-2 font-label-md text-label-md text-error hover:bg-error-container/30 flex items-center gap-2.5">
-                                                    <span class="material-symbols-outlined text-error text-[18px]">delete</span>
-                                                    Xóa khỏi tủ sách
-                                                </button>
-                                            </div>
-                                        </div>
+                                        <!-- Xóa khỏi tủ sách (Mở Modal) -->
+                                        <button type="button"
+                                                th:data-id="${item.novelId}"
+                                                th:data-title="${item.title}"
+                                                th:data-author="${item.author}"
+                                                th:data-cover="${item.coverUrl != null and !#strings.isEmpty(item.coverUrl) ? item.coverUrl : '/images/default-cover.jpg'}"
+                                                th:data-category="${not #lists.isEmpty(item.categories) ? item.categories[0] : 'Truyện chữ'}"
+                                                th:data-chapter="${item.currentChapterNumber > 0 ? 'Chương ' + item.currentChapterNumber : 'Chưa đọc'}"
+                                                onclick="openDeleteModalFromBtn(this)"
+                                                class="w-10 h-10 rounded-lg bg-[#ffebee] hover:bg-[#ffcdd2] text-[#d32f2f] flex items-center justify-center transition-colors shadow-sm" title="Xóa khỏi tủ sách">
+                                            <span class="material-symbols-outlined text-[20px]">delete</span>
+                                        </button>
                                     </div>
                                 </article>
                             </div>

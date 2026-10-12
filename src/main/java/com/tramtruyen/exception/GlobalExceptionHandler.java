@@ -72,6 +72,33 @@ public class GlobalExceptionHandler {
         return "redirect:/";
     }
 
+    // ─── InsufficientBalanceException → 400 ──────────────────────────────
+
+    @ExceptionHandler(InsufficientBalanceException.class)
+    public Object handleInsufficientBalance(InsufficientBalanceException ex,
+                                            HttpServletRequest request,
+                                            RedirectAttributes redirectAttributes) {
+        log.warn("Insufficient balance: {} [URI={}]", ex.getMessage(), request.getRequestURI());
+
+        if (isAjaxOrApiRequest(request)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(Map.of("success", false, "insufficientBalance", true, "message", ex.getMessage()));
+        }
+
+        String referer = request.getHeader("Referer");
+        if (referer != null && !referer.isBlank()) {
+            redirectAttributes.addFlashAttribute("errorMsg", ex.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+            redirectAttributes.addFlashAttribute("insufficientBalance", true);
+            return "redirect:" + extractPath(referer);
+        }
+        redirectAttributes.addFlashAttribute("errorMsg", ex.getMessage());
+        redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+        redirectAttributes.addFlashAttribute("insufficientBalance", true);
+        return "redirect:/";
+    }
+
     // ─── IllegalArgumentException → 400 ──────────────────────────────────
 
     @ExceptionHandler(IllegalArgumentException.class)
