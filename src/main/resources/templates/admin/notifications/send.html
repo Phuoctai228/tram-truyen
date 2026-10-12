@@ -14,33 +14,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script th:src="@{/js/authentication/tailwind-config.js}"></script>
     <link rel="stylesheet" th:href="@{/css/novel-admin.css}">
+    <link rel="stylesheet" th:href="@{/css/admin-common.css}">
     <style>
         .font-serif-title {
             font-family: 'Lora', serif;
-        }
-
-        .scope-card {
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .scope-card.selected {
-            border-color: #875200;
-            background-color: #fff9f0;
-            box-shadow: 0 4px 12px rgba(135, 82, 0, 0.08);
-        }
-
-        .scope-card.selected .scope-icon-box {
-            background-color: #ffddba;
-            color: #6d4000;
-        }
-
-        .scope-card input[type="radio"] {
-            width: 1.15rem !important;
-            height: 1.15rem !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            flex-shrink: 0 !important;
-            accent-color: #875200;
         }
     </style>
 </head>
