@@ -29,11 +29,6 @@
             <span class="text-on-surface font-semibold truncate max-w-xs" th:text="${novel.title}">Title</span>
           </nav>
 
-          <!-- Flash Success Message -->
-          <div th:if="${successMessage}" class="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center gap-3 animate-in fade-in duration-200">
-            <span class="material-symbols-outlined text-emerald-600">check_circle</span>
-            <span th:text="${successMessage}">Thông báo thành công</span>
-          </div>
           
           <div class="flex flex-col lg:flex-row gap-8 items-start mb-12">
             <!-- Cover -->
@@ -447,5 +442,7 @@
       }
     });
   </script>
+  <!-- Report Modals (UC-21 & UC-22) -->
+  <div th:replace="~{fragments/report-modals :: report-modals}"></div>
 </body>
 </html>

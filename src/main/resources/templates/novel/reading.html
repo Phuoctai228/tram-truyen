@@ -151,6 +151,20 @@
               <span class="material-symbols-outlined text-[20px]">fast_forward</span>
               <span class="absolute right-12 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Đã hết chương mới nhất</span>
           </button>
+
+          <!-- 8. Report Content / Chapter (UC-21) -->
+          <button type="button"
+             onclick="openReportContentModal(this)"
+             th:data-chapter-id="${chapter.id}"
+             th:data-novel-title="${novel.title}"
+             th:data-chapter-number="${chapter.chapterNumber}"
+             th:data-chapter-title="${chapter.title}"
+             th:data-author="${novel.author}"
+             class="w-10 h-10 rounded-xl flex items-center justify-center text-[#d97706] hover:bg-surface-container transition-all group relative"
+             title="Báo cáo lỗi / vi phạm chương">
+              <span class="material-symbols-outlined text-[20px]">flag</span>
+              <span class="absolute right-12 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Báo cáo nội dung</span>
+          </button>
       </nav>
 
       <!-- Left Chapter List Drawer (Image 4 style) -->
@@ -900,5 +914,8 @@
 
   <!-- Login Required Modal -->
   <div th:replace="~{fragments/auth-modal :: login-modal}"></div>
+
+  <!-- Report Modals (UC-21 & UC-22) -->
+  <div th:replace="~{fragments/report-modals :: report-modals}"></div>
 </body>
 </html>

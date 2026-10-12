@@ -6,6 +6,7 @@ import com.tramtruyen.entity.User;
 import com.tramtruyen.exception.ResourceNotFoundException;
 import com.tramtruyen.repository.UserRepository;
 import com.tramtruyen.service.CoinPackageService;
+import com.tramtruyen.service.SystemSettingService;
 import com.tramtruyen.service.VNPayService;
 import com.tramtruyen.util.VNPayUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,6 +32,7 @@ public class PaymentController {
     private final CoinPackageService coinPackageService;
     private final VNPayService vnPayService;
     private final UserRepository userRepository;
+    private final SystemSettingService systemSettingService;
 
     /**
      * Hiển thị giao diện Chọn gói nạp Coin vào tài khoản.
@@ -50,6 +52,8 @@ public class PaymentController {
         model.addAttribute("user", user);
         model.addAttribute("walletBalance", user.getWalletBalance() != null ? user.getWalletBalance() : 0);
         model.addAttribute("packages", packages);
+        model.addAttribute("vndToCoinRate", systemSettingService.getVndToCoinRate());
+        model.addAttribute("vndPerCoinFormatted", systemSettingService.getVndPerCoinFormatted());
 
         return "wallet/topup";
     }

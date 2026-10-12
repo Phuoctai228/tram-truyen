@@ -5,6 +5,7 @@ import com.tramtruyen.dto.WalletOverviewDTO;
 import com.tramtruyen.entity.User;
 import com.tramtruyen.exception.ResourceNotFoundException;
 import com.tramtruyen.repository.UserRepository;
+import com.tramtruyen.service.SystemSettingService;
 import com.tramtruyen.service.WalletService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,7 @@ public class WalletController {
 
     private final WalletService walletService;
     private final UserRepository userRepository;
+    private final SystemSettingService systemSettingService;
 
     /**
      * Hiển thị trang Ví của tôi & Lịch sử giao dịch.
@@ -47,6 +49,8 @@ public class WalletController {
         WalletOverviewDTO overview = walletService.getWalletOverview(user);
         model.addAttribute("wallet", overview);
         model.addAttribute("user", user);
+        model.addAttribute("vndToCoinRate", systemSettingService.getVndToCoinRate());
+        model.addAttribute("vndPerCoinFormatted", systemSettingService.getVndPerCoinFormatted());
 
         return "wallet/index";
     }
