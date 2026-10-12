@@ -106,10 +106,13 @@
             </div>
 
             <p class="form-note">Chương mới được lưu ở trạng thái Bản nháp và miễn phí. Thiết lập xuất bản hoặc VIP thuộc chức năng riêng.</p>
-            <div class="form-actions">
+            <div class="form-actions chapter-form-actions">
                 <a class="button button-secondary" th:href="@{/admin/novels/{id}/chapters(id=${novel.id})}">Hủy</a>
                 <button class="button button-primary" type="submit"
-                        th:text="${pageTitle == 'Tạo chương mới' ? 'Lưu chương' : 'Lưu thay đổi'}">Lưu chương</button>
+                        name="saveAction" value="DRAFT"
+                        th:text="${pageTitle == 'Tạo chương mới' ? 'Lưu bản nháp' : 'Lưu thay đổi'}">Lưu bản nháp</button>
+                <button class="button button-publish" type="submit" name="saveAction" value="PUBLISHED"
+                        th:text="${pageTitle == 'Tạo chương mới' ? 'Xuất bản' : 'Lưu và xuất bản'}">Xuất bản</button>
             </div>
         </form>
     </div>

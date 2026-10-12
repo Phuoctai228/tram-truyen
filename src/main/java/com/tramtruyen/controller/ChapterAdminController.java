@@ -1,6 +1,7 @@
 package com.tramtruyen.controller;
 
 import com.tramtruyen.dto.ChapterForm;
+import com.tramtruyen.dto.ChapterSaveAction;
 import com.tramtruyen.entity.Novel;
 import com.tramtruyen.exception.DuplicateResourceException;
 import com.tramtruyen.exception.ResourceNotFoundException;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /** Handles chapter management views for the Novel CMS. */
@@ -57,6 +59,7 @@ public class ChapterAdminController {
 
     @PostMapping
     public String createChapter(@PathVariable Integer novelId, @Valid ChapterForm form,
+                                @RequestParam(defaultValue = "DRAFT") ChapterSaveAction saveAction,
                                 BindingResult bindingResult, Model model,
                                 RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
@@ -65,8 +68,11 @@ public class ChapterAdminController {
         }
 
         try {
-            chapterService.createChapter(novelId, form);
-            redirectAttributes.addFlashAttribute("successMessage", "Đã tạo chương thành công.");
+            chapterService.createChapter(novelId, form, saveAction);
+            redirectAttributes.addFlashAttribute("successMessage",
+                    saveAction == ChapterSaveAction.PUBLISHED
+                            ? "Đã tạo và xuất bản chương thành công."
+                            : "Đã lưu chương ở dạng bản nháp.");
             return "redirect:/admin/novels/" + novelId + "/chapters";
         } catch (DuplicateResourceException exception) {
             bindingResult.rejectValue("chapterNumber", "duplicate", exception.getMessage());
@@ -96,14 +102,18 @@ public class ChapterAdminController {
     @PostMapping("/{chapterId}")
     public String updateChapter(@PathVariable Integer novelId, @PathVariable Integer chapterId,
                                 @Valid ChapterForm form, BindingResult bindingResult,
+                                @RequestParam(defaultValue = "DRAFT") ChapterSaveAction saveAction,
                                 Model model, RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             return renderFormWithErrors(novelId, form, model, redirectAttributes,
                     "Chỉnh sửa chương", "/admin/novels/" + novelId + "/chapters/" + chapterId);
         }
         try {
-            chapterService.updateChapter(novelId, chapterId, form);
-            redirectAttributes.addFlashAttribute("successMessage", "Đã cập nhật chương thành công.");
+            chapterService.updateChapter(novelId, chapterId, form, saveAction);
+            redirectAttributes.addFlashAttribute("successMessage",
+                    saveAction == ChapterSaveAction.PUBLISHED
+                            ? "Đã cập nhật và xuất bản chương thành công."
+                            : "Đã lưu thay đổi ở dạng bản nháp.");
         } catch (DuplicateResourceException exception) {
             bindingResult.rejectValue("chapterNumber", "duplicate", exception.getMessage());
                 return renderFormWithErrors(novelId, form, model, redirectAttributes,

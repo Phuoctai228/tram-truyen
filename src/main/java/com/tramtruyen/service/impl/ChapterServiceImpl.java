@@ -1,6 +1,7 @@
 package com.tramtruyen.service.impl;
 
 import com.tramtruyen.dto.ChapterForm;
+import com.tramtruyen.dto.ChapterSaveAction;
 import com.tramtruyen.entity.Chapter;
 import com.tramtruyen.entity.Novel;
 import com.tramtruyen.exception.DuplicateResourceException;
@@ -37,6 +38,12 @@ public class ChapterServiceImpl implements ChapterService {
     @Override
     @Transactional
     public Chapter createChapter(Integer novelId, ChapterForm form) {
+        return createChapter(novelId, form, ChapterSaveAction.DRAFT);
+    }
+
+    @Override
+    @Transactional
+    public Chapter createChapter(Integer novelId, ChapterForm form, ChapterSaveAction action) {
         Novel novel = findActiveNovel(novelId);
         if (chapterRepository.existsByNovelIdAndChapterNumber(novelId, form.getChapterNumber())) {
             throw new DuplicateResourceException("Số chương đã tồn tại trong truyện này");
@@ -47,7 +54,7 @@ public class ChapterServiceImpl implements ChapterService {
                 .chapterNumber(form.getChapterNumber())
                 .title(form.getTitle().trim())
                 .content(richTextSanitizer.sanitize(form.getContent()))
-                .status(DEFAULT_STATUS)
+                .status(resolveStatus(action))
                 .price(DEFAULT_PRICE)
                 .build();
         return chapterRepository.save(chapter);
@@ -63,6 +70,12 @@ public class ChapterServiceImpl implements ChapterService {
     @Override
     @Transactional
     public Chapter updateChapter(Integer novelId, Integer chapterId, ChapterForm form) {
+        return updateChapter(novelId, chapterId, form, ChapterSaveAction.DRAFT);
+    }
+
+    @Override
+    @Transactional
+    public Chapter updateChapter(Integer novelId, Integer chapterId, ChapterForm form, ChapterSaveAction action) {
         findActiveNovel(novelId);
         Chapter chapter = findActiveChapter(novelId, chapterId);
         if (chapterRepository.existsByNovelIdAndChapterNumberAndIdNot(
@@ -73,6 +86,7 @@ public class ChapterServiceImpl implements ChapterService {
         chapter.setChapterNumber(form.getChapterNumber());
         chapter.setTitle(form.getTitle().trim());
         chapter.setContent(richTextSanitizer.sanitize(form.getContent()));
+        chapter.setStatus(resolveStatus(action));
         return chapterRepository.save(chapter);
     }
 
@@ -123,5 +137,9 @@ public class ChapterServiceImpl implements ChapterService {
     private Chapter sanitizeChapter(Chapter chapter) {
         chapter.setContent(richTextSanitizer.sanitize(chapter.getContent()));
         return chapter;
+    }
+
+    private String resolveStatus(ChapterSaveAction action) {
+        return action == ChapterSaveAction.PUBLISHED ? "PUBLISHED" : DEFAULT_STATUS;
     }
 }

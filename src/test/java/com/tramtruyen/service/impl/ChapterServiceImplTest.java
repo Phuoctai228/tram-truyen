@@ -1,6 +1,7 @@
 package com.tramtruyen.service.impl;
 
 import com.tramtruyen.dto.ChapterForm;
+import com.tramtruyen.dto.ChapterSaveAction;
 import com.tramtruyen.entity.Novel;
 import com.tramtruyen.exception.DuplicateResourceException;
 import com.tramtruyen.exception.ResourceNotFoundException;
@@ -57,6 +58,18 @@ class ChapterServiceImplTest {
     }
 
     @Test
+    void createChapterCanBePublished() {
+        Novel novel = Novel.builder().id(1).isDeleted(false).build();
+        when(novelRepository.findByIdAndIsDeletedFalse(1)).thenReturn(Optional.of(novel));
+        when(chapterRepository.existsByNovelIdAndChapterNumber(1, 1)).thenReturn(false);
+        when(chapterRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        var result = chapterService.createChapter(1, form(), ChapterSaveAction.PUBLISHED);
+
+        assertThat(result.getStatus()).isEqualTo("PUBLISHED");
+    }
+
+    @Test
     void createChapterRejectsMissingNovel() {
         when(novelRepository.findByIdAndIsDeletedFalse(1)).thenReturn(Optional.empty());
 
@@ -100,6 +113,22 @@ class ChapterServiceImplTest {
         assertThat(result.getTitle()).isEqualTo("Updated title");
         assertThat(result.getStatus()).isEqualTo("DRAFT");
         assertThat(result.getPrice()).isZero();
+    }
+
+    @Test
+    void updateChapterCanBePublished() {
+        Novel novel = Novel.builder().id(1).isDeleted(false).build();
+        var chapter = com.tramtruyen.entity.Chapter.builder()
+                .id(5).novel(novel).chapterNumber(1).title("Old title")
+                .content("Old content").status("DRAFT").price(0).isDeleted(false).build();
+        when(chapterRepository.findByIdAndNovelIdAndIsDeletedFalse(5, 1)).thenReturn(Optional.of(chapter));
+        when(novelRepository.findByIdAndIsDeletedFalse(1)).thenReturn(Optional.of(novel));
+        when(chapterRepository.existsByNovelIdAndChapterNumberAndIdNot(1, 2, 5)).thenReturn(false);
+        when(chapterRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        var result = chapterService.updateChapter(1, 5, updatedForm(), ChapterSaveAction.PUBLISHED);
+
+        assertThat(result.getStatus()).isEqualTo("PUBLISHED");
     }
 
     @Test
