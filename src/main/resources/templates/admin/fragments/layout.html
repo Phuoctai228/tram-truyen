@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="vi">
 <body>
 <aside th:fragment="sidebar(active)" class="sidebar">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <div>
         <div class="brand">
             <img class="brand-logo" src="/images/logo.jpg" alt="Logo Trạm Truyện">
@@ -9,16 +10,16 @@
             <small>CMS</small>
         </div>
         <nav>
-            <a class="nav-link" th:classappend="${active == 'tong-quan' ? ' active' : ''}" th:href="@{/admin}"><span>▦</span> Tổng quan</a>
-            <a class="nav-link" th:classappend="${active == 'truyen' ? ' active' : ''}" th:href="@{/admin/novels}"><span>▤</span> Truyện</a>
-            <a class="nav-link" th:classappend="${active == 'the-loai' ? ' active' : ''}" th:href="@{/admin/categories}"><span>◈</span> Thể loại</a>
-            <a class="nav-link" th:classappend="${active == 'bao-cao' ? ' active' : ''}" th:href="@{/admin/reports}"><span>⚑</span> Báo cáo</a>
-            <a class="nav-link" th:classappend="${active == 'thong-bao' ? ' active' : ''}" th:href="@{/admin/notifications}"><span>🔔</span> Thông báo</a>
-            <a class="nav-link" th:classappend="${active == 'nguoi-dung' ? ' active' : ''}" th:href="@{/admin/users}"><span>👥</span> Người dùng</a>
-            <a class="nav-link" th:classappend="${active == 'giao-dich' ? ' active' : ''}" th:href="@{/admin/transactions}"><span>🪙</span> Giao dịch</a>
-            <a class="nav-link" th:classappend="${active == 'cau-hinh' ? ' active' : ''}" th:href="@{/admin/settings}"><span>⚙</span> Cấu hình</a>
-            <a class="nav-link" th:classappend="${active == 'nhat-ky' ? ' active' : ''}" th:href="@{/admin/audit-logs}"><span>📋</span> Nhật ký</a>
-            <a class="nav-link" th:classappend="${active == 'trang-chu' ? ' active' : ''}" th:href="@{/}"><span>⮌</span> Về trang chủ</a>
+            <a class="nav-link" th:classappend="${active == 'tong-quan' ? ' active' : ''}" th:href="@{/admin}"><span class="material-symbols-outlined nav-icon">dashboard</span> Tổng quan</a>
+            <a class="nav-link" th:classappend="${active == 'truyen' ? ' active' : ''}" th:href="@{/admin/novels}"><span class="material-symbols-outlined nav-icon">auto_stories</span> Truyện</a>
+            <a class="nav-link" th:classappend="${active == 'the-loai' ? ' active' : ''}" th:href="@{/admin/categories}"><span class="material-symbols-outlined nav-icon">category</span> Thể loại</a>
+            <a class="nav-link" th:classappend="${active == 'bao-cao' ? ' active' : ''}" th:href="@{/admin/reports}"><span class="material-symbols-outlined nav-icon">flag</span> Báo cáo</a>
+            <a class="nav-link" th:classappend="${active == 'thong-bao' ? ' active' : ''}" th:href="@{/admin/notifications}"><span class="material-symbols-outlined nav-icon">notifications</span> Thông báo</a>
+            <a class="nav-link" th:classappend="${active == 'nguoi-dung' ? ' active' : ''}" th:href="@{/admin/users}"><span class="material-symbols-outlined nav-icon">group</span> Người dùng</a>
+            <a class="nav-link" th:classappend="${active == 'giao-dich' ? ' active' : ''}" th:href="@{/admin/transactions}"><span class="material-symbols-outlined nav-icon">payments</span> Giao dịch</a>
+            <a class="nav-link" th:classappend="${active == 'cau-hinh' ? ' active' : ''}" th:href="@{/admin/settings}"><span class="material-symbols-outlined nav-icon">settings</span> Cấu hình</a>
+            <a class="nav-link" th:classappend="${active == 'nhat-ky' ? ' active' : ''}" th:href="@{/admin/audit-logs}"><span class="material-symbols-outlined nav-icon">receipt_long</span> Nhật ký</a>
+            <a class="nav-link" th:classappend="${active == 'trang-chu' ? ' active' : ''}" th:href="@{/}"><span class="material-symbols-outlined nav-icon">home</span> Về trang chủ</a>
         </nav>
     </div>
     <div class="sidebar-footer">

@@ -19,9 +19,28 @@
             font-family: 'Lora', serif;
         }
 
+        .scope-card {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
         .scope-card.selected {
-            border-color: #d97706;
+            border-color: #875200;
             background-color: #fff9f0;
+            box-shadow: 0 4px 12px rgba(135, 82, 0, 0.08);
+        }
+
+        .scope-card.selected .scope-icon-box {
+            background-color: #ffddba;
+            color: #6d4000;
+        }
+
+        .scope-card input[type="radio"] {
+            width: 1.15rem !important;
+            height: 1.15rem !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            flex-shrink: 0 !important;
+            accent-color: #875200;
         }
     </style>
 </head>
@@ -72,28 +91,32 @@
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <!-- All Users Option -->
                                 <label
-                                    class="scope-card border-2 border-[#eae2d5] rounded-xl p-4 flex items-start gap-3 cursor-pointer transition-all hover:border-[#bc7d39]"
+                                    class="scope-card border-2 border-[#eae2d5] rounded-2xl p-4 flex items-center gap-3.5 cursor-pointer transition-all hover:border-[#bc7d39] hover:bg-[#fffcf9]"
                                     id="scopeAllCard">
                                     <input type="radio" th:field="*{scope}" value="ALL"
-                                        class="mt-1 text-[#bc7d39] focus:ring-[#bc7d39]" onchange="toggleScope('ALL')">
-                                    <div>
-                                        <span class="text-sm font-bold text-[#2b2118] block">Toàn hệ thống</span>
-                                        <span class="text-xs text-[#8a7664] mt-0.5 block">Tất cả độc giả & dịch giả trên
-                                            hệ thống</span>
+                                        class="!w-4.5 !h-4.5 shrink-0 accent-[#875200] text-[#bc7d39] focus:ring-[#bc7d39] cursor-pointer" onchange="toggleScope('ALL')">
+                                    <div class="scope-icon-box w-10 h-10 rounded-xl bg-[#fff0df] flex items-center justify-center text-[#875200] shrink-0 transition-colors">
+                                        <span class="material-symbols-outlined text-[20px]">campaign</span>
+                                    </div>
+                                    <div class="min-w-0 flex-1">
+                                        <span class="text-sm font-bold text-[#2b2118] block leading-tight">Toàn hệ thống</span>
+                                        <span class="text-xs text-[#8a7664] mt-1 block leading-snug">Tất cả độc giả &amp; dịch giả trên hệ thống</span>
                                     </div>
                                 </label>
 
                                 <!-- Specific User Option -->
                                 <label
-                                    class="scope-card border-2 border-[#eae2d5] rounded-xl p-4 flex items-start gap-3 cursor-pointer transition-all hover:border-[#bc7d39]"
+                                    class="scope-card border-2 border-[#eae2d5] rounded-2xl p-4 flex items-center gap-3.5 cursor-pointer transition-all hover:border-[#bc7d39] hover:bg-[#fffcf9]"
                                     id="scopeSpecificCard">
                                     <input type="radio" th:field="*{scope}" value="SPECIFIC"
-                                        class="mt-1 text-[#bc7d39] focus:ring-[#bc7d39]"
+                                        class="!w-4.5 !h-4.5 shrink-0 accent-[#875200] text-[#bc7d39] focus:ring-[#bc7d39] cursor-pointer"
                                         onchange="toggleScope('SPECIFIC')">
-                                    <div>
-                                        <span class="text-sm font-bold text-[#2b2118] block">Người dùng cụ thể •</span>
-                                        <span class="text-xs text-[#8a7664] mt-0.5 block">Chọn theo ID, hộp thư cá
-                                            nhân</span>
+                                    <div class="scope-icon-box w-10 h-10 rounded-xl bg-[#fff0df] flex items-center justify-center text-[#875200] shrink-0 transition-colors">
+                                        <span class="material-symbols-outlined text-[20px]">person</span>
+                                    </div>
+                                    <div class="min-w-0 flex-1">
+                                        <span class="text-sm font-bold text-[#2b2118] block leading-tight">Người dùng cụ thể</span>
+                                        <span class="text-xs text-[#8a7664] mt-1 block leading-snug">Chọn theo ID, tên độc giả hoặc hòm thư</span>
                                     </div>
                                 </label>
                             </div>
@@ -168,18 +191,19 @@
 
                             <!-- Formatting Toolbar Helper -->
                             <div
-                                class="flex items-center gap-1 p-2 bg-[#faf7f2] border border-[#eae2d5] rounded-t-xl text-[#6b5849]">
-                                <button type="button" onclick="insertFormat('**', '**')" title="In đậm"
-                                    class="p-1 hover:bg-[#eae2d5] rounded"><span
+                                class="flex items-center gap-1.5 px-3 py-2 bg-[#faf7f2] border border-[#eae2d5] rounded-t-xl text-[#6b5849]">
+                                <button type="button" onclick="insertFormat('**', '**')" title="In đậm (**văn bản**)"
+                                    class="p-1.5 hover:bg-[#eae2d5] hover:text-[#2b2118] rounded-lg transition-colors inline-flex items-center justify-center"><span
                                         class="material-symbols-outlined text-[18px]">format_bold</span></button>
-                                <button type="button" onclick="insertFormat('*', '*')" title="In nghiêng"
-                                    class="p-1 hover:bg-[#eae2d5] rounded"><span
+                                <button type="button" onclick="insertFormat('*', '*')" title="In nghiêng (*văn bản*)"
+                                    class="p-1.5 hover:bg-[#eae2d5] hover:text-[#2b2118] rounded-lg transition-colors inline-flex items-center justify-center"><span
                                         class="material-symbols-outlined text-[18px]">format_italic</span></button>
-                                <button type="button" onclick="insertFormat('• ', '')" title="Danh sách"
-                                    class="p-1 hover:bg-[#eae2d5] rounded"><span
+                                <div class="w-px h-4 bg-[#eae2d5] mx-1"></div>
+                                <button type="button" onclick="insertFormat('• ', '')" title="Danh sách gạch đầu dòng"
+                                    class="p-1.5 hover:bg-[#eae2d5] hover:text-[#2b2118] rounded-lg transition-colors inline-flex items-center justify-center"><span
                                         class="material-symbols-outlined text-[18px]">format_list_bulleted</span></button>
                                 <button type="button" onclick="insertFormat('&gt; ', '')" title="Trích dẫn"
-                                    class="p-1 hover:bg-[#eae2d5] rounded"><span
+                                    class="p-1.5 hover:bg-[#eae2d5] hover:text-[#2b2118] rounded-lg transition-colors inline-flex items-center justify-center"><span
                                         class="material-symbols-outlined text-[18px]">format_quote</span></button>
                             </div>
 
