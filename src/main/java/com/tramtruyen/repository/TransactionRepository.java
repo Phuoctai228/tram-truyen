@@ -1,6 +1,7 @@
 package com.tramtruyen.repository;
 
 import com.tramtruyen.entity.Transaction;
+import com.tramtruyen.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,10 +13,16 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Repository lưu vết sổ cái ví Coin.
+ * Repository lưu vết sổ cái ví Coin (Transaction ledger).
  */
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Integer> {
+
+    List<Transaction> findAllByUserOrderByCreatedAtDesc(User user);
+
+    Page<Transaction> findAllByUserOrderByCreatedAtDesc(User user, Pageable pageable);
+
+    Page<Transaction> findAllByUserAndTypeOrderByCreatedAtDesc(User user, String type, Pageable pageable);
 
     List<Transaction> findByUserIdOrderByCreatedAtDesc(Integer userId);
 

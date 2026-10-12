@@ -45,7 +45,8 @@ public class SecurityConfig {
         ).authorizeHttpRequests(auth -> auth
                 .requestMatchers("/register", "/verify-otp", "/login", "/account-locked", "/css/**", "/js/**", "/images/**").permitAll()
                 .requestMatchers("/api/**").permitAll()
-                .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
+                .requestMatchers("/admin/users/**").hasAuthority("ROLE_ADMIN")
+                .requestMatchers("/admin/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_STAFF")
                 .requestMatchers("/user/**", "/tu-sach", "/wallet", "/wallet/**").authenticated()
                 .anyRequest().permitAll()
         ).formLogin(form -> form

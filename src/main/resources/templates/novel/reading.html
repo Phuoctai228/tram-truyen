@@ -11,12 +11,17 @@
   <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Lora:ital,wght@0,400;0,700;1,400&amp;display=swap" rel="stylesheet">
   <link rel="stylesheet" th:href="@{/css/novel/novel-ui.css}">
+  <link rel="stylesheet" th:href="@{/css/novel/vip-unlock.css}">
   <script src="https://cdn.tailwindcss.com"></script>
   <script th:src="@{/js/novel/tailwind-config.js}"></script>
 </head>
 <body class="font-body-reading antialiased"
       th:data-chapter-id="${chapter.id}"
-      th:data-is-read="${isChapterRead}">
+      th:data-is-read="${isChapterRead}"
+      th:data-novel-slug="${novel.slug}"
+      th:data-chapter-number="${chapter.chapterNumber}"
+      th:data-is-unlocked="${isChapterUnlocked}"
+      th:data-is-vip="${isVip}">
   <header class="fixed top-0 w-full z-50 backdrop-blur-md shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
     <div class="h-14 max-w-5xl mx-auto px-4 sm:px-6 flex items-center gap-4">
       <div class="flex items-center gap-3 min-w-0">
@@ -57,8 +62,56 @@
         </header>
 
         <article class="space-y-6 text-on-surface font-body-reading text-body-reading leading-[1.95] select-text" id="reader-body">
-           <th:block th:each="para : ${#strings.arraySplit(#strings.replace(chapter.content, '&#13;', ''), '&#10;')}">
-              <p th:if="${!#strings.isEmpty(#strings.trim(para))}" class="indent-8 text-justify" th:text="${para}">Nội dung</p>
+           <!-- Khi chương đã mở khóa hoặc miễn phí -->
+           <th:block th:if="${isChapterUnlocked}">
+              <!-- Render rich text nếu nội dung có chứa các thẻ định dạng HTML -->
+              <th:block th:if="${#strings.contains(chapter.content, '<p') or #strings.contains(chapter.content, '<br') or #strings.contains(chapter.content, '<div')}">
+                 <div th:utext="${chapter.content}">Nội dung</div>
+              </th:block>
+              <!-- Render từng đoạn nếu là văn bản thuần (plain text) -->
+              <th:block th:unless="${#strings.contains(chapter.content, '<p') or #strings.contains(chapter.content, '<br') or #strings.contains(chapter.content, '<div')}">
+                 <th:block th:each="para : ${paragraphs}">
+                    <p th:if="${!#strings.isEmpty(#strings.trim(para))}" class="indent-8 text-justify" th:text="${para}">Nội dung</p>
+                 </th:block>
+              </th:block>
+           </th:block>
+
+           <!-- Khi chương VIP bị khóa: Chỉ hiển thị các đoạn đọc thử (server-side masked) và Paywall Card -->
+           <th:block th:if="${!isChapterUnlocked}">
+              <th:block th:each="para : ${paragraphs}">
+                 <div th:if="${!#strings.isEmpty(#strings.trim(para))}" class="indent-8 text-justify mb-6" th:utext="${para}">Nội dung</div>
+              </th:block>
+
+              <!-- In-flow VIP Paywall Section (If Chapter is Locked) -->
+              <div class="relative pt-6 pb-12 mt-6 select-none" id="vip-paywall-container">
+                 <!-- Gradient Fade Over Preview Content -->
+                 <div class="absolute -top-28 left-0 right-0 h-28 bg-gradient-to-b from-transparent to-surface pointer-events-none"></div>
+
+                 <!-- In-flow Paywall Card matching image10.png theme -->
+                 <div class="rounded-3xl p-6 sm:p-8 text-center border border-[#ecd9c2] bg-[#fdfaf6] shadow-xl max-w-lg mx-auto relative z-10 transition-all">
+                    <div class="w-16 h-16 rounded-full bg-[#fbf0e0] border border-[#f3ddc3] flex items-center justify-center mx-auto mb-4 text-[#874b02] shadow-sm">
+                       <span class="material-symbols-outlined text-[30px] icon-fill">lock</span>
+                    </div>
+
+                    <h3 class="font-serif text-2xl sm:text-3xl font-bold text-[#2d1b09] mb-2 tracking-tight">Chương VIP</h3>
+
+                    <p class="text-sm text-[#5d4a3b] mb-6 leading-relaxed">
+                       Bạn đang xem bản đọc thử. Hãy mở khóa <strong class="text-[#2d1b09]">Chương <span th:text="${chapter.chapterNumber}">1</span>: <span th:text="${chapter.title}">Tiêu đề</span></strong> với giá <strong class="text-[#874b02]" th:text="${chapter.price} + ' Coin'">50 Coin</strong> để tiếp tục theo dõi trọn vẹn câu chuyện.
+                    </p>
+
+                    <!-- Action Button -->
+                    <button type="button" onclick="openVipUnlockModal()"
+                            class="w-full sm:w-auto px-8 py-3.5 bg-[#874b02] hover:bg-[#723e00] text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all inline-flex items-center justify-center gap-2 text-sm">
+                       <span class="material-symbols-outlined text-[18px]">key</span>
+                       <span th:text="'Mở khóa chương (' + ${chapter.price} + ' Coin)'">Mở khóa chương</span>
+                    </button>
+
+                    <div class="flex items-center justify-center gap-1.5 text-[11px] text-[#8c7a6b] mt-4">
+                       <span class="material-symbols-outlined text-[15px] text-[#874b02]">verified_user</span>
+                       <span>Đã đọc một lần, lưu vĩnh viễn trong tủ sách</span>
+                    </div>
+                 </div>
+              </div>
            </th:block>
         </article>
 
@@ -310,6 +363,124 @@
           </div>
       </div>
 
+      <!-- VIP Unlock Modal (Chuẩn Design RDS image10.png) -->
+      <div id="vipUnlockModal" th:if="${!isChapterUnlocked}"
+           class="fixed inset-0 z-[100] items-center justify-center bg-black/60 backdrop-blur-sm hidden transition-all p-4">
+          <div class="bg-[#fffdfa] rounded-3xl p-6 sm:p-8 max-w-[430px] w-full flex flex-col text-center shadow-2xl relative border border-[#f0e4d2] animate-fade-in-up">
+              <!-- Close Button -->
+              <button type="button" onclick="closeVipUnlockModal()" aria-label="Đóng"
+                      class="absolute top-4 right-4 text-[#8c7a6b] hover:text-[#2d1b09] transition-colors p-1.5 rounded-xl hover:bg-[#f6ebd8]">
+                  <span class="material-symbols-outlined text-[20px]">close</span>
+              </button>
+
+              <!-- Circular Lock Icon -->
+              <div class="w-16 h-16 rounded-full bg-[#fbf0e0] border border-[#f3ddc3] flex items-center justify-center mx-auto mb-3 shadow-inner">
+                  <span class="material-symbols-outlined text-[30px] text-[#874b02] icon-fill">lock</span>
+              </div>
+
+              <!-- Title -->
+              <h3 class="font-serif text-2xl sm:text-3xl font-bold text-[#2d1b09] mb-2 tracking-tight">Chương VIP</h3>
+
+              <!-- Description -->
+              <p class="text-xs sm:text-sm text-[#5d4a3b] leading-relaxed mb-5 font-body">
+                  Bạn đang chuẩn bị mở khóa <strong class="text-[#2d1b09]">Chương <span th:text="${chapter.chapterNumber}">15</span>: <span th:text="${chapter.title}">Tiêu đề</span></strong> với giá <strong class="text-[#874b02]" th:text="${chapter.price} + ' Coin'">50 Coin</strong> để tiếp tục theo dõi câu chuyện.
+              </p>
+
+              <!-- Balance Box (Card 2 cột: Số dư hiện tại vs Sau giao dịch) -->
+              <div class="bg-[#fbf4ea]/80 border border-[#f2e1cc] rounded-2xl p-4 flex items-center justify-between gap-3 mb-4 text-left">
+                  <!-- Cột trái: Số dư của bạn -->
+                  <div class="flex items-center gap-3">
+                      <div class="w-10 h-10 rounded-full bg-[#fae8d0] border border-[#ebd2b4] flex items-center justify-center shrink-0">
+                          <span class="material-symbols-outlined text-[20px] text-[#874b02] icon-fill">monetization_on</span>
+                      </div>
+                      <div>
+                          <div class="text-[11px] font-semibold text-[#8c7a6b] uppercase tracking-wider">Số dư của bạn</div>
+                          <div class="text-base font-bold text-[#2d1b09]">
+                              <span th:text="${userWalletBalance != null ? userWalletBalance : 0}">1.250</span> <span class="text-[#874b02] text-xs font-semibold">Coin</span>
+                          </div>
+                      </div>
+                  </div>
+
+                  <!-- Cột phải: Sau giao dịch -->
+                  <div class="text-right">
+                      <div class="text-[11px] font-semibold text-[#8c7a6b] uppercase tracking-wider">Sau giao dịch</div>
+                      <div th:if="${canAfford}" class="text-sm sm:text-base font-bold text-[#5d4a3b]">
+                          <span th:text="${remainingBalanceAfter}">1.200</span> <span class="text-[#8c7a6b] text-xs font-normal">Coin</span>
+                      </div>
+                      <div th:unless="${canAfford}" class="text-xs font-bold text-rose-600">
+                          Không đủ Coin
+                      </div>
+                  </div>
+              </div>
+
+              <!-- Checkbox Auto-Unlock (Image 10) -->
+              <div th:if="${isLoggedIn and canAfford}" class="flex items-center gap-2.5 mb-5 px-1 text-left">
+                  <input type="checkbox" id="modalAutoUnlockNext" name="autoUnlockNext" value="true"
+                         class="w-4 h-4 rounded border-[#d4c3b0] text-[#874b02] focus:ring-[#874b02] accent-[#874b02] cursor-pointer">
+                  <label for="modalAutoUnlockNext" class="text-xs text-[#5d4a3b] cursor-pointer select-none leading-snug">
+                      Tự động mở khóa các chương VIP tiếp theo của tác phẩm này
+                  </label>
+              </div>
+
+              <!-- Actions State -->
+              <!-- Case 1: Chưa đăng nhập -->
+              <div th:if="${!isLoggedIn}" class="space-y-3 mb-2">
+                  <p class="text-xs text-amber-800 bg-amber-50 p-2.5 rounded-xl border border-amber-200">
+                      Vui lòng đăng nhập tài khoản để mở khóa chương VIP này.
+                  </p>
+                  <div class="grid grid-cols-2 gap-3">
+                      <button type="button" onclick="closeVipUnlockModal()" class="py-3 px-4 bg-[#faeee2] hover:bg-[#f3dfce] text-[#784408] font-bold rounded-xl text-center text-sm transition-all">
+                          Hủy
+                      </button>
+                      <a th:href="@{/login(redirect=${'/truyen/' + novel.slug + '/chuong-' + chapter.chapterNumber})}" class="py-3 px-4 bg-[#874b02] hover:bg-[#723e00] text-white font-bold rounded-xl text-center text-sm shadow-md transition-all flex items-center justify-center gap-1.5">
+                          <span class="material-symbols-outlined text-[18px]">login</span>
+                          <span>Đăng nhập</span>
+                      </a>
+                  </div>
+              </div>
+
+              <!-- Case 2: Đã đăng nhập nhưng không đủ Coin -->
+              <div th:if="${isLoggedIn and !canAfford}" class="space-y-3 mb-2">
+                  <div class="p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs text-left flex items-center gap-2">
+                      <span class="material-symbols-outlined text-[18px] text-amber-700 shrink-0">info</span>
+                      <span>Bạn còn thiếu <strong class="text-rose-700"><span th:text="${chapter.price - userWalletBalance}">0</span> Coin</strong> để mở khóa chương này.</span>
+                  </div>
+                  <div class="grid grid-cols-2 gap-3">
+                      <button type="button" onclick="closeVipUnlockModal()" class="py-3 px-4 bg-[#faeee2] hover:bg-[#f3dfce] text-[#784408] font-bold rounded-xl text-center text-sm transition-all">
+                          Hủy
+                      </button>
+                      <a th:href="@{/user/checkin}" class="py-3 px-4 bg-[#874b02] hover:bg-[#723e00] text-white font-bold rounded-xl text-center text-sm shadow-md transition-all flex items-center justify-center gap-1.5">
+                          <span class="material-symbols-outlined text-[18px]">calendar_month</span>
+                          <span>Điểm danh nhận Coin</span>
+                      </a>
+                  </div>
+              </div>
+
+              <!-- Case 3: Đã đăng nhập và đủ Coin -->
+              <form th:if="${isLoggedIn and canAfford}" id="vipUnlockForm"
+                    th:action="@{'/truyen/' + ${novel.slug} + '/chuong-' + ${chapter.chapterNumber} + '/unlock'}"
+                    method="POST" onsubmit="handleVipUnlockSubmit(event)" class="m-0">
+                  <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                  <input type="hidden" name="chapterId" th:value="${chapter.id}">
+                  <div class="grid grid-cols-2 gap-3 mb-2">
+                      <button type="button" onclick="closeVipUnlockModal()" class="py-3 px-4 bg-[#faeee2] hover:bg-[#f3dfce] text-[#784408] font-bold rounded-xl text-center text-sm transition-all">
+                          Hủy
+                      </button>
+                      <button type="submit" id="btnConfirmUnlock" class="py-3 px-4 bg-[#874b02] hover:bg-[#723e00] text-white font-bold rounded-xl text-center text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-1.5">
+                          <span class="material-symbols-outlined text-[18px]">key</span>
+                          <span id="btnConfirmUnlockText" th:text="'Mở khóa (' + ${chapter.price} + ' Coin)'">Mở khóa (50 Coin)</span>
+                      </button>
+                  </div>
+              </form>
+
+              <!-- Footer Verified Badge -->
+              <div class="flex items-center justify-center gap-1.5 text-[11px] text-[#8c7a6b] mt-3">
+                  <span class="material-symbols-outlined text-[15px] text-[#874b02]">verified_user</span>
+                  <span>Đã đọc một lần, lưu vĩnh viễn trong tủ sách</span>
+              </div>
+          </div>
+      </div>
+
       <!-- Bottom Sticky Footer -->
       <footer class="fixed bottom-0 left-0 right-0 z-40 bg-surface/95 backdrop-blur-md shadow-[0_-4px_20px_rgba(107,91,75,0.06)] border-t border-outline-variant/10">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
@@ -395,6 +566,11 @@
       const bodyEl = document.body;
       const chapterId = bodyEl.getAttribute('data-chapter-id');
       const isInitiallyRead = bodyEl.getAttribute('data-is-read') === 'true';
+      const novelSlug = bodyEl.getAttribute('data-novel-slug');
+      const chapterNumber = bodyEl.getAttribute('data-chapter-number');
+
+      const chapterStorageKey = chapterId ? ('tramtruyen_scroll_ch_' + chapterId) : null;
+      const novelStorageKey = novelSlug ? ('tramtruyen_last_read_' + novelSlug) : null;
 
       let maxProgress = isInitiallyRead ? 100 : 0;
       let hasSavedComplete = isInitiallyRead;
@@ -410,6 +586,8 @@
       }
 
       function saveChapterCompletionToDatabase() {
+        const isUnlocked = bodyEl.getAttribute('data-is-unlocked') !== 'false';
+        if (!isUnlocked) return; // Do not record 100% completion if chapter is locked VIP
         if (hasSavedComplete || !chapterId) return;
         hasSavedComplete = true;
 
@@ -431,8 +609,43 @@
         updateProgressBarUI(100);
       }
 
+      // LocalStorage Reading Progress Management
+      function saveScrollProgressToLocalStorage() {
+        if (!chapterId || !chapterStorageKey) return;
+        const winScroll = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const currentScrolled = height > 0 ? Math.min(100, Math.max(0, Math.round((winScroll / height) * 100))) : 0;
+        const isFinished = currentScrolled >= 95 || maxProgress >= 95 || hasSavedComplete;
+
+        try {
+          const scrollData = {
+            chapterId: parseInt(chapterId),
+            chapterNumber: parseInt(chapterNumber || 0),
+            percent: currentScrolled,
+            isFinished: isFinished,
+            updatedAt: Date.now()
+          };
+          localStorage.setItem(chapterStorageKey, JSON.stringify(scrollData));
+
+          if (novelStorageKey) {
+            localStorage.setItem(novelStorageKey, JSON.stringify({
+              novelSlug: novelSlug,
+              chapterId: parseInt(chapterId),
+              chapterNumber: parseInt(chapterNumber || 0),
+              readUrl: window.location.pathname,
+              percent: currentScrolled,
+              isFinished: isFinished,
+              updatedAt: Date.now()
+            }));
+          }
+        } catch (e) {
+          // Ignore localStorage errors
+        }
+      }
+
+      let scrollDebounceTimer = null;
       window.addEventListener('scroll', function() {
-        const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+        const winScroll = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop;
         const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
         const currentScrolled = height > 0 ? Math.min(100, Math.max(0, Math.round((winScroll / height) * 100))) : 0;
 
@@ -449,7 +662,19 @@
           updateProgressBarUI(100);
           saveChapterCompletionToDatabase();
         }
+
+        clearTimeout(scrollDebounceTimer);
+        scrollDebounceTimer = setTimeout(saveScrollProgressToLocalStorage, 250);
       }, { passive: true });
+
+      // Save scroll on page exit or visibility change
+      window.addEventListener('beforeunload', saveScrollProgressToLocalStorage);
+      window.addEventListener('pagehide', saveScrollProgressToLocalStorage);
+      document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'hidden') {
+          saveScrollProgressToLocalStorage();
+        }
+      });
 
       // Expose globally so "Chương sau" or other navigation triggers save completion
       window.saveReadingProgressBeforeLeave = function() {
@@ -458,7 +683,92 @@
           updateProgressBarUI(100);
           saveChapterCompletionToDatabase();
         }
+        saveScrollProgressToLocalStorage();
       };
+
+      function showResumeToast(pct) {
+        let toast = document.getElementById('resume-reading-toast');
+        if (!toast) {
+          toast = document.createElement('div');
+          toast.id = 'resume-reading-toast';
+          toast.className = 'fixed bottom-6 right-6 z-50 bg-surface-container-highest/95 backdrop-blur-md text-on-surface border border-outline-variant/30 rounded-2xl shadow-xl px-4 py-3 flex items-center gap-3 transition-all duration-300 transform translate-y-4 opacity-0 select-none';
+          toast.innerHTML = `
+            <div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-[18px]">bookmark</span>
+            </div>
+            <div class="text-xs">
+              <p class="font-medium text-on-surface">Đang đọc tiếp ở vị trí <span class="font-bold text-primary">${pct}%</span></p>
+              <button type="button" id="btn-scroll-to-top" class="text-primary hover:underline text-[11px] font-semibold mt-0.5">Về đầu trang</button>
+            </div>
+            <button type="button" id="btn-close-resume-toast" class="ml-2 text-on-surface-variant hover:text-on-surface transition-colors">
+              <span class="material-symbols-outlined text-[16px]">close</span>
+            </button>
+          `;
+          document.body.appendChild(toast);
+
+          document.getElementById('btn-scroll-to-top')?.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            toast.classList.add('translate-y-4', 'opacity-0');
+            setTimeout(() => toast.remove(), 300);
+            saveScrollProgressToLocalStorage();
+          });
+
+          document.getElementById('btn-close-resume-toast')?.addEventListener('click', () => {
+            toast.classList.add('translate-y-4', 'opacity-0');
+            setTimeout(() => toast.remove(), 300);
+          });
+        }
+
+        requestAnimationFrame(() => {
+          toast.classList.remove('translate-y-4', 'opacity-0');
+          toast.classList.add('translate-y-0', 'opacity-100');
+        });
+
+        setTimeout(() => {
+          if (toast && toast.parentNode) {
+            toast.classList.add('translate-y-4', 'opacity-0');
+            setTimeout(() => toast.remove(), 300);
+          }
+        }, 5000);
+      }
+
+      function restoreSavedScrollPosition() {
+        if (!chapterId || !chapterStorageKey) return;
+        try {
+          const raw = localStorage.getItem(chapterStorageKey);
+          if (!raw) return;
+          const data = JSON.parse(raw);
+          if (data && typeof data.percent === 'number' && data.percent >= 2 && data.percent < 95 && !data.isFinished) {
+            const executeScroll = () => {
+              const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+              if (height > 0) {
+                const targetY = Math.round((data.percent / 100) * height);
+                window.scrollTo({ top: targetY, behavior: 'instant' });
+                if (data.percent > maxProgress) {
+                  maxProgress = data.percent;
+                }
+                updateProgressBarUI(maxProgress);
+                showResumeToast(data.percent);
+              }
+            };
+
+            if ('scrollRestoration' in history) {
+              history.scrollRestoration = 'manual';
+            }
+
+            requestAnimationFrame(() => {
+              executeScroll();
+              if (document.fonts && document.fonts.ready) {
+                document.fonts.ready.then(() => {
+                  requestAnimationFrame(executeScroll);
+                });
+              }
+            });
+          }
+        } catch (e) {
+          console.warn('Cannot restore scroll position:', e);
+        }
+      }
 
       // 2. Reading Settings & LocalStorage
       const article = document.getElementById('reader-body');
@@ -527,6 +837,8 @@
 
       // Initialize
       applySettings();
+      restoreSavedScrollPosition();
+      window.addEventListener('load', restoreSavedScrollPosition);
 
       // Listeners
       const fontSizeSlider = document.getElementById('setting-font-size');
@@ -886,6 +1198,75 @@
           }
       };
 
+      // VIP Unlock Modal Functions
+      window.openVipUnlockModal = function() {
+          const modal = document.getElementById('vipUnlockModal');
+          if (modal) {
+              modal.classList.remove('hidden');
+              modal.classList.add('flex');
+          }
+      };
+
+      window.closeVipUnlockModal = function() {
+          const modal = document.getElementById('vipUnlockModal');
+          if (modal) {
+              modal.classList.remove('flex');
+              modal.classList.add('hidden');
+          }
+      };
+
+      window.handleVipUnlockSubmit = function(event) {
+          event.preventDefault();
+          const form = document.getElementById('vipUnlockForm');
+          if (!form) return;
+          const btn = document.getElementById('btnConfirmUnlock');
+          const btnText = document.getElementById('btnConfirmUnlockText');
+          const autoUnlock = document.getElementById('modalAutoUnlockNext')?.checked || false;
+
+          if (btn) {
+              btn.disabled = true;
+              if (btnText) btnText.textContent = 'Đang mở khóa...';
+          }
+
+          const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+          const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content') || 'X-CSRF-TOKEN';
+
+          const formData = new FormData();
+          formData.append('autoUnlockNext', autoUnlock);
+
+          fetch(form.action, {
+              method: 'POST',
+              headers: {
+                  'X-Requested-With': 'XMLHttpRequest',
+                  'Accept': 'application/json',
+                  ...(csrfToken && { [csrfHeader]: csrfToken })
+              },
+              body: formData
+          })
+          .then(async response => {
+              const data = await response.json();
+              if (response.ok && data.success) {
+                  window.location.reload();
+              } else {
+                  alert(data.message || 'Mở khóa thất bại, vui lòng kiểm tra lại số dư.');
+                  if (btn) {
+                      btn.disabled = false;
+                      if (btnText) btnText.textContent = 'Thử lại';
+                  }
+              }
+          })
+          .catch(err => {
+              form.submit();
+          });
+      };
+
+      // Auto pop up VIP modal on locked chapter
+      if (bodyEl.getAttribute('data-is-unlocked') === 'false') {
+          setTimeout(() => {
+              openVipUnlockModal();
+          }, 400);
+      }
+
       window.toggleAudioPanel = function() {
           if (!('speechSynthesis' in window)) {
               alert("Trình duyệt của bạn không hỗ trợ tính năng đọc âm thanh.");
@@ -899,6 +1280,7 @@
       document.addEventListener('keydown', function(e) {
           if (e.key === 'Escape') {
               closeEndOfChapterModal();
+              closeVipUnlockModal();
               const cDrawer = document.getElementById('chapter-list-drawer');
               if (cDrawer && !cDrawer.classList.contains('-translate-x-full')) {
                   toggleChapterListDrawer();

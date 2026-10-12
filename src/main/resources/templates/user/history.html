@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lịch sử đọc - Trạm Truyện</title>
+    <!-- Google Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script th:src="@{/js/novel/tailwind-config.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/bookshelf.css}">
+    <link rel="stylesheet" th:href="@{/css/user/history.css}">
+</head>
+<body class="bg-surface text-on-surface antialiased min-h-screen flex flex-col font-sans selection:bg-primary-container selection:text-on-primary">
+
+    <!-- Global Header -->
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10">
+        <div class="flex flex-col md:flex-row gap-8 items-start">
+
+            <!-- Sidebar Navigation -->
+            <aside class="w-full md:w-64 lg:w-72 shrink-0 space-y-6">
+                <!-- User card -->
+                <div class="p-5 rounded-xl bg-surface-container-lowest shadow-[0_4px_20px_-2px_rgba(107,91,75,0.06)] flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-full bg-primary overflow-hidden flex items-center justify-center shrink-0 border-2 border-surface-container">
+                        <img th:if="${userProfile.avatarUrl != null}" th:src="${userProfile.avatarUrl}" alt="Avatar"
+                             class="w-full h-full object-cover" onerror="this.onerror=null;this.src='/images/default-avatar.jpg';">
+                        <img th:unless="${userProfile.avatarUrl != null}" src="/images/default-avatar.jpg" alt="Avatar"
+                             class="w-full h-full object-cover">
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <h3 class="font-headline-sm text-headline-sm text-on-surface truncate font-bold" th:text="${userProfile.fullName}">Họ và Tên</h3>
+                        <p class="text-xs text-outline truncate" th:text="${userProfile.email}">email@example.com</p>
+                    </div>
+                </div>
+
+                <!-- Navigation menu -->
+                <nav class="p-3 rounded-xl bg-surface-container-lowest shadow-[0_4px_20px_-2px_rgba(107,91,75,0.06)] space-y-1.5">
+                    <a th:href="@{/user/profile}"
+                       class="flex items-center gap-3.5 px-3.5 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all">
+                        <span class="material-symbols-outlined text-[20px]">person</span>
+                        <span class="font-label-lg text-label-lg">Hồ sơ cá nhân</span>
+                    </a>
+                    <a th:href="@{/user/bookshelf}"
+                       class="flex items-center gap-3.5 px-3.5 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all">
+                        <span class="material-symbols-outlined text-[20px]">bookmark</span>
+                        <span class="font-label-lg text-label-lg">Tủ sách</span>
+                    </a>
+                    <a th:href="@{/user/history}"
+                       class="flex items-center gap-3.5 px-3.5 py-3 rounded-lg bg-surface-container text-primary font-bold shadow-sm transition-all">
+                        <span class="material-symbols-outlined text-[20px] icon-fill">history</span>
+                        <span class="font-label-lg text-label-lg">Lịch sử đọc</span>
+                    </a>
+                    <a th:href="@{/user/checkin}"
+                       class="flex items-center gap-3.5 px-3.5 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all">
+                        <span class="material-symbols-outlined text-[20px]">event_available</span>
+                        <span class="font-label-lg text-label-lg">Điểm danh nhận Coin</span>
+                    </a>
+                    <a th:href="@{/user/profile}"
+                       class="flex items-center gap-3.5 px-3.5 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all">
+                        <span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
+                        <span class="font-label-lg text-label-lg">Ví Coin</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Main Reading History Content -->
+            <section class="w-full min-w-0 flex-1 space-y-6">
+
+                <!-- Header Banner -->
+                <div class="bg-surface-container-lowest p-6 sm:p-8 rounded-xl shadow-[0_4px_20px_-2px_rgba(107,91,75,0.06)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-primary/10 text-primary">
+                                <span class="material-symbols-outlined text-[18px]">history</span>
+                            </span>
+                            <h1 class="font-headline-lg text-2xl md:text-3xl text-on-surface font-bold">Lịch sử đọc truyện</h1>
+                        </div>
+                        <p class="text-sm text-on-surface-variant">Danh sách các chương bạn đã đọc gần đây (lưu trữ tối đa 50 bản ghi mới nhất).</p>
+                    </div>
+
+                    <div class="flex items-center gap-3 shrink-0" th:if="${historyItems != null and not #lists.isEmpty(historyItems)}">
+                        <form th:action="@{/user/history/clear}" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn xóa toàn bộ lịch sử đọc truyện không?');" class="m-0">
+                            <button type="submit" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-surface-container text-error hover:bg-error-container hover:text-on-error-container text-xs font-semibold transition-all">
+                                <span class="material-symbols-outlined text-[16px]">delete_sweep</span>
+                                <span>Xóa lịch sử</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Feedback Toasts -->
+                <div th:if="${successMessage}" class="w-full bg-surface-container-high border-l-4 border-primary rounded-r-[10px] p-4 text-on-surface flex items-start gap-3 shadow-sm">
+                    <span class="material-symbols-outlined text-primary-container text-[24px]">task_alt</span>
+                    <div class="flex flex-col text-left justify-center">
+                        <span class="font-label-lg text-label-lg text-on-surface font-bold" th:text="${successMessage}">Thao tác thành công</span>
+                    </div>
+                </div>
+                <div th:if="${errorMessage}" class="w-full bg-error-container/20 border-l-4 border-error rounded-r-[10px] p-4 text-on-surface flex items-start gap-3 shadow-sm">
+                    <span class="material-symbols-outlined text-error text-[24px]">error</span>
+                    <div class="flex flex-col text-left justify-center">
+                        <span class="font-label-lg text-label-lg text-error font-bold" th:text="${errorMessage}">Đã xảy ra lỗi</span>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div th:if="${historyItems == null or #lists.isEmpty(historyItems)}"
+                     class="bg-surface-container-lowest p-12 rounded-xl shadow-[0_4px_20px_-2px_rgba(107,91,75,0.06)] text-center space-y-4">
+                    <div class="w-20 h-20 rounded-full bg-surface-container mx-auto flex items-center justify-center text-outline">
+                        <span class="material-symbols-outlined text-[40px]">history_toggle_off</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-on-surface">Lịch sử đọc trống</h3>
+                    <p class="text-sm text-outline max-w-md mx-auto">Bạn chưa đọc chương truyện nào gần đây. Hãy chọn một tác phẩm yêu thích để bắt đầu hành trình đọc sách nhé!</p>
+                    <div class="pt-2">
+                        <a th:href="@{/}" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary-container text-white font-semibold text-sm hover:bg-primary shadow-sm transition-all">
+                            <span class="material-symbols-outlined text-[18px]">explore</span>
+                            <span>Khám phá truyện mới</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Reading History Cards List (matching image47.png) -->
+                <div th:if="${historyItems != null and not #lists.isEmpty(historyItems)}" class="space-y-4">
+                    <div th:each="item : ${historyItems}"
+                         class="bg-surface-container-lowest p-4 sm:p-5 rounded-xl shadow-[0_4px_20px_-2px_rgba(107,91,75,0.06)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border border-outline-variant/30 hover:border-primary/40 transition-all">
+                        
+                        <!-- Left: Cover + Meta Details -->
+                        <div class="flex items-start gap-4 min-w-0 flex-1">
+                            <!-- Cover thumbnail -->
+                            <a th:href="@{/truyen/{slug}(slug=${item.novelSlug})}" class="w-16 h-22 sm:w-20 sm:h-28 rounded-lg overflow-hidden shrink-0 shadow-sm bg-surface-container block group">
+                                <img th:if="${item.novelCoverUrl != null}" th:src="${item.novelCoverUrl}" th:alt="${item.novelTitle}"
+                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                     onerror="this.onerror=null;this.src='/images/default-cover.jpg';">
+                                <img th:unless="${item.novelCoverUrl != null}" src="/images/default-cover.jpg" alt="Cover"
+                                     class="w-full h-full object-cover">
+                            </a>
+
+                            <!-- Metadata -->
+                            <div class="min-w-0 flex-1 space-y-1.5">
+                                <div class="flex flex-wrap items-center gap-2 text-xs">
+                                    <!-- Categories -->
+                                    <span th:each="cat : ${item.categories}" th:text="${cat}"
+                                          class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-medium">Thể loại</span>
+                                    <!-- VIP Badge -->
+                                    <span th:if="${item.isVip}" class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-bold flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-[12px]">lock</span> VIP
+                                    </span>
+                                    <span class="text-outline">•</span>
+                                    <!-- Relative Time -->
+                                    <span class="text-outline flex items-center gap-1" th:text="${item.relativeTime}">15 phút trước</span>
+                                </div>
+
+                                <!-- Novel Title -->
+                                <h2 class="text-base sm:text-lg font-bold text-on-surface truncate">
+                                    <a th:href="@{/truyen/{slug}(slug=${item.novelSlug})}" class="hover:text-primary transition-colors" th:text="${item.novelTitle}">Tên Bộ Truyện</a>
+                                </h2>
+
+                                <!-- Author -->
+                                <p class="text-xs text-outline font-medium" th:text="'Tác giả: ' + ${item.author}">Tác giả</p>
+
+                                <!-- Chapter Status -->
+                                <div class="flex items-center gap-1.5 text-xs text-primary font-semibold pt-0.5">
+                                    <span class="material-symbols-outlined text-[14px]">auto_stories</span>
+                                    <span th:text="'Đã đọc: Chương ' + ${item.chapterNumber} + ': ' + ${item.chapterTitle}">Chương 1</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right: Actions -->
+                        <div class="flex items-center gap-3 w-full sm:w-auto justify-end shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-outline-variant/30">
+                            <!-- Continue Reading Button -->
+                            <a th:href="@{${item.readUrl}}"
+                               class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#875200] hover:bg-[#6b4100] text-white text-sm font-bold shadow-sm transition-all flex-1 sm:flex-none">
+                                <span class="material-symbols-outlined text-[18px]">play_arrow</span>
+                                <span>Đọc tiếp</span>
+                            </a>
+
+                            <!-- Remove from history button -->
+                            <form th:action="@{/user/history/remove/{chapterId}(chapterId=${item.chapterId})}" method="post" class="m-0">
+                                <button type="submit" title="Xóa khỏi lịch sử"
+                                        class="w-10 h-10 rounded-xl flex items-center justify-center text-outline hover:text-error hover:bg-error-container/20 transition-colors">
+                                    <span class="material-symbols-outlined text-[20px]">close</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <div th:if="${totalPages > 1}" class="flex items-center justify-center gap-2 pt-4">
+                    <a th:if="${currentPage > 0}" th:href="@{/user/history(page=${currentPage - 1})}"
+                       class="w-9 h-9 rounded-lg bg-surface-container-lowest border border-outline-variant flex items-center justify-center text-on-surface hover:bg-surface-container transition-colors">
+                        <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+                    </a>
+                    <span class="text-sm font-medium text-outline px-3" th:text="'Trang ' + (${currentPage + 1}) + ' / ' + ${totalPages}">Trang 1 / 1</span>
+                    <a th:if="${currentPage < totalPages - 1}" th:href="@{/user/history(page=${currentPage + 1})}"
+                       class="w-9 h-9 rounded-lg bg-surface-container-lowest border border-outline-variant flex items-center justify-center text-on-surface hover:bg-surface-container transition-colors">
+                        <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+                    </a>
+                </div>
+
+            </section>
+        </div>
+    </main>
+
+    <!-- Global Footer -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

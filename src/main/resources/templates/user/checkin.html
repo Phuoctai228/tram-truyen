@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Điểm danh hàng ngày - Trạm Truyện</title>
+    <!-- Google Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script th:src="@{/js/novel/tailwind-config.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/bookshelf.css}">
+    <link rel="stylesheet" th:href="@{/css/user/checkin.css}">
+</head>
+<body class="bg-surface text-on-surface antialiased min-h-screen flex flex-col font-sans selection:bg-primary-container selection:text-on-primary">
+
+    <!-- Global Header -->
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10">
+        <div class="flex flex-col md:flex-row gap-8 items-start">
+
+            <!-- Sidebar Navigation -->
+            <aside class="w-full md:w-64 lg:w-72 shrink-0 space-y-6">
+                <!-- User card -->
+                <div class="p-5 rounded-xl bg-surface-container-lowest shadow-[0_4px_20px_-2px_rgba(107,91,75,0.06)] flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-full bg-primary overflow-hidden flex items-center justify-center shrink-0 border-2 border-surface-container">
+                        <img th:if="${userProfile.avatarUrl != null}" th:src="${userProfile.avatarUrl}" alt="Avatar"
+                             class="w-full h-full object-cover" onerror="this.onerror=null;this.src='/images/default-avatar.jpg';">
+                        <img th:unless="${userProfile.avatarUrl != null}" src="/images/default-avatar.jpg" alt="Avatar"
+                             class="w-full h-full object-cover">
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <h3 class="font-headline-sm text-headline-sm text-on-surface truncate font-bold" th:text="${userProfile.fullName}">Họ và Tên</h3>
+                        <p class="text-xs text-outline truncate" th:text="${userProfile.email}">email@example.com</p>
+                    </div>
+                </div>
+
+                <!-- Navigation menu -->
+                <nav class="p-3 rounded-xl bg-surface-container-lowest shadow-[0_4px_20px_-2px_rgba(107,91,75,0.06)] space-y-1.5">
+                    <a th:href="@{/user/profile}"
+                       class="flex items-center gap-3.5 px-3.5 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all">
+                        <span class="material-symbols-outlined text-[20px]">person</span>
+                        <span class="font-label-lg text-label-lg">Hồ sơ cá nhân</span>
+                    </a>
+                    <a th:href="@{/user/bookshelf}"
+                       class="flex items-center gap-3.5 px-3.5 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all">
+                        <span class="material-symbols-outlined text-[20px]">bookmark</span>
+                        <span class="font-label-lg text-label-lg">Tủ sách</span>
+                    </a>
+                    <a th:href="@{/user/history}"
+                       class="flex items-center gap-3.5 px-3.5 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all">
+                        <span class="material-symbols-outlined text-[20px]">history</span>
+                        <span class="font-label-lg text-label-lg">Lịch sử đọc</span>
+                    </a>
+                    <a th:href="@{/user/checkin}"
+                       class="flex items-center gap-3.5 px-3.5 py-3 rounded-lg bg-surface-container text-primary font-bold shadow-sm transition-all">
+                        <span class="material-symbols-outlined text-[20px] icon-fill">event_available</span>
+                        <span class="font-label-lg text-label-lg">Điểm danh nhận Coin</span>
+                    </a>
+                    <a th:href="@{/user/profile}"
+                       class="flex items-center gap-3.5 px-3.5 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all">
+                        <span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
+                        <span class="font-label-lg text-label-lg">Ví Coin</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Main Check-in Dashboard Content (matching image38.png 1:1) -->
+            <section class="w-full min-w-0 flex-1 space-y-6">
+
+                <!-- Top Server Status & Cycle Info -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-container text-xs font-medium text-on-surface-variant w-fit shadow-xs">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span th:text="'Máy chủ: ' + ${status.serverDate} + ' • Giờ làm mới: 00:00 hằng ngày'">Máy chủ: Ngày 24/10/2026 • Giờ làm mới: 00:00 hằng ngày</span>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-surface-container-lowest border border-outline-variant/30 text-xs shadow-xs">
+                            <span class="material-symbols-outlined text-[16px] text-primary">calendar_month</span>
+                            <span class="text-outline">Chu kỳ:</span>
+                            <span class="font-bold text-on-surface" th:text="'Tuần ' + ${status.weekNumber} + ' / ' + ${status.year}">Tuần 43 / 2026</span>
+                        </div>
+                        <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-surface-container-lowest border border-outline-variant/30 text-xs shadow-xs">
+                            <span class="material-symbols-outlined text-[16px] text-orange-500">local_fire_department</span>
+                            <span class="text-outline">Tổng ngày:</span>
+                            <span class="font-bold text-on-surface" th:text="${status.totalCheckinDays} + ' Ngày'">21 Ngày</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Page Header Title -->
+                <div>
+                    <h1 class="font-headline-lg font-serif text-3xl font-bold text-on-surface tracking-tight">Điểm danh hằng ngày</h1>
+                    <p class="text-sm text-on-surface-variant mt-1">Duy trì thói quen đọc sách mỗi ngày để tích lũy Coin miễn phí mở khóa những chương truyện hấp dẫn!</p>
+                </div>
+
+                <!-- Feedback Toast -->
+                <div th:if="${successMessage}" class="w-full bg-surface-container-high border-l-4 border-primary rounded-r-[10px] p-4 text-on-surface flex items-start gap-3 shadow-sm animate-fade-in">
+                    <span class="material-symbols-outlined text-primary-container text-[24px]">task_alt</span>
+                    <div class="flex flex-col text-left justify-center">
+                        <span class="font-label-lg text-label-lg text-on-surface font-bold" th:text="${successMessage}">Điểm danh thành công!</span>
+                    </div>
+                </div>
+                <div th:if="${errorMessage}" class="w-full bg-error-container/20 border-l-4 border-error rounded-r-[10px] p-4 text-on-surface flex items-start gap-3 shadow-sm animate-fade-in">
+                    <span class="material-symbols-outlined text-error text-[24px]">info</span>
+                    <div class="flex flex-col text-left justify-center">
+                        <span class="font-label-lg text-label-lg text-error font-bold" th:text="${errorMessage}">Thông báo điểm danh</span>
+                    </div>
+                </div>
+
+                <!-- Main Hero Check-in Card (image38.png) -->
+                <div class="bg-surface-container-lowest p-6 sm:p-8 rounded-2xl shadow-[0_4px_24px_-2px_rgba(107,91,75,0.08)] border border-outline-variant/20 flex flex-col lg:flex-row items-center justify-between gap-8">
+                    
+                    <!-- Left Hero Content -->
+                    <div class="space-y-4 flex-1 w-full">
+                        <!-- Streak Badge -->
+                        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-100 text-orange-800 text-xs font-bold">
+                            <span class="material-symbols-outlined text-[16px] text-orange-600">local_fire_department</span>
+                            <span th:text="'Đã điểm danh liên tục ' + ${status.streakCount} + ' ngày'">Đã điểm danh liên tục 4 ngày</span>
+                        </div>
+
+                        <!-- Big Headline -->
+                        <div th:if="${!status.isCheckedInToday}">
+                            <h2 class="font-serif text-2xl sm:text-3xl font-bold text-on-surface"
+                                th:text="'Hôm nay sẵn sàng nhận +' + ${status.todayReward} + ' Coin'">Hôm nay sẵn sàng nhận +15 Coin</h2>
+                        </div>
+                        <div th:if="${status.isCheckedInToday}">
+                            <h2 class="font-serif text-2xl sm:text-3xl font-bold text-emerald-800 flex items-center gap-2">
+                                <span class="material-symbols-outlined text-[28px] text-emerald-600">check_circle</span>
+                                <span>Bạn đã điểm danh hôm nay!</span>
+                            </h2>
+                        </div>
+
+                        <p class="text-sm text-on-surface-variant leading-relaxed max-w-xl">
+                            Bạn đang ở chặng thứ <strong class="text-on-surface" th:text="'Ngày ' + ${status.currentStreakDay}">Ngày 5</strong> của chuỗi 7 ngày. Hãy giữ vững nhịp đọc thư thái để kích hoạt <strong class="text-amber-800">Siêu Rương Quà Tặng Ngày 7</strong> vào cuối tuần này.
+                        </p>
+
+                        <!-- Metric mini boxes -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                            <div class="p-3.5 rounded-xl bg-amber-50/60 border border-amber-200/40">
+                                <div class="text-[11px] text-outline font-medium">Tích lũy từ điểm danh</div>
+                                <div class="font-bold text-on-surface text-base flex items-center gap-1 mt-0.5">
+                                    <span class="material-symbols-outlined text-[18px] text-amber-600">emoji_events</span>
+                                    <span th:text="${status.totalRewardCoins} + ' Coin'">125 Coin</span>
+                                </div>
+                            </div>
+                            <div class="p-3.5 rounded-xl bg-amber-50/60 border border-amber-200/40">
+                                <div class="text-[11px] text-outline font-medium">Số dư ví hiện tại</div>
+                                <div class="font-bold text-primary text-base flex items-center gap-1 mt-0.5">
+                                    <span class="material-symbols-outlined text-[18px] text-primary">monetization_on</span>
+                                    <span th:text="${status.walletBalance} + ' Coin'">350 Coin</span>
+                                </div>
+                            </div>
+                            <div class="p-3.5 rounded-xl bg-amber-50/60 border border-amber-200/40 flex flex-col justify-between">
+                                <div class="text-[11px] text-outline font-medium">Ví đọc truyện</div>
+                                <a th:href="@{/user/profile}" class="text-xs font-bold text-primary hover:underline flex items-center gap-1 mt-1">
+                                    <span>Xem ví Coin</span>
+                                    <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Action Card with Gift Box (matching image38.png) -->
+                    <div class="w-full lg:w-80 shrink-0 p-6 rounded-2xl bg-amber-50/40 border border-amber-200/60 flex flex-col items-center text-center space-y-4">
+                        <!-- Gift Illustration Circle -->
+                        <div class="relative w-24 h-24 rounded-full bg-amber-100 flex items-center justify-center text-amber-800 shadow-inner">
+                            <span class="material-symbols-outlined text-[48px] text-amber-800">featured_seasonal_and_gifts</span>
+                            <span th:if="${!status.isCheckedInToday}" class="absolute top-1 right-1 w-4 h-4 rounded-full bg-red-500 border-2 border-white animate-pulse"></span>
+                        </div>
+
+                        <!-- Check-in Action Button -->
+                        <div class="w-full">
+                            <form th:if="${!status.isCheckedInToday}" th:action="@{/user/checkin}" method="post" class="m-0">
+                                <button type="submit"
+                                        class="w-full py-3.5 px-6 rounded-xl bg-[#875200] hover:bg-[#6b4100] text-white font-bold text-base flex items-center justify-center gap-2 shadow-[0_4px_16px_rgba(135,82,0,0.25)] transition-all transform hover:-translate-y-0.5 active:translate-y-0">
+                                    <span class="material-symbols-outlined text-[20px]">stars</span>
+                                    <span th:text="'Điểm danh nhận ngay +' + ${status.todayReward} + ' Coin'">Điểm danh nhận ngay +15 Coin</span>
+                                </button>
+                            </form>
+                            <button th:if="${status.isCheckedInToday}" disabled
+                                    class="w-full py-3.5 px-6 rounded-xl bg-surface-container-high text-outline font-bold text-base flex items-center justify-center gap-2 cursor-not-allowed">
+                                <span class="material-symbols-outlined text-[20px] text-emerald-600">check_circle</span>
+                                <span>Đã điểm danh hôm nay</span>
+                            </button>
+                        </div>
+
+                        <p class="text-xs text-outline font-medium">Mỗi ngày chỉ được nhận thưởng một lần duy nhất.</p>
+                    </div>
+
+                </div>
+
+                <!-- 7-Day Streak Roadmap Section (image38.png) -->
+                <div class="space-y-4 pt-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div>
+                            <h2 class="font-headline-sm font-serif text-xl font-bold text-on-surface">Lộ trình chuỗi điểm danh tuần</h2>
+                            <p class="text-xs text-on-surface-variant">Hoàn thành đủ 7 ngày liên tục để mở rương thưởng lớn tích lũy Coin miễn phí</p>
+                        </div>
+                        <!-- Legend -->
+                        <div class="flex items-center gap-4 text-xs text-outline font-medium">
+                            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-surface-container-highest"></span>Đã nhận</span>
+                            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-600"></span>Hôm nay</span>
+                            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full border border-outline"></span>Chưa mở</span>
+                        </div>
+                    </div>
+
+                    <!-- 7-Day Grid Cards (image38.png) -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
+                        <div th:each="day : ${status.roadmap}"
+                             th:class="${day.isSpecial} ?
+                                ('p-4 rounded-xl flex flex-col items-center justify-between min-h-[160px] text-center transition-all bg-gradient-to-b from-amber-200 to-amber-300 border-2 border-amber-400 shadow-md') :
+                                (day.status == 'TODAY_PENDING' or day.status == 'TODAY_CLAIMED' ?
+                                    'p-4 rounded-xl flex flex-col items-center justify-between min-h-[160px] text-center transition-all bg-amber-50 border-2 border-amber-600 shadow-md' :
+                                    'p-4 rounded-xl flex flex-col items-center justify-between min-h-[160px] text-center transition-all bg-surface-container-lowest border border-outline-variant/30 shadow-xs')">
+                            
+                            <!-- Header day label -->
+                            <div class="w-full flex items-center justify-between text-xs font-bold text-on-surface">
+                                <span th:text="'Ngày ' + ${day.dayNumber}">Ngày 1</span>
+                                <span th:if="${day.status == 'CLAIMED' or day.status == 'TODAY_CLAIMED'}" class="material-symbols-outlined text-[16px] text-emerald-600">check_circle</span>
+                                <span th:if="${day.status == 'TODAY_PENDING'}" class="px-1.5 py-0.5 rounded-full bg-amber-600 text-white text-[10px]">Hôm nay</span>
+                                <span th:if="${day.status == 'LOCKED' and !day.isSpecial}" class="material-symbols-outlined text-[16px] text-outline">lock</span>
+                            </div>
+
+                            <!-- Reward Icon & Coins -->
+                            <div class="my-auto py-2 flex flex-col items-center gap-1">
+                                <!-- Day 7 Gift box -->
+                                <span th:if="${day.isSpecial}" class="material-symbols-outlined text-[36px] text-amber-900">featured_seasonal_and_gifts</span>
+                                <!-- Day 1-6 Coin icons -->
+                                <span th:if="${!day.isSpecial and (day.dayNumber <= 2)}" class="material-symbols-outlined text-[28px] text-amber-700">monetization_on</span>
+                                <span th:if="${!day.isSpecial and (day.dayNumber >= 3 and day.dayNumber <= 4)}" class="material-symbols-outlined text-[28px] text-amber-600">toll</span>
+                                <span th:if="${!day.isSpecial and (day.dayNumber >= 5 and day.dayNumber <= 6)}" class="material-symbols-outlined text-[28px] text-amber-600">stars</span>
+
+                                <span class="font-bold text-base text-on-surface" th:text="'+' + ${day.rewardCoin} + ' Coin'">+5 Coin</span>
+                            </div>
+
+                            <!-- Footer status badge -->
+                            <div class="w-full pt-1">
+                                <div th:if="${day.isSpecial}"
+                                     class="w-full py-1 rounded bg-amber-800/10 text-amber-950 font-bold text-[11px] text-center">
+                                    Thưởng mốc: +30 Coin
+                                </div>
+                                <div th:unless="${day.isSpecial}">
+                                    <span th:if="${day.status == 'CLAIMED' or day.status == 'TODAY_CLAIMED'}"
+                                          class="block w-full py-1 rounded bg-surface-container text-outline text-xs font-medium text-center">
+                                        Đã nhận
+                                    </span>
+                                    <span th:if="${day.status == 'TODAY_PENDING'}"
+                                          class="block w-full py-1 rounded bg-[#875200] text-white text-xs font-bold text-center">
+                                        Chờ nhận
+                                    </span>
+                                    <span th:if="${day.status == 'LOCKED'}"
+                                          class="block w-full py-1 rounded bg-surface-container/50 text-outline text-xs font-medium text-center"
+                                          th:text="${day.label}">
+                                        Ngày mai
+                                    </span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+        </div>
+    </main>
+
+    <!-- Global Footer -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>
