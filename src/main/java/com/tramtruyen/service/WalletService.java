@@ -1,9 +1,12 @@
 package com.tramtruyen.service;
 
+import com.tramtruyen.dto.TransactionDTO;
+import com.tramtruyen.dto.WalletOverviewDTO;
 import com.tramtruyen.entity.User;
+import org.springframework.data.domain.Page;
 
 /**
- * Service interface for managing user wallet operations and ledger audit transactions.
+ * Service quản lý thông tin ví, số dư và lịch sử giao dịch.
  */
 public interface WalletService {
 
@@ -45,4 +48,24 @@ public interface WalletService {
      * @return true if balance is greater than or equal to amount
      */
     boolean hasSufficientBalance(User user, int amount);
+
+    /**
+     * Lấy dữ liệu tổng quan ví và các giao dịch gần đây của người dùng.
+     *
+     * @param user user entity
+     * @return thông tin tổng quan ví
+     */
+    WalletOverviewDTO getWalletOverview(User user);
+
+    /**
+     * Tìm kiếm và lọc danh sách biến động số dư có phân trang.
+     *
+     * @param user user entity
+     * @param type loại giao dịch
+     * @param keyword từ khóa tìm kiếm
+     * @param page số trang (0-indexed)
+     * @param size kích thước trang
+     * @return trang danh sách giao dịch DTO
+     */
+    Page<TransactionDTO> searchTransactions(User user, String type, String keyword, int page, int size);
 }

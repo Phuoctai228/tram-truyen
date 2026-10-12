@@ -19,7 +19,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 /**
- * Entity representing wallet ledger transactions (coin balance mutations).
+ * Thực thể Biến động số dư ví Coin (Bảng transactions / Ledger transactions).
  */
 @Entity
 @Table(name = "transactions")

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Nạp Coin vào tài khoản - Trạm Truyện</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script th:src="@{/js/novel/tailwind-config.js}"></script>
+    <style>
+        .package-card {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .package-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(180, 83, 9, 0.1);
+        }
+        .package-card.selected {
+            border-color: #b45309;
+            background-color: #fffbeb;
+            box-shadow: 0 0 0 2px #b45309, 0 10px 25px -5px rgba(180, 83, 9, 0.15);
+        }
+    </style>
+</head>
+<body class="bg-[#FAF7F2] font-body-md text-[#2B231D] min-h-screen flex flex-col antialiased">
+    <!-- Header -->
+    <div th:replace="~{fragments/header :: main-header}"></div>
+
+    <main class="w-full pt-28 pb-16 flex-1">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6">
+            
+            <!-- Breadcrumbs & Back -->
+            <div class="flex items-center justify-between text-sm text-[#7D7065] mb-8">
+                <div class="flex items-center gap-2">
+                    <a th:href="@{/user/profile}" class="hover:text-[#B45309] transition-colors">Tài khoản</a>
+                    <span>&rsaquo;</span>
+                    <a th:href="@{/user/profile}" class="hover:text-[#B45309] transition-colors">Ví Coin</a>
+                    <span>&rsaquo;</span>
+                    <span class="text-[#2B231D] font-medium">Nạp Coin</span>
+                </div>
+                <a th:href="@{/user/profile}" class="inline-flex items-center gap-1 hover:text-[#B45309] transition-colors">
+                    <span class="material-symbols-outlined text-base">arrow_back</span>
+                    <span>Ví của tôi</span>
+                </a>
+            </div>
+
+            <!-- Page Title Header -->
+            <div class="text-center space-y-3 mb-10">
+                <div class="w-1.5 h-1.5 rounded-full bg-[#B45309] mx-auto"></div>
+                <h1 class="text-3xl sm:text-4xl font-bold font-serif text-[#2B231D] tracking-tight">Nạp Coin vào tài khoản</h1>
+                <p class="text-sm sm:text-base text-[#7D7065]">
+                    Quy đổi chuẩn 1.000đ = 10 Coin &bull; Coin không giới hạn thời gian sử dụng
+                </p>
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#F3EDE2] text-sm text-[#2B231D] font-medium border border-[#E8DFC8]">
+                    <span class="material-symbols-outlined text-[#B45309] text-lg">monetization_on</span>
+                    <span>Số dư hiện tại: <strong class="text-[#B45309]" th:text="${#numbers.formatInteger(walletBalance, 0, 'POINT')} + ' Coin'">0 Coin</strong></span>
+                </div>
+            </div>
+
+            <!-- Section Title -->
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-bold text-[#2B231D]">Chọn gói nạp <span class="text-xs font-normal text-[#7D7065]">(ưu đãi tốt nhất)</span></h2>
+            </div>
+
+            <!-- Form -->
+            <form id="topupForm" th:action="@{/wallet/topup/process}" method="POST">
+                <input type="hidden" id="selectedPackageId" name="packageId" value="">
+
+                <!-- Grid of Package Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+                    <!-- Dynamic rendering from DB packages -->
+                    <div th:each="pkg, iterStat : ${packages}"
+                         th:data-id="${pkg.id}"
+                         th:data-price="${pkg.price}"
+                         th:data-coins="${pkg.coinAmount}"
+                         class="package-card relative p-5 rounded-2xl bg-white border border-[#EAE3D2] shadow-sm cursor-pointer select-none">
+                        
+                        <!-- Top Badge / Header row -->
+                        <div class="flex items-center justify-between min-h-[26px] mb-4">
+                            <span th:if="${pkg.badgeText != null}"
+                                  th:text="${pkg.badgeText}"
+                                  class="inline-block text-[11px] font-semibold tracking-wide px-2.5 py-0.5 rounded-full bg-[#FDF0E1] text-[#B45309] border border-[#F6D8B6]">
+                                +50 Tặng
+                            </span>
+                            <span th:unless="${pkg.badgeText != null}" class="text-xs text-[#8C7E72] font-medium">Gói chuẩn</span>
+
+                            <!-- Radio indicator -->
+                            <div class="radio-indicator w-5 h-5 rounded-full border-2 border-[#D4C8B5] flex items-center justify-center transition-colors">
+                                <span class="material-symbols-outlined text-xs text-white opacity-0 transition-opacity check-icon font-bold">check</span>
+                            </div>
+                        </div>
+
+                        <!-- Coin Amount -->
+                        <div class="flex items-center gap-1.5 mb-1">
+                            <span class="material-symbols-outlined text-[#B45309] text-xl">monetization_on</span>
+                            <span class="text-2xl font-bold font-serif text-[#2B231D]" th:text="${#numbers.formatInteger(pkg.baseCoin, 0, 'POINT')}">1.000</span>
+                            <span th:if="${pkg.bonusCoin > 0}" class="text-sm font-semibold text-[#B45309]" th:text="'+' + ${pkg.bonusCoin}">+50</span>
+                        </div>
+
+                        <!-- Price VND -->
+                        <div class="text-sm text-[#7D7065] font-medium" th:text="${#numbers.formatInteger(pkg.price, 0, 'POINT')} + ' đ'">
+                            100.000 đ
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Info Notice Card -->
+                <div class="flex items-start gap-3 p-4 rounded-xl bg-[#FFF9EC] border border-[#FBEAC8] text-[#8C642E] text-xs sm:text-sm leading-relaxed mb-8">
+                    <span class="material-symbols-outlined text-[#B45309] text-lg shrink-0 mt-0.5">info</span>
+                    <p>
+                        <strong>Lưu ý:</strong> Giao dịch nạp Coin không hỗ trợ hoàn tiền hoặc quy đổi lại thành tiền mặt theo chính sách Trạm Truyện. Vui lòng kiểm tra kỹ gói nạp trước khi xác nhận thanh toán.
+                    </p>
+                </div>
+
+                <!-- Bottom Sticky / Action Bar -->
+                <div class="p-5 sm:p-6 rounded-2xl bg-white border border-[#EAE3D2] shadow-sm flex flex-col sm:flex-row items-center justify-between gap-6">
+                    <div class="text-center sm:text-left">
+                        <span class="block text-[11px] font-bold tracking-wider uppercase text-[#8C7E72] mb-1">Tổng thanh toán</span>
+                        <div class="flex items-baseline gap-2">
+                            <span id="displayPrice" class="text-2xl sm:text-3xl font-bold font-serif text-[#2B231D]">0đ</span>
+                            <span id="displayCoins" class="text-sm font-medium text-[#7D7065]">(Chưa chọn gói)</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="btnSubmitPayment"
+                            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-[#B45309] hover:bg-[#92400E] active:scale-[0.98] text-white font-semibold text-base shadow-[0_4px_14px_rgba(180,83,9,0.35)] transition-all">
+                        <span class="material-symbols-outlined text-lg">lock</span>
+                        <span>Thanh toán qua VNPay</span>
+                        <span class="material-symbols-outlined text-lg">arrow_forward</span>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Trust Badges -->
+            <div class="flex flex-wrap items-center justify-center gap-6 text-xs text-[#8C7E72] mt-6">
+                <span class="inline-flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-sm text-[#48BB78]">verified_user</span>
+                    Bảo mật thanh toán chuẩn SSL 256-bit
+                </span>
+                <span class="text-[#D4C8B5]">&bull;</span>
+                <span class="inline-flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-sm">support_agent</span>
+                    Hỗ trợ 24/7 qua hotro@tramtruyen.vn
+                </span>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div th:replace="~{fragments/footer :: main-footer}"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const cards = document.querySelectorAll('.package-card');
+            const hiddenInput = document.getElementById('selectedPackageId');
+            const displayPrice = document.getElementById('displayPrice');
+            const displayCoins = document.getElementById('displayCoins');
+            const btnSubmit = document.getElementById('btnSubmitPayment');
+
+            function selectCard(card) {
+                cards.forEach(c => {
+                    c.classList.remove('selected');
+                    const indicator = c.querySelector('.radio-indicator');
+                    const icon = c.querySelector('.check-icon');
+                    if (indicator) {
+                        indicator.classList.remove('bg-[#B45309]', 'border-[#B45309]');
+                        indicator.classList.add('border-[#D4C8B5]');
+                    }
+                    if (icon) icon.classList.add('opacity-0');
+                });
+
+                card.classList.add('selected');
+                const indicator = card.querySelector('.radio-indicator');
+                const icon = card.querySelector('.check-icon');
+                if (indicator) {
+                    indicator.classList.add('bg-[#B45309]', 'border-[#B45309]');
+                    indicator.classList.remove('border-[#D4C8B5]');
+                }
+                if (icon) icon.classList.remove('opacity-0');
+
+                const packageId = card.getAttribute('data-id');
+                const price = parseInt(card.getAttribute('data-price') || '0');
+                const coins = parseInt(card.getAttribute('data-coins') || '0');
+
+                hiddenInput.value = packageId;
+                displayPrice.textContent = new Intl.NumberFormat('vi-VN').format(price) + 'đ';
+                displayCoins.textContent = '(Nhận ' + new Intl.NumberFormat('vi-VN').format(coins) + ' Coin)';
+            }
+
+            cards.forEach(card => {
+                card.addEventListener('click', function () {
+                    selectCard(card);
+                });
+            });
+
+            // Mặc định không chọn gói nào khi truy cập trang
+
+            document.getElementById('topupForm').addEventListener('submit', function (e) {
+                if (!hiddenInput.value) {
+                    e.preventDefault();
+                    alert('Vui lòng chọn một gói nạp trước khi tiến hành thanh toán!');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

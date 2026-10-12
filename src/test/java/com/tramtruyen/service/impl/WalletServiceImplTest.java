@@ -17,6 +17,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import com.tramtruyen.repository.TopupOrderRepository;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -29,11 +30,14 @@ class WalletServiceImplTest {
     @Mock
     private TransactionRepository transactionRepository;
 
+    @Mock
+    private TopupOrderRepository topupOrderRepository;
+
     private WalletServiceImpl walletService;
 
     @BeforeEach
     void setUp() {
-        walletService = new WalletServiceImpl(userRepository, transactionRepository);
+        walletService = new WalletServiceImpl(userRepository, transactionRepository, topupOrderRepository);
     }
 
     @Test
