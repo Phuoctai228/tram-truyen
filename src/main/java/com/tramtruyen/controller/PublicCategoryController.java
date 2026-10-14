@@ -33,7 +33,7 @@ public class PublicCategoryController {
     public String showCategoryDetail(@PathVariable String slug, Model model) {
         var category = categoryService.getCategoryBySlug(slug);
         model.addAttribute("category", category);
-        model.addAttribute("novels", novelService.getNovelsByCategory(category.getId()));
+        model.addAttribute("novels", novelService.getNovelSummariesByCategory(category.getId()));
         return "categories/detail";
     }
 }

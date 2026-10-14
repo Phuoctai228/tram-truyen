@@ -1,6 +1,7 @@
 package com.tramtruyen.service;
 
 import com.tramtruyen.dto.NovelForm;
+import com.tramtruyen.dto.NovelSummaryDTO;
 import com.tramtruyen.entity.Novel;
 
 import java.util.List;
@@ -29,4 +30,6 @@ public interface NovelService {
     List<Novel> getNovelsBySameAuthor(String author, Integer currentNovelId);
 
     List<Novel> getNovelsByCategory(Integer categoryId);
+
+    List<NovelSummaryDTO> getNovelSummariesByCategory(Integer categoryId);
 }
