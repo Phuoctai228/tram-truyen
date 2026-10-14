@@ -22,6 +22,9 @@ public class NovelSummaryDTO {
     private Integer views;
     private Long favoriteCount;
     private BigDecimal averageRating;
+    private Integer chapterCount;
+    private java.util.List<com.tramtruyen.entity.Category> categories;
+    private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private java.util.List<LatestChapterDTO> latestChapters;
 }

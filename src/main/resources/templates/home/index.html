@@ -33,106 +33,149 @@
         <div class="flex flex-col w-full">
             <div class="w-full max-w-7xl mx-auto px-6 lg:px-12 py-8 space-y-12">
 
-                <!-- 1. HERO BANNER STRIP -->
-                <section
-                    class="relative w-full rounded-2xl bg-surface-container-low shadow-[0_8px_30px_rgba(107,91,75,0.07)] overflow-hidden"
-                    th:if="${not #lists.isEmpty(hotNovels)}" th:with="heroNovel=${hotNovels[0]}">
+                <!-- 1. HERO BANNER STRIP (AUTO-SLIDING CAROUSEL) -->
+                <section id="heroBannerSection"
+                    class="relative w-full rounded-2xl bg-surface-container-low shadow-[0_8px_30px_rgba(107,91,75,0.07)] overflow-hidden group/hero select-none"
+                    th:if="${heroNovels != null and !#lists.isEmpty(heroNovels)}">
+                    <!-- Background Aura Blurs -->
                     <div
                         class="absolute -top-32 -right-24 w-96 h-96 rounded-full bg-primary-fixed-dim/20 blur-3xl pointer-events-none">
                     </div>
                     <div
                         class="absolute -bottom-24 -left-16 w-80 h-80 rounded-full bg-secondary-fixed/20 blur-3xl pointer-events-none">
                     </div>
-                    <div class="relative z-10 p-8 lg:p-10 flex flex-col md:flex-row items-center gap-8 lg:gap-12">
-                        <!-- Novel Cover Artwork -->
-                        <div class="shrink-0 relative group">
-                            <div
-                                class="w-48 lg:w-56 aspect-[3/4] rounded-xl overflow-hidden shadow-[0_12px_28px_rgba(43,23,0,0.18)] transition-transform duration-300 group-hover:scale-[1.02]">
-                                <img class="w-full h-full object-cover"
-                                    th:src="${heroNovel.coverUrl != null ? heroNovel.coverUrl : '/images/default-cover.jpg'}"
-                                    onerror="this.onerror=null;this.src='/images/default-cover.jpg';" alt="Cover">
+
+                    <!-- Slide Carousel Container -->
+                    <div id="heroSliderContainer" class="relative z-10 w-full min-h-[380px] lg:min-h-[420px]">
+                        <div th:each="heroNovel, iterStat : ${heroNovels}"
+                            th:class="${iterStat.first ? 'hero-slide w-full p-8 lg:p-10 flex flex-col md:flex-row items-center gap-8 lg:gap-12 transition-all duration-700 opacity-100 relative pointer-events-auto' : 'hero-slide w-full p-8 lg:p-10 flex flex-col md:flex-row items-center gap-8 lg:gap-12 transition-all duration-700 opacity-0 absolute inset-0 pointer-events-none'}"
+                            th:data-slide-index="${iterStat.index}">
+                            <!-- Novel Cover Artwork -->
+                            <div class="shrink-0 relative group">
+                                <div
+                                    class="w-48 lg:w-56 aspect-[3/4] rounded-xl overflow-hidden shadow-[0_12px_28px_rgba(43,23,0,0.18)] transition-transform duration-300 group-hover:scale-[1.02]">
+                                    <img class="w-full h-full object-cover"
+                                        th:src="${heroNovel.coverUrl != null ? heroNovel.coverUrl : '/images/default-cover.jpg'}"
+                                        onerror="this.onerror=null;this.src='/images/default-cover.jpg';" alt="Cover">
+                                </div>
+                                <span
+                                    class="absolute top-3 left-3 bg-secondary text-on-secondary px-2.5 py-1 rounded-md font-label-sm text-label-sm shadow-sm font-bold flex items-center gap-1"
+                                    th:text="${'Top #' + iterStat.count + ' Tuần'}">
+                                    Top #1 Tuần
+                                </span>
                             </div>
-                            <span
-                                class="absolute top-3 left-3 bg-secondary text-on-secondary px-2.5 py-1 rounded-md font-label-sm text-label-sm shadow-sm">
-                                Top #1 Tuần
-                            </span>
-                        </div>
-                        <!-- Banner Content Details -->
-                        <div class="flex-1 min-w-0 flex flex-col justify-between">
-                            <div>
-                                <!-- Badges Bar -->
-                                <div class="flex flex-wrap items-center gap-2 mb-3">
-                                    <span
-                                        class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary font-label-sm text-label-sm tracking-wide uppercase">
+                            <!-- Banner Content Details -->
+                            <div class="flex-1 min-w-0 flex flex-col justify-between">
+                                <div>
+                                    <!-- Badges Bar -->
+                                    <div class="flex flex-wrap items-center gap-2 mb-3">
                                         <span
-                                            class="material-symbols-outlined text-[15px] icon-fill">auto_awesome</span>
-                                        Truyện Nổi Bật
-                                    </span>
-                                    <span
-                                        class="inline-flex items-center px-2.5 py-1 rounded-full bg-surface-variant text-on-surface-variant font-label-sm text-label-sm"
-                                        th:text="${heroNovel.status}">
-                                        Đã hoàn thành
-                                    </span>
-                                </div>
-                                <!-- Title & Author -->
-                                <h1 class="font-headline-xl text-headline-xl text-on-surface font-bold tracking-tight mb-2"
-                                    th:text="${heroNovel.title}">
-                                    Title
-                                </h1>
-                                <p class="font-label-lg text-label-lg text-secondary mb-4 flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-[18px]">edit_note</span>
-                                    Tác giả: <span class="font-bold" th:text="${heroNovel.author}">Author</span>
-                                </p>
-                                <!-- Metrics & Genre Tags -->
-                                <div class="flex flex-wrap items-center gap-4 mb-4 text-on-surface-variant">
-                                    <div class="flex items-center gap-1 text-primary">
-                                        <span class="material-symbols-outlined text-[18px] icon-fill">star</span>
-                                        <span class="font-label-lg text-label-lg font-bold"
-                                            th:text="${heroNovel.averageRating}">4.9</span>
+                                            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary font-label-sm text-label-sm tracking-wide uppercase font-semibold">
+                                            <span
+                                                class="material-symbols-outlined text-[15px] icon-fill">auto_awesome</span>
+                                            Truyện Nổi Bật
+                                        </span>
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-1 rounded-full bg-surface-variant text-on-surface-variant font-label-sm text-label-sm"
+                                            th:text="${heroNovel.status == 'COMPLETED' ? 'Đã hoàn thành' : 'Đang ra'}">
+                                            Đã hoàn thành
+                                        </span>
                                     </div>
-                                    <span class="text-outline-variant">•</span>
-                                    <div class="flex items-center gap-1 font-body-md text-body-md">
-                                        <span class="material-symbols-outlined text-[18px]">menu_book</span>
-                                        <span th:text="${heroNovel.views + ' views'}">1.432 views</span>
+                                    <!-- Title & Author -->
+                                    <h1 class="font-headline-xl text-headline-xl text-on-surface font-bold tracking-tight mb-2 line-clamp-1"
+                                        th:text="${heroNovel.title}">
+                                        Title
+                                    </h1>
+                                    <p class="font-label-lg text-label-lg text-secondary mb-4 flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-[18px]">edit_note</span>
+                                        Tác giả: <span class="font-bold" th:text="${heroNovel.author}">Author</span>
+                                    </p>
+                                    <!-- Metrics -->
+                                    <div class="flex flex-wrap items-center gap-3.5 mb-3 text-on-surface-variant font-label-md text-label-md">
+                                        <!-- Rating -->
+                                        <div class="flex items-center gap-1 text-primary">
+                                            <span class="material-symbols-outlined text-[18px] icon-fill">star</span>
+                                            <span class="font-bold"
+                                                th:text="${heroNovel.averageRating != null ? heroNovel.averageRating : '0.0'}"></span>
+                                        </div>
+                                        <span class="text-outline-variant">•</span>
+                                        <!-- Chapter Count -->
+                                        <div class="flex items-center gap-1.5 font-body-md text-body-md">
+                                            <span class="material-symbols-outlined text-[18px]">menu_book</span>
+                                            <span th:text="${(heroNovel.chapterCount != null ? heroNovel.chapterCount : 0) + ' chương'}"></span>
+                                        </div>
+                                        <span class="text-outline-variant">•</span>
+                                        <!-- Views -->
+                                        <div class="flex items-center gap-1.5 font-body-md text-body-md">
+                                            <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                            <span th:text="${(heroNovel.views != null ? #numbers.formatInteger(heroNovel.views, 1, 'POINT') : '0') + ' lượt đọc'}"></span>
+                                        </div>
+                                        <span class="text-outline-variant">•</span>
+                                        <!-- Favorites / Bookshelf -->
+                                        <div class="flex items-center gap-1.5 font-body-md text-body-md">
+                                            <span class="material-symbols-outlined text-[18px] text-primary">bookmark</span>
+                                            <span th:text="${(heroNovel.favoriteCount != null ? #numbers.formatInteger(heroNovel.favoriteCount, 1, 'POINT') : '0') + ' lưu tủ'}"></span>
+                                        </div>
                                     </div>
+
+                                    <!-- Genre Tags (Categories) -->
+                                    <div class="flex flex-wrap items-center gap-2 mb-4"
+                                        th:if="${heroNovel.categories != null and !#lists.isEmpty(heroNovel.categories)}">
+                                        <a th:each="category : ${heroNovel.categories}"
+                                            th:href="@{'/the-loai/' + ${category.slug}}"
+                                            class="px-2.5 py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-[12px] hover:bg-primary-container hover:text-on-primary transition-colors border border-outline-variant/30 shadow-2xs"
+                                            th:text="${category.name}"></a>
+                                    </div>
+                                    <!-- Synopsis -->
+                                    <p class="font-body-reading text-body-md text-on-surface-variant line-clamp-3 mb-6 max-w-3xl italic"
+                                        th:text="${heroNovel.summary}">
+                                        Summary text
+                                    </p>
                                 </div>
-                                <!-- Synopsis -->
-                                <p class="font-body-reading text-body-md text-on-surface-variant line-clamp-3 mb-6 max-w-3xl italic"
-                                    th:text="${heroNovel.summary}">
-                                    Summary text
-                                </p>
-                            </div>
-                            <!-- CTA Buttons -->
-                            <div class="flex flex-wrap items-center gap-4">
-                                <a class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-primary-container text-on-primary font-label-lg text-label-lg shadow-[0_2px_10px_rgba(208,138,46,0.3)] hover:bg-primary transition-all"
-                                    th:href="@{'/truyen/' + ${heroNovel.slug}}">
-                                    <span class="">Đọc ngay</span>
-                                    <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-                                </a>
-                                <div sec:authorize="isAuthenticated()" class="inline-block"
-                                    id="hero-bookshelf-container">
-                                    <button type="button" id="heroBookshelfBtn" th:data-novel-id="${heroNovel.id}"
-                                        onclick="toggleHeroBookshelf(this)"
-                                        th:class="${heroInBookshelf} ? 
-                                            'inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-white font-label-lg text-label-lg hover:bg-primary-container transition-all shadow-sm' : 
-                                            'inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-lg text-label-lg hover:bg-surface-container transition-all shadow-sm'">
-                                        <span class="material-symbols-outlined text-[18px]"
-                                            th:classappend="${heroInBookshelf} ? 'icon-fill' : ''"
-                                            id="heroBookshelfIcon"
-                                            th:text="${heroInBookshelf} ? 'bookmark' : 'bookmark_add'">bookmark</span>
-                                        <span id="heroBookshelfText"
-                                            th:text="${heroInBookshelf} ? 'Đã lưu trong Tủ sách' : '+ Thêm vào Tủ sách'">+
-                                            Thêm vào Tủ sách</span>
+                                <!-- CTA Buttons -->
+                                <div class="flex flex-wrap items-center gap-4">
+                                    <a class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-primary-container text-on-primary font-label-lg text-label-lg shadow-[0_2px_10px_rgba(208,138,46,0.3)] hover:bg-primary transition-all"
+                                        th:href="@{'/truyen/' + ${heroNovel.slug}}">
+                                        <span class="">Đọc ngay</span>
+                                        <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                                    </a>
+                                    <div sec:authorize="isAuthenticated()" class="inline-block">
+                                        <button type="button" th:data-novel-id="${heroNovel.id}"
+                                            onclick="toggleHeroBookshelf(this)"
+                                            class="hero-bookshelf-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-lg text-label-lg hover:bg-surface-container transition-all shadow-sm">
+                                            <span class="material-symbols-outlined text-[18px]">bookmark_add</span>
+                                            <span>+ Thêm vào Tủ sách</span>
+                                        </button>
+                                    </div>
+                                    <button type="button" sec:authorize="!isAuthenticated()"
+                                        onclick="openLoginRequiredModal('Vui lòng đăng nhập để thêm truyện vào Tủ sách cá nhân của bạn.')"
+                                        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-lg text-label-lg hover:bg-surface-container transition-colors shadow-sm">
+                                        <span class="material-symbols-outlined text-[18px]">bookmark_add</span>
+                                        <span>+ Thêm vào Tủ sách</span>
                                     </button>
                                 </div>
-                                <button type="button" sec:authorize="!isAuthenticated()"
-                                    onclick="openLoginRequiredModal('Vui lòng đăng nhập để thêm truyện vào Tủ sách cá nhân của bạn.')"
-                                    class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-lg text-label-lg hover:bg-surface-container transition-colors shadow-sm">
-                                    <span class="material-symbols-outlined text-[18px]">bookmark_add</span>
-                                    <span>+ Thêm vào Tủ sách</span>
-                                </button>
                             </div>
                         </div>
+                    </div>
+
+                    <!-- Left & Right Navigation Buttons (< và >) -->
+                    <button type="button" id="heroPrevBtn" aria-label="Truyện trước"
+                        class="absolute left-3 lg:left-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-surface/90 hover:bg-surface text-on-surface shadow-lg backdrop-blur-md flex items-center justify-center transition-all hover:scale-110 active:scale-95 border border-outline-variant/40 hover:text-primary">
+                        <span class="material-symbols-outlined text-[24px]">chevron_left</span>
+                    </button>
+                    <button type="button" id="heroNextBtn" aria-label="Truyện kế tiếp"
+                        class="absolute right-3 lg:right-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-surface/90 hover:bg-surface text-on-surface shadow-lg backdrop-blur-md flex items-center justify-center transition-all hover:scale-110 active:scale-95 border border-outline-variant/40 hover:text-primary">
+                        <span class="material-symbols-outlined text-[24px]">chevron_right</span>
+                    </button>
+
+                    <!-- Dots Indicator & Counter -->
+                    <div class="absolute bottom-4 right-8 lg:right-12 z-20 flex items-center gap-2 bg-surface/75 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-outline-variant/30 shadow-sm" id="heroDotsContainer">
+                        <button th:each="heroNovel, iterStat : ${heroNovels}" type="button"
+                            th:data-slide="${iterStat.index}"
+                            onclick="goToHeroSlide(this.getAttribute('data-slide'))"
+                            th:class="${iterStat.first ? 'hero-dot w-6 h-2 rounded-full bg-primary transition-all duration-300' : 'hero-dot w-2 h-2 rounded-full bg-outline-variant/70 hover:bg-primary/50 transition-all duration-300'}"
+                            th:aria-label="${'Chuyển đến truyện ' + iterStat.count}">
+                        </button>
                     </div>
                 </section>
 
@@ -145,26 +188,27 @@
                                 cập nhật</h2>
                         </div>
                         <a class="inline-flex items-center gap-1 font-label-lg text-label-lg text-primary hover:text-on-primary-container transition-colors group"
-                            href="#">
+                            th:href="@{/search(sort='updatedAt,desc')}">
                             <span class="">Xem tất cả</span>
                             <span
                                 class="material-symbols-outlined text-[18px] transition-transform group-hover:translate-x-1">arrow_forward</span>
                         </a>
                     </div>
-                    <!-- Grid Novel Cards with 3 latest chapters -->
-                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+                    <!-- Grid Novel Cards: 5 columns for slimmer, well-proportioned cards -->
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
+                        th:if="${recentlyUpdatedNovels != null and !#lists.isEmpty(recentlyUpdatedNovels)}">
                         <div th:each="novel : ${recentlyUpdatedNovels}"
                             class="group flex flex-col p-3 rounded-xl bg-surface-container-lowest border border-outline-variant/30 shadow-[0_2px_12px_rgba(107,91,75,0.05)] hover:shadow-[0_8px_24px_rgba(107,91,75,0.12)] transition-all">
-                            <!-- Cover with Views & Bookmark overlay -->
+                            <!-- Cover: Fixed compact height (h-44 sm:h-48) with Views & Bookmark overlay -->
                             <a th:href="@{'/truyen/' + ${novel.slug}}"
-                                class="relative w-full aspect-[3/4] rounded-lg overflow-hidden mb-2.5 bg-surface-container block group-hover:opacity-95">
-                                <img class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                class="relative w-full h-44 sm:h-48 rounded-lg overflow-hidden mb-2.5 bg-surface-container block group-hover:opacity-95">
+                                <img class="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-105"
                                     th:src="${novel.coverUrl != null ? novel.coverUrl : '/images/default-cover.jpg'}"
                                     onerror="this.onerror=null;this.src='/images/default-cover.jpg';"
                                     th:alt="${novel.title}">
                                 <!-- Overlay: Views & Bookmarks at bottom of cover -->
                                 <div
-                                    class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/45 to-transparent pt-6 pb-1.5 px-2 flex items-center justify-between text-white font-label-sm text-[11px] leading-tight select-none">
+                                    class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/45 to-transparent pt-6 pb-1.5 px-2.5 flex items-center justify-between text-white font-label-sm text-[11px] leading-tight select-none">
                                     <span class="flex items-center gap-1 opacity-90 truncate" title="Lượt xem">
                                         <span class="material-symbols-outlined text-[13px]">visibility</span>
                                         <span
@@ -180,39 +224,52 @@
                                 </div>
                             </a>
 
-                            <!-- Novel Title -->
+                            <!-- Novel Title: Single-line truncate to prevent elongated card height -->
                             <a th:href="@{'/truyen/' + ${novel.slug}}"
-                                class="font-headline-sm text-[14px] leading-tight font-bold text-on-surface group-hover:text-primary transition-colors line-clamp-2 min-h-[34px] mb-1"
+                                class="font-headline-sm text-[15px] font-bold text-on-surface group-hover:text-primary transition-colors truncate mb-1"
                                 th:text="${novel.title}">Tên truyện</a>
 
-                            <!-- Author -->
-                            <p class="font-body-md text-label-sm text-secondary truncate mb-2"
-                                th:text="${novel.author}">Tác giả</p>
+                            <!-- Author & Rating Row -->
+                            <div class="flex items-center justify-between text-label-sm text-secondary mb-2">
+                                <p class="font-body-md truncate flex-1" th:text="${novel.author}">Tác giả</p>
+                                <span class="flex items-center gap-0.5 text-primary shrink-0 ml-1.5"
+                                    th:if="${novel.averageRating != null and novel.averageRating > 0}">
+                                    <span class="material-symbols-outlined text-[12px] icon-fill">star</span>
+                                    <span class="font-bold text-[11px]" th:text="${novel.averageRating}">4.9</span>
+                                </span>
+                            </div>
 
-                            <!-- 3 Latest Chapters List -->
-                            <div class="mt-auto pt-2 border-t border-outline-variant/20 flex flex-col gap-1.5">
-                                <div th:if="${novel.latestChapters != null and !#lists.isEmpty(novel.latestChapters)}"
-                                    th:each="chap : ${novel.latestChapters}"
-                                    class="group/chap flex items-center justify-between gap-1 text-[11px] py-0.5 px-1 rounded hover:bg-surface-container-low transition-colors">
-                                    <a th:href="@{'/truyen/' + ${novel.slug} + '/chuong-' + ${chap.chapterNumber}}"
-                                        class="flex items-center gap-1 min-w-0 flex-1 text-on-surface group-hover/chap:text-primary transition-colors">
-                                        <span
-                                            class="w-4 h-4 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                                            <span class="material-symbols-outlined text-[11px]">auto_stories</span>
-                                        </span>
-                                        <span class="font-medium truncate"
-                                            th:text="${chap.title != null and !#strings.isEmpty(chap.title) ? ('C.' + chap.chapterNumber + ': ' + chap.title) : ('Chương ' + chap.chapterNumber)}">Chương
-                                            1</span>
-                                    </a>
-                                    <span class="text-tertiary text-[10px] shrink-0 whitespace-nowrap ml-1"
-                                        th:text="${chap.relativeTime}">Vừa xong</span>
-                                </div>
+                            <!-- 2 Latest Chapters List (reduced to 2 to keep card compact) -->
+                            <div class="mt-auto pt-2 border-t border-outline-variant/20 flex flex-col gap-1">
+                                <th:block th:if="${novel.latestChapters != null and !#lists.isEmpty(novel.latestChapters)}">
+                                    <div th:each="chap, chapStat : ${novel.latestChapters}"
+                                        th:if="${chapStat.index < 2}"
+                                        class="group/chap flex items-center justify-between gap-1 text-[11px] py-0.5 px-1 rounded hover:bg-surface-container-low transition-colors">
+                                        <a th:href="@{'/truyen/' + ${novel.slug} + '/chuong-' + ${chap.chapterNumber}}"
+                                            class="flex items-center gap-1.5 min-w-0 flex-1 text-on-surface group-hover/chap:text-primary transition-colors">
+                                            <span
+                                                class="w-4 h-4 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                                                <span class="material-symbols-outlined text-[11px]">auto_stories</span>
+                                            </span>
+                                            <span class="font-medium truncate"
+                                                th:text="${chap.title != null and !#strings.isEmpty(chap.title) ? ('C.' + chap.chapterNumber + ': ' + chap.title) : ('Chương ' + chap.chapterNumber)}">Chương
+                                                1</span>
+                                        </a>
+                                        <span class="text-tertiary text-[10px] shrink-0 whitespace-nowrap ml-1"
+                                            th:text="${chap.relativeTime}">Vừa xong</span>
+                                    </div>
+                                </th:block>
                                 <div th:if="${novel.latestChapters == null or #lists.isEmpty(novel.latestChapters)}"
                                     class="py-1 text-center text-[11px] text-outline/70 italic">
                                     Chưa có chương
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div th:if="${recentlyUpdatedNovels == null or #lists.isEmpty(recentlyUpdatedNovels)}"
+                        class="p-8 text-center text-outline bg-surface-container-lowest rounded-xl border border-outline-variant/20">
+                        <span class="material-symbols-outlined text-[36px] text-outline/60 mb-2">menu_book</span>
+                        <p class="text-sm font-medium">Hiện chưa có truyện mới cập nhật.</p>
                     </div>
                 </section>
 
@@ -225,26 +282,27 @@
                                 cho bạn</h2>
                         </div>
                         <a class="inline-flex items-center gap-1 font-label-lg text-label-lg text-primary hover:text-on-primary-container transition-colors group"
-                            href="#">
+                            th:href="@{/search(sort='averageRating,desc')}">
                             <span class="">Xem thêm đề cử</span>
                             <span
                                 class="material-symbols-outlined text-[18px] transition-transform group-hover:translate-x-1">arrow_forward</span>
                         </a>
                     </div>
-                    <!-- Grid Novel Cards with 3 latest chapters -->
-                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+                    <!-- Grid Novel Cards: 5 columns for slimmer, well-proportioned cards -->
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
+                        th:if="${recommendedNovels != null and !#lists.isEmpty(recommendedNovels)}">
                         <div th:each="novel : ${recommendedNovels}"
                             class="group flex flex-col p-3 rounded-xl bg-surface-container-lowest border border-outline-variant/30 shadow-[0_2px_12px_rgba(107,91,75,0.05)] hover:shadow-[0_8px_24px_rgba(107,91,75,0.12)] transition-all">
-                            <!-- Cover with Views & Bookmark overlay -->
+                            <!-- Cover: Fixed compact height (h-44 sm:h-48) with Views & Bookmark overlay -->
                             <a th:href="@{'/truyen/' + ${novel.slug}}"
-                                class="relative w-full aspect-[3/4] rounded-lg overflow-hidden mb-2.5 bg-surface-container block group-hover:opacity-95">
-                                <img class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                class="relative w-full h-44 sm:h-48 rounded-lg overflow-hidden mb-2.5 bg-surface-container block group-hover:opacity-95">
+                                <img class="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-105"
                                     th:src="${novel.coverUrl != null ? novel.coverUrl : '/images/default-cover.jpg'}"
                                     onerror="this.onerror=null;this.src='/images/default-cover.jpg';"
                                     th:alt="${novel.title}">
                                 <!-- Overlay: Views & Bookmarks at bottom of cover -->
                                 <div
-                                    class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/45 to-transparent pt-6 pb-1.5 px-2 flex items-center justify-between text-white font-label-sm text-[11px] leading-tight select-none">
+                                    class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/45 to-transparent pt-6 pb-1.5 px-2.5 flex items-center justify-between text-white font-label-sm text-[11px] leading-tight select-none">
                                     <span class="flex items-center gap-1 opacity-90 truncate" title="Lượt xem">
                                         <span class="material-symbols-outlined text-[13px]">visibility</span>
                                         <span
@@ -258,43 +316,47 @@
                                             th:text="${novel.favoriteCount != null ? #numbers.formatInteger(novel.favoriteCount, 1, 'POINT') : '0'}">0</span>
                                     </span>
                                 </div>
-                                <div th:if="${novel.isCompleted}"
-                                    class="absolute top-2 left-2 px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#43a047] text-white select-none">
+                                <div th:if="${novel.status == 'COMPLETED'}"
+                                    class="absolute top-2 left-2 px-2 py-0.5 rounded-md text-[10px] font-bold bg-[#43a047] text-white select-none shadow-sm">
                                     HOÀN THÀNH
                                 </div>
                             </a>
 
-                            <!-- Novel Title -->
+                            <!-- Novel Title: Single-line truncate -->
                             <a th:href="@{'/truyen/' + ${novel.slug}}"
-                                class="font-headline-sm text-[14px] leading-tight font-bold text-on-surface group-hover:text-primary transition-colors line-clamp-2 min-h-[34px] mb-1"
+                                class="font-headline-sm text-[15px] font-bold text-on-surface group-hover:text-primary transition-colors truncate mb-1"
                                 th:text="${novel.title}">Tên truyện</a>
 
-                            <!-- Author -->
-                            <div class="flex items-center justify-between mb-2">
-                                <p class="font-body-md text-label-sm text-secondary truncate flex-1"
-                                    th:text="${novel.author}">Tác giả</p>
-                                <span class="flex items-center gap-0.5 text-primary">
+                            <!-- Author & Rating Row -->
+                            <div class="flex items-center justify-between text-label-sm text-secondary mb-2">
+                                <p class="font-body-md truncate flex-1" th:text="${novel.author}">Tác giả</p>
+                                <span class="flex items-center gap-0.5 text-primary shrink-0 ml-1.5"
+                                    th:if="${novel.averageRating != null and novel.averageRating > 0}">
                                     <span class="material-symbols-outlined text-[12px] icon-fill">star</span>
-                                    <span class="font-label-sm text-[11px] font-bold" th:text="${novel.averageRating != null ? novel.averageRating : '0'}">4.9</span>
+                                    <span class="font-bold text-[11px]" th:text="${novel.averageRating}">4.9</span>
                                 </span>
                             </div>
 
-                            <!-- 3 Latest Chapters List -->
-                            <div class="mt-auto pt-2 border-t border-outline-variant/20 flex flex-col gap-1.5">
-                                <div th:if="${novel.latestChapters != null and !#lists.isEmpty(novel.latestChapters)}"
-                                    th:each="chap : ${novel.latestChapters}"
-                                    class="group/chap flex items-center justify-between gap-1 text-[11px] py-0.5 px-1 rounded hover:bg-surface-container-low transition-colors">
-                                    <a th:href="@{'/truyen/' + ${novel.slug} + '/chuong-' + ${chap.chapterNumber}}"
-                                        class="flex items-center gap-1 min-w-0 flex-1 text-on-surface group-hover/chap:text-primary transition-colors">
-                                        <span
-                                            class="w-4 h-4 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                                            <span class="material-symbols-outlined text-[11px]">auto_stories</span>
-                                        </span>
-                                        <span class="font-medium truncate"
-                                            th:text="${chap.title != null and !#strings.isEmpty(chap.title) ? ('C.' + chap.chapterNumber + ': ' + chap.title) : ('Chương ' + chap.chapterNumber)}">Chương
-                                            1</span>
-                                    </a>
-                                </div>
+                            <!-- 2 Latest Chapters List -->
+                            <div class="mt-auto pt-2 border-t border-outline-variant/20 flex flex-col gap-1">
+                                <th:block th:if="${novel.latestChapters != null and !#lists.isEmpty(novel.latestChapters)}">
+                                    <div th:each="chap, chapStat : ${novel.latestChapters}"
+                                        th:if="${chapStat.index < 2}"
+                                        class="group/chap flex items-center justify-between gap-1 text-[11px] py-0.5 px-1 rounded hover:bg-surface-container-low transition-colors">
+                                        <a th:href="@{'/truyen/' + ${novel.slug} + '/chuong-' + ${chap.chapterNumber}}"
+                                            class="flex items-center gap-1.5 min-w-0 flex-1 text-on-surface group-hover/chap:text-primary transition-colors">
+                                            <span
+                                                class="w-4 h-4 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                                                <span class="material-symbols-outlined text-[11px]">auto_stories</span>
+                                            </span>
+                                            <span class="font-medium truncate"
+                                                th:text="${chap.title != null and !#strings.isEmpty(chap.title) ? ('C.' + chap.chapterNumber + ': ' + chap.title) : ('Chương ' + chap.chapterNumber)}">Chương
+                                                1</span>
+                                        </a>
+                                        <span class="text-tertiary text-[10px] shrink-0 whitespace-nowrap ml-1"
+                                            th:text="${chap.relativeTime}">Vừa xong</span>
+                                    </div>
+                                </th:block>
                                 <div th:if="${novel.latestChapters == null or #lists.isEmpty(novel.latestChapters)}"
                                     class="py-1 text-center text-[11px] text-outline/70 italic">
                                     Chưa có chương
@@ -302,30 +364,160 @@
                             </div>
                         </div>
                     </div>
+                    <div th:if="${recommendedNovels == null or #lists.isEmpty(recommendedNovels)}"
+                        class="p-8 text-center text-outline bg-surface-container-lowest rounded-xl border border-outline-variant/20">
+                        <span class="material-symbols-outlined text-[36px] text-outline/60 mb-2">auto_awesome</span>
+                        <p class="text-sm font-medium">Hiện chưa có truyện đề cử.</p>
+                    </div>
                 </section>
 
-                <!-- 4. TWO-COLUMN LAYOUT -->
-                <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start pt-2">
-                    <!-- Left Column (8 cols): Bảng Xếp Hạng Tuần -->
+                <!-- 4. SECTION: TRUYỆN MỚI ĐĂNG -->
+                <section class="space-y-5">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-2.5 h-6 rounded-full bg-emerald-600"></div>
+                            <h2 class="font-headline-lg text-headline-lg text-on-surface font-bold tracking-tight">Truyện mới đăng</h2>
+                            <span class="hidden sm:inline-flex px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/60 font-label-sm text-label-sm font-semibold">Tác phẩm mới</span>
+                        </div>
+                        <a class="inline-flex items-center gap-1 font-label-lg text-label-lg text-primary hover:text-on-primary-container transition-colors group"
+                            th:href="@{/search(sort='createdAt,desc')}">
+                            <span class="">Xem tất cả</span>
+                            <span
+                                class="material-symbols-outlined text-[18px] transition-transform group-hover:translate-x-1">arrow_forward</span>
+                        </a>
+                    </div>
+                    <!-- Grid Novel Cards: 5 columns for slimmer, well-proportioned cards -->
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
+                        th:if="${newNovels != null and !#lists.isEmpty(newNovels)}">
+                        <div th:each="novel : ${newNovels}"
+                            class="group flex flex-col p-3 rounded-xl bg-surface-container-lowest border border-outline-variant/30 shadow-[0_2px_12px_rgba(107,91,75,0.05)] hover:shadow-[0_8px_24px_rgba(107,91,75,0.12)] transition-all">
+                            <!-- Cover: Fixed compact height (h-44 sm:h-48) with Views & Bookmark overlay -->
+                            <a th:href="@{'/truyen/' + ${novel.slug}}"
+                                class="relative w-full h-44 sm:h-48 rounded-lg overflow-hidden mb-2.5 bg-surface-container block group-hover:opacity-95">
+                                <img class="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-105"
+                                    th:src="${novel.coverUrl != null ? novel.coverUrl : '/images/default-cover.jpg'}"
+                                    onerror="this.onerror=null;this.src='/images/default-cover.jpg';"
+                                    th:alt="${novel.title}">
+                                <!-- Overlay: Views & Bookmarks at bottom of cover -->
+                                <div
+                                    class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/45 to-transparent pt-6 pb-1.5 px-2.5 flex items-center justify-between text-white font-label-sm text-[11px] leading-tight select-none">
+                                    <span class="flex items-center gap-1 opacity-90 truncate" title="Lượt xem">
+                                        <span class="material-symbols-outlined text-[13px]">visibility</span>
+                                        <span
+                                            th:text="${novel.views != null ? #numbers.formatInteger(novel.views, 1, 'POINT') : '0'}">0</span>
+                                    </span>
+                                    <span class="flex items-center gap-1 opacity-90 truncate ml-1.5"
+                                        title="Đã lưu trong tủ sách">
+                                        <span
+                                            class="material-symbols-outlined text-[13px] text-primary-fixed">bookmark</span>
+                                        <span
+                                            th:text="${novel.favoriteCount != null ? #numbers.formatInteger(novel.favoriteCount, 1, 'POINT') : '0'}">0</span>
+                                    </span>
+                                </div>
+                                <div class="absolute top-2 left-2 px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-600 text-white select-none shadow-sm flex items-center gap-0.5">
+                                    <span class="material-symbols-outlined text-[11px]">fiber_new</span>
+                                    MỚI
+                                </div>
+                            </a>
+
+                            <!-- Novel Title: Single-line truncate -->
+                            <a th:href="@{'/truyen/' + ${novel.slug}}"
+                                class="font-headline-sm text-[15px] font-bold text-on-surface group-hover:text-primary transition-colors truncate mb-1"
+                                th:text="${novel.title}">Tên truyện</a>
+
+                            <!-- Author & Rating Row -->
+                            <div class="flex items-center justify-between text-label-sm text-secondary mb-2">
+                                <p class="font-body-md truncate flex-1" th:text="${novel.author}">Tác giả</p>
+                                <span class="flex items-center gap-0.5 text-primary shrink-0 ml-1.5"
+                                    th:if="${novel.averageRating != null and novel.averageRating > 0}">
+                                    <span class="material-symbols-outlined text-[12px] icon-fill">star</span>
+                                    <span class="font-bold text-[11px]" th:text="${novel.averageRating}">4.9</span>
+                                </span>
+                            </div>
+
+                            <!-- 2 Latest Chapters List -->
+                            <div class="mt-auto pt-2 border-t border-outline-variant/20 flex flex-col gap-1">
+                                <th:block th:if="${novel.latestChapters != null and !#lists.isEmpty(novel.latestChapters)}">
+                                    <div th:each="chap, chapStat : ${novel.latestChapters}"
+                                        th:if="${chapStat.index < 2}"
+                                        class="group/chap flex items-center justify-between gap-1 text-[11px] py-0.5 px-1 rounded hover:bg-surface-container-low transition-colors">
+                                        <a th:href="@{'/truyen/' + ${novel.slug} + '/chuong-' + ${chap.chapterNumber}}"
+                                            class="flex items-center gap-1.5 min-w-0 flex-1 text-on-surface group-hover/chap:text-primary transition-colors">
+                                            <span
+                                                class="w-4 h-4 rounded-full bg-emerald-500/10 text-emerald-700 flex items-center justify-center shrink-0">
+                                                <span class="material-symbols-outlined text-[11px]">auto_stories</span>
+                                            </span>
+                                            <span class="font-medium truncate"
+                                                th:text="${chap.title != null and !#strings.isEmpty(chap.title) ? ('C.' + chap.chapterNumber + ': ' + chap.title) : ('Chương ' + chap.chapterNumber)}">Chương
+                                                1</span>
+                                        </a>
+                                        <span class="text-tertiary text-[10px] shrink-0 whitespace-nowrap ml-1"
+                                            th:text="${chap.relativeTime}">Vừa xong</span>
+                                    </div>
+                                </th:block>
+                                <div th:if="${novel.latestChapters == null or #lists.isEmpty(novel.latestChapters)}"
+                                    class="py-1 text-center text-[11px] text-outline/70 italic">
+                                    Chưa có chương
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div th:if="${newNovels == null or #lists.isEmpty(newNovels)}"
+                        class="p-8 text-center text-outline bg-surface-container-lowest rounded-xl border border-outline-variant/20">
+                        <span class="material-symbols-outlined text-[36px] text-outline/60 mb-2">flare</span>
+                        <p class="text-sm font-medium">Hiện chưa có truyện mới đăng.</p>
+                    </div>
+                </section>
+
+                <!-- 5. TWO-COLUMN LAYOUT -->
+                <section id="bang-xep-hang" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start pt-2">
+                    <!-- Left Column (8 cols): Bảng Xếp Hạng -->
                     <div class="lg:col-span-8 space-y-4">
-                        <div class="flex items-center justify-between pb-1">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-1">
                             <div class="flex items-center gap-3">
                                 <div class="w-2.5 h-6 rounded-full bg-primary"></div>
-                                <h2 class="font-headline-lg text-headline-lg text-on-surface font-bold tracking-tight">
+                                <h2 id="rankingHeaderTitle" class="font-headline-lg text-headline-lg text-on-surface font-bold tracking-tight">
                                     Truyện hot tuần này</h2>
-                                <span
+                                <span id="rankingHeaderBadge"
                                     class="px-2.5 py-0.5 rounded-full bg-primary-fixed-dim/40 text-on-primary-container font-label-sm text-label-sm font-semibold">Top
-                                    Đọc Nhiều</span>
+                                    Tuần</span>
+                            </div>
+
+                            <!-- Ranking Period Tabs (Tuần / Ngày / Tháng / Toàn bộ) -->
+                            <div class="flex items-center p-1 rounded-xl bg-surface-container border border-outline-variant/30 text-label-sm font-semibold select-none">
+                                <button type="button" onclick="switchRankingPeriod('week', this)"
+                                    class="ranking-tab-btn px-3 py-1 rounded-lg bg-surface text-primary shadow-xs transition-all font-bold">
+                                    Top Tuần
+                                </button>
+                                <button type="button" onclick="switchRankingPeriod('day', this)"
+                                    class="ranking-tab-btn px-3 py-1 rounded-lg text-on-surface-variant hover:text-on-surface transition-all">
+                                    Top Ngày
+                                </button>
+                                <button type="button" onclick="switchRankingPeriod('month', this)"
+                                    class="ranking-tab-btn px-3 py-1 rounded-lg text-on-surface-variant hover:text-on-surface transition-all">
+                                    Top Tháng
+                                </button>
+                                <button type="button" onclick="switchRankingPeriod('all', this)"
+                                    class="ranking-tab-btn px-3 py-1 rounded-lg text-on-surface-variant hover:text-on-surface transition-all">
+                                    Toàn thời gian
+                                </button>
                             </div>
                         </div>
 
-                        <div class="space-y-3">
+                        <!-- Ranking List -->
+                        <div class="space-y-3" id="rankingListContainer">
                             <div th:each="novel, iterStat : ${hotNovels}"
                                 class="flex items-center gap-4 p-3.5 rounded-xl bg-surface-container-lowest shadow-[0_3px_14px_rgba(107,91,75,0.05)] hover:bg-surface-container-high transition-all">
-                                <div class="w-9 h-9 rounded-lg bg-primary-container text-on-primary flex items-center justify-center font-headline-sm text-headline-sm font-bold shadow-sm shrink-0"
-                                    th:text="${iterStat.count}">
-                                    1
-                                </div>
+                                <!-- Top Rank Number Badges: Gold for #1, Silver for #2, Bronze for #3, Surface for #4+ -->
+                                <div th:if="${iterStat.count == 1}"
+                                    class="w-9 h-9 rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 text-white flex items-center justify-center font-headline-sm text-headline-sm font-black shadow-md shadow-amber-500/20 shrink-0">1</div>
+                                <div th:if="${iterStat.count == 2}"
+                                    class="w-9 h-9 rounded-lg bg-gradient-to-br from-slate-300 to-slate-500 text-white flex items-center justify-center font-headline-sm text-headline-sm font-bold shadow-sm shrink-0">2</div>
+                                <div th:if="${iterStat.count == 3}"
+                                    class="w-9 h-9 rounded-lg bg-gradient-to-br from-amber-700 to-amber-900 text-white flex items-center justify-center font-headline-sm text-headline-sm font-bold shadow-sm shrink-0">3</div>
+                                <div th:if="${iterStat.count > 3}"
+                                    class="w-9 h-9 rounded-lg bg-surface-container text-on-surface-variant flex items-center justify-center font-headline-sm text-headline-sm font-semibold shrink-0"
+                                    th:text="${iterStat.count}">4</div>
                                 <div
                                     class="w-12 h-16 rounded-md overflow-hidden bg-surface-container shrink-0 shadow-sm">
                                     <img class="w-full h-full object-cover"
@@ -338,12 +530,18 @@
                                             class="font-headline-sm text-headline-sm text-on-surface font-bold truncate hover:text-primary transition-colors"
                                             th:text="${novel.title}">Title</a>
                                     </div>
-                                    <p class="font-body-md text-label-sm text-on-surface-variant truncate"
-                                        th:text="${novel.author}">Author</p>
+                                    <div class="flex items-center gap-3 text-label-sm text-on-surface-variant truncate">
+                                        <span th:text="${novel.author}">Author</span>
+                                        <span class="text-outline-variant" th:if="${novel.averageRating != null and novel.averageRating > 0}">•</span>
+                                        <span class="flex items-center gap-0.5 text-primary" th:if="${novel.averageRating != null and novel.averageRating > 0}">
+                                            <span class="material-symbols-outlined text-[13px] icon-fill">star</span>
+                                            <span class="font-bold text-[11px]" th:text="${novel.averageRating}"></span>
+                                        </span>
+                                    </div>
                                 </div>
                                 <div class="text-right shrink-0">
                                     <span class="font-label-lg text-label-lg text-primary font-bold block"
-                                        th:text="${novel.views}">1.5M</span>
+                                        th:text="${novel.views != null ? #numbers.formatInteger(novel.views, 1, 'POINT') : '0'}">1.5M</span>
                                     <span
                                         class="font-label-sm text-label-sm text-tertiary flex items-center justify-end gap-0.5">
                                         <span
@@ -403,6 +601,102 @@
     <div th:replace="~{fragments/footer :: main-footer}"></div>
 
     <script>
+        // Hero Carousel State & Logic
+        let currentSlideIndex = 0;
+        let heroAutoplayTimer = null;
+        const heroSlides = document.querySelectorAll('.hero-slide');
+        const heroDots = document.querySelectorAll('.hero-dot');
+        const totalSlides = heroSlides.length;
+
+        function showHeroSlide(index) {
+            if (totalSlides <= 1) return;
+            currentSlideIndex = (index + totalSlides) % totalSlides;
+            
+            heroSlides.forEach((slide, i) => {
+                if (i === currentSlideIndex) {
+                    slide.classList.remove('opacity-0', 'pointer-events-none', 'absolute', 'inset-0');
+                    slide.classList.add('opacity-100', 'pointer-events-auto', 'relative');
+                } else {
+                    slide.classList.remove('opacity-100', 'pointer-events-auto', 'relative');
+                    slide.classList.add('opacity-0', 'pointer-events-none', 'absolute', 'inset-0');
+                }
+            });
+
+            heroDots.forEach((dot, i) => {
+                if (i === currentSlideIndex) {
+                    dot.className = 'hero-dot w-6 h-2 rounded-full bg-primary transition-all duration-300';
+                } else {
+                    dot.className = 'hero-dot w-2 h-2 rounded-full bg-outline-variant/70 hover:bg-primary/50 transition-all duration-300';
+                }
+            });
+        }
+
+        function nextHeroSlide() {
+            showHeroSlide(currentSlideIndex + 1);
+        }
+
+        function prevHeroSlide() {
+            showHeroSlide(currentSlideIndex - 1);
+        }
+
+        function goToHeroSlide(index) {
+            showHeroSlide(parseInt(index));
+            restartHeroAutoplay();
+        }
+
+        function startHeroAutoplay() {
+            if (totalSlides > 1 && !heroAutoplayTimer) {
+                heroAutoplayTimer = setInterval(nextHeroSlide, 5000);
+            }
+        }
+
+        function stopHeroAutoplay() {
+            if (heroAutoplayTimer) {
+                clearInterval(heroAutoplayTimer);
+                heroAutoplayTimer = null;
+            }
+        }
+
+        function restartHeroAutoplay() {
+            stopHeroAutoplay();
+            startHeroAutoplay();
+        }
+
+        // Setup Controls
+        document.getElementById('heroPrevBtn')?.addEventListener('click', () => {
+            prevHeroSlide();
+            restartHeroAutoplay();
+        });
+
+        document.getElementById('heroNextBtn')?.addEventListener('click', () => {
+            nextHeroSlide();
+            restartHeroAutoplay();
+        });
+
+        // Pause autoplay on mouse enter, resume on mouse leave
+        const heroSection = document.getElementById('heroBannerSection');
+        if (heroSection) {
+            heroSection.addEventListener('mouseenter', stopHeroAutoplay);
+            heroSection.addEventListener('mouseleave', startHeroAutoplay);
+
+            // Touch Swipe Support for mobile
+            let touchStartX = 0;
+            heroSection.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+                stopHeroAutoplay();
+            }, { passive: true });
+            heroSection.addEventListener('touchend', (e) => {
+                const touchEndX = e.changedTouches[0].screenX;
+                if (touchStartX - touchEndX > 50) nextHeroSlide();
+                else if (touchEndX - touchStartX > 50) prevHeroSlide();
+                startHeroAutoplay();
+            }, { passive: true });
+        }
+
+        // Start autoplay on page load
+        startHeroAutoplay();
+
+        // Bookshelf Toggle Handler
         function toggleHeroBookshelf(btn) {
             const novelId = btn.getAttribute('data-novel-id');
             const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
@@ -420,17 +714,17 @@
                 .then(data => {
                     btn.disabled = false;
                     if (data.success) {
-                        const icon = document.getElementById('heroBookshelfIcon');
-                        const text = document.getElementById('heroBookshelfText');
+                        const icon = btn.querySelector('.material-symbols-outlined');
+                        const text = btn.querySelector('span:not(.material-symbols-outlined)');
                         if (data.inBookshelf) {
-                            btn.className = 'inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-white font-label-lg text-label-lg hover:bg-primary-container transition-all shadow-sm';
+                            btn.className = 'hero-bookshelf-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-white font-label-lg text-label-lg hover:bg-primary-container transition-all shadow-sm';
                             if (icon) {
                                 icon.textContent = 'bookmark';
                                 icon.classList.add('icon-fill');
                             }
                             if (text) text.textContent = 'Đã lưu trong Tủ sách';
                         } else {
-                            btn.className = 'inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-lg text-label-lg hover:bg-surface-container transition-all shadow-sm';
+                            btn.className = 'hero-bookshelf-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-lg text-label-lg hover:bg-surface-container transition-all shadow-sm';
                             if (icon) {
                                 icon.textContent = 'bookmark_add';
                                 icon.classList.remove('icon-fill');
@@ -445,6 +739,31 @@
                     btn.disabled = false;
                     console.error('Error toggling bookshelf:', err);
                 });
+        }
+
+        // Ranking Period Switcher Handler
+        function switchRankingPeriod(period, btn) {
+            // Update active styling
+            document.querySelectorAll('.ranking-tab-btn').forEach(b => {
+                b.className = 'ranking-tab-btn px-3 py-1 rounded-lg text-on-surface-variant hover:text-on-surface transition-all';
+            });
+            btn.className = 'ranking-tab-btn px-3 py-1 rounded-lg bg-surface text-primary shadow-xs transition-all font-bold';
+
+            const titleEl = document.getElementById('rankingHeaderTitle');
+            const badgeEl = document.getElementById('rankingHeaderBadge');
+            if (period === 'day') {
+                if (titleEl) titleEl.textContent = 'Truyện hot hôm nay';
+                if (badgeEl) badgeEl.textContent = 'Top Ngày';
+            } else if (period === 'week') {
+                if (titleEl) titleEl.textContent = 'Truyện hot tuần này';
+                if (badgeEl) badgeEl.textContent = 'Top Tuần';
+            } else if (period === 'month') {
+                if (titleEl) titleEl.textContent = 'Truyện hot tháng này';
+                if (badgeEl) badgeEl.textContent = 'Top Tháng';
+            } else if (period === 'all') {
+                if (titleEl) titleEl.textContent = 'Bảng xếp hạng tổng';
+                if (badgeEl) badgeEl.textContent = 'Toàn thời gian';
+            }
         }
     </script>
 </body>

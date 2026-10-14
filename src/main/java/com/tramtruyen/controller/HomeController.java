@@ -22,6 +22,14 @@ public class HomeController {
         model.addAttribute("recentlyUpdatedNovels", homePageData.getRecentlyUpdatedNovels());
         model.addAttribute("hotNovels", homePageData.getHotNovels());
         model.addAttribute("completedNovels", homePageData.getCompletedNovels());
+        model.addAttribute("recommendedNovels", homePageData.getRecommendedNovels());
+        model.addAttribute("newNovels", homePageData.getNewNovels());
+        
+        java.util.List<com.tramtruyen.dto.NovelSummaryDTO> hotList = homePageData.getHotNovels();
+        java.util.List<com.tramtruyen.dto.NovelSummaryDTO> heroNovels = (hotList != null && hotList.size() > 5)
+                ? hotList.subList(0, 5)
+                : (hotList != null ? hotList : java.util.Collections.emptyList());
+        model.addAttribute("heroNovels", heroNovels);
         
         boolean heroInBookshelf = false;
         if (authentication != null && authentication.isAuthenticated()

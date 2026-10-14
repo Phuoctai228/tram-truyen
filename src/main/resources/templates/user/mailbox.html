@@ -11,71 +11,19 @@
     <link rel="stylesheet" th:href="@{/css/bookshelf.css}">
     <script src="https://cdn.tailwindcss.com"></script>
     <script th:src="@{/js/novel/tailwind-config.js}"></script>
-    <style>
-        .font-serif-title { font-family: 'Lora', Georgia, serif; }
-        .tab-active { background-color: #fff; color: #875200; box-shadow: 0 1px 3px rgba(0,0,0,0.06); font-weight: 700; }
-        .mail-item-active { background-color: #fffaf4; border-left: 3px solid #bc7d39; }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/user/mailbox.css}">
 </head>
-<body class="bg-[#faf7f2] font-body-md text-[#2b2118] min-h-screen flex flex-col">
+<body class="bg-surface font-body-md text-on-surface min-h-screen flex flex-col">
 
     <!-- Header (Reusing fragments/header.html) -->
     <div th:replace="~{fragments/header :: main-header}"></div>
 
-    <main class="w-full pt-24 pb-16 flex-1">
-        <div class="max-w-[1320px] mx-auto px-4 sm:px-6 lg:px-8">
+    <main class="w-full pt-20 bg-surface flex-1">
+        <div class="max-w-[1280px] mx-auto px-6 py-8">
             <div class="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-8 items-start">
 
                 <!-- Sidebar Navigation -->
-                <aside class="w-full space-y-6">
-                    <!-- User Profile Card -->
-                    <div class="p-5 rounded-2xl bg-white border border-[#eae2d5] shadow-sm">
-                        <div class="flex items-center gap-4">
-                            <div class="w-14 h-14 rounded-full overflow-hidden bg-[#f4ece1] flex items-center justify-center border border-[#dfd4c4]">
-                                <img th:if="${userProfile.avatarUrl != null}" th:src="${userProfile.avatarUrl}" alt="Avatar"
-                                     onerror="this.onerror=null;this.src='/images/default-avatar.jpg';" class="w-full h-full object-cover">
-                                <img th:unless="${userProfile.avatarUrl != null}" src="/images/default-avatar.jpg" alt="Avatar"
-                                     class="w-full h-full object-cover">
-                            </div>
-                            <div class="min-w-0 flex-1">
-                                <h3 class="font-bold text-base text-[#2b2118] truncate" th:text="${userProfile.fullName}">Họ và Tên</h3>
-                                <span class="inline-block mt-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#f7efe6] text-[#875200]">
-                                    Hội viên Trạm Truyện
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Navigation menu -->
-                    <nav class="p-3 rounded-2xl bg-white border border-[#eae2d5] shadow-sm space-y-1">
-                        <a th:href="@{/user/profile}"
-                           class="flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-[#6b5849] hover:bg-[#faf6f0] hover:text-[#2b2118] transition-all">
-                            <span class="material-symbols-outlined text-[20px]">person</span>
-                            <span class="font-medium text-sm">Hồ sơ cá nhân</span>
-                        </a>
-                        <a th:href="@{/user/bookshelf}"
-                           class="flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-[#6b5849] hover:bg-[#faf6f0] hover:text-[#2b2118] transition-all">
-                            <span class="material-symbols-outlined text-[20px]">bookmark</span>
-                            <span class="font-medium text-sm">Tủ sách</span>
-                        </a>
-                        <a th:href="@{/user/history}"
-                           class="flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-[#6b5849] hover:bg-[#faf6f0] hover:text-[#2b2118] transition-all">
-                            <span class="material-symbols-outlined text-[20px]">history</span>
-                            <span class="font-medium text-sm">Lịch sử đọc</span>
-                        </a>
-                        <a th:href="@{/user/mailbox}"
-                           class="flex items-center gap-3.5 px-3.5 py-3 rounded-xl bg-[#f7efe6] text-[#875200] font-bold shadow-sm transition-all">
-                            <span class="material-symbols-outlined text-[20px]">mail</span>
-                            <span class="text-sm">Hòm thư</span>
-                            <span th:if="${unreadCount > 0}" class="ml-auto px-2 py-0.5 text-xs font-bold bg-[#d97706] text-white rounded-full" th:text="${unreadCount}">2</span>
-                        </a>
-                        <a th:href="@{/wallet}"
-                           class="flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-[#6b5849] hover:bg-[#faf6f0] hover:text-[#2b2118] transition-all">
-                            <span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
-                            <span class="font-medium text-sm">Ví Coin</span>
-                        </a>
-                    </nav>
-                </aside>
+                <div th:replace="~{fragments/profile-sidebar :: profile-sidebar('mailbox')}"></div>
 
                 <!-- Mailbox Main Section -->
                 <section class="w-full min-w-0 space-y-6">

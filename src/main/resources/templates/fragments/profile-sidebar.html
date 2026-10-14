@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+    <!-- Unified Profile Sidebar Fragment -->
+    <aside th:fragment="profile-sidebar(activeTab)" class="w-full space-y-6">
+        <!-- User Info Card -->
+        <div class="p-5 rounded-xl bg-surface-container-lowest shadow-[0_4px_20px_-2px_rgba(107,91,75,0.06)] border border-outline-variant/30">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 rounded-full overflow-hidden bg-primary-container/20 flex items-center justify-center border border-outline-variant/30 shrink-0">
+                    <img th:if="${userProfile != null and userProfile.avatarUrl != null and !#strings.isEmpty(userProfile.avatarUrl)}"
+                         th:src="${userProfile.avatarUrl}" alt="Avatar"
+                         onerror="this.onerror=null;this.src='/images/default-avatar.jpg';" class="w-full h-full object-cover">
+                    <img th:unless="${userProfile != null and userProfile.avatarUrl != null and !#strings.isEmpty(userProfile.avatarUrl)}"
+                         src="/images/default-avatar.jpg" alt="Avatar"
+                         class="w-full h-full object-cover">
+                </div>
+                <div class="min-w-0 flex-1">
+                    <h3 class="font-headline-sm text-headline-sm text-on-surface truncate font-bold"
+                        th:text="${userProfile != null and userProfile.fullName != null ? userProfile.fullName : 'Độc giả'}">Họ và Tên</h3>
+                    <p class="text-xs text-outline truncate mt-0.5"
+                       th:text="${userProfile != null and userProfile.email != null ? userProfile.email : ''}">email@example.com</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav class="p-3 rounded-xl bg-surface-container-lowest shadow-[0_4px_20px_-2px_rgba(107,91,75,0.06)] border border-outline-variant/30 space-y-1.5">
+            <!-- 1. Hồ sơ cá nhân -->
+            <a th:href="@{/user/profile}"
+               th:class="${activeTab == 'profile'} ? 
+                         'flex items-center gap-3.5 px-3.5 py-3 rounded-lg bg-surface-container text-primary font-bold shadow-sm transition-all' : 
+                         'flex items-center gap-3.5 px-3.5 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all'">
+                <span class="material-symbols-outlined text-[20px]" th:classappend="${activeTab == 'profile' ? 'icon-fill' : ''}">person</span>
+                <span class="font-label-lg text-label-lg">Hồ sơ cá nhân</span>
+            </a>
+
+            <!-- 2. Tủ sách -->
+            <a th:href="@{/user/bookshelf}"
+               th:class="${activeTab == 'bookshelf'} ? 
+                         'flex items-center gap-3.5 px-3.5 py-3 rounded-lg bg-surface-container text-primary font-bold shadow-sm transition-all' : 
+                         'flex items-center gap-3.5 px-3.5 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all'">
+                <span class="material-symbols-outlined text-[20px]" th:classappend="${activeTab == 'bookshelf' ? 'icon-fill' : ''}">bookmark</span>
+                <span class="font-label-lg text-label-lg">Tủ sách</span>
+            </a>
+
+            <!-- 3. Lịch sử đọc -->
+            <a th:href="@{/user/history}"
+               th:class="${activeTab == 'history'} ? 
+                         'flex items-center gap-3.5 px-3.5 py-3 rounded-lg bg-surface-container text-primary font-bold shadow-sm transition-all' : 
+                         'flex items-center gap-3.5 px-3.5 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all'">
+                <span class="material-symbols-outlined text-[20px]" th:classappend="${activeTab == 'history' ? 'icon-fill' : ''}">history</span>
+                <span class="font-label-lg text-label-lg">Lịch sử đọc</span>
+            </a>
+
+            <!-- 4. Hòm thư -->
+            <a th:href="@{/user/mailbox}"
+               th:class="${activeTab == 'mailbox'} ? 
+                         'flex items-center gap-3.5 px-3.5 py-3 rounded-lg bg-surface-container text-primary font-bold shadow-sm transition-all' : 
+                         'flex items-center gap-3.5 px-3.5 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all'">
+                <span class="material-symbols-outlined text-[20px]" th:classappend="${activeTab == 'mailbox' ? 'icon-fill' : ''}">mail</span>
+                <span class="font-label-lg text-label-lg">Hòm thư</span>
+                <span th:if="${unreadCount != null and unreadCount > 0}"
+                      class="ml-auto px-2 py-0.5 text-xs font-bold bg-[#d97706] text-white rounded-full"
+                      th:text="${unreadCount}">2</span>
+            </a>
+        </nav>
+    </aside>
+</body>
+</html>
