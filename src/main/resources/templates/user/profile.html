@@ -21,51 +21,7 @@
             <div class="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-8 items-start">
                 
                 <!-- Sidebar -->
-                <aside class="w-full space-y-6">
-                    <div class="p-5 rounded-xl bg-surface-container-lowest shadow-[0_4px_20px_-2px_rgba(107,91,75,0.06)]">
-                        <div class="flex items-center gap-4">
-                            <div class="w-14 h-14 rounded-full overflow-hidden bg-primary-container/20 flex items-center justify-center border border-outline-variant/30">
-                                <img th:if="${userProfile.avatarUrl != null}" th:src="${userProfile.avatarUrl}" alt="Avatar"
-                                     onerror="this.onerror=null;this.src='/images/default-avatar.jpg';" class="w-full h-full object-cover">
-                                <img th:unless="${userProfile.avatarUrl != null}" src="/images/default-avatar.jpg" alt="Avatar"
-                                     class="w-full h-full object-cover">
-                            </div>
-                            <div class="min-w-0 flex-1">
-                                <h3 class="font-headline-sm text-headline-sm text-on-surface truncate" th:text="${userProfile.fullName}">Họ và Tên</h3>
-                                <p class="text-xs text-outline truncate" th:text="${userProfile.email}">email@example.com</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Navigation menu -->
-                    <nav class="p-3 rounded-xl bg-surface-container-lowest shadow-[0_4px_20px_-2px_rgba(107,91,75,0.06)] space-y-1.5">
-                        <a th:href="@{/user/profile}"
-                           class="flex items-center gap-3.5 px-3.5 py-3 rounded-lg bg-surface-container text-primary font-bold shadow-sm transition-all">
-                            <span class="material-symbols-outlined text-[20px] icon-fill">person</span>
-                            <span class="font-label-lg text-label-lg">Hồ sơ cá nhân</span>
-                        </a>
-                        <a th:href="@{/user/bookshelf}"
-                           class="flex items-center gap-3.5 px-3.5 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all">
-                            <span class="material-symbols-outlined text-[20px]">bookmark</span>
-                            <span class="font-label-lg text-label-lg">Tủ sách</span>
-                        </a>
-                        <a th:href="@{/user/history}"
-                           class="flex items-center gap-3.5 px-3.5 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all">
-                            <span class="material-symbols-outlined text-[20px]">history</span>
-                            <span class="font-label-lg text-label-lg">Lịch sử đọc</span>
-                        </a>
-                        <a th:href="@{/user/checkin}"
-                           class="flex items-center gap-3.5 px-3.5 py-3 rounded-lg text-amber-800 hover:bg-amber-50 hover:text-amber-900 transition-all font-semibold">
-                            <span class="material-symbols-outlined text-[20px] text-amber-600">calendar_month</span>
-                            <span class="font-label-lg text-label-lg">Điểm danh nhận Coin</span>
-                        </a>
-                        <a th:href="@{/user/mailbox}"
-                           class="flex items-center gap-3.5 px-3.5 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all">
-                            <span class="material-symbols-outlined text-[20px]">mail</span>
-                            <span class="font-label-lg text-label-lg">Hòm thư</span>
-                        </a>
-                    </nav>
-                </aside>
+                <div th:replace="~{fragments/profile-sidebar :: profile-sidebar('profile')}"></div>
 
                 <!-- Profile Content -->
                 <section class="w-full min-w-0">
