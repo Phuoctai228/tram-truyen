@@ -33,19 +33,28 @@ public class MailboxController {
     @GetMapping
     public String viewMailbox(Authentication authentication,
                               @RequestParam(value = "tab", defaultValue = "all") String tab,
-                              @RequestParam(value = "page", defaultValue = "0") int page,
-                              @RequestParam(value = "size", defaultValue = "10") int size,
+                              @RequestParam(value = "page", required = false) String page,
+                              @RequestParam(value = "size", required = false) String size,
                               @RequestParam(value = "selectedId", required = false) Integer selectedId,
                               Model model) {
         if (!isAuthenticated(authentication)) {
             return "redirect:/login?redirect=/user/mailbox";
         }
 
+        int parsedPage = com.tramtruyen.util.PaginationUtils.parsePage(page);
+        int parsedSize = com.tramtruyen.util.PaginationUtils.parseSize(size, 8);
+
         Integer userId = getUserId(authentication);
         String email = authentication.getName();
         UserProfileDTO userProfile = bookshelfService.getUserProfile(email);
 
-        Page<NotificationDTO> notificationsPage = notificationService.getMailboxNotifications(userId, tab, page, size);
+        Page<NotificationDTO> notificationsPage = notificationService.getMailboxNotifications(userId, tab, parsedPage, parsedSize);
+
+        if (parsedPage >= notificationsPage.getTotalPages() && notificationsPage.getTotalPages() > 0) {
+            parsedPage = notificationsPage.getTotalPages() - 1;
+            notificationsPage = notificationService.getMailboxNotifications(userId, tab, parsedPage, parsedSize);
+        }
+
         long unreadCount = notificationService.getUnreadCount(userId);
 
         NotificationDTO selectedNotification = null;
@@ -68,12 +77,19 @@ public class MailboxController {
             unreadCount = Math.max(0, unreadCount - 1);
         }
 
+        String filterQuery = com.tramtruyen.util.PaginationUtils.buildFilterQuery(java.util.Map.of(
+                "tab", tab != null ? tab.trim() : "all"
+        ));
+
         model.addAttribute("userProfile", userProfile);
         model.addAttribute("notifications", notificationsPage);
         model.addAttribute("unreadCount", unreadCount);
         model.addAttribute("activeTab", tab);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("pageSize", size);
+        model.addAttribute("filterQuery", filterQuery);
+        model.addAttribute("currentPage", notificationsPage.getNumber());
+        model.addAttribute("totalPages", notificationsPage.getTotalPages());
+        model.addAttribute("totalElements", notificationsPage.getTotalElements());
+        model.addAttribute("pageSize", parsedSize);
         model.addAttribute("selectedNotification", selectedNotification);
         model.addAttribute("pageTitle", "Hòm thư độc giả - Trạm Truyện");
 

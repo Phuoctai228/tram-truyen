@@ -24,8 +24,10 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import com.tramtruyen.util.DateTimeUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -101,14 +103,18 @@ public class TransactionAuditServiceImpl implements TransactionAuditService {
 
         if (startLocalDate != null && endLocalDate != null && !startLocalDate.isAfter(endLocalDate)) {
             whereClause.append(" AND combined.tx_time >= :startDate AND combined.tx_time <= :endDate ");
-            params.addValue("startDate", Timestamp.valueOf(startLocalDate.atStartOfDay()));
-            params.addValue("endDate", Timestamp.valueOf(endLocalDate.atTime(23, 59, 59, 999999000)));
+            LocalDateTime startUtc = DateTimeUtils.hanoiToUtc(startLocalDate.atStartOfDay());
+            LocalDateTime endUtc = DateTimeUtils.hanoiToUtc(endLocalDate.atTime(LocalTime.MAX));
+            params.addValue("startDate", Timestamp.valueOf(startUtc));
+            params.addValue("endDate", Timestamp.valueOf(endUtc));
         } else if (startLocalDate != null && endLocalDate == null) {
             whereClause.append(" AND combined.tx_time >= :startDate ");
-            params.addValue("startDate", Timestamp.valueOf(startLocalDate.atStartOfDay()));
+            LocalDateTime startUtc = DateTimeUtils.hanoiToUtc(startLocalDate.atStartOfDay());
+            params.addValue("startDate", Timestamp.valueOf(startUtc));
         } else if (startLocalDate == null && endLocalDate != null) {
             whereClause.append(" AND combined.tx_time <= :endDate ");
-            params.addValue("endDate", Timestamp.valueOf(endLocalDate.atTime(23, 59, 59, 999999000)));
+            LocalDateTime endUtc = DateTimeUtils.hanoiToUtc(endLocalDate.atTime(LocalTime.MAX));
+            params.addValue("endDate", Timestamp.valueOf(endUtc));
         }
 
         // 2. Lọc loại giao dịch
@@ -287,7 +293,7 @@ public class TransactionAuditServiceImpl implements TransactionAuditService {
                     .statusDisplay(statusDisplay)
                     .statusBadgeClass(statusBadgeClass)
                     .time(txTime)
-                    .formattedTime(txTime.format(DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy")))
+                    .formattedTime(DateTimeUtils.formatUtcToHanoi(txTime, "HH:mm dd/MM/yyyy"))
                     .hasIpnLog(hasIpnLog)
                     .build();
         });

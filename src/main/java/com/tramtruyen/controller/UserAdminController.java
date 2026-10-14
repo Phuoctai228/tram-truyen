@@ -33,25 +33,40 @@ public class UserAdminController {
     public String listUsers(@RequestParam(required = false, defaultValue = "") String keyword,
                             @RequestParam(required = false, defaultValue = "") String role,
                             @RequestParam(required = false, defaultValue = "") String status,
-                            @RequestParam(required = false, defaultValue = "0") int page,
-                            @RequestParam(required = false, defaultValue = "20") int size,
+                            @RequestParam(required = false) String page,
+                            @RequestParam(required = false) String size,
                             Authentication authentication,
                             Model model) {
 
-        Page<UserManagementDTO> usersPage = userManagementService.getUsers(keyword, role, status, page, size);
-        UserStatsDTO stats = userManagementService.getUserStats();
+        int parsedPage = com.tramtruyen.util.PaginationUtils.parsePage(page);
+        int parsedSize = com.tramtruyen.util.PaginationUtils.parseSize(size, 7);
 
+        Page<UserManagementDTO> usersPage = userManagementService.getUsers(keyword, role, status, parsedPage, parsedSize);
+
+        if (parsedPage >= usersPage.getTotalPages() && usersPage.getTotalPages() > 0) {
+            parsedPage = usersPage.getTotalPages() - 1;
+            usersPage = userManagementService.getUsers(keyword, role, status, parsedPage, parsedSize);
+        }
+
+        UserStatsDTO stats = userManagementService.getUserStats();
         Integer currentAdminId = getAdminId(authentication);
+
+        String filterQuery = com.tramtruyen.util.PaginationUtils.buildFilterQuery(java.util.Map.of(
+                "keyword", keyword != null ? keyword.trim() : "",
+                "role", role != null ? role.trim() : "",
+                "status", status != null ? status.trim() : ""
+        ));
 
         model.addAttribute("users", usersPage);
         model.addAttribute("stats", stats);
         model.addAttribute("keyword", keyword);
         model.addAttribute("role", role);
         model.addAttribute("status", status);
+        model.addAttribute("filterQuery", filterQuery);
         model.addAttribute("currentPage", usersPage.getNumber());
         model.addAttribute("totalPages", usersPage.getTotalPages());
         model.addAttribute("totalElements", usersPage.getTotalElements());
-        model.addAttribute("pageSize", size);
+        model.addAttribute("pageSize", parsedSize);
         model.addAttribute("currentAdminId", currentAdminId);
         model.addAttribute("pageTitle", "Quản lý người dùng & phân quyền | Trạm Truyện");
 

@@ -33,8 +33,8 @@ public class TransactionAuditAdminController {
                                 @RequestParam(required = false, defaultValue = "ALL") String type,
                                 @RequestParam(required = false) String orderCode,
                                 @RequestParam(required = false) String email,
-                                @RequestParam(required = false, defaultValue = "0") int page,
-                                @RequestParam(required = false, defaultValue = "20") int size,
+                                @RequestParam(required = false) String page,
+                                @RequestParam(required = false) String size,
                                 Model model) {
 
         String effectiveStartDate = startDate != null ? startDate.trim() : "";
@@ -49,10 +49,28 @@ public class TransactionAuditAdminController {
             effectiveEndDate = "";
         }
 
+        int parsedPage = com.tramtruyen.util.PaginationUtils.parsePage(page);
+        int parsedSize = com.tramtruyen.util.PaginationUtils.parseSize(size, 10);
+
         TransactionAuditStatsDTO stats = transactionAuditService.getAuditStats();
         Page<TransactionAuditDTO> txPage = transactionAuditService.getAuditTransactions(
-                effectiveStartDate, effectiveEndDate, type, orderCode, email, page, size
+                effectiveStartDate, effectiveEndDate, type, orderCode, email, parsedPage, parsedSize
         );
+
+        if (parsedPage >= txPage.getTotalPages() && txPage.getTotalPages() > 0) {
+            parsedPage = txPage.getTotalPages() - 1;
+            txPage = transactionAuditService.getAuditTransactions(
+                    effectiveStartDate, effectiveEndDate, type, orderCode, email, parsedPage, parsedSize
+            );
+        }
+
+        String filterQuery = com.tramtruyen.util.PaginationUtils.buildFilterQuery(java.util.Map.of(
+                "startDate", effectiveStartDate,
+                "endDate", effectiveEndDate,
+                "type", type != null && !type.isBlank() ? type : "ALL",
+                "orderCode", orderCode != null ? orderCode.trim() : "",
+                "email", email != null ? email.trim() : ""
+        ));
 
         model.addAttribute("stats", stats);
         model.addAttribute("transactions", txPage);
@@ -61,10 +79,11 @@ public class TransactionAuditAdminController {
         model.addAttribute("type", type != null && !type.isBlank() ? type : "ALL");
         model.addAttribute("orderCode", orderCode != null ? orderCode.trim() : "");
         model.addAttribute("email", email != null ? email.trim() : "");
+        model.addAttribute("filterQuery", filterQuery);
         model.addAttribute("currentPage", txPage.getNumber());
         model.addAttribute("totalPages", txPage.getTotalPages());
         model.addAttribute("totalElements", txPage.getTotalElements());
-        model.addAttribute("pageSize", size);
+        model.addAttribute("pageSize", parsedSize);
         model.addAttribute("pageTitle", "Đối soát giao dịch tài chính | Trạm Truyện Admin");
 
         return "admin/transactions/index";

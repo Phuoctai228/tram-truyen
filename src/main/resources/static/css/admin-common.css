@@ -1,0 +1,52 @@
+/* ==========================================================================
+   Admin Common Styles - Trạm Truyện CMS
+   Tách riêng cho các tính năng quản trị: Thông báo, Báo cáo, Giao dịch, Cấu hình, Nhật ký
+   ========================================================================== */
+
+/* 1. Thanh điều hướng Admin Sidebar: Icon luôn có màu nâu hổ phách (#875200) */
+.sidebar nav .nav-link span {
+    color: var(--amber, #875200) !important;
+    display: inline-block;
+    margin-right: 10px;
+    width: 18px;
+    text-align: center;
+    font-size: 15px;
+    line-height: 1;
+}
+
+/* 2. Reset Radio & Checkbox: Ngăn chặn kéo giãn 100% chiều rộng */
+input[type="radio"], input[type="checkbox"] {
+    width: auto !important;
+    height: auto !important;
+    padding: 0 !important;
+    border: initial !important;
+    flex-shrink: 0 !important;
+    margin: 0 !important;
+    cursor: pointer;
+    accent-color: var(--amber, #875200);
+}
+
+/* 3. Style thẻ chọn đối tượng thông báo (Scope Cards - UC-44) */
+.scope-card {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.scope-card.selected {
+    border-color: #875200 !important;
+    background-color: #fff9f0 !important;
+    box-shadow: 0 4px 12px rgba(135, 82, 0, 0.08);
+}
+
+.scope-card.selected .scope-icon-box {
+    background-color: #ffddba !important;
+    color: #6d4000 !important;
+}
+
+.scope-card input[type="radio"] {
+    width: 1.15rem !important;
+    height: 1.15rem !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    flex-shrink: 0 !important;
+    accent-color: #875200;
+}

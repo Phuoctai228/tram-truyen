@@ -347,49 +347,8 @@
                 </table>
             </div>
 
-            <!-- Footer Pagination (screen.png style) -->
-            <div class="bg-[#faf6f2] px-6 py-4 border-t border-[#ead8cb] flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div class="text-xs text-[#75695d]">
-                    Hiển thị <span class="font-bold text-[#231a11]" th:text="${(currentPage * pageSize) + 1}">1</span>
-                    - <span class="font-bold text-[#231a11]" th:text="${(currentPage * pageSize) + transactions.numberOfElements}">20</span>
-                    trong tổng số <span class="font-bold text-[#231a11]" th:text="${totalElements}">0</span> giao dịch
-                </div>
-
-                <div th:if="${totalPages > 1}" class="flex items-center gap-1">
-                    <!-- Prev -->
-                    <a th:if="${currentPage > 0}"
-                       th:href="@{/admin/transactions(page=${currentPage - 1}, size=${pageSize}, type=${type}, startDate=${startDate}, endDate=${endDate}, orderCode=${orderCode}, email=${email})}"
-                       class="w-8 h-8 rounded-xl bg-white border border-[#ead8cb] flex items-center justify-center text-[#75695d] hover:bg-[#875200] hover:text-white transition-colors text-xs font-semibold">
-                        &lt;
-                    </a>
-                    <span th:if="${currentPage == 0}"
-                          class="w-8 h-8 rounded-xl bg-[#f4eae1] border border-[#ead8cb] flex items-center justify-center text-[#cfc3b7] text-xs cursor-not-allowed">
-                        &lt;
-                    </span>
-
-                    <!-- Page numbers -->
-                    <th:block th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
-                        <a th:if="${i >= currentPage - 2 and i <= currentPage + 2}"
-                           th:href="@{/admin/transactions(page=${i}, size=${pageSize}, type=${type}, startDate=${startDate}, endDate=${endDate}, orderCode=${orderCode}, email=${email})}"
-                           th:text="${i + 1}"
-                           class="w-8 h-8 rounded-xl border flex items-center justify-center text-xs font-semibold transition-colors"
-                           th:classappend="${i == currentPage ? 'bg-[#875200] text-white border-[#875200]' : 'bg-white text-[#75695d] border-[#ead8cb] hover:bg-[#f2e7dc]'}">
-                            1
-                        </a>
-                    </th:block>
-
-                    <!-- Next -->
-                    <a th:if="${currentPage < totalPages - 1}"
-                       th:href="@{/admin/transactions(page=${currentPage + 1}, size=${pageSize}, type=${type}, startDate=${startDate}, endDate=${endDate}, orderCode=${orderCode}, email=${email})}"
-                       class="w-8 h-8 rounded-xl bg-white border border-[#ead8cb] flex items-center justify-center text-[#75695d] hover:bg-[#875200] hover:text-white transition-colors text-xs font-semibold">
-                        &gt;
-                    </a>
-                    <span th:if="${currentPage >= totalPages - 1}"
-                          class="w-8 h-8 rounded-xl bg-[#f4eae1] border border-[#ead8cb] flex items-center justify-center text-[#cfc3b7] text-xs cursor-not-allowed">
-                        &gt;
-                    </span>
-                </div>
-            </div>
+            <!-- Footer Pagination (Reusing shared fragment) -->
+            <div th:replace="~{fragments/pagination-bar :: pagination(baseUrl='/admin/transactions', currentPage=${currentPage}, totalPages=${totalPages}, totalElements=${totalElements}, pageSize=${pageSize}, unitLabel='giao dịch', filterQuery=${filterQuery})}"></div>
         </div>
 
     </section>

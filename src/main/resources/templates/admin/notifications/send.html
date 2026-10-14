@@ -336,55 +336,9 @@
                     </table>
                 </div>
 
-                <!-- Table Footer & Pagination -->
-                <div class="px-6 py-4 bg-[#fffaf8] border-t border-[#ead8cb] flex flex-col md:flex-row items-center justify-between gap-4 -mx-6 -mb-6 mt-4 rounded-b-2xl">
-                    <div class="text-xs text-[#75695d]">
-                        <span th:if="${totalElements > 0}"
-                              th:text="'Hiển thị ' + (${currentPage * pageSize + 1}) + ' - ' + (${currentPage * pageSize + history.numberOfElements}) + ' trong tổng số ' + ${#numbers.formatDecimal(totalElements, 0, 'POINT', 0, 'POINT')} + ' thông báo'">
-                        </span>
-                        <span th:if="${totalElements == 0}">Hiển thị 0 thông báo</span>
-                    </div>
-
-                    <!-- Pagination controls -->
-                    <div th:if="${totalPages > 1}" class="flex items-center gap-1.5">
-                        <!-- Prev Page -->
-                        <a th:if="${currentPage > 0}"
-                           th:href="@{/admin/notifications(page=${currentPage - 1})}"
-                           class="w-8 h-8 rounded-lg border border-[#ead8cb] bg-white flex items-center justify-center text-xs font-bold text-[#524437] hover:bg-[#feeadc] transition-colors">
-                            &lt;
-                        </a>
-                        <span th:unless="${currentPage > 0}"
-                              class="w-8 h-8 rounded-lg border border-[#ead8cb] bg-gray-50 flex items-center justify-center text-xs font-bold text-gray-300 cursor-not-allowed">
-                            &lt;
-                        </span>
-
-                        <!-- Page Numbers -->
-                        <th:block th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
-                            <!-- Show first, last, and window around current page -->
-                            <th:block th:if="${i == 0 or i == totalPages - 1 or (i >= currentPage - 2 and i <= currentPage + 2)}">
-                                <a th:href="@{/admin/notifications(page=${i})}"
-                                   th:text="${i + 1}"
-                                   class="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold transition-colors"
-                                   th:classappend="${i == currentPage ? 'bg-[#875200] text-white shadow-sm' : 'border border-[#ead8cb] bg-white text-[#524437] hover:bg-[#feeadc]'}">
-                                    1
-                                </a>
-                            </th:block>
-                            <th:block th:if="${(i == 1 and currentPage > 3) or (i == totalPages - 2 and currentPage < totalPages - 4)}">
-                                <span class="w-8 h-8 flex items-center justify-center text-xs text-[#75695d]">...</span>
-                            </th:block>
-                        </th:block>
-
-                        <!-- Next Page -->
-                        <a th:if="${currentPage < totalPages - 1}"
-                           th:href="@{/admin/notifications(page=${currentPage + 1})}"
-                           class="w-8 h-8 rounded-lg border border-[#ead8cb] bg-white flex items-center justify-center text-xs font-bold text-[#524437] hover:bg-[#feeadc] transition-colors">
-                            &gt;
-                        </a>
-                        <span th:unless="${currentPage < totalPages - 1}"
-                              class="w-8 h-8 rounded-lg border border-[#ead8cb] bg-gray-50 flex items-center justify-center text-xs font-bold text-gray-300 cursor-not-allowed">
-                            &gt;
-                        </span>
-                    </div>
+                <!-- Table Footer & Pagination (Reusing shared fragment) -->
+                <div class="-mx-6 -mb-6 mt-4 overflow-hidden rounded-b-2xl">
+                    <div th:replace="~{fragments/pagination-bar :: pagination(baseUrl='/admin/notifications', currentPage=${currentPage}, totalPages=${totalPages}, totalElements=${totalElements}, pageSize=${pageSize}, unitLabel='thông báo', filterQuery=${filterQuery})}"></div>
                 </div>
             </div>
 
