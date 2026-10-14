@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <body>
-  <!-- Header Fragment -->
-  <header th:fragment="main-header" class="fixed top-0 left-0 right-0 z-50 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(107,91,75,0.06)]">
+    <!-- Header Fragment -->
+    <header th:fragment="main-header"
+        class="fixed top-0 left-0 right-0 z-50 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(107,91,75,0.06)]">
         <div class="h-20 max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between gap-6">
             <div class="flex items-center gap-8 lg:gap-10 shrink-0">
                 <a class="flex items-center gap-3 group" th:href="@{/}">
-                    <div class="w-10 h-10 rounded-full overflow-hidden shadow-sm transition-transform group-hover:scale-105 border border-outline-variant/30">
+                    <div
+                        class="w-10 h-10 rounded-full overflow-hidden shadow-sm transition-transform group-hover:scale-105 border border-outline-variant/30">
                         <img src="/images/logo.jpg" alt="Logo" class="w-full h-full object-cover">
                     </div>
-                    <span class="font-headline-md text-headline-md text-on-surface font-bold tracking-tight">Trạm Truyện</span>
+                    <span class="font-headline-md text-headline-md text-on-surface font-bold tracking-tight">Trạm
+                        Truyện</span>
                 </a>
                 <nav class="hidden md:flex items-center gap-6">
                     <a class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors py-2"
@@ -17,60 +21,64 @@
                     <a class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors py-2"
                         th:href="@{/the-loai}">Thể loại</a>
                     <a class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors py-2"
-                        href="#">Bảng xếp hạng</a>
-                    <a class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors py-2"
-                        th:href="@{/user/bookshelf}">Tủ sách</a>
+                        th:href="@{/search(sort='views,desc')}">Bảng xếp hạng</a>
                 </nav>
             </div>
             <div class="flex-1 max-w-xl hidden sm:block relative">
                 <form class="relative flex items-center w-full" th:action="@{/search}" method="GET" id="searchForm">
-                    <span class="material-symbols-outlined absolute left-3.5 text-outline pointer-events-none text-[20px]">search</span>
+                    <span
+                        class="material-symbols-outlined absolute left-3.5 text-outline pointer-events-none text-[20px]">search</span>
                     <input name="q" id="searchInput" th:value="${query}" autocomplete="off"
                         class="w-full pl-10 pr-4 py-2.5 rounded-full bg-surface-container-lowest border border-outline-variant/30 text-on-surface placeholder:text-outline font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-[#c08d41] focus:border-transparent shadow-sm transition-all"
                         placeholder="Tìm kiếm truyện, tác giả, dịch giả..." type="text">
                 </form>
-                
+
                 <!-- Search Suggestions Popup -->
-                <div id="searchSuggestions" class="hidden absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] border border-outline-variant/20 overflow-hidden z-[100] max-h-[80vh] flex flex-col">
-                    <div class="px-5 py-3 border-b border-outline-variant/20 flex justify-between items-center bg-[#faf8f5]">
-                        <span class="text-[12px] font-bold text-[#8c7a68] uppercase tracking-wider">Gợi ý tìm kiếm cho "<span id="suggestKeyword" class="text-[#c08d41]"></span>"</span>
-                        <span id="suggestCount" class="text-[12px] font-medium text-[#c08d41] bg-[#f5eae0] px-2 py-0.5 rounded-full">0 kết quả nổi bật</span>
+                <div id="searchSuggestions"
+                    class="hidden absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] border border-outline-variant/20 overflow-hidden z-[100] max-h-[80vh] flex flex-col">
+                    <div
+                        class="px-5 py-3 border-b border-outline-variant/20 flex justify-between items-center bg-[#faf8f5]">
+                        <span class="text-[12px] font-bold text-[#8c7a68] uppercase tracking-wider">Gợi ý tìm kiếm cho
+                            "<span id="suggestKeyword" class="text-[#c08d41]"></span>"</span>
+                        <span id="suggestCount"
+                            class="text-[12px] font-medium text-[#c08d41] bg-[#f5eae0] px-2 py-0.5 rounded-full">0 kết
+                            quả nổi bật</span>
                     </div>
                     <div id="suggestList" class="overflow-y-auto p-2">
                         <!-- Items will be injected here -->
                     </div>
-                    <a href="#" id="suggestSeeAll" class="block text-center py-3 border-t border-outline-variant/20 text-[13px] font-semibold text-[#8c7a68] hover:bg-[#faf8f5] hover:text-[#c08d41] transition-colors">
-                        Nhấn <kbd class="bg-[#f5eae0] px-1.5 py-0.5 rounded text-[#c08d41] mx-1">Enter</kbd> để xem toàn bộ kết quả tìm kiếm <span class="material-symbols-outlined text-[14px] align-middle ml-1">arrow_forward</span>
+                    <a href="#" id="suggestSeeAll"
+                        class="block text-center py-3 border-t border-outline-variant/20 text-[13px] font-semibold text-[#8c7a68] hover:bg-[#faf8f5] hover:text-[#c08d41] transition-colors">
+                        Nhấn <kbd class="bg-[#f5eae0] px-1.5 py-0.5 rounded text-[#c08d41] mx-1">Enter</kbd> để xem toàn
+                        bộ kết quả tìm kiếm <span
+                            class="material-symbols-outlined text-[14px] align-middle ml-1">arrow_forward</span>
                     </a>
                 </div>
             </div>
             <div class="flex items-center gap-3 shrink-0">
                 <!-- If Not Authenticated -->
                 <div sec:authorize="!isAuthenticated()" class="flex items-center gap-3">
-                    <a id="navLoginBtn" class="px-4 py-2 rounded-lg font-label-lg text-label-lg text-on-surface hover:bg-surface-container-high hover:text-on-surface transition-colors"
+                    <a id="navLoginBtn"
+                        class="px-4 py-2 rounded-lg font-label-lg text-label-lg text-on-surface hover:bg-surface-container-high hover:text-on-surface transition-colors"
                         th:href="@{/login}">Đăng nhập</a>
-                    <a id="navRegisterBtn" class="px-5 py-2 rounded-lg bg-primary-container text-on-primary font-label-lg text-label-lg shadow-[0_2px_8px_rgba(135,82,0,0.2)] hover:bg-primary hover:text-on-primary transition-colors"
+                    <a id="navRegisterBtn"
+                        class="px-5 py-2 rounded-lg bg-primary-container text-on-primary font-label-lg text-label-lg shadow-[0_2px_8px_rgba(135,82,0,0.2)] hover:bg-primary hover:text-on-primary transition-colors"
                         th:href="@{/register}">Đăng ký</a>
                 </div>
 
                 <!-- If Authenticated -->
                 <div sec:authorize="isAuthenticated()" class="flex items-center gap-3">
                     <!-- Coin Balance & Quick Topup -->
-                    <a th:href="@{/wallet/topup}" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-container-high hover:bg-surface-container-highest text-on-surface transition-all group" title="Nạp Coin vào tài khoản">
-                        <span class="material-symbols-outlined text-primary-container text-[18px] group-hover:scale-110 transition-transform">monetization_on</span>
+                    <a th:href="@{/wallet/topup}"
+                        class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-container-high hover:bg-surface-container-highest text-on-surface transition-all group"
+                        title="Nạp Coin vào tài khoản">
+                        <span
+                            class="material-symbols-outlined text-primary-container text-[18px] group-hover:scale-110 transition-transform">monetization_on</span>
                         <span class="font-label-md text-label-md text-on-primary-container font-semibold"
-                              th:text="${#authentication.principal.user.walletBalance != null ? #authentication.principal.user.walletBalance : 0} + ' Coin'">0 Coin</span>
+                            th:text="${#authentication.principal.user.walletBalance != null ? #authentication.principal.user.walletBalance : 0} + ' Coin'">0
+                            Coin</span>
                         <span class="material-symbols-outlined text-primary text-[16px] ml-0.5">add_circle</span>
                     </a>
-
-                    <!-- Daily Check-in Quick Link -->
-                    <a th:href="@{/user/checkin}"
-                       class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200/80 text-xs font-bold transition-all shadow-xs group"
-                       title="Điểm danh nhận Coin hàng ngày">
-                        <span class="material-symbols-outlined text-[17px] text-amber-700 group-hover:scale-110 transition-transform">event_available</span>
-                        <span>Điểm danh</span>
-                    </a>
-
                     <div class="relative">
                         <button id="userMenuBtn" type="button"
                             class="flex items-center gap-2 focus:outline-none rounded-full p-1 hover:bg-surface-container transition-colors">
@@ -79,11 +87,11 @@
                             <div
                                 class="w-10 h-10 rounded-full bg-primary overflow-hidden flex items-center justify-center shadow-sm border border-outline-variant">
                                 <img th:if="${#authentication.principal.user.avatarUrl != null}"
-                                    th:src="${#authentication.principal.user.avatarUrl}" alt="Avatar" onerror="this.onerror=null;this.src='/images/default-avatar.jpg';"
+                                    th:src="${#authentication.principal.user.avatarUrl}" alt="Avatar"
+                                    onerror="this.onerror=null;this.src='/images/default-avatar.jpg';"
                                     class="w-full h-full object-cover">
                                 <img th:unless="${#authentication.principal.user.avatarUrl != null}"
-                                    src="/images/default-avatar.jpg" alt="Avatar"
-                                    class="w-full h-full object-cover">
+                                    src="/images/default-avatar.jpg" alt="Avatar" class="w-full h-full object-cover">
                             </div>
                         </button>
 
@@ -93,8 +101,7 @@
                             <div class="px-4 py-2 border-b border-outline-variant">
                                 <p class="font-label-md text-on-surface font-bold truncate"
                                     sec:authentication="principal.user.fullName"></p>
-                                <p class="text-xs text-outline truncate"
-                                    sec:authentication="principal.user.email"></p>
+                                <p class="text-xs text-outline truncate" sec:authentication="principal.user.email"></p>
                             </div>
                             <a th:href="@{/user/profile}"
                                 class="block px-4 py-2 text-sm text-on-surface hover:bg-surface-container-low transition-colors flex items-center gap-2">
@@ -110,23 +117,27 @@
                             </a>
                             <a th:href="@{/wallet}"
                                 class="block px-4 py-2 text-sm text-on-surface hover:bg-surface-container-low transition-colors flex items-center gap-2">
-                                <span class="material-symbols-outlined text-[18px]">account_balance_wallet</span> Ví của Tôi
+                                <span class="material-symbols-outlined text-[18px]">account_balance_wallet</span> Ví Coin
                             </a>
                             <a th:href="@{/user/checkin}"
                                 class="block px-4 py-2 text-sm text-amber-800 font-semibold hover:bg-surface-container-low transition-colors flex items-center gap-2">
-                                <span class="material-symbols-outlined text-[18px] text-amber-600">calendar_month</span> Điểm danh nhận Coin
+                                <span class="material-symbols-outlined text-[18px] text-amber-600">calendar_month</span>
+                                Điểm danh nhận Coin
                             </a>
                             <a sec:authorize="hasAuthority('ROLE_ADMIN')" th:href="@{/admin/novels}"
                                 class="block px-4 py-2 text-sm text-on-surface hover:bg-surface-container-low transition-colors flex items-center gap-2 text-primary">
-                                <span class="material-symbols-outlined text-[18px]">admin_panel_settings</span> Trang quản trị
+                                <span class="material-symbols-outlined text-[18px]">admin_panel_settings</span> Trang
+                                quản trị
                             </a>
-                            <a sec:authorize="hasAuthority('ROLE_STAFF') and !hasAuthority('ROLE_ADMIN')" th:href="@{/staff/novels}"
+                            <a sec:authorize="hasAuthority('ROLE_STAFF') and !hasAuthority('ROLE_ADMIN')"
+                                th:href="@{/staff/novels}"
                                 class="block px-4 py-2 text-sm text-on-surface hover:bg-surface-container-low transition-colors flex items-center gap-2 text-primary">
                                 <span class="material-symbols-outlined text-[18px]">badge</span> Bàn làm việc Nhân viên
                             </a>
                             <div class="my-1 border-t border-outline-variant"></div>
                             <form action="/logout" method="post" id="headerLogoutForm" class="m-0">
-                                <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}"
+                                    th:value="${_csrf.token}">
                                 <button type="submit"
                                     class="w-full text-left px-4 py-2 text-sm text-error hover:bg-error-container hover:text-on-error-container transition-colors flex items-center gap-2">
                                     <span class="material-symbols-outlined text-[18px]">logout</span> Đăng xuất
@@ -139,37 +150,42 @@
         </div>
 
         <!-- Global Toast Notifications -->
-        <div th:if="${successMessage != null or successMsg != null or errorMessage != null or errorMsg != null}" 
-             id="global-toast" class="fixed top-24 right-6 z-[100] flex flex-col gap-3 animate-fade-in pointer-events-none">
-            
+        <div th:if="${successMessage != null or successMsg != null or errorMessage != null or errorMsg != null}"
+            id="global-toast"
+            class="fixed top-24 right-6 z-[100] flex flex-col gap-3 animate-fade-in pointer-events-none">
+
             <!-- Success Message -->
-            <div th:if="${successMessage != null or successMsg != null}" 
-                 class="bg-surface-container-high border-l-4 border-primary rounded-r-xl p-4 text-on-surface flex items-start gap-3 shadow-lg max-w-sm pointer-events-auto">
+            <div th:if="${successMessage != null or successMsg != null}"
+                class="bg-surface-container-high border-l-4 border-primary rounded-r-xl p-4 text-on-surface flex items-start gap-3 shadow-lg max-w-sm pointer-events-auto">
                 <span class="material-symbols-outlined text-primary text-[24px] mt-0.5">check_circle</span>
                 <div class="flex flex-col">
-                    <span class="font-label-lg text-label-lg font-bold" th:text="${successMessage != null ? successMessage : successMsg}">Thành công</span>
+                    <span class="font-label-lg text-label-lg font-bold"
+                        th:text="${successMessage != null ? successMessage : successMsg}">Thành công</span>
                 </div>
-                <button type="button" onclick="this.parentElement.remove()" class="text-outline hover:text-on-surface transition-colors ml-auto">
+                <button type="button" onclick="this.parentElement.remove()"
+                    class="text-outline hover:text-on-surface transition-colors ml-auto">
                     <span class="material-symbols-outlined text-[20px]">close</span>
                 </button>
             </div>
 
             <!-- Error Message -->
-            <div th:if="${errorMessage != null or errorMsg != null}" 
-                 class="bg-error-container border-l-4 border-error rounded-r-xl p-4 text-on-error-container flex items-start gap-3 shadow-lg max-w-sm pointer-events-auto">
+            <div th:if="${errorMessage != null or errorMsg != null}"
+                class="bg-error-container border-l-4 border-error rounded-r-xl p-4 text-on-error-container flex items-start gap-3 shadow-lg max-w-sm pointer-events-auto">
                 <span class="material-symbols-outlined text-error text-[24px] mt-0.5">error</span>
                 <div class="flex flex-col">
-                    <span class="font-label-lg text-label-lg font-bold" th:text="${errorMessage != null ? errorMessage : errorMsg}">Lỗi</span>
+                    <span class="font-label-lg text-label-lg font-bold"
+                        th:text="${errorMessage != null ? errorMessage : errorMsg}">Lỗi</span>
                 </div>
-                <button type="button" onclick="this.parentElement.remove()" class="text-error opacity-70 hover:opacity-100 transition-opacity ml-auto">
+                <button type="button" onclick="this.parentElement.remove()"
+                    class="text-error opacity-70 hover:opacity-100 transition-opacity ml-auto">
                     <span class="material-symbols-outlined text-[20px]">close</span>
                 </button>
             </div>
         </div>
         <script>
             // Auto-hide toast after 5 seconds
-            document.addEventListener('DOMContentLoaded', function() {
-                setTimeout(function() {
+            document.addEventListener('DOMContentLoaded', function () {
+                setTimeout(function () {
                     const toast = document.getElementById('global-toast');
                     if (toast) {
                         toast.style.opacity = '0';
@@ -181,7 +197,7 @@
         </script>
 
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', function () {
                 // Update Login & Register buttons to preserve current page return URL
                 const loginBtn = document.getElementById('navLoginBtn');
                 const regBtn = document.getElementById('navRegisterBtn');
@@ -196,16 +212,16 @@
                 const btn = document.getElementById('userMenuBtn');
                 const dropdown = document.getElementById('userDropdown');
                 if (btn && dropdown) {
-                    btn.addEventListener('click', function(e) {
+                    btn.addEventListener('click', function (e) {
                         e.stopPropagation();
                         dropdown.classList.toggle('hidden');
                     });
-                    document.addEventListener('click', function(e) {
+                    document.addEventListener('click', function (e) {
                         if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
                             dropdown.classList.add('hidden');
                         }
                     });
-                    document.addEventListener('keydown', function(e) {
+                    document.addEventListener('keydown', function (e) {
                         if (e.key === 'Escape') {
                             dropdown.classList.add('hidden');
                         }
@@ -219,26 +235,26 @@
                 const suggestCount = document.getElementById('suggestCount');
                 const suggestList = document.getElementById('suggestList');
                 const suggestSeeAll = document.getElementById('suggestSeeAll');
-                
+
                 let debounceTimer;
 
                 if (searchInput && searchPopup) {
-                    searchInput.addEventListener('input', function() {
+                    searchInput.addEventListener('input', function () {
                         clearTimeout(debounceTimer);
                         const query = this.value.trim();
-                        
+
                         if (query.length === 0) {
                             searchPopup.classList.add('hidden');
                             return;
                         }
-                        
+
                         debounceTimer = setTimeout(() => {
                             fetch(`/api/search/suggestions?q=${encodeURIComponent(query)}`)
                                 .then(response => response.json())
                                 .then(data => {
                                     suggestKeyword.textContent = query;
                                     suggestCount.textContent = `${data.results.length} kết quả nổi bật`;
-                                    
+
                                     suggestList.innerHTML = '';
                                     if (data.results.length === 0) {
                                         suggestList.innerHTML = `<div class="p-4 text-center text-[#8c7a68] text-sm">Không tìm thấy kết quả nào</div>`;
@@ -262,24 +278,24 @@
                                             suggestList.appendChild(a);
                                         });
                                     }
-                                    
+
                                     searchPopup.classList.remove('hidden');
                                 });
                         }, 300);
                     });
 
-                    suggestSeeAll.addEventListener('click', function(e) {
+                    suggestSeeAll.addEventListener('click', function (e) {
                         e.preventDefault();
                         document.getElementById('searchForm').submit();
                     });
 
-                    document.addEventListener('click', function(e) {
+                    document.addEventListener('click', function (e) {
                         if (!searchInput.contains(e.target) && !searchPopup.contains(e.target)) {
                             searchPopup.classList.add('hidden');
                         }
                     });
-                    
-                    searchInput.addEventListener('focus', function() {
+
+                    searchInput.addEventListener('focus', function () {
                         if (this.value.trim().length > 0 && suggestList.innerHTML !== '') {
                             searchPopup.classList.remove('hidden');
                         }
@@ -289,4 +305,5 @@
         </script>
     </header>
 </body>
+
 </html>

@@ -32,7 +32,7 @@ public class HomeServiceImpl implements HomeService {
     public HomePageDTO getHomePageData() {
         List<Category> categories = categoryRepository.findAll();
 
-        List<NovelSummaryDTO> recentlyUpdated = novelRepository.findTop10ByIsDeletedFalseOrderByUpdatedAtDesc()
+        List<NovelSummaryDTO> recentlyUpdated = novelRepository.findTop12ByIsDeletedFalseOrderByUpdatedAtDesc()
                 .stream()
                 .map(novel -> mapToSummaryDTO(novel, true))
                 .collect(Collectors.toList());
@@ -42,12 +42,17 @@ public class HomeServiceImpl implements HomeService {
                 .map(novel -> mapToSummaryDTO(novel, false))
                 .collect(Collectors.toList());
 
-        List<NovelSummaryDTO> completedNovels = novelRepository.findTop10ByIsDeletedFalseAndStatusOrderByUpdatedAtDesc("COMPLETED")
+        List<NovelSummaryDTO> completedNovels = novelRepository.findTop12ByIsDeletedFalseAndStatusOrderByUpdatedAtDesc("COMPLETED")
                 .stream()
                 .map(novel -> mapToSummaryDTO(novel, false))
                 .collect(Collectors.toList());
 
-        List<NovelSummaryDTO> recommendedNovels = novelRepository.findTop10ByIsDeletedFalseOrderByAverageRatingDesc()
+        List<NovelSummaryDTO> recommendedNovels = novelRepository.findTop12ByIsDeletedFalseOrderByAverageRatingDesc()
+                .stream()
+                .map(novel -> mapToSummaryDTO(novel, true))
+                .collect(Collectors.toList());
+
+        List<NovelSummaryDTO> newNovels = novelRepository.findTop12ByIsDeletedFalseOrderByCreatedAtDesc()
                 .stream()
                 .map(novel -> mapToSummaryDTO(novel, true))
                 .collect(Collectors.toList());
@@ -58,6 +63,7 @@ public class HomeServiceImpl implements HomeService {
                 .hotNovels(hotNovels)
                 .completedNovels(completedNovels)
                 .recommendedNovels(recommendedNovels)
+                .newNovels(newNovels)
                 .build();
     }
 
@@ -75,9 +81,14 @@ public class HomeServiceImpl implements HomeService {
                             .title(ch.getTitle())
                             .updatedAt(ch.getUpdatedAt())
                             .relativeTime(DateTimeUtils.formatRelativeTime(
-                                    ch.getUpdatedAt() != null ? ch.getUpdatedAt() : ch.getCreatedAt()))
+                                     ch.getUpdatedAt() != null ? ch.getUpdatedAt() : ch.getCreatedAt()))
                             .build())
                     .collect(Collectors.toList());
+        }
+
+        List<Category> novelCategories = null;
+        if (novel.getCategories() != null && !novel.getCategories().isEmpty()) {
+            novelCategories = new java.util.ArrayList<>(novel.getCategories());
         }
 
         return NovelSummaryDTO.builder()
@@ -91,6 +102,9 @@ public class HomeServiceImpl implements HomeService {
                 .views(novel.getViews() != null ? novel.getViews() : 0)
                 .favoriteCount(favoriteCount)
                 .averageRating(novel.getAverageRating())
+                .chapterCount(novel.getChapterCount() != null ? novel.getChapterCount() : 0)
+                .categories(novelCategories)
+                .createdAt(novel.getCreatedAt())
                 .updatedAt(novel.getUpdatedAt())
                 .latestChapters(latestChapters)
                 .build();

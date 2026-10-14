@@ -18,4 +18,5 @@ public class HomePageDTO {
     private List<NovelSummaryDTO> hotNovels;
     private List<NovelSummaryDTO> completedNovels;
     private List<NovelSummaryDTO> recommendedNovels;
+    private List<NovelSummaryDTO> newNovels;
 }

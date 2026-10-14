@@ -14,13 +14,15 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
     rel="stylesheet">
-
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/home/home-ui.css}">
   <link rel="stylesheet" th:href="@{/css/home/search.css}">
   <script src="https://cdn.tailwindcss.com"></script>
   <script th:src="@{/js/home/tailwind-config.js}"></script>
 </head>
 
-<body class="bg-[#faf8f5] font-sans text-[#231A11] min-h-full flex flex-col">
+<body class="bg-background font-body-md text-on-surface min-h-full flex flex-col">
   <div th:replace="~{fragments/header :: main-header}"></div>
   <main class="w-full pt-20 flex-1">
 
@@ -244,6 +246,7 @@
             <select name="sort" onchange="this.form.submit()"
               class="bg-[#faf8f5] border border-[#f5eae0] rounded-lg px-3 py-1.5 text-[13px] font-bold text-[#231A11] focus:outline-none focus:border-[#c08d41]">
               <option value="updatedAt,desc" th:selected="${currentSort == 'updatedAt,desc'}">Mới cập nhật</option>
+              <option value="createdAt,desc" th:selected="${currentSort == 'createdAt,desc'}">Mới đăng gần đây</option>
               <option value="views,desc" th:selected="${currentSort == 'views,desc'}">Lượt đọc nhiều nhất</option>
               <option value="averageRating,desc" th:selected="${currentSort == 'averageRating,desc'}">Đánh giá cao nhất
               </option>
@@ -253,56 +256,63 @@
 
         <!-- No Results -->
         <div th:if="${novels.isEmpty()}"
-          class="p-12 text-center bg-white rounded-2xl border border-dashed border-[#d1c2b4]">
-          <span class="material-symbols-outlined text-[48px] text-[#d1c2b4] mb-3">search_off</span>
-          <p class="text-[#6b5b4b] text-[16px] font-medium">Không tìm thấy kết quả nào phù hợp với bộ lọc hiện tại.</p>
+          class="p-16 text-center bg-surface-container-lowest rounded-2xl border border-dashed border-outline-variant/50">
+          <span class="material-symbols-outlined text-[56px] text-outline/50 mb-3">search_off</span>
+          <p class="text-secondary text-[15px] font-medium">Không tìm thấy kết quả nào phù hợp với bộ lọc hiện tại.</p>
         </div>
 
-        <!-- Results Grid (Vertical Cards) -->
-        <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5" th:if="${!novels.isEmpty()}">
-          <article
-            class="bg-white rounded-2xl p-3.5 shadow-[0_2px_12px_rgba(35,26,17,0.03)] border border-[#f5eae0] hover:shadow-md hover:border-[#ebd9c7] transition-all group flex flex-col h-full"
-            th:each="novel : ${novels}">
-
-            <!-- Cover Image -->
-            <a th:href="@{/truyen/{slug}(slug=${novel.slug})}"
-              class="block w-full aspect-[2/3] relative rounded-xl overflow-hidden bg-[#f5eae0] mb-3 shrink-0">
-              <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+        <!-- Results Grid (Classic Home Card Style) -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4" th:if="${!novels.isEmpty()}">
+          <article th:each="novel : ${novels}"
+            class="group flex flex-col p-3 rounded-xl bg-surface-container-lowest border border-outline-variant/30 shadow-[0_2px_12px_rgba(107,91,75,0.05)] hover:shadow-[0_8px_24px_rgba(107,91,75,0.12)] transition-all">
+            <!-- Cover with Views & Chapter count overlay -->
+            <a th:href="@{'/truyen/' + ${novel.slug}}"
+              class="relative w-full aspect-[3/4] rounded-lg overflow-hidden mb-2.5 bg-surface-container block group-hover:opacity-95">
+              <img class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 th:src="${novel.coverUrl != null ? novel.coverUrl : '/images/default-cover.jpg'}"
-                onerror="this.onerror=null;this.src='/images/default-cover.jpg';" alt="Cover">
-              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
-
-              <!-- Badges -->
-              <div class="absolute top-2 left-2 flex flex-col gap-1.5">
-                <span
-                  class="px-2 py-0.5 rounded-md bg-white/90 backdrop-blur-sm text-[#231a11] text-[10px] font-bold uppercase tracking-wider shadow-sm"
-                  th:text="${novel.status == 'COMPLETED' ? 'Hoàn thành' : 'Đang ra'}">Đang ra</span>
+                onerror="this.onerror=null;this.src='/images/default-cover.jpg';"
+                th:alt="${novel.title}">
+              <!-- Overlay: Views & Chapters at bottom of cover -->
+              <div
+                class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/45 to-transparent pt-6 pb-1.5 px-2 flex items-center justify-between text-white font-label-sm text-[11px] leading-tight select-none">
+                <span class="flex items-center gap-1 opacity-90 truncate" title="Lượt xem">
+                  <span class="material-symbols-outlined text-[13px]">visibility</span>
+                  <span th:text="${novel.views != null ? #numbers.formatInteger(novel.views, 1, 'POINT') : '0'}">0</span>
+                </span>
+                <span class="flex items-center gap-1 opacity-90 truncate ml-1.5" title="Số chương">
+                  <span class="material-symbols-outlined text-[13px] text-primary-fixed">menu_book</span>
+                  <span th:text="${(novel.chapterCount != null ? novel.chapterCount : 0) + ' ch.'}">0 ch.</span>
+                </span>
               </div>
-              
-              <div class="absolute bottom-2 left-2 font-bold text-white text-[11px] flex items-center gap-1">
-                Ch. <span th:text="${novel.chapterCount != null ? novel.chapterCount : '0'}">580</span>
+              <!-- Badge if completed -->
+              <div th:if="${novel.status == 'COMPLETED'}"
+                class="absolute top-2 left-2 px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#43a047] text-white select-none shadow-sm">
+                HOÀN THÀNH
               </div>
             </a>
 
-            <!-- Content -->
-            <div class="flex flex-col flex-1">
-              <h2
-                class="text-[16px] text-[#231A11] group-hover:text-[#c08d41] transition-colors line-clamp-1 font-bold mb-1">
-                <a th:href="@{/truyen/{slug}(slug=${novel.slug})}" th:text="${novel.title}">Kiếm Đạo Đệ Nhất Tiên</a>
-              </h2>
-              <p class="text-[12px] text-[#8c7a68] mb-2 truncate" th:text="${novel.author}">Tiêu Cẩn Du</p>
+            <!-- Novel Title: 2 lines clamped with fixed min-height for uniform alignment -->
+            <a th:href="@{'/truyen/' + ${novel.slug}}"
+              class="font-headline-sm text-[14px] leading-tight font-bold text-on-surface group-hover:text-primary transition-colors line-clamp-2 min-h-[34px] mb-1"
+              th:text="${novel.title}">Tên truyện</a>
 
-              <p class="text-[12px] text-[#6b5b4b] line-clamp-2 leading-relaxed flex-1" th:text="${novel.summary}">
-                Kiếm tu phi thăng trọng sinh vào thân thể thiếu...
-              </p>
+            <!-- Author & Rating Row -->
+            <div class="flex items-center justify-between text-label-sm text-secondary mb-2">
+              <p class="font-body-md truncate flex-1" th:text="${novel.author}">Tác giả</p>
+              <span class="flex items-center gap-0.5 text-primary shrink-0 ml-1.5"
+                th:if="${novel.averageRating != null and novel.averageRating > 0}">
+                <span class="material-symbols-outlined text-[12px] icon-fill">star</span>
+                <span class="font-bold text-[11px]" th:text="${novel.averageRating}">4.9</span>
+              </span>
+            </div>
 
-              <!-- Stats -->
-              <div class="pt-3 mt-3 border-t border-[#f5eae0] flex items-center justify-between text-[12px] font-bold">
-                <span class="flex items-center gap-1 text-[#c08d41]"><span
-                    class="material-symbols-outlined text-[14px]">star</span> <span
-                    th:text="${novel.averageRating}">4.9</span></span>
-                <span class="text-[#8c7a68]"><span th:text="${novel.views}">1.8M</span> đọc</span>
-              </div>
+            <!-- Card Footer: Status & Read link -->
+            <div class="mt-auto pt-2 border-t border-outline-variant/20 flex items-center justify-between text-[11px]">
+              <span class="text-secondary font-medium" th:text="${novel.status == 'COMPLETED' ? 'Đã hoàn thành' : 'Đang ra'}">Đang ra</span>
+              <a th:href="@{'/truyen/' + ${novel.slug}}" class="text-primary font-bold hover:underline flex items-center gap-0.5">
+                <span>Đọc ngay</span>
+                <span class="material-symbols-outlined text-[12px]">chevron_right</span>
+              </a>
             </div>
           </article>
         </div>
@@ -310,17 +320,17 @@
         <!-- Pagination -->
         <div class="mt-8 flex justify-center items-center gap-2" th:if="${novelPage.totalPages > 1}">
           <button type="submit" name="page" th:value="${novelPage.number - 1}" th:if="${novelPage.hasPrevious()}"
-            class="px-3 py-1.5 rounded-lg bg-[#f5eae0] text-[#8c7a68] text-[13px] font-bold flex items-center gap-1 hover:bg-[#ebd9c7] transition-colors"><span
+            class="px-3 py-1.5 rounded-lg bg-surface-container-low text-secondary text-[13px] font-bold flex items-center gap-1 hover:bg-surface-container transition-colors"><span
               class="material-symbols-outlined text-[16px]">chevron_left</span> Trước</button>
 
           <th:block th:each="pageNum : ${#numbers.sequence(0, novelPage.totalPages - 1)}">
             <button type="submit" name="page" th:value="${pageNum}"
-              th:class="${pageNum == novelPage.number} ? 'w-8 h-8 rounded-lg bg-[#c08d41] text-white text-[13px] font-bold shadow-sm' : 'w-8 h-8 rounded-lg bg-white border border-[#f5eae0] text-[#6b5b4b] text-[13px] font-bold hover:border-[#c08d41] hover:text-[#c08d41] transition-colors'"
+              th:class="${pageNum == novelPage.number} ? 'w-8 h-8 rounded-lg bg-primary text-white text-[13px] font-bold shadow-sm' : 'w-8 h-8 rounded-lg bg-surface-container-lowest border border-outline-variant/30 text-secondary text-[13px] font-bold hover:border-primary hover:text-primary transition-colors'"
               th:text="${pageNum + 1}">1</button>
           </th:block>
 
           <button type="submit" name="page" th:value="${novelPage.number + 1}" th:if="${novelPage.hasNext()}"
-            class="px-3 py-1.5 rounded-lg bg-[#f5eae0] text-[#8c7a68] text-[13px] font-bold flex items-center gap-1 hover:bg-[#ebd9c7] transition-colors">Sau
+            class="px-3 py-1.5 rounded-lg bg-surface-container-low text-secondary text-[13px] font-bold flex items-center gap-1 hover:bg-surface-container transition-colors">Sau
             <span class="material-symbols-outlined text-[16px]">chevron_right</span></button>
         </div>
 

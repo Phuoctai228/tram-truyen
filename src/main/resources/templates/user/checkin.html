@@ -15,63 +15,21 @@
     <link rel="stylesheet" th:href="@{/css/bookshelf.css}">
     <link rel="stylesheet" th:href="@{/css/user/checkin.css}">
 </head>
-<body class="bg-surface text-on-surface antialiased min-h-screen flex flex-col font-sans selection:bg-primary-container selection:text-on-primary">
+<body class="bg-surface font-body-md text-on-surface min-h-screen flex flex-col">
 
     <!-- Global Header -->
-    <div th:replace="~{fragments/header :: header}"></div>
+    <div th:replace="~{fragments/header :: main-header}"></div>
 
     <!-- Main Content Container -->
-    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10">
-        <div class="flex flex-col md:flex-row gap-8 items-start">
+    <main class="w-full pt-20 bg-surface flex-1">
+        <div class="max-w-[1280px] mx-auto px-6 py-8">
+            <div class="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-8 items-start">
 
-            <!-- Sidebar Navigation -->
-            <aside class="w-full md:w-64 lg:w-72 shrink-0 space-y-6">
-                <!-- User card -->
-                <div class="p-5 rounded-xl bg-surface-container-lowest shadow-[0_4px_20px_-2px_rgba(107,91,75,0.06)] flex items-center gap-4">
-                    <div class="w-14 h-14 rounded-full bg-primary overflow-hidden flex items-center justify-center shrink-0 border-2 border-surface-container">
-                        <img th:if="${userProfile.avatarUrl != null}" th:src="${userProfile.avatarUrl}" alt="Avatar"
-                             class="w-full h-full object-cover" onerror="this.onerror=null;this.src='/images/default-avatar.jpg';">
-                        <img th:unless="${userProfile.avatarUrl != null}" src="/images/default-avatar.jpg" alt="Avatar"
-                             class="w-full h-full object-cover">
-                    </div>
-                    <div class="min-w-0 flex-1">
-                        <h3 class="font-headline-sm text-headline-sm text-on-surface truncate font-bold" th:text="${userProfile.fullName}">Họ và Tên</h3>
-                        <p class="text-xs text-outline truncate" th:text="${userProfile.email}">email@example.com</p>
-                    </div>
-                </div>
+                <!-- Sidebar Navigation -->
+                <div th:replace="~{fragments/profile-sidebar :: profile-sidebar('checkin')}"></div>
 
-                <!-- Navigation menu -->
-                <nav class="p-3 rounded-xl bg-surface-container-lowest shadow-[0_4px_20px_-2px_rgba(107,91,75,0.06)] space-y-1.5">
-                    <a th:href="@{/user/profile}"
-                       class="flex items-center gap-3.5 px-3.5 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all">
-                        <span class="material-symbols-outlined text-[20px]">person</span>
-                        <span class="font-label-lg text-label-lg">Hồ sơ cá nhân</span>
-                    </a>
-                    <a th:href="@{/user/bookshelf}"
-                       class="flex items-center gap-3.5 px-3.5 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all">
-                        <span class="material-symbols-outlined text-[20px]">bookmark</span>
-                        <span class="font-label-lg text-label-lg">Tủ sách</span>
-                    </a>
-                    <a th:href="@{/user/history}"
-                       class="flex items-center gap-3.5 px-3.5 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all">
-                        <span class="material-symbols-outlined text-[20px]">history</span>
-                        <span class="font-label-lg text-label-lg">Lịch sử đọc</span>
-                    </a>
-                    <a th:href="@{/user/checkin}"
-                       class="flex items-center gap-3.5 px-3.5 py-3 rounded-lg bg-surface-container text-primary font-bold shadow-sm transition-all">
-                        <span class="material-symbols-outlined text-[20px] icon-fill">event_available</span>
-                        <span class="font-label-lg text-label-lg">Điểm danh nhận Coin</span>
-                    </a>
-                    <a th:href="@{/user/profile}"
-                       class="flex items-center gap-3.5 px-3.5 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all">
-                        <span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
-                        <span class="font-label-lg text-label-lg">Ví Coin</span>
-                    </a>
-                </nav>
-            </aside>
-
-            <!-- Main Check-in Dashboard Content (matching image38.png 1:1) -->
-            <section class="w-full min-w-0 flex-1 space-y-6">
+                <!-- Main Check-in Dashboard Content (matching image38.png 1:1) -->
+                <section class="w-full min-w-0 space-y-6">
 
                 <!-- Top Server Status & Cycle Info -->
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -272,7 +230,7 @@
     </main>
 
     <!-- Global Footer -->
-    <div th:replace="~{fragments/footer :: footer}"></div>
+    <div th:replace="~{fragments/footer :: main-footer}"></div>
 
 </body>
 </html>

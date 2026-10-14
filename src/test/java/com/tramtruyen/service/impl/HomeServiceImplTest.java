@@ -70,9 +70,11 @@ class HomeServiceImplTest {
     @Test
     void getHomePageDataLoadsLatestChaptersAndFavoriteCountForRecentlyUpdated() {
         when(categoryRepository.findAll()).thenReturn(List.of(Category.builder().name("Tiên Hiệp").build()));
-        when(novelRepository.findTop10ByIsDeletedFalseOrderByUpdatedAtDesc()).thenReturn(List.of(sampleNovel));
+        when(novelRepository.findTop12ByIsDeletedFalseOrderByUpdatedAtDesc()).thenReturn(List.of(sampleNovel));
         when(novelRepository.findTop10ByIsDeletedFalseOrderByViewsDesc()).thenReturn(List.of(sampleNovel));
-        when(novelRepository.findTop10ByIsDeletedFalseAndStatusOrderByUpdatedAtDesc("COMPLETED")).thenReturn(List.of());
+        when(novelRepository.findTop12ByIsDeletedFalseAndStatusOrderByUpdatedAtDesc("COMPLETED")).thenReturn(List.of());
+        when(novelRepository.findTop12ByIsDeletedFalseOrderByAverageRatingDesc()).thenReturn(List.of(sampleNovel));
+        when(novelRepository.findTop12ByIsDeletedFalseOrderByCreatedAtDesc()).thenReturn(List.of(sampleNovel));
 
         when(bookshelfRepository.countByNovelId(anyInt())).thenReturn(25L);
         when(chapterRepository.findTop3ByNovelIdAndIsDeletedFalseAndStatusOrderByChapterNumberDesc(eq(1), eq("PUBLISHED")))
@@ -82,6 +84,7 @@ class HomeServiceImplTest {
 
         assertThat(data).isNotNull();
         assertThat(data.getRecentlyUpdatedNovels()).hasSize(1);
+        assertThat(data.getNewNovels()).hasSize(1);
         NovelSummaryDTO novelDTO = data.getRecentlyUpdatedNovels().get(0);
         assertThat(novelDTO.getTitle()).isEqualTo("Võ Đạo Đan Thần");
         assertThat(novelDTO.getFavoriteCount()).isEqualTo(25L);
