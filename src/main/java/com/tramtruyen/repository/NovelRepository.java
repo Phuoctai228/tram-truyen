@@ -47,4 +47,8 @@ public interface NovelRepository extends JpaRepository<Novel, Integer>, JpaSpeci
     boolean existsByCategoriesIdAndIsDeletedFalse(Integer categoryId);
 
     List<Novel> findByCategoriesIdAndIsDeletedFalseOrderByUpdatedAtDesc(Integer categoryId);
+
+    List<Novel> findAllByIsDeletedFalseOrderByViewsDesc();
+
+    List<Novel> findByCategoriesIdAndIsDeletedFalseOrderByViewsDesc(Integer categoryId);
 }

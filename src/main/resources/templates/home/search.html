@@ -148,31 +148,39 @@
             <h4 class="font-bold text-[14px] text-[#231A11] mb-3">Số lượng chương</h4>
             <div class="grid grid-cols-2 gap-2 mt-4">
               <label class="cursor-pointer">
-                <input type="radio" name="chapterRange" value="lt5" th:checked="${selectedChapterRange == 'lt5'}"
+                <input type="checkbox" name="chapterRange" value="lt5"
+                  th:checked="${selectedChapterRange == 'lt5'}"
+                  onclick="toggleSingleChapterRange(this)"
                   class="peer hidden">
                 <div
-                  class="py-1.5 rounded-lg bg-[#f5eae0] text-[#8c7a68] text-[12px] font-medium text-center peer-checked:bg-[#ebd9c7] peer-checked:text-[#4d3b2a] peer-checked:font-bold peer-checked:border peer-checked:border-[#c08d41]">
+                  class="py-2 rounded-lg bg-[#f5eae0] text-[#4d3b2a] text-[13px] font-medium text-center transition-colors border border-transparent peer-checked:bg-[#c08d41] peer-checked:text-white peer-checked:font-bold peer-checked:border-[#b5803a] shadow-sm select-none">
                   &lt; 5 ch.</div>
               </label>
               <label class="cursor-pointer">
-                <input type="radio" name="chapterRange" value="5-10"
-                  th:checked="${selectedChapterRange == '5-10'}" class="peer hidden">
+                <input type="checkbox" name="chapterRange" value="5-10"
+                  th:checked="${selectedChapterRange == '5-10'}"
+                  onclick="toggleSingleChapterRange(this)"
+                  class="peer hidden">
                 <div
-                  class="py-1.5 rounded-lg bg-[#f5eae0] text-[#8c7a68] text-[12px] font-medium text-center peer-checked:bg-[#ebd9c7] peer-checked:text-[#4d3b2a] peer-checked:font-bold peer-checked:border peer-checked:border-[#c08d41]">
+                  class="py-2 rounded-lg bg-[#f5eae0] text-[#4d3b2a] text-[13px] font-medium text-center transition-colors border border-transparent peer-checked:bg-[#c08d41] peer-checked:text-white peer-checked:font-bold peer-checked:border-[#b5803a] shadow-sm select-none">
                   5 - 10 ch.</div>
               </label>
               <label class="cursor-pointer">
-                <input type="radio" name="chapterRange" value="10-50"
-                  th:checked="${selectedChapterRange == '10-50'}" class="peer hidden">
+                <input type="checkbox" name="chapterRange" value="10-50"
+                  th:checked="${selectedChapterRange == '10-50'}"
+                  onclick="toggleSingleChapterRange(this)"
+                  class="peer hidden">
                 <div
-                  class="py-1.5 rounded-lg bg-[#f5eae0] text-[#8c7a68] text-[12px] font-medium text-center peer-checked:bg-[#ebd9c7] peer-checked:text-[#4d3b2a] peer-checked:font-bold peer-checked:border peer-checked:border-[#c08d41]">
+                  class="py-2 rounded-lg bg-[#f5eae0] text-[#4d3b2a] text-[13px] font-medium text-center transition-colors border border-transparent peer-checked:bg-[#c08d41] peer-checked:text-white peer-checked:font-bold peer-checked:border-[#b5803a] shadow-sm select-none">
                   10 - 50 ch.</div>
               </label>
               <label class="cursor-pointer">
-                <input type="radio" name="chapterRange" value="gt50" th:checked="${selectedChapterRange == 'gt50'}"
+                <input type="checkbox" name="chapterRange" value="gt50"
+                  th:checked="${selectedChapterRange == 'gt50'}"
+                  onclick="toggleSingleChapterRange(this)"
                   class="peer hidden">
                 <div
-                  class="py-1.5 rounded-lg bg-[#f5eae0] text-[#8c7a68] text-[12px] font-medium text-center peer-checked:bg-[#ebd9c7] peer-checked:text-[#4d3b2a] peer-checked:font-bold peer-checked:border peer-checked:border-[#c08d41]">
+                  class="py-2 rounded-lg bg-[#f5eae0] text-[#4d3b2a] text-[13px] font-medium text-center transition-colors border border-transparent peer-checked:bg-[#c08d41] peer-checked:text-white peer-checked:font-bold peer-checked:border-[#b5803a] shadow-sm select-none">
                   &gt; 50 ch.</div>
               </label>
             </div>
@@ -180,21 +188,31 @@
 
           <div class="h-px bg-[#f5eae0]"></div>
 
-          <!-- Other criteria -->
+          <!-- Rating slider -->
           <div>
-            <h4 class="font-bold text-[14px] text-[#231A11] mb-3">Tiêu chí khác</h4>
-            <div class="flex flex-col gap-3">
-              <label class="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" name="minRating" value="4.5"
-                  th:checked="${selectedMinRating != null and selectedMinRating == 4.5}"
-                  class="w-4 h-4 text-[#c08d41] border-[#d1c2b4] rounded focus:ring-[#c08d41]">
-                <span class="text-[13px] text-[#4d3b2a] font-medium">Đánh giá từ 4.5 sao</span>
-              </label>
-              <label class="flex items-center gap-2 cursor-pointer opacity-50">
-                <input type="checkbox" disabled
-                  class="w-4 h-4 text-[#c08d41] border-[#d1c2b4] rounded focus:ring-[#c08d41]">
-                <span class="text-[13px] text-[#4d3b2a] font-medium">Bản dịch độc quyền</span>
-              </label>
+            <div class="flex items-center justify-between mb-2">
+              <h4 class="font-bold text-[14px] text-[#231A11]">Đánh giá sao</h4>
+              <span id="ratingValBadge" 
+                class="text-[12px] font-bold text-[#c08d41] bg-[#f5eae0] px-2.5 py-0.5 rounded-full border border-[#ebd9c7] cursor-pointer hover:bg-[#ebd9c7] transition-colors"
+                title="Bấm để đặt lại về 0.0 (Tất cả)"
+                onclick="resetRatingSlider()"
+                th:text="${selectedMinRating != null and selectedMinRating > 0 ? 'Từ ' + selectedMinRating + ' ★' : 'Tất cả (0.0)'}">
+                Tất cả (0.0)
+              </span>
+            </div>
+            <div class="px-0.5 py-1">
+              <input type="range" name="minRating" id="minRatingRange" min="0" max="5" step="0.1"
+                th:value="${selectedMinRating != null ? selectedMinRating : 0}"
+                class="w-full h-2 bg-[#ebd9c7] rounded-lg appearance-none cursor-pointer accent-[#c08d41]"
+                oninput="updateRatingDisplay(this.value)">
+              <div class="flex justify-between text-[11px] text-[#8c7a68] font-medium mt-1.5 px-0.5 select-none">
+                <span class="cursor-pointer hover:text-[#c08d41]" onclick="setRatingVal(0)">0.0</span>
+                <span class="cursor-pointer hover:text-[#c08d41]" onclick="setRatingVal(1)">1.0</span>
+                <span class="cursor-pointer hover:text-[#c08d41]" onclick="setRatingVal(2)">2.0</span>
+                <span class="cursor-pointer hover:text-[#c08d41]" onclick="setRatingVal(3)">3.0</span>
+                <span class="cursor-pointer hover:text-[#c08d41]" onclick="setRatingVal(4)">4.0</span>
+                <span class="cursor-pointer hover:text-[#c08d41]" onclick="setRatingVal(5)">5.0</span>
+              </div>
             </div>
           </div>
 
@@ -232,11 +250,12 @@
               <span th:if="${selectedChapterRange != null}"
                 class="px-2.5 py-1 bg-[#f5eae0] text-[#6b5b4b] text-[12px] font-semibold rounded flex items-center gap-1">Lọc
                 số chương</span>
-              <span th:if="${selectedMinRating != null}"
-                class="px-2.5 py-1 bg-[#f5eae0] text-[#6b5b4b] text-[12px] font-semibold rounded flex items-center gap-1">Đánh
-                giá cao</span>
-              <a th:href="@{/search}"
-                th:if="${selectedStatus != null or selectedChapterRange != null or selectedMinRating != null or (selectedCategories != null and !selectedCategories.isEmpty())}"
+              <span th:if="${selectedMinRating != null and selectedMinRating > 0}"
+                class="px-2.5 py-1 bg-[#f5eae0] text-[#6b5b4b] text-[12px] font-semibold rounded flex items-center gap-1">
+                Đánh giá &ge; <span th:text="${selectedMinRating}"></span>★
+              </span>
+              <a th:href="@{/search(q=${query})}"
+                th:if="${selectedStatus != null or selectedChapterRange != null or (selectedMinRating != null and selectedMinRating > 0) or (selectedCategories != null and !selectedCategories.isEmpty())}"
                 class="text-[12px] text-[#c08d41] font-semibold hover:underline ml-1">Xóa bộ lọc</a>
             </div>
           </div>
@@ -338,6 +357,36 @@
     </form>
   </main>
   <div th:replace="~{fragments/footer :: main-footer}"></div>
+  <script>
+    function updateRatingDisplay(val) {
+      const num = parseFloat(val);
+      const badge = document.getElementById('ratingValBadge');
+      if (badge) {
+        if (num > 0) {
+          badge.textContent = 'Từ ' + num.toFixed(1) + ' ★';
+        } else {
+          badge.textContent = 'Tất cả (0.0)';
+        }
+      }
+    }
+    function resetRatingSlider() {
+      setRatingVal(0);
+    }
+    function setRatingVal(val) {
+      const slider = document.getElementById('minRatingRange');
+      if (slider) {
+        slider.value = val;
+        updateRatingDisplay(val);
+      }
+    }
+    function toggleSingleChapterRange(checkbox) {
+      if (checkbox.checked) {
+        document.querySelectorAll('input[name="chapterRange"]').forEach(cb => {
+          if (cb !== checkbox) cb.checked = false;
+        });
+      }
+    }
+  </script>
 </body>
 
 </html>

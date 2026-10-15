@@ -53,6 +53,10 @@ public class NovelController {
             @RequestParam(defaultValue = "updatedAt,desc") String sort,
             Model model) {
             
+        if (minRating != null && minRating <= 0.0) {
+            minRating = null;
+        }
+
         Integer minChapters = null;
         Integer maxChapters = null;
         if (chapterRange != null) {
