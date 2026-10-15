@@ -30,10 +30,24 @@ public class PublicCategoryController {
     }
 
     @GetMapping("/the-loai/{slug}")
-    public String showCategoryDetail(@PathVariable String slug, Model model) {
+    public String showCategoryDetail(
+            @PathVariable String slug,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            Model model) {
         var category = categoryService.getCategoryBySlug(slug);
         model.addAttribute("category", category);
-        model.addAttribute("novels", novelService.getNovelSummariesByCategory(category.getId()));
+        
+        // 10 thẻ thì phân 1 trang (10 novels per page)
+        int pageSize = 10;
+        int currentPage = Math.max(0, page);
+        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(currentPage, pageSize);
+        org.springframework.data.domain.Page<com.tramtruyen.dto.NovelSummaryDTO> novelPage = novelService.getNovelSummariesByCategoryPage(category.getId(), pageable);
+        
+        model.addAttribute("novelsPage", novelPage);
+        model.addAttribute("novels", novelPage.getContent());
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("totalPages", novelPage.getTotalPages());
+        model.addAttribute("totalItems", novelPage.getTotalElements());
         return "categories/detail";
     }
 }

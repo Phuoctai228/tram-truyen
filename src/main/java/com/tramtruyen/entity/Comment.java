@@ -22,9 +22,18 @@ public class Comment {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "chapter_id", nullable = false)
-    private Chapter chapter;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "novel_id")
+    private Novel novel;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
+    private Comment parent;
+
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("createdAt ASC")
+    @Builder.Default
+    private java.util.List<Comment> replies = new java.util.ArrayList<>();
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;

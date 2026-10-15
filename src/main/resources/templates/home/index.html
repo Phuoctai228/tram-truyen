@@ -742,6 +742,7 @@
         }
 
         // Ranking Period Switcher Handler
+        const rankingCache = {};
         function switchRankingPeriod(period, btn) {
             // Update active styling
             document.querySelectorAll('.ranking-tab-btn').forEach(b => {
@@ -764,6 +765,112 @@
                 if (titleEl) titleEl.textContent = 'Bảng xếp hạng tổng';
                 if (badgeEl) badgeEl.textContent = 'Toàn thời gian';
             }
+
+            const container = document.getElementById('rankingListContainer');
+            if (!container) return;
+
+            if (rankingCache[period]) {
+                renderRankingList(rankingCache[period]);
+                return;
+            }
+
+            // Show subtle opacity while loading
+            container.style.opacity = '0.5';
+
+            fetch('/api/ranking?timeframe=' + period + '&limit=10')
+                .then(res => res.json())
+                .then(items => {
+                    container.style.opacity = '1';
+                    rankingCache[period] = items;
+                    renderRankingList(items);
+                })
+                .catch(err => {
+                    container.style.opacity = '1';
+                    console.error('Error loading ranking:', err);
+                });
+        }
+
+        function renderRankingList(items) {
+            const container = document.getElementById('rankingListContainer');
+            if (!container || !Array.isArray(items) || items.length === 0) return;
+
+            container.innerHTML = items.map((item, index) => {
+                const rank = index + 1;
+                let rankBadgeHtml;
+                if (rank === 1) {
+                    rankBadgeHtml = '<div class="w-9 h-9 rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 text-white flex items-center justify-center font-headline-sm text-headline-sm font-black shadow-md shadow-amber-500/20 shrink-0">1</div>';
+                } else if (rank === 2) {
+                    rankBadgeHtml = '<div class="w-9 h-9 rounded-lg bg-gradient-to-br from-slate-300 to-slate-500 text-white flex items-center justify-center font-headline-sm text-headline-sm font-bold shadow-sm shrink-0">2</div>';
+                } else if (rank === 3) {
+                    rankBadgeHtml = '<div class="w-9 h-9 rounded-lg bg-gradient-to-br from-amber-700 to-amber-900 text-white flex items-center justify-center font-headline-sm text-headline-sm font-bold shadow-sm shrink-0">3</div>';
+                } else {
+                    rankBadgeHtml = `<div class="w-9 h-9 rounded-lg bg-surface-container text-on-surface-variant flex items-center justify-center font-headline-sm text-headline-sm font-semibold shrink-0">${rank}</div>`;
+                }
+
+                // Trend indicator
+                let trendBadgeHtml = '';
+                if (item.trendType === 'UP') {
+                    trendBadgeHtml = `<span class="inline-flex items-center text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1 rounded ml-1.5" title="Tăng hạng">
+                        <span class="material-symbols-outlined text-[12px]">arrow_upward</span>${item.trendText}
+                    </span>`;
+                } else if (item.trendType === 'DOWN') {
+                    trendBadgeHtml = `<span class="inline-flex items-center text-[10px] font-bold text-rose-500 bg-rose-50 px-1 rounded ml-1.5" title="Giảm hạng">
+                        <span class="material-symbols-outlined text-[12px]">arrow_downward</span>${item.trendText}
+                    </span>`;
+                } else {
+                    trendBadgeHtml = `<span class="inline-flex items-center text-[10px] font-bold text-outline-variant px-1 rounded ml-1.5" title="Không đổi">
+                        •
+                    </span>`;
+                }
+
+                const ratingHtml = (item.averageRating && item.averageRating > 0)
+                    ? `<span class="text-outline-variant">•</span>
+                       <span class="flex items-center gap-0.5 text-primary">
+                           <span class="material-symbols-outlined text-[13px] icon-fill">star</span>
+                           <span class="font-bold text-[11px]">${item.averageRating.toFixed(1)}</span>
+                       </span>`
+                    : '';
+
+                const cover = item.coverUrl || '/images/default-cover.jpg';
+                const formattedViews = (item.views != null) ? Number(item.views).toLocaleString('vi-VN') : '0';
+
+                return `
+                <div class="flex items-center gap-4 p-3.5 rounded-xl bg-surface-container-lowest shadow-[0_3px_14px_rgba(107,91,75,0.05)] hover:bg-surface-container-high transition-all">
+                    ${rankBadgeHtml}
+                    <div class="w-12 h-16 rounded-md overflow-hidden bg-surface-container shrink-0 shadow-sm">
+                        <img class="w-full h-full object-cover" src="${cover}" onerror="this.onerror=null;this.src='/images/default-cover.jpg';" alt="Cover">
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-1.5 mb-0.5">
+                            <a href="/truyen/${encodeURIComponent(item.slug)}" class="font-headline-sm text-headline-sm text-on-surface font-bold truncate hover:text-primary transition-colors">
+                                ${escapeHtml(item.title)}
+                            </a>
+                            ${trendBadgeHtml}
+                        </div>
+                        <div class="flex items-center gap-3 text-label-sm text-on-surface-variant truncate">
+                            <span>${escapeHtml(item.author || 'Đang cập nhật')}</span>
+                            ${ratingHtml}
+                        </div>
+                    </div>
+                    <div class="text-right shrink-0">
+                        <span class="font-label-lg text-label-lg text-primary font-bold block">${formattedViews}</span>
+                        <span class="font-label-sm text-label-sm text-tertiary flex items-center justify-end gap-0.5">
+                            <span class="material-symbols-outlined text-[14px] text-secondary">trending_up</span>
+                            lượt đọc
+                        </span>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
         }
     </script>
 </body>

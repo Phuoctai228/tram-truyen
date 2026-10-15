@@ -39,18 +39,68 @@ public class RatingServiceImpl implements RatingService {
         Novel novel = novelRepository.findByIdAndIsDeletedFalse(novelId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy truyện"));
 
-        // BR-17: 1 review per user per novel; overwrite if already exists
-        NovelRating ratingEntity = novelRatingRepository.findByNovelIdAndUserId(novel.getId(), user.getId())
-                .orElseGet(() -> NovelRating.builder()
-                        .novel(novel)
-                        .user(user)
-                        .build());
+        // BR-17: Chỉ cho người dùng đánh giá truyện 1 lần. Nếu đã đánh giá, phải xóa mới được đánh giá lại.
+        NovelRating existingRating = novelRatingRepository.findByNovelIdAndUserId(novel.getId(), user.getId())
+                .orElse(null);
+        if (existingRating != null) {
+            throw new IllegalArgumentException("Bạn đã đánh giá bộ truyện này rồi. Vui lòng xóa đánh giá cũ nếu muốn đánh giá lại!");
+        }
 
-        ratingEntity.setRating(rating);
-        ratingEntity.setReviewText(reviewText != null ? reviewText.trim() : null);
+        NovelRating ratingEntity = NovelRating.builder()
+                .novel(novel)
+                .user(user)
+                .rating(rating)
+                .reviewText(reviewText != null ? reviewText.trim() : null)
+                .build();
         novelRatingRepository.save(ratingEntity);
 
         // Recalculate average rating & rating count
+        recalculateNovelRatingStats(novel);
+    }
+
+    @Override
+    @Transactional
+    public void deleteRating(String email, Integer novelId) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy thông tin tài khoản"));
+
+        Novel novel = novelRepository.findByIdAndIsDeletedFalse(novelId)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy truyện"));
+
+        NovelRating existingRating = novelRatingRepository.findByNovelIdAndUserId(novel.getId(), user.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Bạn chưa đánh giá bộ truyện này"));
+
+        novelRatingRepository.delete(existingRating);
+
+        // Recalculate average rating & rating count
+        recalculateNovelRatingStats(novel);
+    }
+
+    @Override
+    @Transactional
+    public void updateRating(String email, Integer novelId, Integer rating, String reviewText) {
+        if (rating == null || rating < 1 || rating > 5) {
+            throw new IllegalArgumentException("Điểm đánh giá phải từ 1 đến 5 sao");
+        }
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy thông tin tài khoản"));
+
+        Novel novel = novelRepository.findByIdAndIsDeletedFalse(novelId)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy truyện"));
+
+        NovelRating existingRating = novelRatingRepository.findByNovelIdAndUserId(novel.getId(), user.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Bạn chưa đánh giá bộ truyện này"));
+
+        existingRating.setRating(rating);
+        existingRating.setReviewText(reviewText != null ? reviewText.trim() : null);
+        novelRatingRepository.save(existingRating);
+
+        // Recalculate average rating & rating count
+        recalculateNovelRatingStats(novel);
+    }
+
+    private void recalculateNovelRatingStats(Novel novel) {
         Double avgRating = novelRatingRepository.calculateAverageRatingByNovelId(novel.getId());
         long totalRatings = novelRatingRepository.countByNovelId(novel.getId());
 

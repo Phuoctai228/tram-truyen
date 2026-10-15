@@ -20,4 +20,15 @@ public interface RatingService {
     NovelRating getUserRating(String email, Integer novelId);
 
     java.util.List<NovelRating> getRatingsByNovel(Integer novelId);
+
+    /**
+     * Delete a user's rating for a novel and recalculate novel average rating & rating count.
+     */
+    void deleteRating(String email, Integer novelId);
+
+    /**
+     * Update rating stars and review comment text for an existing rating.
+     * Recalculates novel average rating.
+     */
+    void updateRating(String email, Integer novelId, Integer rating, String reviewText);
 }

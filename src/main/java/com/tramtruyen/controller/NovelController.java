@@ -40,6 +40,7 @@ public class NovelController {
     private final CategoryService categoryService;
     private final ChapterUnlockService chapterUnlockService;
     private final WalletService walletService;
+    private final com.tramtruyen.service.CommentService commentService;
 
     @GetMapping("/search")
     public String searchNovels(
@@ -141,6 +142,7 @@ public class NovelController {
         long favoriteCount = bookshelfService.countNovelFavorites(novel.getId());
         List<Novel> sameAuthorNovels = novelService.getNovelsBySameAuthor(novel.getAuthor(), novel.getId());
         List<com.tramtruyen.entity.NovelRating> allRatings = ratingService.getRatingsByNovel(novel.getId());
+        List<com.tramtruyen.entity.Comment> allComments = commentService.getVisibleCommentsByNovel(novel.getId());
 
         model.addAttribute("novel", novel);
         model.addAttribute("chapters", chapters);
@@ -149,6 +151,7 @@ public class NovelController {
         model.addAttribute("sameAuthorNovels", sameAuthorNovels);
         model.addAttribute("userRating", userRating);
         model.addAttribute("allRatings", allRatings);
+        model.addAttribute("allComments", allComments);
         return "novel/details";
     }
 
@@ -172,7 +175,121 @@ public class NovelController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Đã xảy ra lỗi khi gửi đánh giá. Vui lòng thử lại sau.");
         }
-        return "redirect:/truyen/" + novel.getSlug();
+        return "redirect:/truyen/" + novel.getSlug() + "#ratings";
+    }
+
+    @org.springframework.web.bind.annotation.PostMapping("/truyen/{slug}/rating/delete")
+    public String deleteRating(
+            @PathVariable String slug,
+            org.springframework.security.core.Authentication authentication,
+            org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+        if (authentication == null || !authentication.isAuthenticated()
+                || authentication instanceof org.springframework.security.authentication.AnonymousAuthenticationToken) {
+            return "redirect:/login";
+        }
+        Novel novel = novelService.getPublicNovelBySlug(slug);
+        try {
+            ratingService.deleteRating(authentication.getName(), novel.getId());
+            redirectAttributes.addFlashAttribute("successMessage", "Đã xóa đánh giá của bạn thành công. Bây giờ bạn có thể đánh giá lại.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage() != null ? e.getMessage() : "Đã xảy ra lỗi khi xóa đánh giá.");
+        }
+        return "redirect:/truyen/" + novel.getSlug() + "#ratings";
+    }
+
+    @org.springframework.web.bind.annotation.PostMapping("/truyen/{slug}/rating/edit")
+    public String editReview(
+            @PathVariable String slug,
+            @RequestParam Integer rating,
+            @RequestParam(required = false) String reviewText,
+            org.springframework.security.core.Authentication authentication,
+            org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+        if (authentication == null || !authentication.isAuthenticated()
+                || authentication instanceof org.springframework.security.authentication.AnonymousAuthenticationToken) {
+            return "redirect:/login";
+        }
+        Novel novel = novelService.getPublicNovelBySlug(slug);
+        try {
+            ratingService.updateRating(authentication.getName(), novel.getId(), rating, reviewText);
+            redirectAttributes.addFlashAttribute("successMessage", "Đã cập nhật đánh giá của bạn thành công!");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage() != null ? e.getMessage() : "Đã xảy ra lỗi khi cập nhật đánh giá.");
+        }
+        return "redirect:/truyen/" + novel.getSlug() + "#ratings";
+    }
+
+    // -------------------------------------------------------------------------
+    // BÌNH LUẬN TRUYỆN (Facebook-style Novel Discussion)
+    // -------------------------------------------------------------------------
+
+    @org.springframework.web.bind.annotation.PostMapping("/truyen/{slug}/comments")
+    public String addNovelComment(
+            @PathVariable String slug,
+            @RequestParam String content,
+            @RequestParam(required = false) Integer parentId,
+            org.springframework.security.core.Authentication authentication,
+            org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+        if (authentication == null || !authentication.isAuthenticated()
+                || authentication instanceof org.springframework.security.authentication.AnonymousAuthenticationToken) {
+            return "redirect:/login";
+        }
+        Novel novel = novelService.getPublicNovelBySlug(slug);
+        try {
+            commentService.addNovelComment(authentication.getName(), novel.getId(), parentId, content);
+            redirectAttributes.addFlashAttribute("successMessage", parentId != null ? "Đã gửi câu trả lời bình luận!" : "Đã gửi bình luận thành công!");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Đã xảy ra lỗi khi gửi bình luận.");
+        }
+        return "redirect:/truyen/" + novel.getSlug() + "#comments";
+    }
+
+    @org.springframework.web.bind.annotation.PostMapping("/truyen/{slug}/comments/{commentId}/edit")
+    public String editNovelComment(
+            @PathVariable String slug,
+            @PathVariable Integer commentId,
+            @RequestParam String content,
+            org.springframework.security.core.Authentication authentication,
+            org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+        if (authentication == null || !authentication.isAuthenticated()
+                || authentication instanceof org.springframework.security.authentication.AnonymousAuthenticationToken) {
+            return "redirect:/login";
+        }
+        Novel novel = novelService.getPublicNovelBySlug(slug);
+        try {
+            commentService.updateComment(authentication.getName(), commentId, content);
+            redirectAttributes.addFlashAttribute("successMessage", "Cập nhật bình luận thành công!");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Đã xảy ra lỗi khi cập nhật bình luận.");
+        }
+        return "redirect:/truyen/" + novel.getSlug() + "#comments";
+    }
+
+    @org.springframework.web.bind.annotation.PostMapping("/truyen/{slug}/comments/{commentId}/delete")
+    public String deleteNovelComment(
+            @PathVariable String slug,
+            @PathVariable Integer commentId,
+            org.springframework.security.core.Authentication authentication,
+            org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+        if (authentication == null || !authentication.isAuthenticated()
+                || authentication instanceof org.springframework.security.authentication.AnonymousAuthenticationToken) {
+            return "redirect:/login";
+        }
+        Novel novel = novelService.getPublicNovelBySlug(slug);
+        try {
+            commentService.deleteComment(authentication.getName(), commentId);
+            redirectAttributes.addFlashAttribute("successMessage", "Đã xóa bình luận thành công!");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Đã xảy ra lỗi khi xóa bình luận.");
+        }
+        return "redirect:/truyen/" + novel.getSlug() + "#comments";
     }
 
     @GetMapping("/novel/{id}")

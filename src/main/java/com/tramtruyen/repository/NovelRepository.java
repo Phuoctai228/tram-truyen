@@ -48,6 +48,8 @@ public interface NovelRepository extends JpaRepository<Novel, Integer>, JpaSpeci
 
     List<Novel> findByCategoriesIdAndIsDeletedFalseOrderByUpdatedAtDesc(Integer categoryId);
 
+    org.springframework.data.domain.Page<Novel> findByCategoriesIdAndIsDeletedFalseOrderByUpdatedAtDesc(Integer categoryId, org.springframework.data.domain.Pageable pageable);
+
     List<Novel> findAllByIsDeletedFalseOrderByViewsDesc();
 
     List<Novel> findByCategoriesIdAndIsDeletedFalseOrderByViewsDesc(Integer categoryId);

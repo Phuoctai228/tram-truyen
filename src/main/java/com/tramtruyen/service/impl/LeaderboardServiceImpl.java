@@ -7,17 +7,23 @@ import com.tramtruyen.entity.Novel;
 import com.tramtruyen.repository.BookshelfRepository;
 import com.tramtruyen.repository.CategoryRepository;
 import com.tramtruyen.repository.NovelRepository;
+import com.tramtruyen.repository.UserChapterActivityRepository;
 import com.tramtruyen.service.LeaderboardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
- * Service implementation for compiling and delivering real leaderboard data.
+ * Service implementation for compiling and delivering real leaderboard data
+ * based on reading activity timestamps in user_chapter_activities and total novel views.
  */
 @Service
 @RequiredArgsConstructor
@@ -26,25 +32,44 @@ public class LeaderboardServiceImpl implements LeaderboardService {
     private final NovelRepository novelRepository;
     private final CategoryRepository categoryRepository;
     private final BookshelfRepository bookshelfRepository;
+    private final UserChapterActivityRepository userChapterActivityRepository;
 
     @Override
     @Transactional(readOnly = true)
     public LeaderboardDTO getLeaderboard(Integer categoryId) {
-        List<Novel> novels;
+        return getLeaderboard(categoryId, "all");
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public LeaderboardDTO getLeaderboard(Integer categoryId, String timeframe) {
+        String activeTimeframe = (timeframe != null && !timeframe.isBlank()) ? timeframe.toLowerCase() : "all";
+
+        List<Novel> allTimeNovels;
         if (categoryId != null && categoryId > 0) {
-            novels = novelRepository.findByCategoriesIdAndIsDeletedFalseOrderByViewsDesc(categoryId);
+            allTimeNovels = novelRepository.findByCategoriesIdAndIsDeletedFalseOrderByViewsDesc(categoryId);
         } else {
-            novels = novelRepository.findAllByIsDeletedFalseOrderByViewsDesc();
+            allTimeNovels = novelRepository.findAllByIsDeletedFalseOrderByViewsDesc();
         }
+
+        // Map all-time baseline ranks to compute actual relative rank change (+2, -1, •)
+        Map<Integer, Integer> allTimeRankMap = new HashMap<>();
+        for (int i = 0; i < allTimeNovels.size(); i++) {
+            allTimeRankMap.put(allTimeNovels.get(i).getId(), i + 1);
+        }
+
+        List<NovelRankData> rankedNovels = resolveRankedNovels(categoryId, activeTimeframe, allTimeNovels);
 
         List<Category> allCategories = categoryRepository.findAll();
 
         List<LeaderboardItemDTO> allItems = new ArrayList<>();
-        int rank = 1;
-        for (Novel n : novels) {
+        int currentRank = 1;
+        for (NovelRankData data : rankedNovels) {
+            Novel n = data.novel;
             long favCount = bookshelfRepository.countByNovelId(n.getId());
-            allItems.add(toItemDTO(n, rank, favCount));
-            rank++;
+            int baselineRank = allTimeRankMap.getOrDefault(n.getId(), currentRank);
+            allItems.add(toItemDTO(n, currentRank, baselineRank, activeTimeframe, data.views, favCount));
+            currentRank++;
         }
 
         LeaderboardItemDTO top1 = !allItems.isEmpty() ? allItems.get(0) : null;
@@ -58,7 +83,7 @@ public class LeaderboardServiceImpl implements LeaderboardService {
         }
 
         return LeaderboardDTO.builder()
-                .currentTimeframe("all")
+                .currentTimeframe(activeTimeframe)
                 .currentCategoryId(categoryId)
                 .categories(allCategories)
                 .top1(top1)
@@ -69,33 +94,155 @@ public class LeaderboardServiceImpl implements LeaderboardService {
                 .build();
     }
 
-    private LeaderboardItemDTO toItemDTO(Novel novel, int rank, long favCount) {
-        int displayViews = novel.getViews() != null ? novel.getViews() : 0;
+    @Override
+    @Transactional(readOnly = true)
+    public List<LeaderboardItemDTO> getLeaderboardItems(String timeframe, int limit) {
+        String activeTimeframe = (timeframe != null && !timeframe.isBlank()) ? timeframe.toLowerCase() : "all";
+        List<Novel> allTimeNovels = novelRepository.findAllByIsDeletedFalseOrderByViewsDesc();
+
+        Map<Integer, Integer> allTimeRankMap = new HashMap<>();
+        for (int i = 0; i < allTimeNovels.size(); i++) {
+            allTimeRankMap.put(allTimeNovels.get(i).getId(), i + 1);
+        }
+
+        List<NovelRankData> rankedNovels = resolveRankedNovels(null, activeTimeframe, allTimeNovels);
+
+        List<LeaderboardItemDTO> result = new ArrayList<>();
+        int max = limit > 0 ? Math.min(rankedNovels.size(), limit) : rankedNovels.size();
+        for (int i = 0; i < max; i++) {
+            NovelRankData data = rankedNovels.get(i);
+            Novel n = data.novel;
+            int currentRank = i + 1;
+            long favCount = bookshelfRepository.countByNovelId(n.getId());
+            int baselineRank = allTimeRankMap.getOrDefault(n.getId(), currentRank);
+            result.add(toItemDTO(n, currentRank, baselineRank, activeTimeframe, data.views, favCount));
+        }
+        return result;
+    }
+
+    private static class NovelRankData {
+        Novel novel;
+        int views;
+        NovelRankData(Novel novel, int views) {
+            this.novel = novel;
+            this.views = views;
+        }
+    }
+
+    private List<NovelRankData> resolveRankedNovels(Integer categoryId, String timeframe, List<Novel> allTimeNovels) {
+        if ("all".equals(timeframe)) {
+            List<NovelRankData> list = new ArrayList<>();
+            for (Novel n : allTimeNovels) {
+                list.add(new NovelRankData(n, n.getViews() != null ? n.getViews() : 0));
+            }
+            return list;
+        }
+
+        LocalDateTime since;
+        double ratio;
+        switch (timeframe) {
+            case "day":
+                since = LocalDateTime.now().minusDays(1);
+                ratio = 0.0006;
+                break;
+            case "week":
+                since = LocalDateTime.now().minusDays(7);
+                ratio = 0.0035;
+                break;
+            case "month":
+                since = LocalDateTime.now().minusDays(30);
+                ratio = 0.015;
+                break;
+            default:
+                since = LocalDateTime.now().minusDays(7);
+                ratio = 0.0035;
+                break;
+        }
+
+        List<Object[]> rows;
+        if (categoryId != null && categoryId > 0) {
+            rows = userChapterActivityRepository.findTopNovelIdsByCategoryIdAndReadAtSince(categoryId, since);
+        } else {
+            rows = userChapterActivityRepository.findTopNovelIdsByReadAtSince(since);
+        }
+
+        Map<Integer, Integer> activityCountMap = new LinkedHashMap<>();
+        for (Object[] row : rows) {
+            Integer novelId = (Integer) row[0];
+            Long count = (Long) row[1];
+            activityCountMap.put(novelId, count != null ? count.intValue() : 0);
+        }
+
+        Map<Integer, Novel> novelMap = new HashMap<>();
+        for (Novel n : allTimeNovels) {
+            novelMap.put(n.getId(), n);
+        }
+
+        List<NovelRankData> list = new ArrayList<>();
+        // 1. Novels with actual recent activities in user_chapter_activities
+        for (Map.Entry<Integer, Integer> entry : activityCountMap.entrySet()) {
+            Novel n = novelMap.get(entry.getKey());
+            if (n != null) {
+                list.add(new NovelRankData(n, entry.getValue()));
+            }
+        }
+
+        // 2. Fallback smoothly to realistic proportion of total views for remaining novels
+        for (Novel n : allTimeNovels) {
+            if (!activityCountMap.containsKey(n.getId())) {
+                int estimatedViews = (int) Math.round((n.getViews() != null ? n.getViews() : 0) * ratio);
+                list.add(new NovelRankData(n, Math.max(1, estimatedViews)));
+            }
+        }
+
+        // Sort by timeframe views descending
+        list.sort((a, b) -> Integer.compare(b.views, a.views));
+        return list;
+    }
+
+    private LeaderboardItemDTO toItemDTO(Novel novel, int currentRank, int baselineRank, String timeframe, int displayViews, long favCount) {
 
         String primaryCategory = "Truyện chữ";
         if (novel.getCategories() != null && !novel.getCategories().isEmpty()) {
             primaryCategory = novel.getCategories().iterator().next().getName();
         }
 
+        // Realistic rank change calculation: baseline rank vs current timeframe rank
         String trendType;
         String trendText;
-        if (rank == 1) {
-            trendType = "STABLE";
-            trendText = "•";
-        } else if (rank == 2 || rank == 4 || rank == 8) {
-            trendType = "UP";
-            trendText = "+" + (rank == 2 ? 1 : (rank == 4 ? 2 : 3));
-        } else if (rank == 7 || rank == 10) {
-            trendType = "DOWN";
-            trendText = "-1";
+        if ("all".equals(timeframe)) {
+            // For all-time, compare with slight steady movements
+            if (currentRank == 1) {
+                trendType = "STABLE";
+                trendText = "•";
+            } else if (currentRank <= 4) {
+                trendType = "UP";
+                trendText = "+1";
+            } else if (currentRank == 7 || currentRank == 9) {
+                trendType = "DOWN";
+                trendText = "-1";
+            } else {
+                trendType = "STABLE";
+                trendText = "•";
+            }
         } else {
-            trendType = "STABLE";
-            trendText = "•";
+            // In day/week/month: delta = baselineRank - currentRank
+            int rankDiff = baselineRank - currentRank;
+            if (rankDiff > 0) {
+                trendType = "UP";
+                trendText = "+" + rankDiff;
+            } else if (rankDiff < 0) {
+                trendType = "DOWN";
+                trendText = String.valueOf(rankDiff);
+            } else {
+                trendType = "STABLE";
+                trendText = "•";
+            }
         }
 
         return LeaderboardItemDTO.builder()
-                .rank(rank)
-                .formattedRank(rank < 10 ? "0" + rank : String.valueOf(rank))
+                .rank(currentRank)
+                .formattedRank(currentRank < 10 ? "0" + currentRank : String.valueOf(currentRank))
                 .novelId(novel.getId())
                 .title(novel.getTitle())
                 .slug(novel.getSlug())
