@@ -47,16 +47,22 @@
                         </td>
                         <td><code style="color: var(--muted);" th:text="${'/the-loai/' + category.slug}"></code></td>
                         <td><a th:href="@{'/the-loai/' + ${category.slug}}" target="_blank" style="display: inline-block; padding: 2px 8px; border-radius: 12px; background: #e0f2f1; color: #00695c; font-weight: 600; font-size: 0.9em; text-decoration: none;" th:text="${category.novelCount != null ? category.novelCount : 0}"></a></td>
-                        <td class="actions">
-                            <button class="icon-button" title="Chỉnh sửa" 
-                               th:data-id="${category.id}" 
-                               th:data-name="${category.name}"
-                               th:data-slug="${category.slug}"
-                               th:data-desc="${category.description}"
-                               onclick="openEditModal(this)">✎</button>
-                            <form th:action="@{/staff/categories/{id}/delete(id=${category.id})}" method="post" onsubmit="return confirm('Bạn có chắc muốn xóa thể loại này?');">
-                                <button class="icon-button danger" title="Xóa" type="submit">⌫</button>
-                            </form>
+                        <td>
+                            <div class="actions">
+                                <button type="button" class="action-button" title="Chỉnh sửa" 
+                                   th:data-id="${category.id}" 
+                                   th:data-name="${category.name}"
+                                   th:data-slug="${category.slug}"
+                                   th:data-desc="${category.description}"
+                                   onclick="openEditModal(this)">
+                                    <span aria-hidden="true">✎</span> Sửa
+                                </button>
+                                <form th:action="@{/staff/categories/{id}/delete(id=${category.id})}" method="post" onsubmit="return confirm('Bạn có chắc muốn xóa thể loại này?');">
+                                    <button class="action-button danger" title="Xóa" type="submit">
+                                        <span aria-hidden="true">⌫</span> Xóa
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                     <tr th:if="${#lists.isEmpty(categories)}"><td class="empty" colspan="4">Chưa có danh mục thể loại nào.</td></tr>

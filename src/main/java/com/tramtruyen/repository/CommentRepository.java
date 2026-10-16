@@ -11,7 +11,10 @@ import java.util.List;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Integer> {
 
-    List<Comment> findByChapterIdAndStatusOrderByCreatedAtDesc(Integer chapterId, String status);
 
-    Page<Comment> findByChapterIdAndStatus(Integer chapterId, String status, Pageable pageable);
+    List<Comment> findByNovelIdAndStatusOrderByCreatedAtDesc(Integer novelId, String status);
+
+    List<Comment> findByNovelIdAndParentIsNullAndStatusOrderByCreatedAtDesc(Integer novelId, String status);
+
+    long countByNovelIdAndStatus(Integer novelId, String status);
 }

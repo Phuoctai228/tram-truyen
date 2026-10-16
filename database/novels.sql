@@ -150,12 +150,12 @@ CREATE TABLE user_chapter_activities (
     UNIQUE (user_id, chapter_id)
 );
 
--- 12. COMMENTS (Bình luận cảm nhận truyện/chương M5-F01, M5-F02)
+-- 12. COMMENTS (Bình luận cảm nhận truyện M5-F01, M5-F02)
 CREATE TABLE comments (
     id SERIAL PRIMARY KEY,
     user_id INT REFERENCES users(id) ON DELETE CASCADE,
-    -- novel_id INT REFERENCES novels(id) ON DELETE CASCADE, -- Đã bỏ theo yêu cầu, truy xuất qua chapter_id.
-    chapter_id INT NOT NULL REFERENCES chapters(id) ON DELETE CASCADE,
+    novel_id INT REFERENCES novels(id) ON DELETE CASCADE,
+    parent_id INT REFERENCES comments(id) ON DELETE CASCADE,
     content TEXT NOT NULL,
     status VARCHAR(50) DEFAULT 'VISIBLE', -- VISIBLE, HIDDEN, DELETED
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

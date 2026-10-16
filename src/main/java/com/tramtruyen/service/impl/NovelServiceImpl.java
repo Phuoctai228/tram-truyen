@@ -1,20 +1,25 @@
 package com.tramtruyen.service.impl;
 
+import com.tramtruyen.dto.LatestChapterDTO;
 import com.tramtruyen.dto.NovelForm;
+import com.tramtruyen.dto.NovelSummaryDTO;
+import com.tramtruyen.entity.Category;
 import com.tramtruyen.entity.Novel;
 import com.tramtruyen.exception.ResourceNotFoundException;
+import com.tramtruyen.repository.BookshelfRepository;
+import com.tramtruyen.repository.CategoryRepository;
+import com.tramtruyen.repository.ChapterRepository;
 import com.tramtruyen.repository.NovelRepository;
 import com.tramtruyen.service.MediaStorageService;
 import com.tramtruyen.service.NovelService;
+import com.tramtruyen.util.DateTimeUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
-
-import com.tramtruyen.repository.CategoryRepository;
-import com.tramtruyen.entity.Category;
+import java.util.stream.Collectors;
 
 /** Default business implementation for Novel CMS operations. */
 @Service
@@ -26,6 +31,8 @@ public class NovelServiceImpl implements NovelService {
     private final NovelRepository novelRepository;
     private final MediaStorageService mediaStorageService;
     private final CategoryRepository categoryRepository;
+    private final ChapterRepository chapterRepository;
+    private final BookshelfRepository bookshelfRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -125,8 +132,8 @@ public class NovelServiceImpl implements NovelService {
                 predicates.add(cb.equal(root.get("status"), status));
             }
 
-            if (minRating != null) {
-                predicates.add(cb.greaterThanOrEqualTo(root.get("averageRating"), minRating));
+            if (minRating != null && minRating > 0.0) {
+                predicates.add(cb.greaterThanOrEqualTo(root.get("averageRating"), java.math.BigDecimal.valueOf(minRating)));
             }
 
             if (minChapters != null) {
@@ -155,6 +162,67 @@ public class NovelServiceImpl implements NovelService {
             return java.util.Collections.emptyList();
         }
         return novelRepository.findByCategoriesIdAndIsDeletedFalseOrderByUpdatedAtDesc(categoryId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<NovelSummaryDTO> getNovelSummariesByCategory(Integer categoryId) {
+        if (categoryId == null) {
+            return java.util.Collections.emptyList();
+        }
+        List<Novel> novels = novelRepository.findByCategoriesIdAndIsDeletedFalseOrderByUpdatedAtDesc(categoryId);
+        return novels.stream()
+                .map(this::toNovelSummaryDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public org.springframework.data.domain.Page<NovelSummaryDTO> getNovelSummariesByCategoryPage(Integer categoryId, org.springframework.data.domain.Pageable pageable) {
+        if (categoryId == null) {
+            return org.springframework.data.domain.Page.empty(pageable);
+        }
+        org.springframework.data.domain.Page<Novel> page = novelRepository.findByCategoriesIdAndIsDeletedFalseOrderByUpdatedAtDesc(categoryId, pageable);
+        return page.map(this::toNovelSummaryDTO);
+    }
+
+    private NovelSummaryDTO toNovelSummaryDTO(Novel novel) {
+        long favoriteCount = bookshelfRepository.countByNovelId(novel.getId());
+        List<LatestChapterDTO> latestChapters = chapterRepository
+                .findTop3ByNovelIdAndIsDeletedFalseAndStatusOrderByChapterNumberDesc(novel.getId(), "PUBLISHED")
+                .stream()
+                .map(ch -> LatestChapterDTO.builder()
+                        .id(ch.getId())
+                        .chapterNumber(ch.getChapterNumber())
+                        .title(ch.getTitle())
+                        .updatedAt(ch.getUpdatedAt())
+                        .relativeTime(DateTimeUtils.formatRelativeTime(
+                                ch.getUpdatedAt() != null ? ch.getUpdatedAt() : ch.getCreatedAt()))
+                        .build())
+                .collect(Collectors.toList());
+
+        List<Category> novelCategories = null;
+        if (novel.getCategories() != null && !novel.getCategories().isEmpty()) {
+            novelCategories = new java.util.ArrayList<>(novel.getCategories());
+        }
+
+        return NovelSummaryDTO.builder()
+                .id(novel.getId())
+                .title(novel.getTitle())
+                .slug(novel.getSlug())
+                .author(novel.getAuthor())
+                .summary(novel.getSummary())
+                .coverUrl(novel.getCoverUrl())
+                .status(novel.getStatus())
+                .views(novel.getViews() != null ? novel.getViews() : 0)
+                .favoriteCount(favoriteCount)
+                .averageRating(novel.getAverageRating())
+                .chapterCount(novel.getChapterCount() != null ? novel.getChapterCount() : 0)
+                .categories(novelCategories)
+                .createdAt(novel.getCreatedAt())
+                .updatedAt(novel.getUpdatedAt())
+                .latestChapters(latestChapters)
+                .build();
     }
 
     @Override

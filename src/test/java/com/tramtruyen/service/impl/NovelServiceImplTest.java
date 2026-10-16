@@ -30,11 +30,17 @@ class NovelServiceImplTest {
     @Mock
     private CategoryRepository categoryRepository;
 
+    @Mock
+    private com.tramtruyen.repository.ChapterRepository chapterRepository;
+
+    @Mock
+    private com.tramtruyen.repository.BookshelfRepository bookshelfRepository;
+
     private NovelServiceImpl novelService;
 
     @BeforeEach
     void setUp() {
-        novelService = new NovelServiceImpl(novelRepository, mediaStorageService, categoryRepository);
+        novelService = new NovelServiceImpl(novelRepository, mediaStorageService, categoryRepository, chapterRepository, bookshelfRepository);
     }
 
     @Test
