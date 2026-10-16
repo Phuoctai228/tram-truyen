@@ -651,10 +651,18 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('roleModalStaffCheckbox').checked = isStaff;
 
             const avatarContainer = document.getElementById('roleModalAvatar');
+            avatarContainer.textContent = '';
             if (avatarUrl && avatarUrl.trim() !== '') {
-                avatarContainer.innerHTML = '<img src="' + avatarUrl + '" alt="Avatar" class="w-full h-full object-cover">';
+                const img = document.createElement('img');
+                img.src = avatarUrl;
+                img.alt = 'Avatar';
+                img.className = 'w-full h-full object-cover';
+                avatarContainer.appendChild(img);
             } else {
-                avatarContainer.innerHTML = '<span id="roleModalInitial">' + initial + '</span>';
+                const span = document.createElement('span');
+                span.id = 'roleModalInitial';
+                span.textContent = initial;
+                avatarContainer.appendChild(span);
             }
 
             roleModal.classList.remove('hidden');
@@ -690,10 +698,18 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             const avatarContainer = document.getElementById('banModalAvatar');
+            avatarContainer.textContent = '';
             if (avatarUrl && avatarUrl.trim() !== '') {
-                avatarContainer.innerHTML = '<img src="' + avatarUrl + '" alt="Avatar" class="w-full h-full object-cover">';
+                const img = document.createElement('img');
+                img.src = avatarUrl;
+                img.alt = 'Avatar';
+                img.className = 'w-full h-full object-cover';
+                avatarContainer.appendChild(img);
             } else {
-                avatarContainer.innerHTML = '<span id="banModalInitial">' + initial + '</span>';
+                const span = document.createElement('span');
+                span.id = 'banModalInitial';
+                span.textContent = initial;
+                avatarContainer.appendChild(span);
             }
 
             banModal.classList.remove('hidden');
@@ -760,10 +776,18 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             const avatarContainer = document.getElementById('unbanModalAvatar');
+            avatarContainer.textContent = '';
             if (avatarUrl && avatarUrl.trim() !== '') {
-                avatarContainer.innerHTML = '<img src="' + avatarUrl + '" alt="Avatar" class="w-full h-full object-cover">';
+                const img = document.createElement('img');
+                img.src = avatarUrl;
+                img.alt = 'Avatar';
+                img.className = 'w-full h-full object-cover';
+                avatarContainer.appendChild(img);
             } else {
-                avatarContainer.innerHTML = '<span id="unbanModalInitial">' + initial + '</span>';
+                const span = document.createElement('span');
+                span.id = 'unbanModalInitial';
+                span.textContent = initial;
+                avatarContainer.appendChild(span);
             }
 
             unbanModal.classList.remove('hidden');

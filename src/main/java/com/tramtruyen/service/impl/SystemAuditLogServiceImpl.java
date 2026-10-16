@@ -38,6 +38,9 @@ public class SystemAuditLogServiceImpl implements SystemAuditLogService {
     private final UserRepository userRepository;
     private final ObjectMapper objectMapper;
 
+    private static final java.time.format.DateTimeFormatter AUDIT_DATE_TIME_FORMATTER =
+            java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+
     // =========================================================================
     // 1. ACTION REGISTRY (Tập trung danh mục nhãn hành động)
     // =========================================================================
@@ -310,7 +313,7 @@ public class SystemAuditLogServiceImpl implements SystemAuditLogService {
                     .targetDisplay(targetDisplay)
                     .ipAddress(ip != null ? ip : "—")
                     .createdAt(createdAt)
-                    .formattedCreatedAt(DateTimeUtils.formatUtcToHanoi(createdAt, "dd/MM/yyyy HH:mm:ss"))
+                    .formattedCreatedAt(createdAt != null ? createdAt.format(AUDIT_DATE_TIME_FORMATTER) : "—")
                     .build();
         });
 
@@ -422,7 +425,7 @@ public class SystemAuditLogServiceImpl implements SystemAuditLogService {
                 .targetUrl(targetUrl)
                 .ipAddress(log.getIpAddress() != null ? log.getIpAddress() : "—")
                 .createdAt(log.getCreatedAt())
-                .formattedCreatedAt(DateTimeUtils.formatUtcToHanoi(log.getCreatedAt(), "dd/MM/yyyy HH:mm:ss"))
+                .formattedCreatedAt(log.getCreatedAt() != null ? log.getCreatedAt().format(AUDIT_DATE_TIME_FORMATTER) : "—")
                 .isJsonDiffAvailable(isDiffAvailable)
                 .fieldDiffs(diffs)
                 .plainFallbackNote(plainFallbackNote)

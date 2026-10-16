@@ -174,11 +174,11 @@ public final class AuditLogFieldFormatter {
             return ROLE_MAP.get(strVal.toUpperCase());
         }
 
-        // 5. ISO DateTime UTC -> dd/MM/yyyy HH:mm Hà Nội
+        // 5. ISO DateTime (đã là giờ Hà Nội) -> dd/MM/yyyy HH:mm
         if (ISO_DATETIME_PATTERN.matcher(strVal).matches()) {
             try {
                 LocalDateTime ldt = LocalDateTime.parse(strVal);
-                return DateTimeUtils.formatUtcToHanoi(ldt, "dd/MM/yyyy HH:mm");
+                return ldt.format(HANOI_FORMATTER);
             } catch (Exception ignored) {
             }
         }

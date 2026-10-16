@@ -148,6 +148,18 @@ public class ReportAdminController {
         return "redirect:/admin/reports?tab=content&status=" + currentStatus + "&page=" + page;
     }
 
+    @GetMapping("/comment/{id}/resolve")
+    public String getResolveCommentReportRedirect(@RequestParam(value = "status", defaultValue = "RECEIVED") String currentStatus,
+                                                  @RequestParam(value = "page", defaultValue = "0") int page) {
+        return "redirect:/admin/reports?tab=comment&status=" + currentStatus + "&page=" + page;
+    }
+
+    @GetMapping("/content/{id}/resolve")
+    public String getResolveContentReportRedirect(@RequestParam(value = "status", defaultValue = "RECEIVED") String currentStatus,
+                                                  @RequestParam(value = "page", defaultValue = "0") int page) {
+        return "redirect:/admin/reports?tab=content&status=" + currentStatus + "&page=" + page;
+    }
+
     private Integer getAdminId(Authentication authentication) {
         if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails cud) {
             return cud.getUser().getId();

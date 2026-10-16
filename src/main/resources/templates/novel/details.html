@@ -351,7 +351,12 @@
                           <button sec:authorize="isAuthenticated()"
                                   th:if="${comment.user == null or #authentication.name != comment.user.email}"
                                   type="button"
-                                  th:onclick="'openReportCommentModal(' + ${comment.id} + ')'"
+                                  onclick="openReportCommentModal(this)"
+                                  th:data-comment-id="${comment.id}"
+                                  th:data-author-name="${comment.user != null ? comment.user.fullName : 'Độc giả'}"
+                                  th:data-author-initial="${comment.user != null and !#strings.isEmpty(comment.user.fullName) ? #strings.substring(comment.user.fullName, 0, 1).toUpperCase() : 'DG'}"
+                                  th:data-time-ago="${#temporals.format(comment.createdAt, 'dd/MM/yyyy HH:mm')}"
+                                  th:data-comment-content="${#strings.length(comment.content) > 120 ? #strings.substring(comment.content, 0, 120) + '...' : comment.content}"
                                   class="text-outline hover:text-rose-600 hover:underline">
                             Báo cáo
                           </button>
@@ -451,7 +456,12 @@
                                 <button sec:authorize="isAuthenticated()"
                                         th:if="${reply.user == null or #authentication.name != reply.user.email}"
                                         type="button"
-                                        th:onclick="'openReportCommentModal(' + ${reply.id} + ')'"
+                                        onclick="openReportCommentModal(this)"
+                                        th:data-comment-id="${reply.id}"
+                                        th:data-author-name="${reply.user != null ? reply.user.fullName : 'Độc giả'}"
+                                        th:data-author-initial="${reply.user != null and !#strings.isEmpty(reply.user.fullName) ? #strings.substring(reply.user.fullName, 0, 1).toUpperCase() : 'DG'}"
+                                        th:data-time-ago="${#temporals.format(reply.createdAt, 'dd/MM/yyyy HH:mm')}"
+                                        th:data-comment-content="${#strings.length(reply.content) > 120 ? #strings.substring(reply.content, 0, 120) + '...' : reply.content}"
                                         class="text-outline hover:text-rose-600 hover:underline">
                                   Báo cáo
                                 </button>

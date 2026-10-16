@@ -45,7 +45,7 @@ public class SystemAuditLogAdminController {
 
         String effectiveKeyword = keyword != null ? keyword.trim() : (performer != null ? performer.trim() : "");
         String effectiveGroup = actionGroup != null ? actionGroup.trim() : "";
-        
+
         // Vai trò người thực hiện (tương thích backward nếu gửi onlyAdmin=true)
         String effectiveRole = performerRole != null ? performerRole.trim() : "";
         if (effectiveRole.isEmpty() && Boolean.TRUE.equals(onlyAdmin)) {
