@@ -32,4 +32,6 @@ public interface NovelService {
     List<Novel> getNovelsByCategory(Integer categoryId);
 
     List<NovelSummaryDTO> getNovelSummariesByCategory(Integer categoryId);
+
+    org.springframework.data.domain.Page<NovelSummaryDTO> getNovelSummariesByCategoryPage(Integer categoryId, org.springframework.data.domain.Pageable pageable);
 }

@@ -176,6 +176,16 @@ public class NovelServiceImpl implements NovelService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public org.springframework.data.domain.Page<NovelSummaryDTO> getNovelSummariesByCategoryPage(Integer categoryId, org.springframework.data.domain.Pageable pageable) {
+        if (categoryId == null) {
+            return org.springframework.data.domain.Page.empty(pageable);
+        }
+        org.springframework.data.domain.Page<Novel> page = novelRepository.findByCategoriesIdAndIsDeletedFalseOrderByUpdatedAtDesc(categoryId, pageable);
+        return page.map(this::toNovelSummaryDTO);
+    }
+
     private NovelSummaryDTO toNovelSummaryDTO(Novel novel) {
         long favoriteCount = bookshelfRepository.countByNovelId(novel.getId());
         List<LatestChapterDTO> latestChapters = chapterRepository

@@ -7,6 +7,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-123456}
       POSTGRES_DB: ${POSTGRES_DB:-tramtruyen}
+      TZ: Asia/Ho_Chi_Minh
     ports:
       - "5432:5432"
     volumes:
@@ -23,6 +24,7 @@ services:
     env_file:
       - .env
     environment:
+      - TZ=Asia/Ho_Chi_Minh
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/${POSTGRES_DB:-tramtruyen}
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER:-postgres}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD:-123456}

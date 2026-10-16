@@ -122,6 +122,44 @@
                 </div>
             </div>
         </div>
+
+        <!-- Pagination Bar (10 thẻ / trang) -->
+        <div th:if="${totalPages > 1}" class="mt-10 flex items-center justify-center gap-2">
+            <!-- Previous Button -->
+            <a th:if="${currentPage > 0}"
+                th:href="@{'/the-loai/' + ${category.slug} + '?page=' + ${currentPage - 1}}"
+                class="px-4 py-2 rounded-xl bg-surface-container text-on-surface hover:bg-primary hover:text-white font-medium text-sm transition-all flex items-center gap-1 shadow-xs">
+                <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+                <span>Trang trước</span>
+            </a>
+            <span th:unless="${currentPage > 0}"
+                class="px-4 py-2 rounded-xl bg-surface-container/50 text-outline cursor-not-allowed font-medium text-sm flex items-center gap-1">
+                <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+                <span>Trang trước</span>
+            </span>
+
+            <!-- Page Number Buttons -->
+            <div class="flex items-center gap-1.5 mx-2">
+                <th:block th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}">
+                    <a th:href="@{'/the-loai/' + ${category.slug} + '?page=' + ${pageNum}}"
+                        th:class="${pageNum == currentPage} ? 'w-10 h-10 rounded-xl bg-primary text-white font-bold text-sm flex items-center justify-center shadow-sm' : 'w-10 h-10 rounded-xl bg-surface-container-lowest text-on-surface hover:bg-surface-container border border-outline-variant/30 font-medium text-sm flex items-center justify-center transition-colors'"
+                        th:text="${pageNum + 1}">1</a>
+                </th:block>
+            </div>
+
+            <!-- Next Button -->
+            <a th:if="${currentPage < totalPages - 1}"
+                th:href="@{'/the-loai/' + ${category.slug} + '?page=' + ${currentPage + 1}}"
+                class="px-4 py-2 rounded-xl bg-surface-container text-on-surface hover:bg-primary hover:text-white font-medium text-sm transition-all flex items-center gap-1 shadow-xs">
+                <span>Trang sau</span>
+                <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+            </a>
+            <span th:unless="${currentPage < totalPages - 1}"
+                class="px-4 py-2 rounded-xl bg-surface-container/50 text-outline cursor-not-allowed font-medium text-sm flex items-center gap-1">
+                <span>Trang sau</span>
+                <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+            </span>
+        </div>
     </main>
 
     <div th:replace="~{fragments/footer :: main-footer}"></div>
