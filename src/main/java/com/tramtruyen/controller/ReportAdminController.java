@@ -33,12 +33,15 @@ public class ReportAdminController {
     @GetMapping
     public String listReports(@RequestParam(value = "tab", defaultValue = "comment") String tab,
                               @RequestParam(value = "status", defaultValue = "RECEIVED") String status,
-                              @RequestParam(value = "page", defaultValue = "0") int page,
-                              @RequestParam(value = "size", defaultValue = "10") int size,
+                              @RequestParam(value = "page", required = false) String page,
+                              @RequestParam(value = "size", required = false) String size,
                               Model model) {
 
         String safeTab = "content".equalsIgnoreCase(tab) ? "content" : "comment";
         String safeStatus = (status == null || status.isBlank()) ? "RECEIVED" : status.toUpperCase();
+
+        int parsedPage = com.tramtruyen.util.PaginationUtils.parsePage(page);
+        int parsedSize = com.tramtruyen.util.PaginationUtils.parseSize(size, 7);
 
         Page<CommentReport> commentReports = null;
         Page<ContentReport> contentReports = null;
@@ -48,12 +51,20 @@ public class ReportAdminController {
         int currentPage = 0;
 
         if ("comment".equals(safeTab)) {
-            commentReports = reportService.getCommentReports(safeStatus, page, size);
+            commentReports = reportService.getCommentReports(safeStatus, parsedPage, parsedSize);
+            if (parsedPage >= commentReports.getTotalPages() && commentReports.getTotalPages() > 0) {
+                parsedPage = commentReports.getTotalPages() - 1;
+                commentReports = reportService.getCommentReports(safeStatus, parsedPage, parsedSize);
+            }
             totalPages = commentReports.getTotalPages();
             totalElements = commentReports.getTotalElements();
             currentPage = commentReports.getNumber();
         } else {
-            contentReports = reportService.getContentReports(safeStatus, page, size);
+            contentReports = reportService.getContentReports(safeStatus, parsedPage, parsedSize);
+            if (parsedPage >= contentReports.getTotalPages() && contentReports.getTotalPages() > 0) {
+                parsedPage = contentReports.getTotalPages() - 1;
+                contentReports = reportService.getContentReports(safeStatus, parsedPage, parsedSize);
+            }
             totalPages = contentReports.getTotalPages();
             totalElements = contentReports.getTotalElements();
             currentPage = contentReports.getNumber();
@@ -61,15 +72,21 @@ public class ReportAdminController {
 
         Map<String, Long> counts = reportService.getReportCounts();
 
+        String filterQuery = com.tramtruyen.util.PaginationUtils.buildFilterQuery(java.util.Map.of(
+                "tab", safeTab,
+                "status", safeStatus
+        ));
+
         model.addAttribute("activeTab", safeTab);
         model.addAttribute("currentStatus", safeStatus);
         model.addAttribute("commentReports", commentReports);
         model.addAttribute("contentReports", contentReports);
         model.addAttribute("counts", counts);
+        model.addAttribute("filterQuery", filterQuery);
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("totalElements", totalElements);
-        model.addAttribute("pageSize", size);
+        model.addAttribute("pageSize", parsedSize);
         model.addAttribute("pageTitle", "Quản lý & Xử lý báo cáo vi phạm | Trạm Truyện Admin");
 
         return "admin/reports/list";

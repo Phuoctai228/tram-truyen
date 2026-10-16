@@ -1,22 +1,24 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title th:text="${pageTitle}">Hòm thư độc giả - Trạm Truyện</title>
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,500;0,600;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+        rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/bookshelf.css}">
     <script src="https://cdn.tailwindcss.com"></script>
     <script th:src="@{/js/novel/tailwind-config.js}"></script>
-    <style>
-        .font-serif-title { font-family: 'Lora', Georgia, serif; }
-        .tab-active { background-color: #fff; color: #875200; box-shadow: 0 1px 3px rgba(0,0,0,0.06); font-weight: 700; }
-        .mail-item-active { background-color: #fffaf4; border-left: 3px solid #bc7d39; }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/user/mailbox.css}">
 </head>
+
 <body class="bg-surface font-body-md text-on-surface min-h-screen flex flex-col">
 
     <!-- Header (Reusing fragments/header.html) -->
@@ -35,10 +37,13 @@
                     <!-- Mailbox Header -->
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
                         <div>
-                            <div class="flex items-center gap-2 text-xs font-semibold text-[#8a7664] uppercase tracking-wider mb-1">
+                            <div
+                                class="flex items-center gap-2 text-xs font-semibold text-[#8a7664] uppercase tracking-wider mb-1">
                                 <span>THƯ PHÒNG & ĐỐI THOẠI</span>
                                 <span>•</span>
-                                <span class="text-[#bc7d39]" th:text="${unreadCount > 0 ? unreadCount + ' tin chưa đọc' : 'Hộp thư đã đọc hết'}">2 tin chưa đọc</span>
+                                <span class="text-[#bc7d39]"
+                                    th:text="${unreadCount > 0 ? unreadCount + ' tin chưa đọc' : 'Hộp thư đã đọc hết'}">2
+                                    tin chưa đọc</span>
                             </div>
                             <h1 class="font-serif-title text-2xl sm:text-3xl font-bold text-[#2b2118]">
                                 Hòm thư độc giả
@@ -49,7 +54,7 @@
                                 <input type="hidden" name="tab" th:value="${activeTab}">
                                 <input type="hidden" name="page" th:value="${currentPage}">
                                 <button type="submit"
-                                        class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#f4ece1] hover:bg-[#e9decb] text-[#5c3e07] text-sm font-semibold transition-all shadow-sm">
+                                    class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#f4ece1] hover:bg-[#e9decb] text-[#5c3e07] text-sm font-semibold transition-all shadow-sm">
                                     <span class="material-symbols-outlined text-[18px]">done_all</span>
                                     <span>Đánh dấu đã đọc</span>
                                 </button>
@@ -62,68 +67,82 @@
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
                         <!-- Left Column: Mailbox List -->
-                        <div class="lg:col-span-5 bg-white rounded-2xl border border-[#eae2d5] shadow-sm overflow-hidden flex flex-col">
+                        <div
+                            class="lg:col-span-5 bg-white rounded-2xl border border-[#eae2d5] shadow-sm overflow-hidden flex flex-col">
                             <!-- Tabs Bar -->
                             <div class="p-3 bg-[#f8f5ee] border-b border-[#eae2d5] flex items-center gap-2">
                                 <a th:href="@{/user/mailbox(tab='all')}"
-                                   class="flex-1 text-center py-2 px-3 rounded-xl text-xs font-medium transition-all"
-                                   th:classappend="${activeTab == 'all' ? 'tab-active' : 'text-[#756555] hover:text-[#2b2118]'}">
+                                    class="flex-1 text-center py-2 px-3 rounded-xl text-xs font-medium transition-all"
+                                    th:classappend="${activeTab == 'all' ? 'tab-active' : 'text-[#756555] hover:text-[#2b2118]'}">
                                     <span>Thông báo</span>
-                                    <span th:if="${unreadCount > 0}" class="ml-1 px-1.5 py-0.2 rounded-full bg-[#f4ece1] text-[#875200] font-bold" th:text="${unreadCount}">2</span>
+                                    <span th:if="${unreadCount > 0}"
+                                        class="ml-1 px-1.5 py-0.2 rounded-full bg-[#f4ece1] text-[#875200] font-bold"
+                                        th:text="${unreadCount}">2</span>
                                 </a>
                                 <a th:href="@{/user/mailbox(tab='reports')}"
-                                   class="flex-1 text-center py-2 px-3 rounded-xl text-xs font-medium transition-all"
-                                   th:classappend="${activeTab == 'reports' ? 'tab-active' : 'text-[#756555] hover:text-[#2b2118]'}">
+                                    class="flex-1 text-center py-2 px-3 rounded-xl text-xs font-medium transition-all"
+                                    th:classappend="${activeTab == 'reports' ? 'tab-active' : 'text-[#756555] hover:text-[#2b2118]'}">
                                     <span>Phản hồi báo cáo</span>
                                 </a>
                             </div>
 
                             <!-- List Header -->
-                            <div class="px-4 py-3 border-b border-[#eae2d5] flex items-center justify-between text-xs text-[#8a7664] font-medium bg-white">
+                            <div
+                                class="px-4 py-3 border-b border-[#eae2d5] flex items-center justify-between text-xs text-[#8a7664] font-medium bg-white">
                                 <span class="font-bold uppercase tracking-wider text-[#9d8975]">DANH SÁCH THƯ</span>
-                                <span class="flex items-center gap-1 cursor-pointer hover:text-[#2b2118]">
-                                    Mới nhất <span class="material-symbols-outlined text-[14px]">expand_more</span>
-                                </span>
                             </div>
 
                             <!-- Items List -->
                             <div class="divide-y divide-[#f2ebe1] max-h-[640px] overflow-y-auto">
                                 <th:block th:if="${notifications != null and !#lists.isEmpty(notifications.content)}">
                                     <div th:each="mail : ${notifications.content}"
-                                         class="p-4 transition-colors relative group cursor-pointer hover:bg-[#faf7f2]"
-                                         th:classappend="${(selectedNotification != null and selectedNotification.id == mail.id) ? 'mail-item-active' : ''}">
-                                        
+                                        class="p-4 transition-colors relative group cursor-pointer hover:bg-[#faf7f2]"
+                                        th:classappend="${(selectedNotification != null and selectedNotification.id == mail.id) ? 'mail-item-active' : ''}">
+
                                         <div class="flex items-start justify-between gap-2 mb-1.5">
                                             <div class="flex items-center gap-2 min-w-0">
                                                 <!-- Unread indicator dot -->
-                                                <span th:if="${!mail.isSystem and !mail.isRead}" class="w-2.5 h-2.5 rounded-full bg-[#d97706] shrink-0"></span>
-                                                <span class="text-xs font-bold text-[#875200] truncate" th:text="${mail.isSystem ? 'Hệ thống Trạm Truyện' : 'Ban Quản Trị Trạm Truyện'}">Ban Quản Trị Trạm Truyện</span>
+                                                <span th:if="${!mail.isSystem and !mail.isRead}"
+                                                    class="w-2.5 h-2.5 rounded-full bg-[#d97706] shrink-0"></span>
+                                                <span class="text-xs font-bold text-[#875200] truncate"
+                                                    th:text="${mail.isSystem ? 'Hệ thống Trạm Truyện' : 'Ban Quản Trị Trạm Truyện'}">Ban
+                                                    Quản Trị Trạm Truyện</span>
                                             </div>
-                                            <span class="text-[11px] text-[#9d8975] shrink-0" th:text="${mail.timeFormatted}">14:30</span>
+                                            <span class="text-[11px] text-[#9d8975] shrink-0"
+                                                th:text="${mail.timeFormatted}">14:30</span>
                                         </div>
 
-                                        <a th:href="@{/user/mailbox(tab=${activeTab}, page=${currentPage}, selectedId=${mail.id})}" class="block">
-                                            <h4 class="text-sm font-bold text-[#2b2118] line-clamp-1 mb-1" th:text="${mail.title}">
+                                        <a th:href="@{/user/mailbox(tab=${activeTab}, page=${currentPage}, selectedId=${mail.id})}"
+                                            class="block">
+                                            <h4 class="text-sm font-bold text-[#2b2118] line-clamp-1 mb-1"
+                                                th:text="${mail.title}">
                                                 Tiêu đề thư
                                             </h4>
-                                            <p class="text-xs text-[#6b5849] line-clamp-2 leading-relaxed mb-2.5" th:text="${mail.content}">
+                                            <p class="text-xs text-[#6b5849] line-clamp-2 leading-relaxed mb-2.5"
+                                                th:text="${mail.content}">
                                                 Nội dung trích đoạn...
                                             </p>
                                         </a>
 
                                         <div class="flex items-center justify-between gap-2 pt-1">
                                             <div class="flex items-center gap-1.5">
-                                                <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#f4ece1] text-[#875200]" th:text="${mail.statusBadge}">Đã xử lý</span>
-                                                <span th:if="${mail.referenceCode}" class="text-[10px] text-[#a4917f]" th:text="'Mã: ' + ${mail.referenceCode}">#RP-8841</span>
+                                                <span
+                                                    class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#f4ece1] text-[#875200]"
+                                                    th:text="${mail.statusBadge}">Đã xử lý</span>
+                                                <span th:if="${mail.referenceCode}" class="text-[10px] text-[#a4917f]"
+                                                    th:text="'Mã: ' + ${mail.referenceCode}">#RP-8841</span>
                                             </div>
 
                                             <!-- Delete Action for personal notifications -->
-                                            <form th:if="${!mail.isSystem}" th:action="@{/user/mailbox/{id}/delete(id=${mail.id})}" method="post" class="m-0"
-                                                  onsubmit="return confirm('Bạn có chắc muốn xóa thư này khỏi hòm thư?');">
+                                            <form th:if="${!mail.isSystem}"
+                                                th:action="@{/user/mailbox/{id}/delete(id=${mail.id})}" method="post"
+                                                class="m-0"
+                                                onsubmit="return confirm('Bạn có chắc muốn xóa thư này khỏi hòm thư?');">
                                                 <input type="hidden" name="tab" th:value="${activeTab}">
-                                                <input type="hidden" name="page" th:value="${notifications != null ? notifications.number : 0}">
+                                                <input type="hidden" name="page"
+                                                    th:value="${notifications != null ? notifications.number : 0}">
                                                 <button type="submit" title="Xóa thông báo này"
-                                                        class="opacity-0 group-hover:opacity-100 p-1 text-[#a4917f] hover:text-red-600 transition-all">
+                                                    class="opacity-0 group-hover:opacity-100 p-1 text-[#a4917f] hover:text-red-600 transition-all">
                                                     <span class="material-symbols-outlined text-[16px]">delete</span>
                                                 </button>
                                             </form>
@@ -133,87 +152,51 @@
 
                                 <!-- Empty State -->
                                 <div th:if="${notifications == null or #lists.isEmpty(notifications.content)}"
-                                     class="p-12 text-center text-[#8a7664] space-y-3">
-                                    <div class="w-16 h-16 mx-auto rounded-full bg-[#f4ece1] flex items-center justify-center text-[#bc7d39]">
+                                    class="p-12 text-center text-[#8a7664] space-y-3">
+                                    <div
+                                        class="w-16 h-16 mx-auto rounded-full bg-[#f4ece1] flex items-center justify-center text-[#bc7d39]">
                                         <span class="material-symbols-outlined text-[32px]">mark_email_read</span>
                                     </div>
                                     <h4 class="font-bold text-base text-[#2b2118]">Hòm thư trống</h4>
-                                    <p class="text-xs text-[#8a7664] max-w-xs mx-auto">Hiện tại bạn không có thông báo nào trong mục này.</p>
+                                    <p class="text-xs text-[#8a7664] max-w-xs mx-auto">Hiện tại bạn không có thông báo
+                                        nào trong mục này.</p>
                                 </div>
                             </div>
 
-                            <!-- Table Footer & Pagination -->
-                            <div class="px-4 py-3 bg-[#fffaf8] border-t border-[#ead8cb] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-                                <div class="text-[#75695d]">
-                                    <span th:if="${notifications != null and notifications.totalElements > 0}"
-                                          th:text="'Hiển thị ' + (${notifications.number * notifications.size + 1}) + ' - ' + (${notifications.number * notifications.size + notifications.numberOfElements}) + ' trong tổng số ' + ${#numbers.formatDecimal(notifications.totalElements, 0, 'POINT', 0, 'POINT')} + ' thư'">
-                                    </span>
-                                    <span th:if="${notifications == null or notifications.totalElements == 0}">Hiển thị 0 thư</span>
-                                </div>
-
-                                <!-- Pagination controls -->
-                                <div th:if="${notifications != null and notifications.totalPages > 1}" class="flex items-center gap-1">
-                                    <!-- Prev Page -->
-                                    <a th:if="${notifications.number > 0}"
-                                       th:href="@{/user/mailbox(tab=${activeTab}, page=${notifications.number - 1})}"
-                                       class="w-7 h-7 rounded-lg border border-[#ead8cb] bg-white flex items-center justify-center text-xs font-bold text-[#524437] hover:bg-[#feeadc] transition-colors">
-                                        &lt;
-                                    </a>
-                                    <span th:unless="${notifications.number > 0}"
-                                          class="w-7 h-7 rounded-lg border border-[#ead8cb] bg-gray-50 flex items-center justify-center text-xs font-bold text-gray-300 cursor-not-allowed">
-                                        &lt;
-                                    </span>
-
-                                    <!-- Page Numbers -->
-                                    <th:block th:each="i : ${#numbers.sequence(0, notifications.totalPages - 1)}">
-                                        <!-- Show first, last, and window around current page -->
-                                        <th:block th:if="${i == 0 or i == notifications.totalPages - 1 or (i >= notifications.number - 2 and i <= notifications.number + 2)}">
-                                            <a th:href="@{/user/mailbox(tab=${activeTab}, page=${i})}"
-                                               th:text="${i + 1}"
-                                               class="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold transition-colors"
-                                               th:classappend="${i == notifications.number ? 'bg-[#875200] text-white shadow-sm' : 'border border-[#ead8cb] bg-white text-[#524437] hover:bg-[#feeadc]'}">
-                                                1
-                                            </a>
-                                        </th:block>
-                                        <th:block th:if="${(i == 1 and notifications.number > 3) or (i == notifications.totalPages - 2 and notifications.number < notifications.totalPages - 4)}">
-                                            <span class="w-7 h-7 flex items-center justify-center text-xs text-[#75695d]">...</span>
-                                        </th:block>
-                                    </th:block>
-
-                                    <!-- Next Page -->
-                                    <a th:if="${notifications.number < notifications.totalPages - 1}"
-                                       th:href="@{/user/mailbox(tab=${activeTab}, page=${notifications.number + 1})}"
-                                       class="w-7 h-7 rounded-lg border border-[#ead8cb] bg-white flex items-center justify-center text-xs font-bold text-[#524437] hover:bg-[#feeadc] transition-colors">
-                                        &gt;
-                                    </a>
-                                    <span th:unless="${notifications.number < notifications.totalPages - 1}"
-                                          class="w-7 h-7 rounded-lg border border-[#ead8cb] bg-gray-50 flex items-center justify-center text-xs font-bold text-gray-300 cursor-not-allowed">
-                                        &gt;
-                                    </span>
-                                </div>
+                            <!-- Table Footer & Pagination (Reusing shared fragment) -->
+                            <div
+                                th:replace="~{fragments/pagination-bar :: pagination(baseUrl='/user/mailbox', currentPage=${currentPage}, totalPages=${totalPages}, totalElements=${totalElements}, pageSize=${pageSize}, unitLabel='thư', filterQuery=${filterQuery})}">
                             </div>
                         </div>
 
                         <!-- Right Column: Letter Reading Pane -->
-                        <div class="lg:col-span-7 bg-white rounded-2xl border border-[#eae2d5] shadow-sm p-6 sm:p-8 space-y-6">
+                        <div
+                            class="lg:col-span-7 bg-white rounded-2xl border border-[#eae2d5] shadow-sm p-6 sm:p-8 space-y-6">
                             <th:block th:if="${selectedNotification != null}">
 
                                 <!-- Top Toolbar -->
                                 <div class="flex items-center justify-between pb-4 border-b border-[#eae2d5]">
                                     <div class="flex items-center gap-2">
-                                        <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-[#f4ece1] text-[#875200] flex items-center gap-1.5">
+                                        <span
+                                            class="px-2.5 py-1 rounded-full text-xs font-semibold bg-[#f4ece1] text-[#875200] flex items-center gap-1.5">
                                             <span class="w-1.5 h-1.5 rounded-full bg-[#875200]"></span>
                                             <span th:text="${selectedNotification.statusBadge}">Đã xử lý hoàn tất</span>
                                         </span>
-                                        <span class="text-xs text-[#8a7664]" th:text="'Báo cáo ' + ${selectedNotification.referenceCode}">Báo cáo #RP-8841</span>
+                                        <span class="text-xs text-[#8a7664]"
+                                            th:text="'Báo cáo ' + ${selectedNotification.referenceCode}">Báo cáo
+                                            #RP-8841</span>
                                     </div>
                                     <div class="flex items-center gap-2 text-[#8a7664]">
                                         <!-- Delete Letter Button -->
-                                        <form th:if="${!selectedNotification.isSystem}" th:action="@{/user/mailbox/{id}/delete(id=${selectedNotification.id})}" method="post" class="m-0"
-                                              onsubmit="return confirm('Bạn có chắc muốn xóa thư này?');">
+                                        <form th:if="${!selectedNotification.isSystem}"
+                                            th:action="@{/user/mailbox/{id}/delete(id=${selectedNotification.id})}"
+                                            method="post" class="m-0"
+                                            onsubmit="return confirm('Bạn có chắc muốn xóa thư này?');">
                                             <input type="hidden" name="tab" th:value="${activeTab}">
-                                            <input type="hidden" name="page" th:value="${notifications != null ? notifications.number : 0}">
-                                            <button type="submit" title="Xóa thư này" class="p-1.5 hover:text-red-600 rounded-lg hover:bg-[#faf7f2] transition-colors">
+                                            <input type="hidden" name="page"
+                                                th:value="${notifications != null ? notifications.number : 0}">
+                                            <button type="submit" title="Xóa thư này"
+                                                class="p-1.5 hover:text-red-600 rounded-lg hover:bg-[#faf7f2] transition-colors">
                                                 <span class="material-symbols-outlined text-[20px]">delete</span>
                                             </button>
                                         </form>
@@ -222,20 +205,27 @@
 
                                 <!-- Letter Headline -->
                                 <div>
-                                    <h2 class="font-serif-title text-xl sm:text-2xl font-bold text-[#2b2118] leading-snug" th:text="${selectedNotification.title}">
+                                    <h2 class="font-serif-title text-xl sm:text-2xl font-bold text-[#2b2118] leading-snug"
+                                        th:text="${selectedNotification.title}">
                                         Phản hồi về báo cáo vi phạm
                                     </h2>
                                 </div>
 
                                 <!-- Sender Identity Card -->
-                                <div class="p-4 rounded-xl bg-[#faf7f2] border border-[#f0e8dc] flex items-center justify-between gap-4">
+                                <div
+                                    class="p-4 rounded-xl bg-[#faf7f2] border border-[#f0e8dc] flex items-center justify-between gap-4">
                                     <div class="flex items-center gap-3.5">
-                                        <div class="w-11 h-11 rounded-xl bg-[#f4ece1] flex items-center justify-center text-[#875200] border border-[#eae2d5]">
+                                        <div
+                                            class="w-11 h-11 rounded-xl bg-[#f4ece1] flex items-center justify-center text-[#875200] border border-[#eae2d5]">
                                             <span class="material-symbols-outlined text-[24px]">verified</span>
                                         </div>
                                         <div>
-                                            <h4 class="font-bold text-sm text-[#2b2118]" th:text="${selectedNotification.isSystem ? 'Hệ thống Trạm Truyện' : 'Ban Quản Trị Trạm Truyện'}">Ban Quản Trị Trạm Truyện</h4>
-                                            <p class="text-xs text-[#8a7664]" th:text="'Gửi tới: ' + ${userProfile.fullName} + ' (' + ${userProfile.email} + ')'">Gửi tới độc giả</p>
+                                            <h4 class="font-bold text-sm text-[#2b2118]"
+                                                th:text="${selectedNotification.isSystem ? 'Hệ thống Trạm Truyện' : 'Ban Quản Trị Trạm Truyện'}">
+                                                Ban Quản Trị Trạm Truyện</h4>
+                                            <p class="text-xs text-[#8a7664]"
+                                                th:text="'Gửi tới: ' + ${userProfile.fullName} + ' (' + ${userProfile.email} + ')'">
+                                                Gửi tới độc giả</p>
                                         </div>
                                     </div>
                                     <div class="text-right text-xs text-[#8a7664]">
@@ -246,23 +236,28 @@
                                 <!-- Letter Content Body -->
                                 <div class="space-y-4 text-sm sm:text-base text-[#3d3025] leading-relaxed">
                                     <!-- Escape HTML content with line break support -->
-                                    <th:block th:each="para : ${#strings.arraySplit(#strings.replace(selectedNotification.content, '&#13;', ''), '&#10;')}">
+                                    <th:block
+                                        th:each="para : ${#strings.arraySplit(#strings.replace(selectedNotification.content, '&#13;', ''), '&#10;')}">
                                         <p th:if="${!#strings.isEmpty(#strings.trim(para))}" th:text="${para}"></p>
                                     </th:block>
                                 </div>
 
                                 <!-- Bottom actions -->
                                 <div class="pt-2 flex items-center justify-between">
-                                    <a th:href="@{/user/mailbox}" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#f4ece1] text-[#875200] hover:bg-[#eae2d5] text-sm font-semibold transition-colors">
+                                    <a th:href="@{/user/mailbox}"
+                                        class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#f4ece1] text-[#875200] hover:bg-[#eae2d5] text-sm font-semibold transition-colors">
                                         <span class="material-symbols-outlined text-[18px]">reply</span>
                                         <span>Quay lại hòm thư</span>
                                     </a>
 
-                                    <form th:if="${!selectedNotification.isSystem}" th:action="@{/user/mailbox/{id}/delete(id=${selectedNotification.id})}" method="post" class="m-0"
-                                          onsubmit="return confirm('Bạn có chắc muốn xóa thư này?');">
+                                    <form th:if="${!selectedNotification.isSystem}"
+                                        th:action="@{/user/mailbox/{id}/delete(id=${selectedNotification.id})}"
+                                        method="post" class="m-0"
+                                        onsubmit="return confirm('Bạn có chắc muốn xóa thư này?');">
                                         <input type="hidden" name="tab" th:value="${activeTab}">
                                         <input type="hidden" name="page" th:value="${currentPage}">
-                                        <button type="submit" class="inline-flex items-center gap-1.5 text-xs text-[#a4917f] hover:text-red-600 font-medium transition-colors">
+                                        <button type="submit"
+                                            class="inline-flex items-center gap-1.5 text-xs text-[#a4917f] hover:text-red-600 font-medium transition-colors">
                                             <span class="material-symbols-outlined text-[16px]">delete</span>
                                             <span>Xóa thư này</span>
                                         </button>
@@ -272,9 +267,11 @@
                             </th:block>
 
                             <!-- Placeholder when no letter is selected -->
-                            <div th:if="${selectedNotification == null}" class="p-16 text-center text-[#8a7664] space-y-3">
+                            <div th:if="${selectedNotification == null}"
+                                class="p-16 text-center text-[#8a7664] space-y-3">
                                 <span class="material-symbols-outlined text-4xl text-[#bc7d39]">drafts</span>
-                                <p class="text-sm">Chọn một bức thư trong danh sách bên trái để đọc nội dung chi tiết.</p>
+                                <p class="text-sm">Chọn một bức thư trong danh sách bên trái để đọc nội dung chi tiết.
+                                </p>
                             </div>
                         </div>
 
@@ -289,4 +286,5 @@
     <div th:replace="~{fragments/footer :: main-footer}"></div>
 
 </body>
+
 </html>

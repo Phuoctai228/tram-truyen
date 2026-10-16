@@ -29,28 +29,18 @@
     <section class="content max-w-7xl mx-auto px-4 md:px-8 py-8">
 
         <!-- Page Heading -->
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-            <div>
-                <div class="flex items-center gap-1.5 text-xs font-bold tracking-wider text-[#875200] uppercase mb-1.5">
-                    <span>HỆ THỐNG</span>
-                    <span>›</span>
-                    <span>NHẬT KÝ VẬN HÀNH (AUDIT LOGS)</span>
-                </div>
-                <h1 class="font-serif-title text-3xl md:text-4xl font-bold text-[#231a11] tracking-tight mb-2">
-                    Nhật ký hệ thống <span class="text-xl md:text-2xl font-normal italic text-[#75695d]">(System Audit Log)</span>
-                </h1>
-                <p class="text-sm text-[#75695d]">
-                    Theo dõi và truy vết chi tiết mọi hoạt động can thiệp dữ liệu, phân quyền và thay đổi cấu hình bảo mật trên nền tảng.
-                </p>
+        <div class="mb-8">
+            <div class="flex items-center gap-1.5 text-xs font-bold tracking-wider text-[#875200] uppercase mb-1.5">
+                <span>HỆ THỐNG</span>
+                <span>›</span>
+                <span>NHẬT KÝ VẬN HÀNH</span>
             </div>
-
-            <div class="flex items-center gap-2">
-                <a th:href="@{/admin/audit-logs}"
-                   class="px-4 py-2.5 rounded-2xl bg-white border border-[#ead8cb] text-xs font-bold text-[#231a11] hover:bg-[#faf6f2] shadow-sm transition-all flex items-center gap-1.5">
-                    <span class="material-symbols-outlined text-[16px] text-[#875200]">sync</span>
-                    <span>Làm mới</span>
-                </a>
-            </div>
+            <h1 class="font-serif-title text-3xl md:text-4xl font-bold text-[#231a11] tracking-tight mb-2">
+                Nhật ký hệ thống
+            </h1>
+            <p class="text-sm text-[#75695d]">
+                Theo dõi và truy vết chi tiết mọi hoạt động can thiệp dữ liệu, phân quyền và thay đổi cấu hình bảo mật trên nền tảng.
+            </p>
         </div>
 
         <!-- 3 System Overview Stats Cards -->
@@ -74,7 +64,7 @@
                     <h2 class="text-3xl font-extrabold text-[#875200]" th:text="${#numbers.formatDecimal(stats.todayRecords, 0, 'POINT', 0, 'POINT')}">0</h2>
                     <div class="flex items-center gap-1 text-xs text-[#1b7a42] mt-1">
                         <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                        <span>Từ 00:00 hôm nay</span>
+                        <span th:text="'Hôm nay (' + ${hanoiToday} + ')'">Hôm nay (14/10/2026)</span>
                     </div>
                 </div>
                 <div class="w-12 h-12 rounded-2xl bg-[#e8f7ee] flex items-center justify-center text-[#1b7a42]">
@@ -97,121 +87,124 @@
 
         <!-- Filter Toolbar -->
         <div class="bg-white border border-[#ead8cb] rounded-3xl p-5 shadow-sm mb-6">
-            <form id="auditFilterForm" method="get" th:action="@{/admin/audit-logs}"
-                  th:with="actionLabels = (${ {
-                      'BAN_USER': 'Khóa tài khoản',
-                      'UNBAN_USER': 'Mở khóa tài khoản',
-                      'AUTO_UNBAN': 'Tự động mở khóa',
-                      'CHANGE_USER_ROLE': 'Phân quyền thành viên',
-                      'UPDATE_SYSTEM_SETTINGS': 'Cập nhật cấu hình',
-                      'RESOLVE_COMMENT_REPORT': 'Duyệt báo cáo bình luận',
-                      'REJECT_COMMENT_REPORT': 'Từ chối báo cáo bình luận',
-                      'RESOLVE_CONTENT_REPORT': 'Duyệt báo cáo nội dung',
-                      'REJECT_CONTENT_REPORT': 'Từ chối báo cáo nội dung',
-                      'SEND_NOTIFICATION': 'Gửi thông báo hệ thống'
-                  } }),
-                  entityLabels = (${ {
-                      'USERS': 'Người dùng',
-                      'SYSTEM_SETTINGS': 'Cấu hình hệ thống',
-                      'COMMENT_REPORTS': 'Báo cáo bình luận',
-                      'comment_reports': 'Báo cáo bình luận',
-                      'CONTENT_REPORTS': 'Báo cáo nội dung',
-                      'content_reports': 'Báo cáo nội dung',
-                      'NOTIFICATIONS': 'Thông báo hệ thống',
-                      'notifications': 'Thông báo hệ thống',
-                      'NOVELS': 'Truyện',
-                      'novels': 'Truyện',
-                      'CHAPTERS': 'Chương truyện',
-                      'chapters': 'Chương truyện'
-                  } })">
+            <form id="auditFilterForm" method="get" th:action="@{/admin/audit-logs}">
                 <input type="hidden" name="size" th:value="${pageSize}">
 
-                <!-- Row 1: Search, Action Type, Target Entity -->
-                <div class="grid grid-cols-1 md:grid-cols-12 gap-3 mb-4">
-                    <!-- Search by performer / name / email -->
-                    <div class="md:col-span-4 relative flex items-center bg-[#faf6f2] border border-[#ead8cb] rounded-2xl px-3.5 py-2.5 focus-within:border-[#875200] focus-within:bg-white transition-all">
+                <!-- Row 1: Search, Reset Link, Timezone Badge -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                    <!-- Search Input -->
+                    <div class="relative flex-1 flex items-center bg-[#faf6f2] border border-[#ead8cb] rounded-2xl px-3.5 py-2.5 focus-within:border-[#875200] focus-within:bg-white transition-all">
                         <span class="material-symbols-outlined text-[#75695d] text-[20px] mr-2">search</span>
-                        <input type="text" name="performer" th:value="${performer}"
-                               placeholder="Tìm theo email, tên người thực hiện..."
+                        <input type="text" name="keyword" th:value="${keyword}"
+                               placeholder="Tìm theo Quản trị viên, mã đối tượng (#US-...), hành động, địa chỉ IP..."
                                class="w-full bg-transparent border-0 outline-none text-xs md:text-sm text-[#231a11] placeholder:text-[#a09081]" />
+                        <button th:if="${keyword != null and !keyword.isEmpty()}" type="button" onclick="clearKeyword()" class="text-[#a09081] hover:text-[#231a11] ml-1">
+                            <span class="material-symbols-outlined text-[18px]">close</span>
+                        </button>
                     </div>
 
-                    <!-- Action type select -->
-                    <div class="md:col-span-3 flex items-center bg-[#faf6f2] border border-[#ead8cb] rounded-2xl px-3 py-2">
-                        <span class="material-symbols-outlined text-[#75695d] text-[20px] mr-2">category</span>
-                        <select name="actionType" class="bg-transparent border-0 outline-none text-xs text-[#231a11] w-full cursor-pointer">
-                            <option value="">Tất cả loại hành động</option>
-                            <option th:each="act : ${availableActionTypes}"
-                                    th:value="${act}"
-                                    th:text="${actionLabels != null and actionLabels[act] != null ? actionLabels[act] : (actionLabels != null and actionLabels[#strings.toUpperCase(act)] != null ? actionLabels[#strings.toUpperCase(act)] : act)}"
-                                    th:selected="${act == actionType}"></option>
-                        </select>
-                    </div>
-
-                    <!-- Target entity select -->
-                    <div class="md:col-span-3 flex items-center bg-[#faf6f2] border border-[#ead8cb] rounded-2xl px-3 py-2">
-                        <span class="material-symbols-outlined text-[#75695d] text-[20px] mr-2">dataset</span>
-                        <select name="targetEntity" class="bg-transparent border-0 outline-none text-xs text-[#231a11] w-full cursor-pointer">
-                            <option value="">Tất cả đối tượng tác động</option>
-                            <option th:each="ent : ${availableTargetEntities}"
-                                    th:value="${ent}"
-                                    th:text="${entityLabels[ent] != null ? entityLabels[ent] : (entityLabels[#strings.toUpperCase(ent)] != null ? entityLabels[#strings.toUpperCase(ent)] : ent)}"
-                                    th:selected="${ent == targetEntity}"></option>
-                        </select>
-                    </div>
-
-                    <!-- Target ID -->
-                    <div class="md:col-span-2 flex items-center bg-[#faf6f2] border border-[#ead8cb] rounded-2xl px-3 py-2">
-                        <span class="text-[#75695d] text-xs font-bold mr-1">#ID:</span>
-                        <input type="number" name="targetId" th:value="${targetId}"
-                               placeholder="Mã ID"
-                               class="bg-transparent border-0 outline-none text-xs text-[#231a11] w-full" />
+                    <!-- Reset & Timezone Indicator -->
+                    <div class="flex items-center justify-between sm:justify-end gap-3 shrink-0">
+                        <a th:href="@{/admin/audit-logs}"
+                           class="flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-semibold text-[#75695d] hover:text-[#875200] hover:bg-[#faf6f2] transition-colors"
+                           title="Đặt lại mọi bộ lọc về mặc định">
+                            <span class="material-symbols-outlined text-[18px]">restart_alt</span>
+                            <span>Đặt lại bộ lọc</span>
+                        </a>
+                        <div class="flex items-center gap-1 text-[11px] font-medium text-[#a09081] bg-[#faf6f2] border border-[#ead8cb] px-2.5 py-1.5 rounded-xl">
+                            <span class="material-symbols-outlined text-[14px]">schedule</span>
+                            <span>Hiển thị thời gian: UTC+7 (Hà Nội)</span>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Row 2: Date Range, Quick Presets & Buttons -->
+                <!-- Row 2: 3 Dropdown Columns (Nhóm hành động, Mức độ, Khoảng thời gian) -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+                    <!-- Dropdown 1: Nhóm hành động -->
+                    <div class="flex flex-col">
+                        <label class="flex items-center gap-1.5 text-xs font-bold text-[#75695d] mb-1.5">
+                            <span class="material-symbols-outlined text-[16px] text-[#875200]">folder_open</span>
+                            <span>Nhóm hành động</span>
+                        </label>
+                        <select name="actionGroup" onchange="this.form.submit()"
+                                class="w-full bg-[#faf6f2] border border-[#ead8cb] rounded-2xl px-3.5 py-2.5 text-xs text-[#231a11] outline-none focus:border-[#875200] focus:bg-white cursor-pointer transition-all">
+                            <option value="" th:selected="${actionGroup == null or actionGroup.isEmpty()}">Tất cả hành động</option>
+                            <option th:each="grp : ${actionGroups}"
+                                    th:value="${grp.code}"
+                                    th:text="${grp.name}"
+                                    th:selected="${grp.code == actionGroup}">Phân quyền &amp; Tài khoản</option>
+                        </select>
+                    </div>
+
+                    <!-- Dropdown 2: Mức độ cảnh báo (Severity) -->
+                    <div class="flex flex-col">
+                        <label class="flex items-center gap-1.5 text-xs font-bold text-[#75695d] mb-1.5">
+                            <span class="material-symbols-outlined text-[16px] text-[#c53d26]">shield</span>
+                            <span>Mức độ cảnh báo (Severity)</span>
+                        </label>
+                        <select name="severity" onchange="this.form.submit()"
+                                class="w-full bg-[#faf6f2] border border-[#ead8cb] rounded-2xl px-3.5 py-2.5 text-xs text-[#231a11] outline-none focus:border-[#875200] focus:bg-white cursor-pointer transition-all">
+                            <option value="" th:selected="${severity == null or severity.isEmpty()}">Tất cả mức độ</option>
+                            <option value="INFO" th:selected="${severity == 'INFO'}">Thông tin (Info)</option>
+                            <option value="WARNING" th:selected="${severity == 'WARNING'}">Cảnh báo (Warning)</option>
+                            <option value="CRITICAL" th:selected="${severity == 'CRITICAL'}">Nguy cơ cao / Nhạy cảm (Critical)</option>
+                        </select>
+                    </div>
+
+                    <!-- Dropdown 3: Khoảng thời gian -->
+                    <div class="flex flex-col">
+                        <label class="flex items-center gap-1.5 text-xs font-bold text-[#75695d] mb-1.5">
+                            <span class="material-symbols-outlined text-[16px] text-[#875200]">calendar_today</span>
+                            <span>Khoảng thời gian</span>
+                        </label>
+                        <select name="timeRange" id="timeRangeSelect" onchange="handleTimeRangeChange(this.value)"
+                                class="w-full bg-[#faf6f2] border border-[#ead8cb] rounded-2xl px-3.5 py-2.5 text-xs text-[#231a11] outline-none focus:border-[#875200] focus:bg-white cursor-pointer transition-all">
+                            <option value="all" th:selected="${timeRange == 'all' or timeRange == null or timeRange.isEmpty()}">Tất cả thời gian</option>
+                            <option value="today" th:selected="${timeRange == 'today'}" th:text="'Hôm nay (' + ${hanoiToday} + ')'">Hôm nay</option>
+                            <option value="7days" th:selected="${timeRange == '7days'}">7 ngày qua</option>
+                            <option value="month" th:selected="${timeRange == 'month'}">Tháng này</option>
+                            <option value="custom" th:selected="${timeRange == 'custom'}">Tùy chọn khoảng ngày...</option>
+                        </select>
+
+                        <!-- Inline custom date inputs -->
+                        <div id="customDateContainer" class="mt-2 flex items-center gap-2" th:classappend="${timeRange == 'custom' ? '' : 'hidden'}">
+                            <input type="date" name="startDate" id="logStartDate" th:value="${startDate}"
+                                   class="w-1/2 bg-[#faf6f2] border border-[#ead8cb] rounded-xl px-2.5 py-1.5 text-xs text-[#231a11] outline-none focus:border-[#875200] focus:bg-white" title="Từ ngày" />
+                            <span class="text-[#75695d] text-xs font-bold">→</span>
+                            <input type="date" name="endDate" id="logEndDate" th:value="${endDate}"
+                                   class="w-1/2 bg-[#faf6f2] border border-[#ead8cb] rounded-xl px-2.5 py-1.5 text-xs text-[#231a11] outline-none focus:border-[#875200] focus:bg-white" title="Đến ngày" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 3: Quick Filter Chips & Action Button -->
                 <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[#f4eae1]">
-                    <!-- Date Pickers -->
-                    <div class="flex items-center gap-2 bg-[#faf6f2] border border-[#ead8cb] rounded-2xl px-3 py-2">
-                        <span class="material-symbols-outlined text-[#75695d] text-[18px]">date_range</span>
-                        <input type="date" name="startDate" id="logStartDate" th:value="${startDate}"
-                               class="bg-transparent border-0 outline-none text-xs text-[#231a11]" title="Từ ngày" />
-                        <span class="text-[#75695d] text-xs">→</span>
-                        <input type="date" name="endDate" id="logEndDate" th:value="${endDate}"
-                               class="bg-transparent border-0 outline-none text-xs text-[#231a11]" title="Đến ngày" />
+                    <!-- Quick Chips -->
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="flex items-center gap-1 text-xs font-bold text-[#75695d] mr-1">
+                            <span class="material-symbols-outlined text-[16px] text-[#875200]">tune</span>
+                            <span>Bộ lọc nhanh:</span>
+                        </span>
+
+                        <!-- Chỉ Admin Chip -->
+                        <label class="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all"
+                               th:classappend="${onlyAdmin ? 'bg-[#875200] text-white border-[#875200] shadow-sm' : 'bg-[#faf6f2] text-[#75695d] border-[#ead8cb] hover:bg-[#f2e7dc]'}">
+                            <input type="checkbox" name="onlyAdmin" value="true" th:checked="${onlyAdmin}" onchange="this.form.submit()" class="sr-only">
+                            <span class="material-symbols-outlined text-[15px]" th:text="${onlyAdmin ? 'check_circle' : 'shield_person'}">shield_person</span>
+                            <span>Chỉ Admin</span>
+                        </label>
                     </div>
 
-                    <!-- Quick Date Presets -->
-                    <div class="flex items-center gap-1.5">
-                        <button type="button" onclick="setLogQuickDate('today')"
-                                class="px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-[#faf6f2] text-[#75695d] hover:bg-[#f2e7dc] hover:text-[#231a11] transition-colors border border-[#ead8cb]">
-                            Hôm nay
-                        </button>
-                        <button type="button" onclick="setLogQuickDate('7days')"
-                                class="px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-[#faf6f2] text-[#75695d] hover:bg-[#f2e7dc] hover:text-[#231a11] transition-colors border border-[#ead8cb]">
-                            7 ngày qua
-                        </button>
-                        <button type="button" onclick="setLogQuickDate('month')"
-                                class="px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-[#faf6f2] text-[#75695d] hover:bg-[#f2e7dc] hover:text-[#231a11] transition-colors border border-[#ead8cb]">
-                            Tháng này
-                        </button>
-                    </div>
-
-                    <!-- Action Buttons -->
-                    <div class="flex items-center gap-2">
+                    <!-- Action button & count -->
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs text-[#75695d] hidden sm:inline">
+                            Hiển thị: <b class="text-[#231a11]" th:text="${logs.numberOfElements}">0</b> / <span th:text="${totalElements}">0</span> bản ghi
+                        </span>
                         <button type="submit"
                                 class="px-4 py-2 rounded-xl bg-[#875200] hover:bg-[#6c4100] text-white text-xs font-bold shadow-sm transition-all flex items-center gap-1.5">
                             <span class="material-symbols-outlined text-[16px]">filter_alt</span>
-                            <span>Tìm kiếm</span>
+                            <span>Lọc dữ liệu</span>
                         </button>
-                        <a th:href="@{/admin/audit-logs}"
-                           class="px-3 py-2 rounded-xl bg-[#faf6f2] hover:bg-[#f2e7dc] text-[#75695d] text-xs font-semibold border border-[#ead8cb] transition-colors"
-                           title="Đặt lại">
-                            Đặt lại
-                        </a>
-                        <span class="text-xs text-[#75695d] ml-2 hidden sm:inline">
-                            Hiển thị: <b class="text-[#231a11]" th:text="${logs.numberOfElements}">0</b> / <span th:text="${totalElements}">0</span> bản ghi
-                        </span>
                     </div>
                 </div>
             </form>
@@ -226,6 +219,7 @@
                         <th class="py-4 px-4 pl-6">THỜI GIAN</th>
                         <th class="py-4 px-4">NGƯỜI THỰC HIỆN</th>
                         <th class="py-4 px-4">HÀNH ĐỘNG</th>
+                        <th class="py-4 px-4">MỨC ĐỘ</th>
                         <th class="py-4 px-4">ĐỐI TƯỢNG TÁC ĐỘNG</th>
                         <th class="py-4 px-4">ĐỊA CHỈ IP</th>
                         <th class="py-4 px-4 pr-6 text-center">CHI TIẾT</th>
@@ -233,7 +227,7 @@
                     </thead>
                     <tbody class="divide-y divide-[#f4eae1] text-xs">
                     <tr th:if="${logs.empty}" class="hover:bg-[#fffbf8] transition-colors">
-                        <td colspan="6" class="py-12 text-center text-[#a09081]">
+                        <td colspan="7" class="py-12 text-center text-[#a09081]">
                             <div class="flex flex-col items-center justify-center">
                                 <span class="material-symbols-outlined text-[48px] text-[#cfc3b7] mb-2">history</span>
                                 <p class="text-sm font-semibold text-[#75695d]">Không tìm thấy bản ghi nhật ký phù hợp</p>
@@ -278,6 +272,15 @@
                             </div>
                         </td>
 
+                        <!-- Mức độ (Severity) -->
+                        <td class="py-3.5 px-4 whitespace-nowrap">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold border"
+                                  th:classappend="${logItem.severityBadgeClass}">
+                                <span class="w-1.5 h-1.5 rounded-full" th:classappend="${logItem.severityDotClass}"></span>
+                                <span th:text="${logItem.severityDisplay}">Thông tin</span>
+                            </span>
+                        </td>
+
                         <!-- Đối tượng tác động -->
                         <td class="py-3.5 px-4">
                             <span class="font-medium text-[#231a11]" th:text="${logItem.targetDisplay}">Đối tượng</span>
@@ -304,49 +307,8 @@
                 </table>
             </div>
 
-            <!-- Footer Pagination -->
-            <div class="bg-[#faf6f2] px-6 py-4 border-t border-[#ead8cb] flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div class="text-xs text-[#75695d]">
-                    Hiển thị <span class="font-bold text-[#231a11]" th:text="${(currentPage * pageSize) + 1}">1</span>
-                    - <span class="font-bold text-[#231a11]" th:text="${(currentPage * pageSize) + logs.numberOfElements}">20</span>
-                    trên tổng số <span class="font-bold text-[#231a11]" th:text="${totalElements}">0</span> bản ghi
-                </div>
-
-                <div th:if="${totalPages > 1}" class="flex items-center gap-1">
-                    <!-- Prev -->
-                    <a th:if="${currentPage > 0}"
-                       th:href="@{/admin/audit-logs(page=${currentPage - 1}, size=${pageSize}, startDate=${startDate}, endDate=${endDate}, actionType=${actionType}, performer=${performer}, targetEntity=${targetEntity}, targetId=${targetId})}"
-                       class="w-8 h-8 rounded-xl bg-white border border-[#ead8cb] flex items-center justify-center text-[#75695d] hover:bg-[#875200] hover:text-white transition-colors text-xs font-semibold">
-                        &lt;
-                    </a>
-                    <span th:if="${currentPage == 0}"
-                          class="w-8 h-8 rounded-xl bg-[#f4eae1] border border-[#ead8cb] flex items-center justify-center text-[#cfc3b7] text-xs cursor-not-allowed">
-                        &lt;
-                    </span>
-
-                    <!-- Page numbers -->
-                    <th:block th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
-                        <a th:if="${i >= currentPage - 2 and i <= currentPage + 2}"
-                           th:href="@{/admin/audit-logs(page=${i}, size=${pageSize}, startDate=${startDate}, endDate=${endDate}, actionType=${actionType}, performer=${performer}, targetEntity=${targetEntity}, targetId=${targetId})}"
-                           th:text="${i + 1}"
-                           class="w-8 h-8 rounded-xl border flex items-center justify-center text-xs font-semibold transition-colors"
-                           th:classappend="${i == currentPage ? 'bg-[#875200] text-white border-[#875200]' : 'bg-white text-[#75695d] border-[#ead8cb] hover:bg-[#f2e7dc]'}">
-                            1
-                        </a>
-                    </th:block>
-
-                    <!-- Next -->
-                    <a th:if="${currentPage < totalPages - 1}"
-                       th:href="@{/admin/audit-logs(page=${currentPage + 1}, size=${pageSize}, startDate=${startDate}, endDate=${endDate}, actionType=${actionType}, performer=${performer}, targetEntity=${targetEntity}, targetId=${targetId})}"
-                       class="w-8 h-8 rounded-xl bg-white border border-[#ead8cb] flex items-center justify-center text-[#75695d] hover:bg-[#875200] hover:text-white transition-colors text-xs font-semibold">
-                        &gt;
-                    </a>
-                    <span th:if="${currentPage >= totalPages - 1}"
-                          class="w-8 h-8 rounded-xl bg-[#f4eae1] border border-[#ead8cb] flex items-center justify-center text-[#cfc3b7] text-xs cursor-not-allowed">
-                        &gt;
-                    </span>
-                </div>
-            </div>
+            <!-- Footer Pagination (Reusing shared fragment) -->
+            <div th:replace="~{fragments/pagination-bar :: pagination(baseUrl='/admin/audit-logs', currentPage=${currentPage}, totalPages=${totalPages}, totalElements=${totalElements}, pageSize=${pageSize}, unitLabel='bản ghi', filterQuery=${filterQuery})}"></div>
         </div>
 
     </section>
@@ -354,26 +316,26 @@
 
 <!-- Modal "Chi tiết Nhật ký" -->
 <div id="logDetailModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-3xl w-full border border-[#ead8cb] shadow-2xl overflow-hidden animate-fade-in">
-        <div class="px-6 py-4 bg-[#faf6f2] border-b border-[#ead8cb] flex items-center justify-between">
+    <div class="bg-white rounded-3xl max-w-4xl w-full border border-[#ead8cb] shadow-2xl overflow-hidden animate-fade-in flex flex-col max-h-[90vh]">
+        <div class="px-6 py-4 bg-[#faf6f2] border-b border-[#ead8cb] flex items-center justify-between shrink-0">
             <div class="flex items-center gap-2">
                 <span class="material-symbols-outlined text-[#875200]">find_in_page</span>
                 <h3 class="font-bold text-[#231a11] text-base">Chi tiết nhật ký hệ thống</h3>
                 <span id="detailLogIdBadge" class="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-[#fdecdb] text-[#875200] ml-2"></span>
             </div>
-            <button type="button" onclick="closeLogDetailModal()" class="text-[#a09081] hover:text-[#231a11] transition-colors">
-                <span class="material-symbols-outlined text-[22px]">close</span>
+            <button type="button" onclick="closeLogDetailModal()" class="text-[#a09081] hover:text-[#231a11] transition-colors p-1 rounded-lg hover:bg-[#efe5dc]" title="Đóng">
+                <span class="material-symbols-outlined text-[22px] block">close</span>
             </button>
         </div>
 
-        <div id="logDetailBody" class="p-6 max-h-[75vh] overflow-y-auto space-y-5">
+        <div id="logDetailBody" class="p-6 overflow-y-auto space-y-5 flex-1">
             <div class="text-center py-6 text-[#75695d]">
                 <span class="material-symbols-outlined text-[32px] animate-spin text-[#875200]">progress_activity</span>
                 <p class="text-xs mt-2">Đang tải chi tiết...</p>
             </div>
         </div>
 
-        <div class="px-6 py-3.5 bg-[#faf6f2] border-t border-[#ead8cb] flex justify-end">
+        <div class="px-6 py-3.5 bg-[#faf6f2] border-t border-[#ead8cb] flex justify-end shrink-0">
             <button type="button" onclick="closeLogDetailModal()"
                     class="px-5 py-2 rounded-xl bg-[#875200] hover:bg-[#6c4100] text-white text-xs font-bold transition-all shadow-sm">
                 Đóng
@@ -383,33 +345,23 @@
 </div>
 
 <script>
-    function setLogQuickDate(type) {
-        const today = new Date();
-        const formatDate = (d) => {
-            const year = d.getFullYear();
-            const month = String(d.getMonth() + 1).padStart(2, '0');
-            const day = String(d.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        };
-
-        const startInput = document.getElementById('logStartDate');
-        const endInput = document.getElementById('logEndDate');
-
-        if (type === 'today') {
-            const str = formatDate(today);
-            startInput.value = str;
-            endInput.value = str;
-        } else if (type === '7days') {
-            const past7 = new Date();
-            past7.setDate(today.getDate() - 7);
-            startInput.value = formatDate(past7);
-            endInput.value = formatDate(today);
-        } else if (type === 'month') {
-            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
-            startInput.value = formatDate(firstDay);
-            endInput.value = formatDate(today);
+    function handleTimeRangeChange(val) {
+        const customBox = document.getElementById('customDateContainer');
+        if (val === 'custom') {
+            customBox.classList.remove('hidden');
+        } else {
+            customBox.classList.add('hidden');
+            document.getElementById('logStartDate').value = '';
+            document.getElementById('logEndDate').value = '';
+            document.getElementById('auditFilterForm').submit();
         }
-        document.getElementById('auditFilterForm').submit();
+    }
+
+    function clearKeyword() {
+        const form = document.getElementById('auditFilterForm');
+        const input = form.querySelector('input[name="keyword"]');
+        if (input) input.value = '';
+        form.submit();
     }
 
     function openLogDetailModal(logId) {
@@ -428,104 +380,194 @@
         modal.classList.remove('hidden');
 
         fetch(`/admin/audit-logs/${encodeURIComponent(logId)}/detail`)
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) throw new Error('Không thể tải chi tiết nhật ký.');
+                return res.json();
+            })
             .then(data => {
-                let diffHtml = '';
-                if (data.jsonDiffAvailable && data.fieldDiffs && data.fieldDiffs.length > 0) {
-                    diffHtml = `
-                        <div class="border border-[#ead8cb] rounded-2xl overflow-hidden mb-4">
-                            <div class="bg-[#faf6f2] px-4 py-2 border-b border-[#ead8cb]">
-                                <span class="text-xs font-bold text-[#875200] uppercase tracking-wider">Các trường thay đổi (Field Diffs)</span>
-                            </div>
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-left text-xs">
-                                    <thead class="bg-[#fff9f5] border-b border-[#ead8cb] text-[11px] text-[#75695d]">
-                                        <tr>
-                                            <th class="py-2.5 px-3">TÊN TRƯỜNG</th>
-                                            <th class="py-2.5 px-3">GIÁ TRỊ CŨ</th>
-                                            <th class="py-2.5 px-3">GIÁ TRỊ MỚI</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-[#f4eae1]">
-                                        ${data.fieldDiffs.map(d => `
-                                            <tr class="hover:bg-[#fffbf8]">
-                                                <td class="py-2 px-3 font-mono font-bold text-[#875200]">${escapeHtml(d.fieldName)}</td>
-                                                <td class="py-2 px-3 text-[#c53d26] bg-[#fff6f5] font-mono break-all">${escapeHtml(d.oldValue)}</td>
-                                                <td class="py-2 px-3 text-[#1b7a42] bg-[#f5fbf7] font-mono break-all">${escapeHtml(d.newValue)}</td>
-                                            </tr>
-                                        `).join('')}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    `;
+                body.innerHTML = '';
+
+                // 1. Grid thông tin tổng quan (Hành động, Người thực hiện, Thời gian, IP)
+                const summaryGrid = document.createElement('div');
+                summaryGrid.className = 'grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 bg-[#faf6f2] border border-[#ead8cb] rounded-2xl text-xs';
+
+                // Box Hành động
+                const actBox = document.createElement('div');
+                const actLbl = document.createElement('span');
+                actLbl.className = 'text-[#a09081] block text-[11px]';
+                actLbl.textContent = 'Hành động:';
+                const actVal = document.createElement('span');
+                actVal.className = 'font-bold text-[#231a11] block';
+                actVal.textContent = data.actionTypeDisplay || data.actionType || '—';
+                const actCode = document.createElement('span');
+                actCode.className = 'text-[10px] text-[#75695d] font-mono block';
+                actCode.textContent = data.actionType || '';
+                actBox.append(actLbl, actVal, actCode);
+
+                // Box Người thực hiện
+                const admBox = document.createElement('div');
+                const admLbl = document.createElement('span');
+                admLbl.className = 'text-[#a09081] block text-[11px]';
+                admLbl.textContent = 'Người thực hiện:';
+                const admVal = document.createElement('span');
+                admVal.className = 'font-bold text-[#231a11] block';
+                admVal.textContent = data.adminName || 'Hệ thống';
+                const admMail = document.createElement('span');
+                admMail.className = 'text-[10px] text-[#75695d] block truncate';
+                admMail.textContent = data.adminEmail || '';
+                admBox.append(admLbl, admVal, admMail);
+
+                // Box Thời gian
+                const timeBox = document.createElement('div');
+                const timeLbl = document.createElement('span');
+                timeLbl.className = 'text-[#a09081] block text-[11px]';
+                timeLbl.textContent = 'Thời gian (UTC+7):';
+                const timeVal = document.createElement('span');
+                timeVal.className = 'font-semibold text-[#231a11] font-mono block';
+                timeVal.textContent = data.formattedCreatedAt || '—';
+                timeBox.append(timeLbl, timeVal);
+
+                // Box Địa chỉ IP
+                const ipBox = document.createElement('div');
+                const ipLbl = document.createElement('span');
+                ipLbl.className = 'text-[#a09081] block text-[11px]';
+                ipLbl.textContent = 'Địa chỉ IP:';
+                const ipVal = document.createElement('span');
+                ipVal.className = 'font-mono text-[#231a11] block';
+                ipVal.textContent = data.ipAddress || '127.0.0.1';
+                ipBox.append(ipLbl, ipVal);
+
+                summaryGrid.append(actBox, admBox, timeBox, ipBox);
+                body.appendChild(summaryGrid);
+
+                // 2. Đối tượng tác động
+                const targetBox = document.createElement('div');
+                targetBox.className = 'text-xs';
+                const targetLbl = document.createElement('span');
+                targetLbl.className = 'text-[#a09081]';
+                targetLbl.textContent = 'Đối tượng tác động: ';
+                const targetVal = document.createElement('span');
+                targetVal.className = 'font-bold text-[#231a11]';
+                targetVal.textContent = data.targetDisplay || '—';
+                targetBox.append(targetLbl, targetVal);
+                body.appendChild(targetBox);
+
+                // 3. Bảng "Các trường thay đổi (Field Diffs)" nếu có
+                if (data.jsonDiffAvailable && Array.isArray(data.fieldDiffs) && data.fieldDiffs.length > 0) {
+                    const diffCard = document.createElement('div');
+                    diffCard.className = 'border border-[#ead8cb] rounded-2xl overflow-hidden';
+
+                    const diffHeader = document.createElement('div');
+                    diffHeader.className = 'bg-[#faf6f2] px-4 py-2.5 border-b border-[#ead8cb] flex items-center justify-between';
+                    const diffTitle = document.createElement('span');
+                    diffTitle.className = 'text-xs font-bold text-[#875200] uppercase tracking-wider';
+                    diffTitle.textContent = 'Các trường thay đổi (Field Diffs)';
+                    diffHeader.appendChild(diffTitle);
+                    diffCard.appendChild(diffHeader);
+
+                    const table = document.createElement('table');
+                    table.className = 'w-full table-fixed border-collapse text-xs';
+
+                    const thead = document.createElement('thead');
+                    thead.className = 'bg-[#fff9f5] border-b border-[#ead8cb] text-[11px] text-[#75695d] uppercase';
+                    const headRow = document.createElement('tr');
+
+                    const th1 = document.createElement('th');
+                    th1.className = 'py-2.5 px-3 text-left w-[24%] font-bold';
+                    th1.textContent = 'TÊN TRƯỜNG';
+
+                    const th2 = document.createElement('th');
+                    th2.className = 'py-2.5 px-3 text-left w-[38%] font-bold';
+                    th2.textContent = 'GIÁ TRỊ CŨ';
+
+                    const th3 = document.createElement('th');
+                    th3.className = 'py-2.5 px-3 text-left w-[38%] font-bold';
+                    th3.textContent = 'GIÁ TRỊ MỚI';
+
+                    headRow.append(th1, th2, th3);
+                    thead.appendChild(headRow);
+                    table.appendChild(thead);
+
+                    const tbody = document.createElement('tbody');
+                    tbody.className = 'divide-y divide-[#f4eae1]';
+
+                    data.fieldDiffs.forEach(d => {
+                        const tr = document.createElement('tr');
+                        tr.className = 'hover:bg-[#fffbf8] align-top';
+
+                        const tdName = document.createElement('td');
+                        tdName.className = 'py-2.5 px-3 font-mono font-bold text-[#875200] break-words';
+                        tdName.textContent = d.fieldName || '—';
+
+                        const tdOld = document.createElement('td');
+                        tdOld.className = 'py-2 px-2.5 bg-[#fff6f5]';
+                        const oldInner = document.createElement('div');
+                        oldInner.className = 'max-h-40 overflow-y-auto whitespace-pre-wrap break-words [overflow-wrap:anywhere] text-[#c53d26] font-mono text-xs pr-1';
+                        oldInner.textContent = d.oldValue != null ? String(d.oldValue) : '(Trống)';
+                        tdOld.appendChild(oldInner);
+
+                        const tdNew = document.createElement('td');
+                        tdNew.className = 'py-2 px-2.5 bg-[#f5fbf7]';
+                        const newInner = document.createElement('div');
+                        newInner.className = 'max-h-40 overflow-y-auto whitespace-pre-wrap break-words [overflow-wrap:anywhere] text-[#1b7a42] font-mono text-xs pr-1';
+                        newInner.textContent = d.newValue != null ? String(d.newValue) : '(Trống)';
+                        tdNew.appendChild(newInner);
+
+                        tr.append(tdName, tdOld, tdNew);
+                        tbody.appendChild(tr);
+                    });
+
+                    table.appendChild(tbody);
+                    diffCard.appendChild(table);
+                    body.appendChild(diffCard);
                 }
 
-                body.innerHTML = `
-                    <!-- Summary info grid -->
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 bg-[#faf6f2] border border-[#ead8cb] rounded-2xl text-xs">
-                        <div>
-                            <span class="text-[#a09081] block text-[11px]">Hành động:</span>
-                            <span class="font-bold text-[#231a11]">${escapeHtml(data.actionTypeDisplay || data.actionType)}</span>
-                            <span class="text-[10px] text-[#75695d] font-mono block">${escapeHtml(data.actionType)}</span>
-                        </div>
-                        <div>
-                            <span class="text-[#a09081] block text-[11px]">Người thực hiện:</span>
-                            <span class="font-bold text-[#231a11]">${escapeHtml(data.adminName)}</span>
-                            <span class="text-[10px] text-[#75695d] block truncate">${escapeHtml(data.adminEmail)}</span>
-                        </div>
-                        <div>
-                            <span class="text-[#a09081] block text-[11px]">Thời gian:</span>
-                            <span class="font-semibold text-[#231a11] font-mono">${escapeHtml(data.formattedCreatedAt)}</span>
-                        </div>
-                        <div>
-                            <span class="text-[#a09081] block text-[11px]">Địa chỉ IP:</span>
-                            <span class="font-mono text-[#231a11]">${escapeHtml(data.ipAddress)}</span>
-                        </div>
-                    </div>
+                // 4. Hai khối JSON Giá trị cũ / Giá trị mới bên dưới
+                const rawGrid = document.createElement('div');
+                rawGrid.className = 'grid grid-cols-1 md:grid-cols-2 gap-4';
 
-                    <div>
-                        <span class="text-[#a09081] text-xs">Đối tượng tác động: </span>
-                        <span class="font-bold text-xs text-[#231a11]">${escapeHtml(data.targetDisplay)}</span>
-                    </div>
+                // Box Giá trị cũ
+                const oldBox = document.createElement('div');
+                const oldHeader = document.createElement('div');
+                oldHeader.className = 'mb-1.5';
+                const oldTitle = document.createElement('span');
+                oldTitle.className = 'text-xs font-bold text-[#75695d] uppercase';
+                oldTitle.textContent = 'Giá trị cũ (Old Value):';
+                oldHeader.appendChild(oldTitle);
 
-                    ${diffHtml}
+                const oldPre = document.createElement('pre');
+                oldPre.className = 'bg-[#faf6f2] border border-[#ead8cb] rounded-2xl p-3.5 text-xs font-mono max-h-56 overflow-y-auto whitespace-pre-wrap break-words [overflow-wrap:anywhere] text-[#231a11]';
+                oldPre.textContent = data.prettyOldValue || '(Trống)';
+                oldBox.append(oldHeader, oldPre);
 
-                    <!-- Old & New raw value boxes -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <div class="flex items-center justify-between mb-1.5">
-                                <span class="text-xs font-bold text-[#75695d] uppercase">Giá trị cũ (Old Value):</span>
-                            </div>
-                            <pre class="bg-[#faf6f2] border border-[#ead8cb] rounded-2xl p-3.5 text-xs font-mono max-h-56 overflow-y-auto whitespace-pre-wrap break-all text-[#231a11]">${escapeHtml(data.prettyOldValue || '(Trống)')}</pre>
-                        </div>
-                        <div>
-                            <div class="flex items-center justify-between mb-1.5">
-                                <span class="text-xs font-bold text-[#75695d] uppercase">Giá trị mới (New Value):</span>
-                            </div>
-                            <pre class="bg-[#faf6f2] border border-[#ead8cb] rounded-2xl p-3.5 text-xs font-mono max-h-56 overflow-y-auto whitespace-pre-wrap break-all text-[#231a11]">${escapeHtml(data.prettyNewValue || '(Trống)')}</pre>
-                        </div>
-                    </div>
-                `;
+                // Box Giá trị mới
+                const newBox = document.createElement('div');
+                const newHeader = document.createElement('div');
+                newHeader.className = 'mb-1.5';
+                const newTitle = document.createElement('span');
+                newTitle.className = 'text-xs font-bold text-[#75695d] uppercase';
+                newTitle.textContent = 'Giá trị mới (New Value):';
+                newHeader.appendChild(newTitle);
+
+                const newPre = document.createElement('pre');
+                newPre.className = 'bg-[#faf6f2] border border-[#ead8cb] rounded-2xl p-3.5 text-xs font-mono max-h-56 overflow-y-auto whitespace-pre-wrap break-words [overflow-wrap:anywhere] text-[#231a11]';
+                newPre.textContent = data.prettyNewValue || '(Trống)';
+                newBox.append(newHeader, newPre);
+
+                rawGrid.append(oldBox, newBox);
+                body.appendChild(rawGrid);
             })
             .catch(err => {
-                body.innerHTML = `
-                    <div class="text-center py-6 text-rose-600 text-xs">
-                        Lỗi khi tải chi tiết nhật ký: ${escapeHtml(err.message)}
-                    </div>
-                `;
+                body.innerHTML = '';
+                const errDiv = document.createElement('div');
+                errDiv.className = 'text-center py-6 text-rose-600 text-xs font-semibold';
+                errDiv.textContent = 'Lỗi khi tải chi tiết nhật ký: ' + (err.message || 'Lỗi không xác định.');
+                body.appendChild(errDiv);
             });
     }
 
     function closeLogDetailModal() {
         document.getElementById('logDetailModal').classList.add('hidden');
-    }
-
-    function escapeHtml(str) {
-        if (!str) return '';
-        const div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML;
     }
 
     document.getElementById('logDetailModal').addEventListener('click', function(e) {

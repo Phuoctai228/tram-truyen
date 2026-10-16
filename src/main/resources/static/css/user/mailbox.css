@@ -1,0 +1,17 @@
+/* mailbox.css - Tách CSS riêng cho Hòm thư độc giả Trạm Truyện */
+
+.font-serif-title {
+    font-family: 'Lora', Georgia, serif;
+}
+
+.tab-active {
+    background-color: #ffffff;
+    color: #875200;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    font-weight: 700;
+}
+
+.mail-item-active {
+    background-color: #fffaf4;
+    border-left: 3px solid #bc7d39;
+}

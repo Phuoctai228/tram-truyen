@@ -32,10 +32,18 @@ public class NotificationAdminController {
     private final UserRepository userRepository;
 
     @GetMapping
-    public String showSendNotificationPage(@RequestParam(value = "page", defaultValue = "0") int page,
-                                           @RequestParam(value = "size", defaultValue = "10") int size,
+    public String showSendNotificationPage(@RequestParam(value = "page", required = false) String page,
+                                           @RequestParam(value = "size", required = false) String size,
                                            Model model) {
-        Page<NotificationDTO> recentHistory = notificationService.getRecentNotifications(page, size);
+        int parsedPage = com.tramtruyen.util.PaginationUtils.parsePage(page);
+        int parsedSize = com.tramtruyen.util.PaginationUtils.parseSize(size, 8);
+
+        Page<NotificationDTO> recentHistory = notificationService.getRecentNotifications(parsedPage, parsedSize);
+
+        if (parsedPage >= recentHistory.getTotalPages() && recentHistory.getTotalPages() > 0) {
+            parsedPage = recentHistory.getTotalPages() - 1;
+            recentHistory = notificationService.getRecentNotifications(parsedPage, parsedSize);
+        }
 
         if (!model.containsAttribute("sendRequest")) {
             model.addAttribute("sendRequest", SendNotificationRequest.builder()
@@ -43,11 +51,14 @@ public class NotificationAdminController {
                     .build());
         }
 
+        String filterQuery = "";
+
         model.addAttribute("history", recentHistory);
+        model.addAttribute("filterQuery", filterQuery);
         model.addAttribute("currentPage", recentHistory.getNumber());
         model.addAttribute("totalPages", recentHistory.getTotalPages());
         model.addAttribute("totalElements", recentHistory.getTotalElements());
-        model.addAttribute("pageSize", size);
+        model.addAttribute("pageSize", parsedSize);
         model.addAttribute("pageTitle", "Gửi thông báo hệ thống | Trạm Truyện Admin");
 
         return "admin/notifications/send";

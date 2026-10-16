@@ -4,6 +4,7 @@ import com.tramtruyen.dto.SystemAuditLogDTO;
 import com.tramtruyen.dto.SystemAuditLogDetailDTO;
 import com.tramtruyen.dto.SystemAuditLogStatsDTO;
 import com.tramtruyen.service.SystemAuditLogService;
+import com.tramtruyen.util.DateTimeUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -25,49 +26,88 @@ public class SystemAuditLogAdminController {
     private final SystemAuditLogService systemAuditLogService;
 
     @GetMapping
-    public String showAuditLogPage(@RequestParam(required = false) String startDate,
+    public String showAuditLogPage(@RequestParam(required = false) String keyword,
+                                   @RequestParam(required = false) String actionGroup,
+                                   @RequestParam(required = false) String severity,
+                                   @RequestParam(required = false, defaultValue = "all") String timeRange,
+                                   @RequestParam(required = false) String startDate,
                                    @RequestParam(required = false) String endDate,
+                                   @RequestParam(required = false) Boolean onlyAdmin,
+                                   // Backward-compatible obsolete params: safely accepted and ignored
                                    @RequestParam(required = false) String actionType,
                                    @RequestParam(required = false) String performer,
                                    @RequestParam(required = false) String targetEntity,
                                    @RequestParam(required = false) Integer targetId,
-                                   @RequestParam(required = false, defaultValue = "0") int page,
-                                   @RequestParam(required = false, defaultValue = "20") int size,
+                                   @RequestParam(required = false) String page,
+                                   @RequestParam(required = false) String size,
                                    Model model) {
 
+        String effectiveKeyword = keyword != null ? keyword.trim() : (performer != null ? performer.trim() : "");
+        String effectiveGroup = actionGroup != null ? actionGroup.trim() : "";
+        String effectiveSeverity = severity != null ? severity.trim() : "";
+        String effectiveTimeRange = timeRange != null && !timeRange.trim().isEmpty() ? timeRange.trim() : "all";
         String effectiveStartDate = startDate != null ? startDate.trim() : "";
         String effectiveEndDate = endDate != null ? endDate.trim() : "";
+        boolean effectiveOnlyAdmin = Boolean.TRUE.equals(onlyAdmin);
 
+        // Kiểm tra khoảng ngày ngược
         LocalDate sDate = parseDate(effectiveStartDate);
         LocalDate eDate = parseDate(effectiveEndDate);
         if (sDate != null && eDate != null && sDate.isAfter(eDate)) {
             model.addAttribute("errorMessage", "Khoảng ngày không hợp lệ: 'Từ ngày' không được lớn hơn 'Đến ngày'.");
             effectiveStartDate = "";
             effectiveEndDate = "";
+            effectiveTimeRange = "all";
+        }
+
+        int parsedPage = com.tramtruyen.util.PaginationUtils.parsePage(page);
+        int parsedSize = com.tramtruyen.util.PaginationUtils.parseSize(size, 10);
+
+        Page<SystemAuditLogDTO> logPage = systemAuditLogService.getAuditLogsFiltered(
+                effectiveKeyword, effectiveGroup, effectiveSeverity, effectiveTimeRange,
+                effectiveStartDate, effectiveEndDate, effectiveOnlyAdmin, parsedPage, parsedSize
+        );
+
+        // Clamp nếu page vượt quá tổng số trang
+        if (parsedPage >= logPage.getTotalPages() && logPage.getTotalPages() > 0) {
+            parsedPage = logPage.getTotalPages() - 1;
+            logPage = systemAuditLogService.getAuditLogsFiltered(
+                    effectiveKeyword, effectiveGroup, effectiveSeverity, effectiveTimeRange,
+                    effectiveStartDate, effectiveEndDate, effectiveOnlyAdmin, parsedPage, parsedSize
+            );
         }
 
         SystemAuditLogStatsDTO stats = systemAuditLogService.getStats();
-        Page<SystemAuditLogDTO> logPage = systemAuditLogService.getAuditLogs(
-                effectiveStartDate, effectiveEndDate, actionType, performer, targetEntity, targetId, page, size
-        );
+        List<SystemAuditLogService.ActionGroupItem> actionGroups = systemAuditLogService.getActiveActionGroups();
 
-        List<String> actionTypes = systemAuditLogService.getAvailableActionTypes();
-        List<String> targetEntities = systemAuditLogService.getAvailableTargetEntities();
+        String filterQuery = com.tramtruyen.util.PaginationUtils.buildFilterQuery(java.util.Map.of(
+                "keyword", effectiveKeyword,
+                "actionGroup", effectiveGroup,
+                "severity", effectiveSeverity,
+                "timeRange", effectiveTimeRange,
+                "startDate", effectiveStartDate,
+                "endDate", effectiveEndDate,
+                "onlyAdmin", effectiveOnlyAdmin
+        ));
 
         model.addAttribute("stats", stats);
         model.addAttribute("logs", logPage);
-        model.addAttribute("availableActionTypes", actionTypes);
-        model.addAttribute("availableTargetEntities", targetEntities);
+        model.addAttribute("actionGroups", actionGroups);
+        model.addAttribute("hanoiToday", DateTimeUtils.getHanoiTodayString());
+
+        model.addAttribute("keyword", effectiveKeyword);
+        model.addAttribute("actionGroup", effectiveGroup);
+        model.addAttribute("severity", effectiveSeverity);
+        model.addAttribute("timeRange", effectiveTimeRange);
         model.addAttribute("startDate", effectiveStartDate);
         model.addAttribute("endDate", effectiveEndDate);
-        model.addAttribute("actionType", actionType != null ? actionType.trim() : "");
-        model.addAttribute("performer", performer != null ? performer.trim() : "");
-        model.addAttribute("targetEntity", targetEntity != null ? targetEntity.trim() : "");
-        model.addAttribute("targetId", targetId);
+        model.addAttribute("onlyAdmin", effectiveOnlyAdmin);
+        model.addAttribute("filterQuery", filterQuery);
+
         model.addAttribute("currentPage", logPage.getNumber());
         model.addAttribute("totalPages", logPage.getTotalPages());
         model.addAttribute("totalElements", logPage.getTotalElements());
-        model.addAttribute("pageSize", size);
+        model.addAttribute("pageSize", parsedSize);
         model.addAttribute("pageTitle", "Nhật ký hệ thống | Trạm Truyện Admin");
 
         return "admin/audit-logs/index";

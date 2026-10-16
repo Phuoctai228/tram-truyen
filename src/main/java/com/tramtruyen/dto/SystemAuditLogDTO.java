@@ -32,4 +32,9 @@ public class SystemAuditLogDTO {
     private String ipAddress;
     private LocalDateTime createdAt;
     private String formattedCreatedAt;
+
+    private String severity;
+    private String severityDisplay;
+    private String severityBadgeClass;
+    private String severityDotClass;
 }
