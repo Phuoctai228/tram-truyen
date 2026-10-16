@@ -1,6 +1,5 @@
 package com.tramtruyen.service.impl;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tramtruyen.dto.AuditLogFieldDiffDTO;
 import com.tramtruyen.dto.SystemAuditLogDTO;
@@ -11,6 +10,7 @@ import com.tramtruyen.entity.User;
 import com.tramtruyen.repository.SystemAuditLogRepository;
 import com.tramtruyen.repository.UserRepository;
 import com.tramtruyen.service.SystemAuditLogService;
+import com.tramtruyen.util.AuditLogFieldFormatter;
 import com.tramtruyen.util.DateTimeUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,10 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -62,69 +59,25 @@ public class SystemAuditLogServiceImpl implements SystemAuditLogService {
     }
 
     // =========================================================================
-    // 2. MỨC ĐỘ CẢNH BÁO (SEVERITY)
-    // =========================================================================
-    public enum Severity {
-        INFO("Thông tin", "bg-emerald-50 text-emerald-700 border-emerald-200", "bg-emerald-500"),
-        WARNING("Cảnh báo", "bg-amber-50 text-amber-700 border-amber-200", "bg-amber-500"),
-        CRITICAL("Nguy cơ cao", "bg-rose-50 text-rose-700 border-rose-200", "bg-rose-500");
-
-        private final String label;
-        private final String badgeClass;
-        private final String dotClass;
-
-        Severity(String label, String badgeClass, String dotClass) {
-            this.label = label;
-            this.badgeClass = badgeClass;
-            this.dotClass = dotClass;
-        }
-
-        public String label() { return label; }
-        public String badgeClass() { return badgeClass; }
-        public String dotClass() { return dotClass; }
-    }
-
-    private static final Map<String, Severity> SEVERITY_REGISTRY = new HashMap<>();
-    static {
-        // Info: SEND_NOTIFICATION, RESOLVE_COMMENT_REPORT, RESOLVE_CONTENT_REPORT, UNBAN_USER, AUTO_UNBAN
-        SEVERITY_REGISTRY.put("SEND_NOTIFICATION", Severity.INFO);
-        SEVERITY_REGISTRY.put("RESOLVE_COMMENT_REPORT", Severity.INFO);
-        SEVERITY_REGISTRY.put("RESOLVE_CONTENT_REPORT", Severity.INFO);
-        SEVERITY_REGISTRY.put("UNBAN_USER", Severity.INFO);
-        SEVERITY_REGISTRY.put("AUTO_UNBAN", Severity.INFO);
-
-        // Warning: REJECT_COMMENT_REPORT, REJECT_CONTENT_REPORT
-        SEVERITY_REGISTRY.put("REJECT_COMMENT_REPORT", Severity.WARNING);
-        SEVERITY_REGISTRY.put("REJECT_CONTENT_REPORT", Severity.WARNING);
-
-        // Critical: BAN_USER, CHANGE_USER_ROLE, UPDATE_SYSTEM_SETTINGS
-        SEVERITY_REGISTRY.put("BAN_USER", Severity.CRITICAL);
-        SEVERITY_REGISTRY.put("CHANGE_USER_ROLE", Severity.CRITICAL);
-        SEVERITY_REGISTRY.put("UPDATE_SYSTEM_SETTINGS", Severity.CRITICAL);
-    }
-
-    // =========================================================================
-    // 3. NHÓM HÀNH ĐỘNG (ACTION GROUPS - DATA-DRIVEN)
+    // 2. NHÓM HÀNH ĐỘNG (ACTION GROUPS - Theo module nghiệp vụ tài liệu)
     // =========================================================================
     public record ActionGroupDef(String code, String name, List<String> actionTypes) {}
 
     private static final List<ActionGroupDef> ACTION_GROUPS = List.of(
-            new ActionGroupDef("ACCOUNT_ROLE", "Phân quyền & Tài khoản", List.of(
+            new ActionGroupDef("USER_ROLE", "Tài khoản & Phân quyền", List.of(
                     "BAN_USER", "UNBAN_USER", "AUTO_UNBAN", "CHANGE_USER_ROLE"
             )),
-            new ActionGroupDef("SYSTEM_CONFIG", "Cấu hình hệ thống", List.of(
+            new ActionGroupDef("REPORT_MODERATION", "Kiểm duyệt báo cáo", List.of(
+                    "RESOLVE_COMMENT_REPORT", "REJECT_COMMENT_REPORT", "RESOLVE_CONTENT_REPORT", "REJECT_CONTENT_REPORT"
+            )),
+            new ActionGroupDef("NOTIFICATION", "Thông báo", List.of(
+                    "SEND_NOTIFICATION"
+            )),
+            new ActionGroupDef("SYSTEM_SETTING", "Cấu hình hệ thống", List.of(
                     "UPDATE_SYSTEM_SETTINGS"
             )),
-            new ActionGroupDef("CONTENT_REPORT", "Quản lý nội dung / Truyện", List.of(
-                    "RESOLVE_COMMENT_REPORT", "REJECT_COMMENT_REPORT", "RESOLVE_CONTENT_REPORT", "REJECT_CONTENT_REPORT", "SEND_NOTIFICATION"
-            )),
-            // Khai báo sẵn sàng mở rộng khi có action_type mới:
-            new ActionGroupDef("FINANCE_TRANSACTION", "Tiền tệ & Giao dịch", List.of(
-                    // Chưa có action_type nào trong system_audit_logs -> Tự động ẩn trên giao diện
-            )),
-            new ActionGroupDef("SECURITY_LOGIN", "Bảo mật & Đăng nhập", List.of(
-                    // Chưa có action_type nào trong system_audit_logs -> Tự động ẩn trên giao diện
-            ))
+            // Khai báo sẵn sàng mở rộng khi có action_type mới (tự động ẩn khi rỗng):
+            new ActionGroupDef("NOVEL_CONTENT", "Nội dung truyện & chương", List.of())
     );
 
     @Override
@@ -136,70 +89,67 @@ public class SystemAuditLogServiceImpl implements SystemAuditLogService {
     }
 
     // =========================================================================
-    // 4. STATS (CHỈ SỐ TỔNG QUAN - TÍNH THEO GIỜ HÀ NỘI UTC+7)
+    // 3. STATS (CHỈ SỐ TỔNG QUAN)
     // =========================================================================
     @Override
     @Transactional(readOnly = true)
     public SystemAuditLogStatsDTO getStats() {
+        DateTimeUtils.DateRangeUtc todayBounds = DateTimeUtils.calculateUtcRangeFromHanoi("today", null, null);
+        LocalDateTime todayStartUtc = todayBounds.startUtc();
+        LocalDateTime todayEndUtc = todayBounds.endUtc();
+
+        LocalDateTime last24hUtc = DateTimeUtils.hanoiToUtc(LocalDateTime.now().minusHours(24));
+
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("todayStartUtc", todayStartUtc);
+        params.addValue("todayEndUtc", todayEndUtc);
+        params.addValue("last24hUtc", last24hUtc);
+
         String totalSql = "SELECT COUNT(*) FROM system_audit_logs";
         String todaySql = "SELECT COUNT(*) FROM system_audit_logs WHERE created_at >= :todayStartUtc AND created_at <= :todayEndUtc";
         String activeAdminsSql = "SELECT COUNT(DISTINCT admin_id) FROM system_audit_logs WHERE created_at >= :last24hUtc";
 
-        LocalDate todayHanoi = DateTimeUtils.getHanoiToday();
-        LocalDateTime todayStartUtc = DateTimeUtils.hanoiToUtc(todayHanoi.atStartOfDay());
-        LocalDateTime todayEndUtc = DateTimeUtils.hanoiToUtc(todayHanoi.atTime(LocalTime.MAX));
-        LocalDateTime last24hUtc = DateTimeUtils.hanoiToUtc(LocalDateTime.now().minusHours(24));
-
-        Long total = jdbcTemplate.getJdbcTemplate().queryForObject(totalSql, Long.class);
-        total = total != null ? total : 0L;
-
-        MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("todayStartUtc", Timestamp.valueOf(todayStartUtc));
-        params.addValue("todayEndUtc", Timestamp.valueOf(todayEndUtc));
-        Long todayCount = jdbcTemplate.queryForObject(todaySql, params, Long.class);
-        todayCount = todayCount != null ? todayCount : 0L;
-
-        params = new MapSqlParameterSource();
-        params.addValue("last24hUtc", Timestamp.valueOf(last24hUtc));
+        Long total = jdbcTemplate.queryForObject(totalSql, params, Long.class);
+        Long today = jdbcTemplate.queryForObject(todaySql, params, Long.class);
         Long activeAdmins = jdbcTemplate.queryForObject(activeAdminsSql, params, Long.class);
-        activeAdmins = activeAdmins != null ? activeAdmins : 0L;
 
         return SystemAuditLogStatsDTO.builder()
-                .totalRecords(total)
-                .todayRecords(todayCount)
-                .activeAdminsLast24h(activeAdmins)
-                .todayGrowthText("Hôm nay (" + DateTimeUtils.getHanoiTodayString() + ")")
+                .totalRecords(total != null ? total : 0L)
+                .todayRecords(today != null ? today : 0L)
+                .activeAdminsLast24h(activeAdmins != null ? activeAdmins : 0L)
                 .build();
     }
 
     // =========================================================================
-    // 5. QUERY DANH SÁCH BỘ LỌC MỚI THEO MOCK
+    // 4. DANH SÁCH BẢN GHI (LỌC THEO VAI TRÒ NGƯỜI THỰC HIỆN, NHÓM HÀNH ĐỘNG...)
     // =========================================================================
     @Override
     @Transactional(readOnly = true)
-    public Page<SystemAuditLogDTO> getAuditLogsFiltered(String keyword, String actionGroup, String severity,
-                                                         String timeRange, String startDate, String endDate,
-                                                         Boolean onlyAdmin, int page, int size) {
+    public Page<SystemAuditLogDTO> getAuditLogsFiltered(String keyword, String actionGroup, String performerRole,
+                                                        String timeRange, String startDate, String endDate,
+                                                        int page, int size) {
         if (page < 0) page = 0;
-        if (size <= 0) size = 20;
+        if (size <= 0) size = 10;
 
         StringBuilder whereClause = new StringBuilder(" WHERE 1=1 ");
         MapSqlParameterSource params = new MapSqlParameterSource();
 
-        // 5.1. Lọc theo khoảng thời gian (tính theo giờ Hà Nội UTC+7 rồi đổi sang UTC)
+        // 4.1. Lọc theo Khoảng thời gian
         DateTimeUtils.DateRangeUtc dateRange = DateTimeUtils.calculateUtcRangeFromHanoi(timeRange, startDate, endDate);
-        if (!dateRange.isInverted()) {
+        if (dateRange.isInverted()) {
+            whereClause.append(" AND 1 = 0 ");
+        } else {
             if (dateRange.startUtc() != null) {
                 whereClause.append(" AND l.created_at >= :startUtc ");
-                params.addValue("startUtc", Timestamp.valueOf(dateRange.startUtc()));
+                params.addValue("startUtc", dateRange.startUtc());
             }
             if (dateRange.endUtc() != null) {
                 whereClause.append(" AND l.created_at <= :endUtc ");
-                params.addValue("endUtc", Timestamp.valueOf(dateRange.endUtc()));
+                params.addValue("endUtc", dateRange.endUtc());
             }
         }
 
-        // 5.2. Lọc theo Nhóm hành động (Action Group)
+        // 4.2. Lọc theo Nhóm hành động (Action Group)
         if (actionGroup != null && !actionGroup.trim().isEmpty() && !"ALL".equalsIgnoreCase(actionGroup.trim())) {
             String normGroup = actionGroup.trim();
             Optional<ActionGroupDef> groupOpt = ACTION_GROUPS.stream()
@@ -216,33 +166,20 @@ public class SystemAuditLogServiceImpl implements SystemAuditLogService {
             }
         }
 
-        // 5.3. Lọc theo Mức độ cảnh báo (Severity)
-        if (severity != null && !severity.trim().isEmpty() && !"ALL".equalsIgnoreCase(severity.trim())) {
-            String normSeverity = severity.trim().toUpperCase();
-            List<String> matchingActions = SEVERITY_REGISTRY.entrySet().stream()
-                    .filter(e -> e.getValue().name().equalsIgnoreCase(normSeverity))
-                    .map(Map.Entry::getKey)
-                    .toList();
-            if (matchingActions.isEmpty()) {
-                whereClause.append(" AND 1 = 0 ");
-            } else {
-                whereClause.append(" AND l.action_type IN (:severityActions) ");
-                params.addValue("severityActions", matchingActions);
-            }
-        }
-
-        // 5.4. Chip "Chỉ Admin": người thực hiện đang mang ROLE_ADMIN
-        if (Boolean.TRUE.equals(onlyAdmin)) {
+        // 4.3. Lọc theo Vai trò người thực hiện (ROLE_ADMIN, ROLE_STAFF)
+        if (performerRole != null && !performerRole.trim().isEmpty() && !"ALL".equalsIgnoreCase(performerRole.trim())) {
+            String targetRole = performerRole.trim().toUpperCase();
             whereClause.append("""
                      AND EXISTS (
                         SELECT 1 FROM user_roles ur
                         JOIN roles r ON ur.role_id = r.id
-                        WHERE ur.user_id = l.admin_id AND r.name = 'ROLE_ADMIN'
+                        WHERE ur.user_id = l.admin_id AND r.name = :performerRole
                     ) 
             """);
+            params.addValue("performerRole", targetRole);
         }
 
-        // 5.5. Ô tìm kiếm thông minh (keyword)
+        // 4.4. Ô tìm kiếm thông minh (keyword)
         if (keyword != null && !keyword.trim().isEmpty()) {
             String rawKw = keyword.trim();
             String escapedKw = escapeLike(rawKw.toLowerCase());
@@ -296,7 +233,8 @@ public class SystemAuditLogServiceImpl implements SystemAuditLogService {
         totalElements = totalElements != null ? totalElements : 0L;
 
         String querySql = "SELECT l.id, l.admin_id, l.action_type, l.target_entity, l.target_id, l.ip_address, l.created_at, " +
-                "u.full_name, u.email, u.avatar_url " +
+                "u.full_name, u.email, " +
+                "(SELECT string_agg(r.name, ',') FROM user_roles ur JOIN roles r ON ur.role_id = r.id WHERE ur.user_id = u.id) AS role_names " +
                 "FROM system_audit_logs l " +
                 "LEFT JOIN users u ON l.admin_id = u.id " +
                 whereClause +
@@ -319,19 +257,28 @@ public class SystemAuditLogServiceImpl implements SystemAuditLogService {
 
             String fullName = rs.getString("full_name");
             String email = rs.getString("email");
-            String avatarUrl = rs.getString("avatar_url");
+            String roleNames = rs.getString("role_names");
 
             boolean isAutoUnban = "AUTO_UNBAN".equalsIgnoreCase(action);
+            String adminRoleBadge;
+
             if (isAutoUnban) {
                 fullName = "Hệ thống (tự động)";
                 email = "system.scheduler@internal";
-                avatarUrl = null;
+                adminRoleBadge = null; // AUTO_UNBAN không hiển thị nhãn vai trò
             } else {
                 if (fullName == null || fullName.isBlank()) {
                     fullName = "Quản trị viên #" + adminId;
                 }
                 if (email == null || email.isBlank()) {
                     email = "admin_" + adminId + "@tramtruyen.com";
+                }
+                if (roleNames != null && roleNames.contains("ROLE_ADMIN")) {
+                    adminRoleBadge = "Quản trị viên";
+                } else if (roleNames != null && roleNames.contains("ROLE_STAFF")) {
+                    adminRoleBadge = "Nhân viên";
+                } else {
+                    adminRoleBadge = "Độc giả";
                 }
             }
 
@@ -349,20 +296,12 @@ public class SystemAuditLogServiceImpl implements SystemAuditLogService {
                 targetDisplay = isTargetIdNull ? "—" : ("#" + tId);
             }
 
-            // Severity calculation
-            Severity sev = SEVERITY_REGISTRY.get(action);
-            String sevCode = sev != null ? sev.name() : "NEUTRAL";
-            String sevLabel = sev != null ? sev.label() : "Bình thường";
-            String sevBadge = sev != null ? sev.badgeClass() : "bg-gray-100 text-gray-700 border-gray-200";
-            String sevDot = sev != null ? sev.dotClass() : "bg-gray-400";
-
             return SystemAuditLogDTO.builder()
                     .id(id)
                     .adminId(adminId)
                     .adminName(fullName)
                     .adminEmail(email)
-                    .adminAvatar(avatarUrl)
-                    .adminRoleBadge(isAutoUnban ? "System" : "Admin")
+                    .adminRoleBadge(adminRoleBadge)
                     .actionType(action)
                     .actionTypeDisplay(meta.label())
                     .actionChipClass(meta.chipClass())
@@ -372,10 +311,6 @@ public class SystemAuditLogServiceImpl implements SystemAuditLogService {
                     .ipAddress(ip != null ? ip : "—")
                     .createdAt(createdAt)
                     .formattedCreatedAt(DateTimeUtils.formatUtcToHanoi(createdAt, "dd/MM/yyyy HH:mm:ss"))
-                    .severity(sevCode)
-                    .severityDisplay(sevLabel)
-                    .severityBadgeClass(sevBadge)
-                    .severityDotClass(sevDot)
                     .build();
         });
 
@@ -387,12 +322,11 @@ public class SystemAuditLogServiceImpl implements SystemAuditLogService {
     public Page<SystemAuditLogDTO> getAuditLogs(String startDate, String endDate, String actionType,
                                                 String performer, String targetEntity, Integer targetId,
                                                 int page, int size) {
-        // Chuyển tiếp an toàn sang getAuditLogsFiltered
-        return getAuditLogsFiltered(performer, null, null, null, startDate, endDate, false, page, size);
+        return getAuditLogsFiltered(performer, null, null, null, startDate, endDate, page, size);
     }
 
     // =========================================================================
-    // 6. CHI TIẾT NHẬT KÝ (FIELD DIFFS)
+    // 5. CHI TIẾT NHẬT KÝ (SERVER-RENDERED PAGE DTO)
     // =========================================================================
     @Override
     @Transactional(readOnly = true)
@@ -402,17 +336,33 @@ public class SystemAuditLogServiceImpl implements SystemAuditLogService {
 
         String adminName;
         String adminEmail;
+        String adminRoleBadge = null;
+
         if ("AUTO_UNBAN".equalsIgnoreCase(log.getActionType())) {
             adminName = "Hệ thống (tự động)";
             adminEmail = "system.scheduler@internal";
+            adminRoleBadge = null; // AUTO_UNBAN không hiển thị nhãn vai trò
         } else {
             Optional<User> userOpt = userRepository.findById(log.getAdminId());
             if (userOpt.isPresent()) {
-                adminName = userOpt.get().getFullName();
-                adminEmail = userOpt.get().getEmail();
+                User u = userOpt.get();
+                adminName = u.getFullName();
+                adminEmail = u.getEmail();
+                if (u.getRoles() != null && !u.getRoles().isEmpty()) {
+                    boolean isAdmin = u.getRoles().stream().anyMatch(r -> "ROLE_ADMIN".equalsIgnoreCase(r.getName()));
+                    boolean isStaff = u.getRoles().stream().anyMatch(r -> "ROLE_STAFF".equalsIgnoreCase(r.getName()));
+                    if (isAdmin) {
+                        adminRoleBadge = "Quản trị viên";
+                    } else if (isStaff) {
+                        adminRoleBadge = "Nhân viên";
+                    } else {
+                        adminRoleBadge = "Độc giả";
+                    }
+                }
             } else {
                 adminName = "Quản trị viên #" + log.getAdminId();
                 adminEmail = "admin_" + log.getAdminId() + "@tramtruyen.com";
+                adminRoleBadge = "Quản trị viên";
             }
         }
 
@@ -422,7 +372,7 @@ public class SystemAuditLogServiceImpl implements SystemAuditLogService {
         String targetDisplay;
         if (log.getTargetEntity() != null && !log.getTargetEntity().isBlank()) {
             if (log.getTargetId() != null) {
-                targetDisplay = formatTargetEntity(log.getTargetEntity()) + ": #" + log.getTargetId();
+                targetDisplay = formatTargetEntity(log.getTargetEntity()) + " #" + log.getTargetId();
             } else {
                 targetDisplay = formatTargetEntity(log.getTargetEntity());
             }
@@ -432,32 +382,50 @@ public class SystemAuditLogServiceImpl implements SystemAuditLogService {
 
         String rawOld = log.getOldValue();
         String rawNew = log.getNewValue();
-        String prettyOld = prettyPrintJson(rawOld);
-        String prettyNew = prettyPrintJson(rawNew);
 
-        List<AuditLogFieldDiffDTO> diffs = computeFieldDiffs(rawOld, rawNew);
+        List<AuditLogFieldDiffDTO> diffs = AuditLogFieldFormatter.computeFieldDiffs(rawOld, rawNew);
         boolean isDiffAvailable = !diffs.isEmpty();
+
+        String plainFallbackNote = null;
+        if (!isDiffAvailable) {
+            boolean oldBlank = rawOld == null || rawOld.isBlank();
+            boolean newBlank = rawNew == null || rawNew.isBlank();
+            if (oldBlank && newBlank) {
+                plainFallbackNote = "Bản ghi này không có dữ liệu thay đổi chi tiết.";
+            } else {
+                // Không phải JSON object, hiển thị nội dung dạng text thường
+                StringBuilder sb = new StringBuilder();
+                if (!oldBlank) {
+                    sb.append("Giá trị cũ: ").append(rawOld).append("\n");
+                }
+                if (!newBlank) {
+                    sb.append("Giá trị mới: ").append(rawNew);
+                }
+                plainFallbackNote = sb.toString().trim();
+            }
+        }
+
+        String targetUrl = AuditLogFieldFormatter.resolveTargetUrl(log.getTargetEntity());
 
         return SystemAuditLogDetailDTO.builder()
                 .id(log.getId())
                 .adminId(log.getAdminId())
                 .adminName(adminName)
                 .adminEmail(adminEmail)
+                .adminRoleBadge(adminRoleBadge)
                 .actionType(log.getActionType())
                 .actionTypeDisplay(meta.label())
                 .actionChipClass(meta.chipClass())
                 .targetEntity(log.getTargetEntity())
                 .targetId(log.getTargetId())
                 .targetDisplay(targetDisplay)
+                .targetUrl(targetUrl)
                 .ipAddress(log.getIpAddress() != null ? log.getIpAddress() : "—")
                 .createdAt(log.getCreatedAt())
                 .formattedCreatedAt(DateTimeUtils.formatUtcToHanoi(log.getCreatedAt(), "dd/MM/yyyy HH:mm:ss"))
-                .rawOldValue(rawOld)
-                .prettyOldValue(prettyOld)
-                .rawNewValue(rawNew)
-                .prettyNewValue(prettyNew)
                 .isJsonDiffAvailable(isDiffAvailable)
                 .fieldDiffs(diffs)
+                .plainFallbackNote(plainFallbackNote)
                 .build();
     }
 
@@ -476,7 +444,7 @@ public class SystemAuditLogServiceImpl implements SystemAuditLogService {
     }
 
     // =========================================================================
-    // 7. CÁC HÀM TIỆN ÍCH NỘI BỘ
+    // 6. CÁC HÀM TIỆN ÍCH NỘI BỘ
     // =========================================================================
     private String escapeLike(String input) {
         if (input == null) return "";
@@ -506,49 +474,6 @@ public class SystemAuditLogServiceImpl implements SystemAuditLogService {
             matches.addAll(List.of("novels", "NOVELS"));
         }
         return matches;
-    }
-
-    private String prettyPrintJson(String jsonStr) {
-        if (jsonStr == null || jsonStr.isBlank()) {
-            return "(Trống)";
-        }
-        try {
-            Object obj = objectMapper.readValue(jsonStr, Object.class);
-            return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
-        } catch (Exception e) {
-            return jsonStr;
-        }
-    }
-
-    private List<AuditLogFieldDiffDTO> computeFieldDiffs(String oldJson, String newJson) {
-        if (oldJson == null || oldJson.isBlank() || newJson == null || newJson.isBlank()) {
-            return Collections.emptyList();
-        }
-        try {
-            Map<String, Object> oldMap = objectMapper.readValue(oldJson, new TypeReference<Map<String, Object>>() {});
-            Map<String, Object> newMap = objectMapper.readValue(newJson, new TypeReference<Map<String, Object>>() {});
-
-            Set<String> allKeys = new TreeSet<>();
-            allKeys.addAll(oldMap.keySet());
-            allKeys.addAll(newMap.keySet());
-
-            List<AuditLogFieldDiffDTO> diffList = new ArrayList<>();
-            for (String key : allKeys) {
-                Object oldVal = oldMap.get(key);
-                Object newVal = newMap.get(key);
-
-                if (!Objects.equals(oldVal, newVal)) {
-                    diffList.add(AuditLogFieldDiffDTO.builder()
-                            .fieldName(key)
-                            .oldValue(oldVal != null ? String.valueOf(oldVal) : "null (không có)")
-                            .newValue(newVal != null ? String.valueOf(newVal) : "null (đã bỏ)")
-                            .build());
-                }
-            }
-            return diffList;
-        } catch (Exception e) {
-            return Collections.emptyList();
-        }
     }
 
     private String formatTargetEntity(String entity) {
