@@ -10,6 +10,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script th:src="@{/js/authentication/tailwind-config.js}"></script>
     <link rel="stylesheet" th:href="@{/css/novel-admin.css}">
+    <link rel="stylesheet" th:href="@{/css/admin-common.css}">
     <style>
         .font-serif-title { font-family: 'Lora', serif; }
     </style>
@@ -49,7 +50,7 @@
             <div class="bg-white border border-[#ead8cb] rounded-3xl p-6 shadow-sm flex items-center justify-between">
                 <div>
                     <span class="text-xs font-bold text-[#75695d] uppercase tracking-wider block mb-1">TỔNG SỰ KIỆN GHI NHẬN</span>
-                    <h2 class="text-3xl font-extrabold text-[#231a11]" th:text="${#numbers.formatDecimal(stats.totalRecords, 0, 'POINT', 0, 'POINT')}">0</h2>
+                    <h2 class="text-3xl font-extrabold text-[#231a11]" th:text="${#numbers.formatDecimal(stats.totalLogs, 0, 'POINT', 0, 'POINT')}">0</h2>
                     <span class="text-xs text-[#a09081] mt-1 block">Toàn bộ lịch sử hệ thống</span>
                 </div>
                 <div class="w-12 h-12 rounded-2xl bg-[#fff0df] flex items-center justify-center text-[#c07c2a]">
@@ -61,10 +62,10 @@
             <div class="bg-white border border-[#ead8cb] rounded-3xl p-6 shadow-sm flex items-center justify-between">
                 <div>
                     <span class="text-xs font-bold text-[#75695d] uppercase tracking-wider block mb-1">SỰ KIỆN HÔM NAY</span>
-                    <h2 class="text-3xl font-extrabold text-[#875200]" th:text="${#numbers.formatDecimal(stats.todayRecords, 0, 'POINT', 0, 'POINT')}">0</h2>
+                    <h2 class="text-3xl font-extrabold text-[#875200]" th:text="${#numbers.formatDecimal(stats.todayLogs, 0, 'POINT', 0, 'POINT')}">0</h2>
                     <div class="flex items-center gap-1 text-xs text-[#1b7a42] mt-1">
                         <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                        <span th:text="'Hôm nay (' + ${hanoiToday} + ')'">Hôm nay (14/10/2026)</span>
+                        <span th:text="'Hôm nay (' + ${hanoiToday} + ')'">Hôm nay</span>
                     </div>
                 </div>
                 <div class="w-12 h-12 rounded-2xl bg-[#e8f7ee] flex items-center justify-center text-[#1b7a42]">
@@ -96,7 +97,7 @@
                     <div class="relative flex-1 flex items-center bg-[#faf6f2] border border-[#ead8cb] rounded-2xl px-3.5 py-2.5 focus-within:border-[#875200] focus-within:bg-white transition-all">
                         <span class="material-symbols-outlined text-[#75695d] text-[20px] mr-2">search</span>
                         <input type="text" name="keyword" th:value="${keyword}"
-                               placeholder="Tìm theo Quản trị viên, mã đối tượng (#US-...), hành động, địa chỉ IP..."
+                               placeholder="Tìm theo Quản trị viên, IP, mã đối tượng (#US-...), hành động..."
                                class="w-full bg-transparent border-0 outline-none text-xs md:text-sm text-[#231a11] placeholder:text-[#a09081]" />
                         <button th:if="${keyword != null and !keyword.isEmpty()}" type="button" onclick="clearKeyword()" class="text-[#a09081] hover:text-[#231a11] ml-1">
                             <span class="material-symbols-outlined text-[18px]">close</span>
@@ -118,7 +119,7 @@
                     </div>
                 </div>
 
-                <!-- Row 2: 3 Dropdown Columns (Nhóm hành động, Mức độ, Khoảng thời gian) -->
+                <!-- Row 2: 3 Dropdown Columns (Nhóm hành động, Vai trò người thực hiện, Khoảng thời gian) -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
                     <!-- Dropdown 1: Nhóm hành động -->
                     <div class="flex flex-col">
@@ -128,26 +129,25 @@
                         </label>
                         <select name="actionGroup" onchange="this.form.submit()"
                                 class="w-full bg-[#faf6f2] border border-[#ead8cb] rounded-2xl px-3.5 py-2.5 text-xs text-[#231a11] outline-none focus:border-[#875200] focus:bg-white cursor-pointer transition-all">
-                            <option value="" th:selected="${actionGroup == null or actionGroup.isEmpty()}">Tất cả hành động</option>
+                            <option value="" th:selected="${actionGroup == null or actionGroup.isEmpty()}">Tất cả nhóm</option>
                             <option th:each="grp : ${actionGroups}"
                                     th:value="${grp.code}"
                                     th:text="${grp.name}"
-                                    th:selected="${grp.code == actionGroup}">Phân quyền &amp; Tài khoản</option>
+                                    th:selected="${grp.code == actionGroup}">Tài khoản &amp; Phân quyền</option>
                         </select>
                     </div>
 
-                    <!-- Dropdown 2: Mức độ cảnh báo (Severity) -->
+                    <!-- Dropdown 2: Vai trò người thực hiện (Thay cho Mức độ cảnh báo) -->
                     <div class="flex flex-col">
                         <label class="flex items-center gap-1.5 text-xs font-bold text-[#75695d] mb-1.5">
-                            <span class="material-symbols-outlined text-[16px] text-[#c53d26]">shield</span>
-                            <span>Mức độ cảnh báo (Severity)</span>
+                            <span class="material-symbols-outlined text-[16px] text-[#875200]">badge</span>
+                            <span>Vai trò người thực hiện</span>
                         </label>
-                        <select name="severity" onchange="this.form.submit()"
+                        <select name="performerRole" onchange="this.form.submit()"
                                 class="w-full bg-[#faf6f2] border border-[#ead8cb] rounded-2xl px-3.5 py-2.5 text-xs text-[#231a11] outline-none focus:border-[#875200] focus:bg-white cursor-pointer transition-all">
-                            <option value="" th:selected="${severity == null or severity.isEmpty()}">Tất cả mức độ</option>
-                            <option value="INFO" th:selected="${severity == 'INFO'}">Thông tin (Info)</option>
-                            <option value="WARNING" th:selected="${severity == 'WARNING'}">Cảnh báo (Warning)</option>
-                            <option value="CRITICAL" th:selected="${severity == 'CRITICAL'}">Nguy cơ cao / Nhạy cảm (Critical)</option>
+                            <option value="" th:selected="${performerRole == null or performerRole.isEmpty()}">Tất cả vai trò</option>
+                            <option value="ROLE_ADMIN" th:selected="${performerRole == 'ROLE_ADMIN'}">Quản trị viên</option>
+                            <option value="ROLE_STAFF" th:selected="${performerRole == 'ROLE_STAFF'}">Nhân viên</option>
                         </select>
                     </div>
 
@@ -177,25 +177,9 @@
                     </div>
                 </div>
 
-                <!-- Row 3: Quick Filter Chips & Action Button -->
+                <!-- Row 3: Action Button & Count -->
                 <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[#f4eae1]">
-                    <!-- Quick Chips -->
-                    <div class="flex items-center gap-2 flex-wrap">
-                        <span class="flex items-center gap-1 text-xs font-bold text-[#75695d] mr-1">
-                            <span class="material-symbols-outlined text-[16px] text-[#875200]">tune</span>
-                            <span>Bộ lọc nhanh:</span>
-                        </span>
-
-                        <!-- Chỉ Admin Chip -->
-                        <label class="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all"
-                               th:classappend="${onlyAdmin ? 'bg-[#875200] text-white border-[#875200] shadow-sm' : 'bg-[#faf6f2] text-[#75695d] border-[#ead8cb] hover:bg-[#f2e7dc]'}">
-                            <input type="checkbox" name="onlyAdmin" value="true" th:checked="${onlyAdmin}" onchange="this.form.submit()" class="sr-only">
-                            <span class="material-symbols-outlined text-[15px]" th:text="${onlyAdmin ? 'check_circle' : 'shield_person'}">shield_person</span>
-                            <span>Chỉ Admin</span>
-                        </label>
-                    </div>
-
-                    <!-- Action button & count -->
+                    <div></div>
                     <div class="flex items-center gap-3">
                         <span class="text-xs text-[#75695d] hidden sm:inline">
                             Hiển thị: <b class="text-[#231a11]" th:text="${logs.numberOfElements}">0</b> / <span th:text="${totalElements}">0</span> bản ghi
@@ -219,7 +203,6 @@
                         <th class="py-4 px-4 pl-6">THỜI GIAN</th>
                         <th class="py-4 px-4">NGƯỜI THỰC HIỆN</th>
                         <th class="py-4 px-4">HÀNH ĐỘNG</th>
-                        <th class="py-4 px-4">MỨC ĐỘ</th>
                         <th class="py-4 px-4">ĐỐI TƯỢNG TÁC ĐỘNG</th>
                         <th class="py-4 px-4">ĐỊA CHỈ IP</th>
                         <th class="py-4 px-4 pr-6 text-center">CHI TIẾT</th>
@@ -227,7 +210,7 @@
                     </thead>
                     <tbody class="divide-y divide-[#f4eae1] text-xs">
                     <tr th:if="${logs.empty}" class="hover:bg-[#fffbf8] transition-colors">
-                        <td colspan="7" class="py-12 text-center text-[#a09081]">
+                        <td colspan="6" class="py-12 text-center text-[#a09081]">
                             <div class="flex flex-col items-center justify-center">
                                 <span class="material-symbols-outlined text-[48px] text-[#cfc3b7] mb-2">history</span>
                                 <p class="text-sm font-semibold text-[#75695d]">Không tìm thấy bản ghi nhật ký phù hợp</p>
@@ -242,23 +225,16 @@
                             <span class="font-mono text-xs font-semibold text-[#231a11] block" th:text="${logItem.formattedCreatedAt}">00/00/0000 00:00:00</span>
                         </td>
 
-                        <!-- Người thực hiện -->
+                        <!-- Người thực hiện (Không avatar, không vòng tròn chữ cái) -->
                         <td class="py-3.5 px-4">
-                            <div class="flex items-center gap-2.5">
-                                <div class="w-8 h-8 rounded-full bg-[#fdecdb] text-[#875200] font-bold text-xs flex items-center justify-center overflow-hidden shrink-0">
-                                    <img th:if="${logItem.adminAvatar != null and !logItem.adminAvatar.isEmpty()}"
-                                         th:src="${logItem.adminAvatar}" class="w-full h-full object-cover" alt="avatar" />
-                                    <span th:if="${logItem.adminAvatar == null or logItem.adminAvatar.isEmpty()}"
-                                          th:text="${#strings.substring(logItem.adminName != null ? logItem.adminName : 'A', 0, 1)}">A</span>
+                            <div class="flex flex-col min-w-0">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="font-bold text-[#231a11] truncate" th:text="${logItem.adminName}">Họ tên</span>
+                                    <span th:if="${logItem.adminRoleBadge != null}"
+                                          class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-[#faf6f2] border border-[#ead8cb] text-[#875200]"
+                                          th:text="${logItem.adminRoleBadge}">Quản trị viên</span>
                                 </div>
-                                <div class="flex flex-col min-w-0">
-                                    <div class="flex items-center gap-1.5">
-                                        <span class="font-bold text-[#231a11] truncate" th:text="${logItem.adminName}">Họ tên</span>
-                                        <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-[#faf6f2] border border-[#ead8cb] text-[#875200]"
-                                              th:text="${logItem.adminRoleBadge}">Admin</span>
-                                    </div>
-                                    <span class="text-[11px] text-[#a09081] truncate" th:text="${logItem.adminEmail}">email@tramtruyen.com</span>
-                                </div>
+                                <span class="text-[11px] text-[#a09081] truncate" th:text="${logItem.adminEmail}">email@tramtruyen.com</span>
                             </div>
                         </td>
 
@@ -272,35 +248,24 @@
                             </div>
                         </td>
 
-                        <!-- Mức độ (Severity) -->
-                        <td class="py-3.5 px-4 whitespace-nowrap">
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold border"
-                                  th:classappend="${logItem.severityBadgeClass}">
-                                <span class="w-1.5 h-1.5 rounded-full" th:classappend="${logItem.severityDotClass}"></span>
-                                <span th:text="${logItem.severityDisplay}">Thông tin</span>
-                            </span>
-                        </td>
-
                         <!-- Đối tượng tác động -->
                         <td class="py-3.5 px-4">
                             <span class="font-medium text-[#231a11]" th:text="${logItem.targetDisplay}">Đối tượng</span>
                         </td>
 
                         <!-- Địa chỉ IP -->
-                        <td class="py-3.5 px-4 font-mono text-xs text-[#75695d]">
-                            <span th:text="${logItem.ipAddress}">127.0.0.1</span>
+                        <td class="py-3.5 px-4">
+                            <span class="font-mono text-xs text-[#231a11]" th:text="${logItem.ipAddress != null and !#strings.isEmpty(logItem.ipAddress) ? logItem.ipAddress : '—'}">127.0.0.1</span>
                         </td>
 
-                        <!-- Chi tiết -->
+                        <!-- Chi tiết: Thẻ <a> dẫn sang GET /admin/audit-logs/{id} kèm đầy đủ query params -->
                         <td class="py-3.5 px-4 pr-6 text-center">
-                            <button type="button"
-                                    th:data-log-id="${logItem.id}"
-                                    onclick="openLogDetailModal(this.getAttribute('data-log-id'))"
-                                    class="px-3 py-1.5 rounded-xl bg-[#faf6f2] hover:bg-[#f2e7dc] text-[#875200] border border-[#ead8cb] text-xs font-semibold transition-colors inline-flex items-center gap-1 shadow-sm"
-                                    title="Xem chi tiết can thiệp dữ liệu">
+                            <a th:href="@{'/admin/audit-logs/' + ${logItem.id}(page=${currentPage}, size=${pageSize}, keyword=${keyword}, actionGroup=${actionGroup}, performerRole=${performerRole}, timeRange=${timeRange}, startDate=${startDate}, endDate=${endDate})}"
+                               class="px-3 py-1.5 rounded-xl bg-[#faf6f2] hover:bg-[#f2e7dc] text-[#875200] border border-[#ead8cb] text-xs font-semibold transition-colors inline-flex items-center gap-1 shadow-xs"
+                               title="Xem chi tiết can thiệp dữ liệu">
                                 <span class="material-symbols-outlined text-[15px]">visibility</span>
                                 <span>Chi tiết</span>
-                            </button>
+                            </a>
                         </td>
                     </tr>
                     </tbody>
@@ -313,36 +278,6 @@
 
     </section>
 </main>
-
-<!-- Modal "Chi tiết Nhật ký" -->
-<div id="logDetailModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-4xl w-full border border-[#ead8cb] shadow-2xl overflow-hidden animate-fade-in flex flex-col max-h-[90vh]">
-        <div class="px-6 py-4 bg-[#faf6f2] border-b border-[#ead8cb] flex items-center justify-between shrink-0">
-            <div class="flex items-center gap-2">
-                <span class="material-symbols-outlined text-[#875200]">find_in_page</span>
-                <h3 class="font-bold text-[#231a11] text-base">Chi tiết nhật ký hệ thống</h3>
-                <span id="detailLogIdBadge" class="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-[#fdecdb] text-[#875200] ml-2"></span>
-            </div>
-            <button type="button" onclick="closeLogDetailModal()" class="text-[#a09081] hover:text-[#231a11] transition-colors p-1 rounded-lg hover:bg-[#efe5dc]" title="Đóng">
-                <span class="material-symbols-outlined text-[22px] block">close</span>
-            </button>
-        </div>
-
-        <div id="logDetailBody" class="p-6 overflow-y-auto space-y-5 flex-1">
-            <div class="text-center py-6 text-[#75695d]">
-                <span class="material-symbols-outlined text-[32px] animate-spin text-[#875200]">progress_activity</span>
-                <p class="text-xs mt-2">Đang tải chi tiết...</p>
-            </div>
-        </div>
-
-        <div class="px-6 py-3.5 bg-[#faf6f2] border-t border-[#ead8cb] flex justify-end shrink-0">
-            <button type="button" onclick="closeLogDetailModal()"
-                    class="px-5 py-2 rounded-xl bg-[#875200] hover:bg-[#6c4100] text-white text-xs font-bold transition-all shadow-sm">
-                Đóng
-            </button>
-        </div>
-    </div>
-</div>
 
 <script>
     function handleTimeRangeChange(val) {
@@ -363,224 +298,6 @@
         if (input) input.value = '';
         form.submit();
     }
-
-    function openLogDetailModal(logId) {
-        if (!logId) return;
-        const modal = document.getElementById('logDetailModal');
-        const badge = document.getElementById('detailLogIdBadge');
-        const body = document.getElementById('logDetailBody');
-
-        badge.textContent = `#LOG-${logId}`;
-        body.innerHTML = `
-            <div class="text-center py-6 text-[#75695d]">
-                <span class="material-symbols-outlined text-[32px] animate-spin text-[#875200]">progress_activity</span>
-                <p class="text-xs mt-2">Đang tải chi tiết...</p>
-            </div>
-        `;
-        modal.classList.remove('hidden');
-
-        fetch(`/admin/audit-logs/${encodeURIComponent(logId)}/detail`)
-            .then(res => {
-                if (!res.ok) throw new Error('Không thể tải chi tiết nhật ký.');
-                return res.json();
-            })
-            .then(data => {
-                body.innerHTML = '';
-
-                // 1. Grid thông tin tổng quan (Hành động, Người thực hiện, Thời gian, IP)
-                const summaryGrid = document.createElement('div');
-                summaryGrid.className = 'grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 bg-[#faf6f2] border border-[#ead8cb] rounded-2xl text-xs';
-
-                // Box Hành động
-                const actBox = document.createElement('div');
-                const actLbl = document.createElement('span');
-                actLbl.className = 'text-[#a09081] block text-[11px]';
-                actLbl.textContent = 'Hành động:';
-                const actVal = document.createElement('span');
-                actVal.className = 'font-bold text-[#231a11] block';
-                actVal.textContent = data.actionTypeDisplay || data.actionType || '—';
-                const actCode = document.createElement('span');
-                actCode.className = 'text-[10px] text-[#75695d] font-mono block';
-                actCode.textContent = data.actionType || '';
-                actBox.append(actLbl, actVal, actCode);
-
-                // Box Người thực hiện
-                const admBox = document.createElement('div');
-                const admLbl = document.createElement('span');
-                admLbl.className = 'text-[#a09081] block text-[11px]';
-                admLbl.textContent = 'Người thực hiện:';
-                const admVal = document.createElement('span');
-                admVal.className = 'font-bold text-[#231a11] block';
-                admVal.textContent = data.adminName || 'Hệ thống';
-                const admMail = document.createElement('span');
-                admMail.className = 'text-[10px] text-[#75695d] block truncate';
-                admMail.textContent = data.adminEmail || '';
-                admBox.append(admLbl, admVal, admMail);
-
-                // Box Thời gian
-                const timeBox = document.createElement('div');
-                const timeLbl = document.createElement('span');
-                timeLbl.className = 'text-[#a09081] block text-[11px]';
-                timeLbl.textContent = 'Thời gian (UTC+7):';
-                const timeVal = document.createElement('span');
-                timeVal.className = 'font-semibold text-[#231a11] font-mono block';
-                timeVal.textContent = data.formattedCreatedAt || '—';
-                timeBox.append(timeLbl, timeVal);
-
-                // Box Địa chỉ IP
-                const ipBox = document.createElement('div');
-                const ipLbl = document.createElement('span');
-                ipLbl.className = 'text-[#a09081] block text-[11px]';
-                ipLbl.textContent = 'Địa chỉ IP:';
-                const ipVal = document.createElement('span');
-                ipVal.className = 'font-mono text-[#231a11] block';
-                ipVal.textContent = data.ipAddress || '127.0.0.1';
-                ipBox.append(ipLbl, ipVal);
-
-                summaryGrid.append(actBox, admBox, timeBox, ipBox);
-                body.appendChild(summaryGrid);
-
-                // 2. Đối tượng tác động
-                const targetBox = document.createElement('div');
-                targetBox.className = 'text-xs';
-                const targetLbl = document.createElement('span');
-                targetLbl.className = 'text-[#a09081]';
-                targetLbl.textContent = 'Đối tượng tác động: ';
-                const targetVal = document.createElement('span');
-                targetVal.className = 'font-bold text-[#231a11]';
-                targetVal.textContent = data.targetDisplay || '—';
-                targetBox.append(targetLbl, targetVal);
-                body.appendChild(targetBox);
-
-                // 3. Bảng "Các trường thay đổi (Field Diffs)" nếu có
-                if (data.jsonDiffAvailable && Array.isArray(data.fieldDiffs) && data.fieldDiffs.length > 0) {
-                    const diffCard = document.createElement('div');
-                    diffCard.className = 'border border-[#ead8cb] rounded-2xl overflow-hidden';
-
-                    const diffHeader = document.createElement('div');
-                    diffHeader.className = 'bg-[#faf6f2] px-4 py-2.5 border-b border-[#ead8cb] flex items-center justify-between';
-                    const diffTitle = document.createElement('span');
-                    diffTitle.className = 'text-xs font-bold text-[#875200] uppercase tracking-wider';
-                    diffTitle.textContent = 'Các trường thay đổi (Field Diffs)';
-                    diffHeader.appendChild(diffTitle);
-                    diffCard.appendChild(diffHeader);
-
-                    const table = document.createElement('table');
-                    table.className = 'w-full table-fixed border-collapse text-xs';
-
-                    const thead = document.createElement('thead');
-                    thead.className = 'bg-[#fff9f5] border-b border-[#ead8cb] text-[11px] text-[#75695d] uppercase';
-                    const headRow = document.createElement('tr');
-
-                    const th1 = document.createElement('th');
-                    th1.className = 'py-2.5 px-3 text-left w-[24%] font-bold';
-                    th1.textContent = 'TÊN TRƯỜNG';
-
-                    const th2 = document.createElement('th');
-                    th2.className = 'py-2.5 px-3 text-left w-[38%] font-bold';
-                    th2.textContent = 'GIÁ TRỊ CŨ';
-
-                    const th3 = document.createElement('th');
-                    th3.className = 'py-2.5 px-3 text-left w-[38%] font-bold';
-                    th3.textContent = 'GIÁ TRỊ MỚI';
-
-                    headRow.append(th1, th2, th3);
-                    thead.appendChild(headRow);
-                    table.appendChild(thead);
-
-                    const tbody = document.createElement('tbody');
-                    tbody.className = 'divide-y divide-[#f4eae1]';
-
-                    data.fieldDiffs.forEach(d => {
-                        const tr = document.createElement('tr');
-                        tr.className = 'hover:bg-[#fffbf8] align-top';
-
-                        const tdName = document.createElement('td');
-                        tdName.className = 'py-2.5 px-3 font-mono font-bold text-[#875200] break-words';
-                        tdName.textContent = d.fieldName || '—';
-
-                        const tdOld = document.createElement('td');
-                        tdOld.className = 'py-2 px-2.5 bg-[#fff6f5]';
-                        const oldInner = document.createElement('div');
-                        oldInner.className = 'max-h-40 overflow-y-auto whitespace-pre-wrap break-words [overflow-wrap:anywhere] text-[#c53d26] font-mono text-xs pr-1';
-                        oldInner.textContent = d.oldValue != null ? String(d.oldValue) : '(Trống)';
-                        tdOld.appendChild(oldInner);
-
-                        const tdNew = document.createElement('td');
-                        tdNew.className = 'py-2 px-2.5 bg-[#f5fbf7]';
-                        const newInner = document.createElement('div');
-                        newInner.className = 'max-h-40 overflow-y-auto whitespace-pre-wrap break-words [overflow-wrap:anywhere] text-[#1b7a42] font-mono text-xs pr-1';
-                        newInner.textContent = d.newValue != null ? String(d.newValue) : '(Trống)';
-                        tdNew.appendChild(newInner);
-
-                        tr.append(tdName, tdOld, tdNew);
-                        tbody.appendChild(tr);
-                    });
-
-                    table.appendChild(tbody);
-                    diffCard.appendChild(table);
-                    body.appendChild(diffCard);
-                }
-
-                // 4. Hai khối JSON Giá trị cũ / Giá trị mới bên dưới
-                const rawGrid = document.createElement('div');
-                rawGrid.className = 'grid grid-cols-1 md:grid-cols-2 gap-4';
-
-                // Box Giá trị cũ
-                const oldBox = document.createElement('div');
-                const oldHeader = document.createElement('div');
-                oldHeader.className = 'mb-1.5';
-                const oldTitle = document.createElement('span');
-                oldTitle.className = 'text-xs font-bold text-[#75695d] uppercase';
-                oldTitle.textContent = 'Giá trị cũ (Old Value):';
-                oldHeader.appendChild(oldTitle);
-
-                const oldPre = document.createElement('pre');
-                oldPre.className = 'bg-[#faf6f2] border border-[#ead8cb] rounded-2xl p-3.5 text-xs font-mono max-h-56 overflow-y-auto whitespace-pre-wrap break-words [overflow-wrap:anywhere] text-[#231a11]';
-                oldPre.textContent = data.prettyOldValue || '(Trống)';
-                oldBox.append(oldHeader, oldPre);
-
-                // Box Giá trị mới
-                const newBox = document.createElement('div');
-                const newHeader = document.createElement('div');
-                newHeader.className = 'mb-1.5';
-                const newTitle = document.createElement('span');
-                newTitle.className = 'text-xs font-bold text-[#75695d] uppercase';
-                newTitle.textContent = 'Giá trị mới (New Value):';
-                newHeader.appendChild(newTitle);
-
-                const newPre = document.createElement('pre');
-                newPre.className = 'bg-[#faf6f2] border border-[#ead8cb] rounded-2xl p-3.5 text-xs font-mono max-h-56 overflow-y-auto whitespace-pre-wrap break-words [overflow-wrap:anywhere] text-[#231a11]';
-                newPre.textContent = data.prettyNewValue || '(Trống)';
-                newBox.append(newHeader, newPre);
-
-                rawGrid.append(oldBox, newBox);
-                body.appendChild(rawGrid);
-            })
-            .catch(err => {
-                body.innerHTML = '';
-                const errDiv = document.createElement('div');
-                errDiv.className = 'text-center py-6 text-rose-600 text-xs font-semibold';
-                errDiv.textContent = 'Lỗi khi tải chi tiết nhật ký: ' + (err.message || 'Lỗi không xác định.');
-                body.appendChild(errDiv);
-            });
-    }
-
-    function closeLogDetailModal() {
-        document.getElementById('logDetailModal').classList.add('hidden');
-    }
-
-    document.getElementById('logDetailModal').addEventListener('click', function(e) {
-        if (e.target === this) {
-            closeLogDetailModal();
-        }
-    });
-
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            closeLogDetailModal();
-        }
-    });
 </script>
 
 </body>

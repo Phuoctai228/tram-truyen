@@ -21,6 +21,6 @@ public class ReportContentRequest {
     private String issueType;
 
     @NotBlank(message = "Chi tiết vấn đề không được để trống")
-    @Size(max = 500, message = "Chi tiết vấn đề không được vượt quá 500 ký tự")
+    @Size(min = 10, max = 500, message = "Chi tiết vấn đề phải từ 10 đến 500 ký tự")
     private String description;
 }

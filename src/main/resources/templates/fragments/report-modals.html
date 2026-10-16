@@ -4,20 +4,7 @@
 
 <!-- Fragment: Modal Báo cáo Bình luận (UC-22) & Modal Báo cáo Nội dung (UC-21) -->
 <div th:fragment="report-modals">
-
-    <!-- 
-      [HƯỚNG DẪN TÍCH HỢP CHO MODULE BÌNH LUẬN]:
-      Để gắn nút "Báo cáo" vào từng card bình luận an toàn (tương thích Thymeleaf 3.1+), dùng:
-        <button type="button"
-                onclick="openReportCommentModal(this)"
-                th:data-comment-id="${comment.id}"
-                th:data-author-name="${comment.user != null ? comment.user.fullName : 'Độc giả'}"
-                th:data-author-initial="DG"
-                th:data-time-ago="vừa xong"
-                th:data-comment-content="${comment.content}">
-          Báo cáo
-        </button>
-    -->
+    <input type="hidden" id="reportModalCsrfToken" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" th:data-header="${_csrf.headerName}" />
 
     <!-- 1. Report Comment Modal (UC-22) -->
     <div id="reportCommentModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm hidden animate-fade-in">
@@ -291,10 +278,20 @@
         function getCsrfTokens() {
             const tokenMeta = document.querySelector('meta[name="_csrf"]');
             const headerMeta = document.querySelector('meta[name="_csrf_header"]');
-            return {
-                token: tokenMeta ? tokenMeta.getAttribute('content') : '',
-                header: headerMeta ? headerMeta.getAttribute('content') : 'X-CSRF-TOKEN'
-            };
+            if (tokenMeta && tokenMeta.getAttribute('content')) {
+                return {
+                    token: tokenMeta.getAttribute('content'),
+                    header: headerMeta ? headerMeta.getAttribute('content') : 'X-CSRF-TOKEN'
+                };
+            }
+            const inputToken = document.getElementById('reportModalCsrfToken');
+            if (inputToken && inputToken.value) {
+                return {
+                    token: inputToken.value,
+                    header: inputToken.getAttribute('data-header') || 'X-CSRF-TOKEN'
+                };
+            }
+            return { token: '', header: 'X-CSRF-TOKEN' };
         }
 
         function submitCommentReport(e) {
@@ -307,6 +304,11 @@
 
             if (!description) {
                 errBox.textContent = 'Vui lòng nhập mô tả chi tiết lý do báo cáo.';
+                errBox.classList.remove('hidden');
+                return;
+            }
+            if (description.length < 10) {
+                errBox.textContent = 'Chi tiết lý do phải từ 10 đến 500 ký tự';
                 errBox.classList.remove('hidden');
                 return;
             }
@@ -355,6 +357,11 @@
 
             if (!description) {
                 errBox.textContent = 'Vui lòng nhập mô tả chi tiết vấn đề.';
+                errBox.classList.remove('hidden');
+                return;
+            }
+            if (description.length < 10) {
+                errBox.textContent = 'Chi tiết vấn đề phải từ 10 đến 500 ký tự';
                 errBox.classList.remove('hidden');
                 return;
             }

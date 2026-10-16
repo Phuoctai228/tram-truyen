@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Chi tiết nhật ký hệ thống | Trạm Truyện Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script th:src="@{/js/authentication/tailwind-config.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/novel-admin.css}">
+    <link rel="stylesheet" th:href="@{/css/admin-common.css}">
+</head>
+
+<body class="bg-[#fff8f5] text-[#231a11] font-sans antialiased min-h-screen">
+
+    <!-- Admin Sidebar -->
+    <div th:replace="~{admin/fragments/layout :: sidebar('nhat-ky')}"></div>
+
+    <main class="page-shell">
+        <!-- Admin Topbar -->
+        <div th:replace="~{admin/fragments/layout :: topbar}"></div>
+
+        <section class="content max-w-6xl mx-auto px-4 md:px-8 py-8 space-y-6">
+
+            <!-- 1. Breadcrumb -->
+            <nav class="flex items-center gap-2 text-xs font-semibold text-[#8a7664]">
+                <a th:href="@{/admin/audit-logs(page=${returnPage}, size=${returnSize}, keyword=${returnKeyword}, actionGroup=${returnActionGroup}, performerRole=${returnPerformerRole}, timeRange=${returnTimeRange}, startDate=${returnStartDate}, endDate=${returnEndDate})}"
+                   class="hover:text-[#bc7d39] transition-colors">Nhật ký hệ thống</a>
+                <span class="text-[#c4b5a5]">/</span>
+                <span class="text-[#2b2118] font-bold" th:text="'Bản ghi #LOG-' + ${detail.id}">Bản ghi #LOG-11</span>
+            </nav>
+
+            <!-- 2. Thẻ Tổng quan Bản ghi -->
+            <div class="bg-white rounded-3xl border border-[#eae2d5] p-6 sm:p-8 shadow-sm space-y-6">
+                
+                <!-- Hàng trên: Chip hành động & Thời gian -->
+                <div class="flex flex-wrap items-center justify-between gap-4 pb-5 border-b border-[#f2ebe1]">
+                    <div class="flex items-center gap-3">
+                        <span class="px-3 py-1 rounded-full text-xs font-bold border inline-flex items-center gap-1.5"
+                              th:classappend="${detail.actionChipClass}">
+                            <span th:text="${detail.actionTypeDisplay}">Khóa tài khoản</span>
+                            <span class="text-[10px] opacity-75 font-mono" th:text="'(' + ${detail.actionType} + ')'">(BAN_USER)</span>
+                        </span>
+                        <span class="font-mono text-xs font-bold text-[#875200]" th:text="'#LOG-' + ${detail.id}">#LOG-11</span>
+                    </div>
+
+                    <div class="text-xs text-[#8a7664] flex items-center gap-1.5 bg-[#faf7f2] px-3.5 py-1.5 rounded-xl border border-[#eae2d5]">
+                        <span class="material-symbols-outlined text-[16px] text-[#bc7d39]">schedule</span>
+                        <span class="font-medium">Thời gian:</span>
+                        <strong class="text-[#2b2118]" th:text="${detail.formattedCreatedAt}">12/10/2026 18:13:07</strong>
+                        <span class="text-[11px] text-[#8a7664]">(Giờ Hà Nội)</span>
+                    </div>
+                </div>
+
+                <!-- Lưới thông tin: Người thực hiện | Đối tượng tác động | Địa chỉ IP -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                    
+                    <!-- Cột 1: Người thực hiện (Không avatar) -->
+                    <div class="space-y-1.5 p-4 rounded-2xl bg-[#faf7f2] border border-[#f0e8dc]">
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-[#8a7664] block">Người thực hiện</span>
+                        <div class="font-bold text-sm text-[#2b2118]" th:text="${detail.adminName}">Lê Hoàng</div>
+                        <div class="text-[#6b5849] font-mono text-[11px]" th:text="${detail.adminEmail}">email@domain.com</div>
+                        <div th:if="${detail.adminRoleBadge != null}" class="pt-1">
+                            <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-[#f4ece1] text-[#875200] border border-[#ead8cb]"
+                                  th:text="${detail.adminRoleBadge}">Quản trị viên</span>
+                        </div>
+                    </div>
+
+                    <!-- Cột 2: Đối tượng tác động -->
+                    <div class="space-y-1.5 p-4 rounded-2xl bg-[#faf7f2] border border-[#f0e8dc]">
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-[#8a7664] block">Đối tượng tác động</span>
+                        <div class="font-bold text-sm text-[#2b2118]" th:text="${detail.targetDisplay}">Người dùng #3</div>
+                        <div th:if="${detail.targetUrl != null}" class="pt-1">
+                            <a th:href="@{${detail.targetUrl}}" target="_blank"
+                               class="inline-flex items-center gap-1 text-xs font-semibold text-[#bc7d39] hover:underline">
+                                <span>Xem đối tượng</span>
+                                <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+                            </a>
+                        </div>
+                        <div th:unless="${detail.targetUrl != null}" class="text-[11px] text-[#a4917f] italic">
+                            Không có liên kết trực tiếp
+                        </div>
+                    </div>
+
+                    <!-- Cột 3: Địa chỉ IP thực hiện -->
+                    <div class="space-y-1.5 p-4 rounded-2xl bg-[#faf7f2] border border-[#f0e8dc]">
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-[#8a7664] block">Địa chỉ IP</span>
+                        <div class="font-bold text-sm font-mono text-[#2b2118]" th:text="${detail.ipAddress != null and !#strings.isEmpty(detail.ipAddress) ? detail.ipAddress : '—'}">127.0.0.1</div>
+                        <div class="text-[11px] text-[#8a7664] flex items-center gap-1 pt-1">
+                            <span class="material-symbols-outlined text-[14px] text-[#bc7d39]">terminal</span>
+                            <span>Địa chỉ máy thực hiện</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- 3. Khối Nội dung chính: Chi tiết thay đổi -->
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-bold text-base text-[#2b2118] flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[#bc7d39] text-[20px]">difference</span>
+                        <span>Chi tiết thay đổi</span>
+                        <span th:if="${detail.isJsonDiffAvailable}" class="text-xs font-normal text-[#8a7664]"
+                              th:text="'(' + ${#lists.size(detail.fieldDiffs)} + ' trường đã đổi)'">(0 trường đã đổi)</span>
+                    </h3>
+                </div>
+
+                <!-- Danh sách các trường biến động -->
+                <div th:if="${detail.isJsonDiffAvailable and !#lists.isEmpty(detail.fieldDiffs)}" class="space-y-4">
+                    <div th:each="diff : ${detail.fieldDiffs}" class="bg-white rounded-2xl border border-[#eae2d5] p-5 shadow-xs space-y-3">
+                        <div class="flex items-center justify-between pb-2 border-b border-[#f2ebe1]">
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-sm text-[#2b2118]" th:text="${diff.fieldLabel}">Tên trường</span>
+                                <span class="text-[11px] font-mono text-[#8a7664]" th:text="'(' + ${diff.fieldName} + ')'">(field_name)</span>
+                            </div>
+                            <div>
+                                <span th:if="${diff.diffType == 'ADDED'}"
+                                      class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200"
+                                      th:text="${diff.diffTypeLabel}">Thêm mới</span>
+                                <span th:if="${diff.diffType == 'MODIFIED'}"
+                                      class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200"
+                                      th:text="${diff.diffTypeLabel}">Đã sửa</span>
+                                <span th:if="${diff.diffType == 'DELETED'}"
+                                      class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200"
+                                      th:text="${diff.diffTypeLabel}">Đã xóa</span>
+                            </div>
+                        </div>
+
+                        <!-- Cột Trước -> Cột Sau -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch">
+                            <!-- Cột Trước (Before) -->
+                            <div class="bg-[#fff5f5] border border-rose-200/80 rounded-xl p-3.5 flex flex-col justify-between">
+                                <div>
+                                    <span class="text-[11px] font-bold text-rose-700 uppercase tracking-wider block mb-1.5 flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-[14px]">history</span>
+                                        <span>Trước thay đổi</span>
+                                    </span>
+
+                                    <!-- Văn bản ngắn -->
+                                    <div th:if="${!diff.longText}"
+                                         class="text-xs text-rose-950 whitespace-pre-wrap break-words leading-relaxed"
+                                         th:classappend="${diff.oldValue == '(trống)' ? 'italic text-rose-400 font-normal' : 'font-medium'}"
+                                         th:text="${diff.oldValue}">(trống)</div>
+
+                                    <!-- Văn bản dài (details/summary, không dùng JS) -->
+                                    <div th:if="${diff.longText}" class="space-y-1">
+                                        <div class="text-xs text-rose-950 line-clamp-5 leading-relaxed font-body"
+                                             th:text="${diff.oldValue}"></div>
+                                        <details class="mt-2 text-xs">
+                                            <summary class="cursor-pointer text-[#875200] font-semibold hover:underline select-none">Xem đầy đủ</summary>
+                                            <div class="mt-2 p-3 bg-white rounded-lg border border-rose-200 text-xs text-rose-950 font-body whitespace-pre-wrap [overflow-wrap:anywhere] max-h-80 overflow-y-auto leading-relaxed"
+                                                 th:text="${diff.oldValue}"></div>
+                                        </details>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Cột Sau (After) -->
+                            <div class="bg-[#f0fdf4] border border-emerald-200/80 rounded-xl p-3.5 flex flex-col justify-between">
+                                <div>
+                                    <span class="text-[11px] font-bold text-emerald-700 uppercase tracking-wider block mb-1.5 flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-[14px]">check_circle</span>
+                                        <span>Sau thay đổi</span>
+                                    </span>
+
+                                    <!-- Văn bản ngắn -->
+                                    <div th:if="${!diff.longText}"
+                                         class="text-xs text-emerald-950 whitespace-pre-wrap break-words leading-relaxed"
+                                         th:classappend="${diff.newValue == '(trống)' ? 'italic text-emerald-400 font-normal' : 'font-semibold'}"
+                                         th:text="${diff.newValue}">(trống)</div>
+
+                                    <!-- Văn bản dài (details/summary, không dùng JS) -->
+                                    <div th:if="${diff.longText}" class="space-y-1">
+                                        <div class="text-xs text-emerald-950 line-clamp-5 leading-relaxed font-body"
+                                             th:text="${diff.newValue}"></div>
+                                        <details class="mt-2 text-xs">
+                                            <summary class="cursor-pointer text-[#875200] font-semibold hover:underline select-none">Xem đầy đủ</summary>
+                                            <div class="mt-2 p-3 bg-white rounded-lg border border-emerald-200 text-xs text-emerald-950 font-body whitespace-pre-wrap [overflow-wrap:anywhere] max-h-80 overflow-y-auto leading-relaxed"
+                                                 th:text="${diff.newValue}"></div>
+                                        </details>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fallback khi không có diff (văn bản thường hoặc không có thay đổi) -->
+                <div th:if="${!detail.isJsonDiffAvailable or #lists.isEmpty(detail.fieldDiffs)}"
+                     class="bg-white rounded-3xl border border-[#eae2d5] p-8 text-center space-y-2 shadow-xs">
+                    <div class="w-12 h-12 rounded-full bg-[#f4ece1] text-[#875200] flex items-center justify-center mx-auto mb-2">
+                        <span class="material-symbols-outlined text-[24px]">task_alt</span>
+                    </div>
+                    <h4 class="font-bold text-sm text-[#2b2118]">Nội dung ghi nhận</h4>
+                    <p class="text-xs text-[#6b5849] max-w-lg mx-auto whitespace-pre-wrap leading-relaxed"
+                       th:text="${detail.plainFallbackNote}">Bản ghi này không có dữ liệu thay đổi chi tiết.</p>
+                </div>
+            </div>
+
+            <!-- 4. Cuối trang: Nút Quay lại danh sách -->
+            <div class="pt-4 flex items-center justify-between">
+                <a th:href="@{/admin/audit-logs(page=${returnPage}, size=${returnSize}, keyword=${returnKeyword}, actionGroup=${returnActionGroup}, performerRole=${returnPerformerRole}, timeRange=${returnTimeRange}, startDate=${returnStartDate}, endDate=${returnEndDate})}"
+                   class="px-5 py-2.5 rounded-xl bg-[#f4ece1] text-[#875200] hover:bg-[#eae2d5] text-xs font-bold inline-flex items-center gap-2 transition-colors shadow-xs">
+                    <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+                    <span>Quay lại danh sách</span>
+                </a>
+            </div>
+
+        </section>
+    </main>
+
+</body>
+</html>
