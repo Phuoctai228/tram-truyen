@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi" class="h-full" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" class="h-full" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -45,103 +45,103 @@
     </div>
 </header>
 
-<main class="flex-1 w-full pt-[72px] bg-surface flex flex-col justify-center items-center px-margin">
-    <div class="flex flex-col w-full items-center justify-center py-space-xl relative overflow-hidden">
+<main class="flex-1 w-full pt-20 pb-6 bg-surface flex flex-col justify-center items-center px-4">
+    <div class="flex flex-col w-full items-center justify-center py-2 sm:py-3 relative overflow-hidden">
         
         <div class="absolute -top-32 -left-24 w-96 h-96 rounded-full bg-primary-fixed/20 blur-3xl pointer-events-none"></div>
         <div class="absolute -bottom-32 -right-24 w-96 h-96 rounded-full bg-secondary-fixed/25 blur-3xl pointer-events-none"></div>
         
-        <div class="relative w-full max-w-[440px] bg-surface-container-lowest rounded-xl p-[36px] shadow-[0_10px_25px_-5px_rgba(43,33,24,0.05),0_8px_10px_-6px_rgba(43,33,24,0.03)] border border-outline-variant">
+        <div class="relative w-full max-w-[440px] bg-surface-container-lowest rounded-xl p-6 sm:p-7 shadow-[0_10px_25px_-5px_rgba(43,33,24,0.05),0_8px_10px_-6px_rgba(43,33,24,0.03)] border border-outline-variant">
             
-            <div class="flex items-center justify-center gap-2 mb-3">
+            <div class="flex items-center justify-center gap-2 mb-2">
                 <span class="w-[40px] h-[1px] bg-outline-variant inline-block"></span>
                 <span class="w-1.5 h-1.5 rounded-full bg-primary-container inline-block"></span>
                 <span class="w-[40px] h-[1px] bg-outline-variant inline-block"></span>
             </div>
             
-            <h1 class="font-headline-lg text-headline-lg text-on-surface text-center mb-1.5 tracking-normal">
+            <h1 class="font-headline-lg text-headline-lg text-on-surface text-center mb-1 tracking-normal leading-tight">
                 Tạo tài khoản mới
             </h1>
-            <p class="font-body-md text-body-md text-tertiary text-center mb-6">
+            <p class="font-body-md text-body-md text-tertiary text-center mb-3.5">
                 Gia nhập cộng đồng người đọc Trạm Truyện
             </p>
 
             <!-- Error and Success Messages -->
-            <div th:if="${errorMessage}" class="mb-4 p-3 text-sm text-on-error-container bg-error-container rounded-lg border border-error/20" role="alert">
+            <div th:if="${errorMessage}" class="mb-3 p-2.5 text-sm text-on-error-container bg-error-container rounded-lg border border-error/20" role="alert">
                 <span th:text="${errorMessage}">Lỗi xảy ra</span>
             </div>
             
-            <div th:if="${successMessage != null || param.success != null}" class="mb-4 p-3 text-sm text-[#0f5132] bg-[#d1e7dd] rounded-lg border border-[#badbcc]" role="alert">
+            <div th:if="${successMessage != null || param.success != null}" class="mb-3 p-2.5 text-sm text-[#0f5132] bg-[#d1e7dd] rounded-lg border border-[#badbcc]" role="alert">
                 <span th:text="${successMessage != null ? successMessage : 'Đăng ký thành công! Vui lòng kiểm tra email để nhận mã OTP.'}">Đăng ký thành công!</span>
             </div>
 
             <!-- Registration Form -->
-            <form th:action="@{/register}" th:object="${userDto}" method="post" class="flex flex-col gap-4">
+            <form th:action="@{/register}" th:object="${userDto}" method="post" class="flex flex-col gap-2.5 sm:gap-3">
                 
                 <div class="flex flex-col">
-                    <label class="font-label-md text-label-md text-on-surface font-semibold mb-1.5" for="fullName">
+                    <label class="font-label-md text-label-md text-on-surface font-semibold mb-1" for="fullName">
                         Tên hiển thị
                     </label>
                     <div class="relative flex items-center">
-                        <span class="material-symbols-outlined absolute left-3.5 text-tertiary text-[20px] pointer-events-none select-none">person</span>
+                        <span class="material-symbols-outlined absolute left-3.5 text-tertiary text-[19px] pointer-events-none select-none">person</span>
                         <input th:field="*{fullName}" id="fullName" type="text" required placeholder="Nhập tên bút danh hoặc biệt danh"
-                               class="w-full h-[44px] pl-10 pr-3.5 bg-surface-container-lowest rounded-[10px] border border-outline-variant font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 transition-all">
+                               class="w-full h-[40px] pl-10 pr-3.5 bg-surface-container-lowest rounded-[10px] border border-outline-variant font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 transition-all">
                     </div>
-                    <p th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}" class="text-error text-sm mt-1"></p>
+                    <p th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}" class="text-error text-xs mt-0.5"></p>
                 </div>
 
                 <div class="flex flex-col">
-                    <label class="font-label-md text-label-md text-on-surface font-semibold mb-1.5" for="email">
+                    <label class="font-label-md text-label-md text-on-surface font-semibold mb-1" for="email">
                         Email
                     </label>
                     <div class="relative flex items-center">
-                        <span class="material-symbols-outlined absolute left-3.5 text-tertiary text-[20px] pointer-events-none select-none">mail</span>
+                        <span class="material-symbols-outlined absolute left-3.5 text-tertiary text-[19px] pointer-events-none select-none">mail</span>
                         <input th:field="*{email}" id="email" type="email" required placeholder="name@example.com"
-                               class="w-full h-[44px] pl-10 pr-3.5 bg-surface-container-lowest rounded-[10px] border border-outline-variant font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 transition-all">
+                               class="w-full h-[40px] pl-10 pr-3.5 bg-surface-container-lowest rounded-[10px] border border-outline-variant font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 transition-all">
                     </div>
-                    <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-error text-sm mt-1"></p>
+                    <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-error text-xs mt-0.5"></p>
                 </div>
 
                 <div class="flex flex-col">
-                    <label class="font-label-md text-label-md text-on-surface font-semibold mb-1.5" for="password">
+                    <label class="font-label-md text-label-md text-on-surface font-semibold mb-1" for="password">
                         Mật khẩu
                     </label>
                     <div class="relative flex items-center">
-                        <span class="material-symbols-outlined absolute left-3.5 text-tertiary text-[20px] pointer-events-none select-none">lock</span>
+                        <span class="material-symbols-outlined absolute left-3.5 text-tertiary text-[19px] pointer-events-none select-none">lock</span>
                         <input th:field="*{password}" id="password" type="password" required minlength="8" placeholder="Tối thiểu 8 ký tự"
-                               class="w-full h-[44px] pl-10 pr-11 bg-surface-container-lowest rounded-[10px] border border-outline-variant font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 transition-all">
+                               class="w-full h-[40px] pl-10 pr-11 bg-surface-container-lowest rounded-[10px] border border-outline-variant font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 transition-all">
                         <button type="button" id="togglePassword" aria-label="Hiện mật khẩu" class="absolute right-3.5 text-tertiary hover:text-on-surface focus:outline-none flex items-center justify-center transition-colors">
-                            <span class="material-symbols-outlined text-[20px]" id="passwordEyeIcon">visibility</span>
+                            <span class="material-symbols-outlined text-[19px]" id="passwordEyeIcon">visibility</span>
                         </button>
                     </div>
-                    <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-error text-sm mt-1"></p>
+                    <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-error text-xs mt-0.5"></p>
                 </div>
 
                 <div class="flex flex-col">
-                    <label class="font-label-md text-label-md text-on-surface font-semibold mb-1.5" for="confirmPassword">
+                    <label class="font-label-md text-label-md text-on-surface font-semibold mb-1" for="confirmPassword">
                         Nhập lại mật khẩu
                     </label>
                     <div class="relative flex items-center">
-                        <span class="material-symbols-outlined absolute left-3.5 text-tertiary text-[20px] pointer-events-none select-none">lock_reset</span>
+                        <span class="material-symbols-outlined absolute left-3.5 text-tertiary text-[19px] pointer-events-none select-none">lock_reset</span>
                         <input th:field="*{confirmPassword}" id="confirmPassword" type="password" required placeholder="Xác nhận lại mật khẩu"
-                               class="w-full h-[44px] pl-10 pr-3.5 bg-surface-container-lowest rounded-[10px] border border-outline-variant font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 transition-all">
+                               class="w-full h-[40px] pl-10 pr-3.5 bg-surface-container-lowest rounded-[10px] border border-outline-variant font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 transition-all">
                     </div>
-                    <p th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}" class="text-error text-sm mt-1"></p>
+                    <p th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}" class="text-error text-xs mt-0.5"></p>
                 </div>
 
-                <button type="submit" class="w-full h-[46px] mt-2 rounded-[10px] bg-primary-container hover:bg-primary text-on-primary font-label-lg text-label-lg font-semibold shadow-[0_2px_6px_rgba(208,138,46,0.25)] hover:shadow-md transition-all active:scale-[0.99] flex items-center justify-center">
+                <button type="submit" class="w-full h-[42px] mt-1 rounded-[10px] bg-primary-container hover:bg-primary text-on-primary font-label-lg text-label-lg font-semibold shadow-[0_2px_6px_rgba(208,138,46,0.25)] hover:shadow-md transition-all active:scale-[0.99] flex items-center justify-center">
                     Đăng ký
                 </button>
             </form>
 
-            <div class="relative my-5 flex items-center justify-center">
+            <div class="relative my-3 sm:my-3.5 flex items-center justify-center">
                 <div class="absolute inset-0 flex items-center">
                     <div class="w-full border-t border-outline-variant"></div>
                 </div>
                 <span class="relative px-3 bg-surface-container-lowest font-label-md text-label-sm text-outline font-medium tracking-wider">HOẶC</span>
             </div>
 
-            <a th:href="@{/oauth2/authorization/google}" class="w-full h-[46px] rounded-[10px] bg-surface-container-lowest border border-outline-variant hover:bg-surface-container-low text-on-surface font-label-lg text-label-lg font-semibold flex items-center justify-center gap-3 transition-colors active:scale-[0.99]">
+            <a th:href="@{/oauth2/authorization/google}" class="w-full h-[42px] rounded-[10px] bg-surface-container-lowest border border-outline-variant hover:bg-surface-container-low text-on-surface font-label-lg text-label-lg font-semibold flex items-center justify-center gap-3 transition-colors active:scale-[0.99]">
                 <svg class="w-4 h-4" viewBox="0 0 24 24">
                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
                     <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
@@ -151,7 +151,7 @@
                 <span>Tiếp tục với Google</span>
             </a>
 
-            <div class="mt-5 text-center font-body-md text-body-md text-tertiary">
+            <div class="mt-3.5 text-center font-body-md text-body-md text-tertiary">
                 Đã có tài khoản? 
                 <a th:href="${redirect != null} ? @{/login(redirect=${redirect})} : @{/login}" class="text-primary-container font-semibold hover:underline ml-1 transition-colors">Đăng nhập</a>
             </div>
@@ -159,16 +159,8 @@
     </div>
 </main>
 
-<footer class="w-full bg-surface border-t border-outline-variant py-space-lg">
-    <div class="max-w-7xl mx-auto px-margin flex flex-col md:flex-row items-center justify-between gap-space-md font-body-md text-body-md">
-        <div class="flex items-center gap-space-lg">
-            <a href="#" class="text-tertiary hover:text-primary-container transition-colors">Liên hệ</a>
-            <a href="#" class="text-tertiary hover:text-primary-container transition-colors">Điều khoản dịch vụ</a>
-            <a href="#" class="text-tertiary hover:text-primary-container transition-colors">Chính sách bảo mật</a>
-        </div>
-        <div class="text-on-surface-variant">© 2025 Trạm Truyện. Mọi quyền được bảo lưu.</div>
-    </div>
-</footer>
+<!-- Footer -->
+<div th:replace="~{fragments/footer :: main-footer}"></div>
 
 <script th:src="@{/js/authentication/auth.js}"></script>
 
