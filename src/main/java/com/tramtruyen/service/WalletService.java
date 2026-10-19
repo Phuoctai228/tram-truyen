@@ -5,6 +5,8 @@ import com.tramtruyen.dto.WalletOverviewDTO;
 import com.tramtruyen.entity.User;
 import org.springframework.data.domain.Page;
 
+import java.time.LocalDate;
+
 /**
  * Service quản lý thông tin ví, số dư và lịch sử giao dịch.
  */
@@ -58,6 +60,19 @@ public interface WalletService {
     WalletOverviewDTO getWalletOverview(User user);
 
     /**
+     * Tìm kiếm và lọc danh sách biến động số dư có phân trang theo loại, từ khóa và ngày.
+     *
+     * @param user user entity
+     * @param type loại giao dịch
+     * @param keyword từ khóa tìm kiếm
+     * @param date ngày giao dịch (tùy chọn)
+     * @param page số trang (0-indexed)
+     * @param size kích thước trang
+     * @return trang danh sách giao dịch DTO
+     */
+    Page<TransactionDTO> searchTransactions(User user, String type, String keyword, LocalDate date, int page, int size);
+
+    /**
      * Tìm kiếm và lọc danh sách biến động số dư có phân trang.
      *
      * @param user user entity
@@ -67,5 +82,7 @@ public interface WalletService {
      * @param size kích thước trang
      * @return trang danh sách giao dịch DTO
      */
-    Page<TransactionDTO> searchTransactions(User user, String type, String keyword, int page, int size);
+    default Page<TransactionDTO> searchTransactions(User user, String type, String keyword, int page, int size) {
+        return searchTransactions(user, type, keyword, null, page, size);
+    }
 }

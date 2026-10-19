@@ -67,6 +67,15 @@ public class UserStatusCheckFilter extends OncePerRequestFilter {
         // 2. Đọc nhanh status từ DB bằng câu query trên khóa chính
         Optional<String> statusOpt = userRepository.findStatusById(userId);
 
+        // Đồng bộ số dư mới nhất vào CustomUserDetails trong Session
+        if (userDetails.getUser() != null) {
+            try {
+                userRepository.findWalletBalanceById(userId)
+                        .ifPresent(b -> userDetails.getUser().setWalletBalance(b));
+            } catch (Exception ignored) {
+            }
+        }
+
         // 3. Chỉ chặn khi status đúng là BANNED. Optional rỗng hoặc status khác thì cho đi tiếp
         if (statusOpt.isEmpty() || !"BANNED".equalsIgnoreCase(statusOpt.get())) {
             filterChain.doFilter(request, response);

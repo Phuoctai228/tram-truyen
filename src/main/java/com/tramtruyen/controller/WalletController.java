@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.time.LocalDate;
 import java.util.Map;
 
 /**
@@ -64,6 +65,7 @@ public class WalletController {
             Authentication authentication,
             @RequestParam(value = "type", required = false) String type,
             @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "date", required = false) String date,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "5") int size) {
 
@@ -75,7 +77,16 @@ public class WalletController {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy thông tin tài khoản"));
 
-        Page<TransactionDTO> txPage = walletService.searchTransactions(user, type, keyword, page, size);
+        LocalDate filterDate = null;
+        if (date != null && !date.trim().isEmpty()) {
+            try {
+                filterDate = LocalDate.parse(date.trim());
+            } catch (Exception e) {
+                log.warn("Invalid date format received for wallet transactions: {}", date);
+            }
+        }
+
+        Page<TransactionDTO> txPage = walletService.searchTransactions(user, type, keyword, filterDate, page, size);
 
         return ResponseEntity.ok(Map.of(
                 "content", txPage.getContent(),
