@@ -84,6 +84,7 @@ public class NovelAdminController {
             model.addAttribute("pageTitle", "Cập nhật truyện");
             model.addAttribute("formAction", "/admin/novels/" + id);
             model.addAttribute("allCategories", categoryService.getAllCategories());
+            form.setCurrentCoverUrl(novelService.getEditableNovel(id).getCoverUrl());
             return "admin/novels/form";
         }
         try {
@@ -112,6 +113,7 @@ public class NovelAdminController {
         form.setAuthor(novel.getAuthor());
         form.setSummary(novel.getSummary());
         form.setStatus(novel.getStatus());
+        form.setCurrentCoverUrl(novel.getCoverUrl());
         if (novel.getCategories() != null) {
             form.setCategoryIds(novel.getCategories().stream().map(com.tramtruyen.entity.Category::getId).collect(java.util.stream.Collectors.toList()));
         }

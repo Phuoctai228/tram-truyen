@@ -85,6 +85,7 @@ public class StaffNovelController {
             model.addAttribute("pageTitle", "Cập nhật truyện");
             model.addAttribute("formAction", "/staff/novels/" + id);
             model.addAttribute("allCategories", categoryService.getAllCategories());
+            form.setCurrentCoverUrl(novelService.getEditableNovel(id).getCoverUrl());
             return "staff/novels/form";
         }
         try {
@@ -113,6 +114,7 @@ public class StaffNovelController {
         form.setAuthor(novel.getAuthor());
         form.setSummary(novel.getSummary());
         form.setStatus(novel.getStatus());
+        form.setCurrentCoverUrl(novel.getCoverUrl());
         if (novel.getCategories() != null) {
             form.setCategoryIds(novel.getCategories().stream().map(Category::getId).collect(Collectors.toList()));
         }

@@ -32,4 +32,6 @@ public class NovelForm {
     private MultipartFile cover;
 
     private java.util.List<Integer> categoryIds = new java.util.ArrayList<>();
+
+    private String currentCoverUrl;
 }
