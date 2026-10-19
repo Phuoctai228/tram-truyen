@@ -15,10 +15,13 @@ import com.tramtruyen.repository.UserRepository;
 import com.tramtruyen.service.WalletService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import com.tramtruyen.security.CustomUserDetails;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -74,6 +77,7 @@ public class WalletServiceImpl implements WalletService {
         int newBalance = currentBalance - amount;
         lockedUser.setWalletBalance(newBalance);
         userRepository.save(lockedUser);
+        syncSecurityContextBalance(lockedUser, newBalance);
 
         // Record in ledger
         Transaction tx = Transaction.builder()
@@ -103,6 +107,7 @@ public class WalletServiceImpl implements WalletService {
         int newBalance = currentBalance + amount;
         lockedUser.setWalletBalance(newBalance);
         userRepository.save(lockedUser);
+        syncSecurityContextBalance(lockedUser, newBalance);
 
         Transaction tx = Transaction.builder()
                 .user(lockedUser)
@@ -115,6 +120,22 @@ public class WalletServiceImpl implements WalletService {
         transactionRepository.save(tx);
 
         log.info("Credited {} coins to user {}. New balance: {}", amount, lockedUser.getEmail(), newBalance);
+    }
+
+    private void syncSecurityContextBalance(User user, int newBalance) {
+        if (user == null || user.getId() == null) {
+            return;
+        }
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null && auth.getPrincipal() instanceof CustomUserDetails cud) {
+                if (cud.getUser() != null && user.getId().equals(cud.getUser().getId())) {
+                    cud.getUser().setWalletBalance(newBalance);
+                }
+            }
+        } catch (Exception e) {
+            log.warn("Không thể đồng bộ số dư vào SecurityContext: {}", e.getMessage());
+        }
     }
 
     @Override
@@ -189,7 +210,7 @@ public class WalletServiceImpl implements WalletService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<TransactionDTO> searchTransactions(User user, String type, String keyword, int page, int size) {
+    public Page<TransactionDTO> searchTransactions(User user, String type, String keyword, LocalDate date, int page, int size) {
         String cleanType = (type != null && !type.trim().isEmpty() && !"ALL".equalsIgnoreCase(type.trim()))
                 ? type.trim().toUpperCase()
                 : null;
@@ -206,6 +227,9 @@ public class WalletServiceImpl implements WalletService {
             if (cleanType != null && !cleanType.equalsIgnoreCase(t.getType())) {
                 continue;
             }
+            if (date != null && (t.getCreatedAt() == null || !t.getCreatedAt().toLocalDate().isEqual(date))) {
+                continue;
+            }
             TransactionDTO dto = mapToDTO(t);
             if (matchesKeyword(dto, cleanKeyword)) {
                 allList.add(dto);
@@ -216,6 +240,9 @@ public class WalletServiceImpl implements WalletService {
         if (cleanType == null || "DEPOSIT".equalsIgnoreCase(cleanType)) {
             List<TopupOrder> failedOrders = topupOrderRepository.findByUserIdAndStatusOrderByCreatedAtDesc(user.getId(), TopupOrderStatus.FAILED.name());
             for (TopupOrder order : failedOrders) {
+                if (date != null && (order.getCreatedAt() == null || !order.getCreatedAt().toLocalDate().isEqual(date))) {
+                    continue;
+                }
                 TransactionDTO dto = mapFailedOrderToDTO(order);
                 if (matchesKeyword(dto, cleanKeyword)) {
                     allList.add(dto);
@@ -260,6 +287,8 @@ public class WalletServiceImpl implements WalletService {
 
     private TransactionDTO mapToDTO(Transaction t) {
         boolean isDeposit = TransactionType.DEPOSIT.name().equalsIgnoreCase(t.getType());
+        boolean isReward = "GIFT_COIN".equalsIgnoreCase(t.getType()) || "DAILY_CHECKIN".equalsIgnoreCase(t.getType());
+        boolean isPositive = t.getAmount() != null && t.getAmount() > 0;
         String formattedDate = t.getCreatedAt() != null ? t.getCreatedAt().format(DATE_TIME_FORMATTER) : "";
 
         String title;
@@ -291,12 +320,23 @@ public class WalletServiceImpl implements WalletService {
             statusBadge = "Thành công";
             icon = "south_west";
             iconBgColor = "bg-[#FEF3C7] text-[#D97706]";
+        } else if (isReward || isPositive) {
+            title = (t.getDescription() != null && !t.getDescription().isEmpty())
+                    ? t.getDescription()
+                    : (isReward ? "Thưởng điểm danh hàng ngày" : "Cộng Coin vào ví");
+            subtitle = (isReward ? "Thưởng sự kiện • " : "Biến động số dư • ") + formattedDate;
+            amountDisplay = "+ " + formatNumber(t.getAmount()) + " Coin";
+            amountColorClass = "text-[#15803D] font-bold";
+            secondaryText = isReward ? "Miễn phí" : "Hệ thống";
+            statusBadge = "Thành công";
+            icon = isReward ? "featured_seasonal_and_gifts" : "add_circle";
+            iconBgColor = "bg-[#ECFDF5] text-[#15803D]";
         } else {
             title = (t.getDescription() != null && !t.getDescription().isEmpty())
                     ? t.getDescription()
                     : "Mở khóa chương VIP";
             subtitle = "Đọc truyện bản quyền • " + formattedDate;
-            int cost = Math.abs(t.getAmount());
+            int cost = Math.abs(t.getAmount() != null ? t.getAmount() : 0);
             amountDisplay = "- " + formatNumber(cost) + " Coin";
             amountColorClass = "text-[#B91C1C] font-bold";
             secondaryText = "Vĩnh viễn";

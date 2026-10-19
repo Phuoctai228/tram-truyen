@@ -110,12 +110,12 @@
                             <!-- Controls: Search & Tabs -->
                             <div class="flex flex-wrap items-center gap-3">
                                 
-                                <!-- Search Input -->
-                                <div class="relative min-w-[200px] sm:min-w-[220px]">
-                                    <span class="material-symbols-outlined text-[18px] text-[#A89F91] absolute left-3 top-1/2 -translate-y-1/2">search</span>
-                                    <input type="text" id="txSearchInput" placeholder="Tìm kiếm giao dịch, mã..."
-                                           class="w-full pl-9 pr-8 py-2 rounded-xl text-xs sm:text-sm bg-white border border-[#EAE3D2] text-[#2B231D] placeholder-[#A89F91] focus:outline-none focus:border-[#B45309] focus:ring-1 focus:ring-[#B45309] transition-all">
-                                    <button type="button" id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-[#A89F91] hover:text-[#2B231D]">
+                                <!-- Date Filter Input -->
+                                <div class="relative min-w-[160px] sm:min-w-[185px]">
+                                    <span class="material-symbols-outlined text-[18px] text-[#A89F91] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">calendar_month</span>
+                                    <input type="date" id="txDateInput" title="Lọc theo ngày giao dịch"
+                                           class="w-full pl-9 pr-8 py-2 rounded-xl text-xs sm:text-sm bg-white border border-[#EAE3D2] text-[#2B231D] focus:outline-none focus:border-[#B45309] focus:ring-1 focus:ring-[#B45309] transition-all cursor-pointer">
+                                    <button type="button" id="clearDateBtn" onclick="clearDateFilter()" title="Xóa chọn ngày" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-[#A89F91] hover:text-[#2B231D]">
                                         <span class="material-symbols-outlined text-[16px]">close</span>
                                     </button>
                                 </div>
@@ -285,10 +285,9 @@
     <!-- Client-side Interactive Script -->
     <script>
         let currentType = 'ALL';
-        let currentKeyword = '';
+        let currentDate = '';
         let currentPage = 0;
         let isLastPage = false;
-        let searchTimeout = null;
 
         // Copy wallet code function
         function copyWalletCode() {
@@ -311,32 +310,28 @@
             });
         }
 
-        // Search Input Handler (Debounce 300ms)
-        const searchInput = document.getElementById('txSearchInput');
-        const clearBtn = document.getElementById('clearSearchBtn');
+        // Date Filter Input Handler
+        const dateInput = document.getElementById('txDateInput');
+        const clearDateBtn = document.getElementById('clearDateBtn');
 
-        if (searchInput) {
-            searchInput.addEventListener('input', function(e) {
-                const val = e.target.value.trim();
-                if (clearBtn) {
-                    if (val.length > 0) clearBtn.classList.remove('hidden');
-                    else clearBtn.classList.add('hidden');
+        if (dateInput) {
+            dateInput.addEventListener('change', function(e) {
+                const val = e.target.value;
+                currentDate = val;
+                if (clearDateBtn) {
+                    if (val) clearDateBtn.classList.remove('hidden');
+                    else clearDateBtn.classList.add('hidden');
                 }
-
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
-                    currentKeyword = val;
-                    currentPage = 0;
-                    fetchTransactions(false);
-                }, 300);
+                currentPage = 0;
+                fetchTransactions(false);
             });
         }
 
-        function clearSearch() {
-            if (searchInput) {
-                searchInput.value = '';
-                if (clearBtn) clearBtn.classList.add('hidden');
-                currentKeyword = '';
+        function clearDateFilter() {
+            if (dateInput) {
+                dateInput.value = '';
+                currentDate = '';
+                if (clearDateBtn) clearDateBtn.classList.add('hidden');
                 currentPage = 0;
                 fetchTransactions(false);
             }
@@ -376,7 +371,7 @@
 
             const params = new URLSearchParams();
             if (currentType && currentType !== 'ALL') params.append('type', currentType);
-            if (currentKeyword) params.append('keyword', currentKeyword);
+            if (currentDate) params.append('date', currentDate);
             params.append('page', currentPage);
             params.append('size', 5);
 
@@ -392,7 +387,7 @@
                     const viewAllBtn = document.getElementById('viewAllBtn');
                     const viewAllArrow = document.getElementById('viewAllArrow');
 
-                    if (totalCountEl && !currentKeyword && currentType === 'ALL') {
+                    if (totalCountEl && !currentDate && currentType === 'ALL') {
                         totalCountEl.innerText = data.totalElements;
                     }
 
@@ -423,10 +418,10 @@
                         listContainer.innerHTML = `
                             <div class="bg-white rounded-2xl p-10 border border-[#EAE3D2] text-center shadow-sm">
                                 <div class="w-16 h-16 mx-auto rounded-full bg-[#F5EEDB] text-[#8C6D3F] flex items-center justify-center mb-3">
-                                    <span class="material-symbols-outlined text-3xl">search_off</span>
+                                    <span class="material-symbols-outlined text-3xl">event_busy</span>
                                 </div>
                                 <h3 class="font-serif font-bold text-base text-[#2B231D] mb-1">Không tìm thấy giao dịch</h3>
-                                <p class="text-xs text-[#7D7065] max-w-xs mx-auto">Không có kết quả nào khớp với bộ lọc hoặc từ khóa tìm kiếm của bạn.</p>
+                                <p class="text-xs text-[#7D7065] max-w-xs mx-auto">Không có giao dịch nào khớp với ngày hoặc bộ lọc đã chọn.</p>
                             </div>
                         `;
                         return;

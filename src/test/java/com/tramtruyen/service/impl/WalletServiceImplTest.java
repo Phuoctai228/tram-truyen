@@ -13,11 +13,17 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.tramtruyen.dto.TransactionDTO;
+import com.tramtruyen.repository.TopupOrderRepository;
+import org.springframework.data.domain.Page;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import com.tramtruyen.repository.TopupOrderRepository;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -114,5 +120,72 @@ class WalletServiceImplTest {
         assertThat(walletService.hasSufficientBalance(user, 50)).isTrue();
         assertThat(walletService.hasSufficientBalance(user, 100)).isTrue();
         assertThat(walletService.hasSufficientBalance(user, 150)).isFalse();
+    }
+
+    @Test
+    void searchTransactionsFiltersByDateCorrectly() {
+        User user = User.builder().id(1).email("test@example.com").build();
+        LocalDate targetDate = LocalDate.of(2026, 10, 19);
+        LocalDateTime targetDateTime = targetDate.atTime(10, 30);
+        LocalDateTime anotherDateTime = targetDate.minusDays(1).atTime(15, 0);
+
+        Transaction tx1 = Transaction.builder()
+                .id(1)
+                .user(user)
+                .amount(500)
+                .balanceAfter(500)
+                .type("DEPOSIT")
+                .description("Nạp Coin")
+                .createdAt(targetDateTime)
+                .build();
+
+        Transaction tx2 = Transaction.builder()
+                .id(2)
+                .user(user)
+                .amount(-30)
+                .balanceAfter(470)
+                .type("UNLOCK_CHAPTER")
+                .description("Mở khóa chương")
+                .createdAt(anotherDateTime)
+                .build();
+
+        when(transactionRepository.findByUserIdOrderByCreatedAtDesc(1))
+                .thenReturn(List.of(tx1, tx2));
+        when(topupOrderRepository.findByUserIdAndStatusOrderByCreatedAtDesc(1, "FAILED"))
+                .thenReturn(List.of());
+
+        Page<TransactionDTO> result = walletService.searchTransactions(user, "ALL", null, targetDate, 0, 10);
+
+        assertThat(result.getContent()).hasSize(1);
+        assertThat(result.getContent().get(0).getId()).isEqualTo(1);
+    }
+
+    @Test
+    void searchTransactionsMapsGiftCoinAsPositiveReward() {
+        User user = User.builder().id(1).email("test@example.com").build();
+        Transaction checkinTx = Transaction.builder()
+                .id(10)
+                .user(user)
+                .amount(5)
+                .balanceAfter(2280)
+                .type("GIFT_COIN")
+                .description("Điểm danh hàng ngày (Chuỗi 1 ngày, mốc +5 Coin)")
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        when(transactionRepository.findByUserIdOrderByCreatedAtDesc(1))
+                .thenReturn(List.of(checkinTx));
+        when(topupOrderRepository.findByUserIdAndStatusOrderByCreatedAtDesc(1, "FAILED"))
+                .thenReturn(List.of());
+
+        Page<TransactionDTO> result = walletService.searchTransactions(user, "ALL", null, 0, 10);
+
+        assertThat(result.getContent()).hasSize(1);
+        TransactionDTO dto = result.getContent().get(0);
+        assertThat(dto.getAmountDisplay()).isEqualTo("+ 5 Coin");
+        assertThat(dto.getAmountColorClass()).contains("15803D");
+        assertThat(dto.getIcon()).isEqualTo("featured_seasonal_and_gifts");
+        assertThat(dto.getTitle()).contains("Điểm danh hàng ngày");
+        assertThat(dto.getSecondaryText()).isEqualTo("Miễn phí");
     }
 }
