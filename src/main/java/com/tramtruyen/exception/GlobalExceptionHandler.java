@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.Map;
 
@@ -197,13 +198,49 @@ public class GlobalExceptionHandler {
         return "redirect:/";
     }
 
+    // ─── NoResourceFoundException (Spring Boot 3.2+) → 404 ───────────────
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public Object handleNoResourceFound(NoResourceFoundException ex,
+                                        HttpServletRequest request,
+                                        RedirectAttributes redirectAttributes) {
+        log.warn("Resource not found: {} [URI={}]", ex.getMessage(), request.getRequestURI());
+
+        // For static resource requests (e.g., /favicon.ico, styles, scripts, images), return 404 with no body
+        if (isStaticResourceRequest(request)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        // For AJAX or API endpoints, return JSON 404
+        if (isAjaxOrApiRequest(request)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(Map.of("success", false, "message", "Tài nguyên không tồn tại."));
+        }
+
+        // For page requests, redirect to home page with warning
+        redirectAttributes.addFlashAttribute("errorMsg", "Trang hoặc tài nguyên không tồn tại.");
+        return "redirect:/";
+    }
+
     // ─── Generic Exception → 500 ────────────────────────────────────────
 
     @ExceptionHandler(Exception.class)
     public Object handleGenericException(Exception ex,
                                          HttpServletRequest request,
                                          RedirectAttributes redirectAttributes) {
+        // Handle client connection abortions (Broken pipe, ClientAbortException, etc.)
+        if (isClientAbortException(ex)) {
+            log.debug("Client connection aborted for URI={}: {}", request.getRequestURI(), ex.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
         log.error("Unhandled exception at URI={}: {}", request.getRequestURI(), ex.getMessage(), ex);
+
+        // Never redirect or set flash message for static resource requests
+        if (isStaticResourceRequest(request)) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
 
         if (isAjaxOrApiRequest(request)) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -232,9 +269,43 @@ public class GlobalExceptionHandler {
         String accept = request.getHeader("Accept");
         String xRequestedWith = request.getHeader("X-Requested-With");
 
-        return uri.startsWith("/api/")
+        return (uri != null && uri.startsWith("/api/"))
                 || "XMLHttpRequest".equals(xRequestedWith)
                 || (accept != null && accept.contains("application/json"));
+    }
+
+    /**
+     * Checks if the request is targeting static web resources (images, icons, styles, scripts, fonts).
+     */
+    private boolean isStaticResourceRequest(HttpServletRequest request) {
+        String uri = request.getRequestURI();
+        if (uri == null) {
+            return false;
+        }
+        return uri.startsWith("/css/")
+                || uri.startsWith("/js/")
+                || uri.startsWith("/images/")
+                || uri.equals("/favicon.ico")
+                || uri.matches(".*\\.(ico|png|jpg|jpeg|gif|svg|webp|css|js|map|woff|woff2|ttf|eot)$");
+    }
+
+    /**
+     * Checks if the exception or any of its causes is a client connection termination
+     * (e.g. ClientAbortException, Broken pipe, Connection reset by peer).
+     */
+    private boolean isClientAbortException(Throwable ex) {
+        Throwable current = ex;
+        while (current != null) {
+            String name = current.getClass().getName();
+            String msg = current.getMessage() != null ? current.getMessage().toLowerCase() : "";
+            if (name.contains("ClientAbortException")
+                    || msg.contains("broken pipe")
+                    || msg.contains("connection reset by peer")) {
+                return true;
+            }
+            current = current.getCause();
+        }
+        return false;
     }
 
     /**
