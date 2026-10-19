@@ -20,8 +20,12 @@ public interface NovelRepository extends JpaRepository<Novel, Integer>, JpaSpeci
             String title, String author);
 
     Optional<Novel> findByIdAndIsDeletedFalse(Integer id);
+
+    Optional<Novel> findByIdAndIsDeletedFalseAndStatusNot(Integer id, String status);
     
     Optional<Novel> findBySlugAndIsDeletedFalse(String slug);
+
+    Optional<Novel> findBySlugAndIsDeletedFalseAndStatusNot(String slug, String status);
     
     // Lấy truyện mới cập nhật (2 hàng x 6 cột trên trang chủ)
     List<Novel> findTop12ByIsDeletedFalseOrderByUpdatedAtDesc();
@@ -49,6 +53,12 @@ public interface NovelRepository extends JpaRepository<Novel, Integer>, JpaSpeci
     List<Novel> findByCategoriesIdAndIsDeletedFalseOrderByUpdatedAtDesc(Integer categoryId);
 
     org.springframework.data.domain.Page<Novel> findByCategoriesIdAndIsDeletedFalseOrderByUpdatedAtDesc(Integer categoryId, org.springframework.data.domain.Pageable pageable);
+
+    List<Novel> findByCategoriesIdAndIsDeletedFalseAndStatusNotOrderByUpdatedAtDesc(
+            Integer categoryId, String status);
+
+    org.springframework.data.domain.Page<Novel> findByCategoriesIdAndIsDeletedFalseAndStatusNotOrderByUpdatedAtDesc(
+            Integer categoryId, String status, org.springframework.data.domain.Pageable pageable);
 
     List<Novel> findAllByIsDeletedFalseOrderByViewsDesc();
 

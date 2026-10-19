@@ -47,9 +47,10 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 
         List<Novel> allTimeNovels;
         if (categoryId != null && categoryId > 0) {
-            allTimeNovels = novelRepository.findByCategoriesIdAndIsDeletedFalseOrderByViewsDesc(categoryId);
+            allTimeNovels = publicNovels(
+                    novelRepository.findByCategoriesIdAndIsDeletedFalseOrderByViewsDesc(categoryId));
         } else {
-            allTimeNovels = novelRepository.findAllByIsDeletedFalseOrderByViewsDesc();
+            allTimeNovels = publicNovels(novelRepository.findAllByIsDeletedFalseOrderByViewsDesc());
         }
 
         // Map all-time baseline ranks to compute actual relative rank change (+2, -1, •)
@@ -98,7 +99,7 @@ public class LeaderboardServiceImpl implements LeaderboardService {
     @Transactional(readOnly = true)
     public List<LeaderboardItemDTO> getLeaderboardItems(String timeframe, int limit) {
         String activeTimeframe = (timeframe != null && !timeframe.isBlank()) ? timeframe.toLowerCase() : "all";
-        List<Novel> allTimeNovels = novelRepository.findAllByIsDeletedFalseOrderByViewsDesc();
+        List<Novel> allTimeNovels = publicNovels(novelRepository.findAllByIsDeletedFalseOrderByViewsDesc());
 
         Map<Integer, Integer> allTimeRankMap = new HashMap<>();
         for (int i = 0; i < allTimeNovels.size(); i++) {
@@ -270,5 +271,11 @@ public class LeaderboardServiceImpl implements LeaderboardService {
         } else {
             return String.valueOf(count);
         }
+    }
+
+    private List<Novel> publicNovels(List<Novel> novels) {
+        return novels.stream()
+                .filter(novel -> !"ARCHIVED".equals(novel.getStatus()))
+                .collect(java.util.stream.Collectors.toList());
     }
 }

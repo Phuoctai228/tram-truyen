@@ -108,6 +108,17 @@ public class StaffNovelController {
         return "redirect:/staff/novels";
     }
 
+    @PostMapping("/{id}/archive")
+    public String archiveNovel(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
+        try {
+            novelService.archiveNovel(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Đã lưu trữ truyện.");
+        } catch (ResourceNotFoundException exception) {
+            redirectAttributes.addFlashAttribute("errorMessage", exception.getMessage());
+        }
+        return "redirect:/staff/novels";
+    }
+
     private NovelForm toForm(Novel novel) {
         NovelForm form = new NovelForm();
         form.setTitle(novel.getTitle());

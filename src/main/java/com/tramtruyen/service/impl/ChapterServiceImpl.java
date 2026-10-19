@@ -21,6 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChapterServiceImpl implements ChapterService {
 
+    private static final String ARCHIVED_STATUS = "ARCHIVED";
     private static final String DEFAULT_STATUS = "DRAFT";
     private static final int DEFAULT_PRICE = 0;
 
@@ -103,7 +104,7 @@ public class ChapterServiceImpl implements ChapterService {
     @Override
     @Transactional
     public Chapter getPublicChapter(Integer novelId, Integer chapterNumber) {
-        Novel novel = findActiveNovel(novelId);
+        Novel novel = findPublicNovel(novelId);
         Chapter chapter = chapterRepository.findByNovelIdAndChapterNumberAndIsDeletedFalseAndStatus(novelId, chapterNumber, "PUBLISHED")
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy chương"));
         sanitizeChapter(chapter);
@@ -121,7 +122,7 @@ public class ChapterServiceImpl implements ChapterService {
     @Override
     @Transactional(readOnly = true)
     public List<Chapter> getPublicChapters(Integer novelId) {
-        findActiveNovel(novelId);
+        findPublicNovel(novelId);
         return chapterRepository.findAllByNovelIdAndIsDeletedFalseAndStatusOrderByChapterNumberAsc(novelId, "PUBLISHED");
     }
 
@@ -132,6 +133,11 @@ public class ChapterServiceImpl implements ChapterService {
 
     private Novel findActiveNovel(Integer novelId) {
         return novelRepository.findByIdAndIsDeletedFalse(novelId)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy truyện"));
+    }
+
+    private Novel findPublicNovel(Integer novelId) {
+        return novelRepository.findByIdAndIsDeletedFalseAndStatusNot(novelId, ARCHIVED_STATUS)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy truyện"));
     }
 

@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class NovelServiceImpl implements NovelService {
 
+    private static final String ARCHIVED_STATUS = "ARCHIVED";
     private static final Set<String> NOVEL_STATUSES = Set.of("ONGOING", "COMPLETED", "ON_HOLD", "ARCHIVED");
 
     private final NovelRepository novelRepository;
@@ -57,7 +58,8 @@ public class NovelServiceImpl implements NovelService {
     @Override
     @Transactional(readOnly = true)
     public Novel getPublicNovel(Integer id) {
-        return findActiveNovel(id);
+        return novelRepository.findByIdAndIsDeletedFalseAndStatusNot(id, ARCHIVED_STATUS)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy truyện"));
     }
 
     @Override
@@ -66,7 +68,7 @@ public class NovelServiceImpl implements NovelService {
         if (slug == null || slug.isBlank()) {
             throw new ResourceNotFoundException("Slug không hợp lệ");
         }
-        return novelRepository.findBySlugAndIsDeletedFalse(slug.trim())
+        return novelRepository.findBySlugAndIsDeletedFalseAndStatusNot(slug.trim(), ARCHIVED_STATUS)
                 .orElseGet(() -> {
                     // Try parsing as integer id in case URL is numeric like /truyen/1
                     try {
@@ -75,7 +77,7 @@ public class NovelServiceImpl implements NovelService {
                     } catch (NumberFormatException ignored) {}
 
                     // Fallback: match by generated slug or check all active novels
-                    List<Novel> all = novelRepository.findAllByIsDeletedFalseOrderByUpdatedAtDesc();
+                    List<Novel> all = getPublicNovels(novelRepository.findAllByIsDeletedFalseOrderByUpdatedAtDesc());
                     for (Novel n : all) {
                         String generatedSlug = com.tramtruyen.util.SlugUtils.toSlug(n.getTitle());
                         if (slug.equalsIgnoreCase(n.getSlug()) || slug.equalsIgnoreCase(generatedSlug)
@@ -99,18 +101,21 @@ public class NovelServiceImpl implements NovelService {
             return java.util.Collections.emptyList();
         }
         return novelRepository.findTop5ByAuthorIgnoreCaseAndIdNotAndIsDeletedFalseOrderByViewsDesc(
-                author.trim(), currentNovelId);
+                        author.trim(), currentNovelId)
+                .stream()
+                .filter(this::isPublicNovel)
+                .collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Novel> searchPublicNovels(String query) {
         if (query == null || query.isBlank()) {
-            return novelRepository.findAllByIsDeletedFalseOrderByUpdatedAtDesc();
+            return getPublicNovels(novelRepository.findAllByIsDeletedFalseOrderByUpdatedAtDesc());
         }
-        return novelRepository
+        return getPublicNovels(novelRepository
                 .findAllByIsDeletedFalseAndTitleContainingIgnoreCaseOrIsDeletedFalseAndAuthorContainingIgnoreCaseOrderByUpdatedAtDesc(
-                        query.trim(), query.trim());
+                        query.trim(), query.trim()));
     }
 
     @Override
@@ -130,6 +135,8 @@ public class NovelServiceImpl implements NovelService {
 
             if (status != null && !status.isBlank() && NOVEL_STATUSES.contains(status)) {
                 predicates.add(cb.equal(root.get("status"), status));
+            } else {
+                predicates.add(cb.notEqual(root.get("status"), ARCHIVED_STATUS));
             }
 
             if (minRating != null && minRating > 0.0) {
@@ -161,7 +168,8 @@ public class NovelServiceImpl implements NovelService {
         if (categoryId == null) {
             return java.util.Collections.emptyList();
         }
-        return novelRepository.findByCategoriesIdAndIsDeletedFalseOrderByUpdatedAtDesc(categoryId);
+        return novelRepository.findByCategoriesIdAndIsDeletedFalseAndStatusNotOrderByUpdatedAtDesc(
+                categoryId, ARCHIVED_STATUS);
     }
 
     @Override
@@ -170,7 +178,8 @@ public class NovelServiceImpl implements NovelService {
         if (categoryId == null) {
             return java.util.Collections.emptyList();
         }
-        List<Novel> novels = novelRepository.findByCategoriesIdAndIsDeletedFalseOrderByUpdatedAtDesc(categoryId);
+        List<Novel> novels = novelRepository.findByCategoriesIdAndIsDeletedFalseAndStatusNotOrderByUpdatedAtDesc(
+                categoryId, ARCHIVED_STATUS);
         return novels.stream()
                 .map(this::toNovelSummaryDTO)
                 .collect(Collectors.toList());
@@ -182,7 +191,9 @@ public class NovelServiceImpl implements NovelService {
         if (categoryId == null) {
             return org.springframework.data.domain.Page.empty(pageable);
         }
-        org.springframework.data.domain.Page<Novel> page = novelRepository.findByCategoriesIdAndIsDeletedFalseOrderByUpdatedAtDesc(categoryId, pageable);
+        org.springframework.data.domain.Page<Novel> page = novelRepository
+                .findByCategoriesIdAndIsDeletedFalseAndStatusNotOrderByUpdatedAtDesc(
+                        categoryId, ARCHIVED_STATUS, pageable);
         return page.map(this::toNovelSummaryDTO);
     }
 
@@ -245,6 +256,14 @@ public class NovelServiceImpl implements NovelService {
 
     @Override
     @Transactional
+    public void archiveNovel(Integer id) {
+        Novel novel = findActiveNovel(id);
+        novel.setStatus(ARCHIVED_STATUS);
+        novelRepository.save(novel);
+    }
+
+    @Override
+    @Transactional
     public void deleteNovel(Integer id) {
         Novel novel = findActiveNovel(id);
         novel.setIsDeleted(true);
@@ -283,5 +302,15 @@ public class NovelServiceImpl implements NovelService {
         if (!NOVEL_STATUSES.contains(status)) {
             throw new IllegalArgumentException("Trạng thái truyện không hợp lệ");
         }
+    }
+
+    private List<Novel> getPublicNovels(List<Novel> novels) {
+        return novels.stream()
+                .filter(this::isPublicNovel)
+                .collect(Collectors.toList());
+    }
+
+    private boolean isPublicNovel(Novel novel) {
+        return !ARCHIVED_STATUS.equals(novel.getStatus());
     }
 }

@@ -32,12 +32,14 @@ public class HomeServiceImpl implements HomeService {
     public HomePageDTO getHomePageData() {
         List<Category> categories = categoryRepository.findAll();
 
-        List<NovelSummaryDTO> recentlyUpdated = novelRepository.findTop12ByIsDeletedFalseOrderByUpdatedAtDesc()
+        List<NovelSummaryDTO> recentlyUpdated = publicNovels(
+                novelRepository.findTop12ByIsDeletedFalseOrderByUpdatedAtDesc())
                 .stream()
                 .map(novel -> mapToSummaryDTO(novel, true))
                 .collect(Collectors.toList());
 
-        List<NovelSummaryDTO> hotNovels = novelRepository.findTop10ByIsDeletedFalseOrderByViewsDesc()
+        List<NovelSummaryDTO> hotNovels = publicNovels(
+                novelRepository.findTop10ByIsDeletedFalseOrderByViewsDesc())
                 .stream()
                 .map(novel -> mapToSummaryDTO(novel, false))
                 .collect(Collectors.toList());
@@ -47,12 +49,14 @@ public class HomeServiceImpl implements HomeService {
                 .map(novel -> mapToSummaryDTO(novel, false))
                 .collect(Collectors.toList());
 
-        List<NovelSummaryDTO> recommendedNovels = novelRepository.findTop12ByIsDeletedFalseOrderByAverageRatingDesc()
+        List<NovelSummaryDTO> recommendedNovels = publicNovels(
+                novelRepository.findTop12ByIsDeletedFalseOrderByAverageRatingDesc())
                 .stream()
                 .map(novel -> mapToSummaryDTO(novel, true))
                 .collect(Collectors.toList());
 
-        List<NovelSummaryDTO> newNovels = novelRepository.findTop12ByIsDeletedFalseOrderByCreatedAtDesc()
+        List<NovelSummaryDTO> newNovels = publicNovels(
+                novelRepository.findTop12ByIsDeletedFalseOrderByCreatedAtDesc())
                 .stream()
                 .map(novel -> mapToSummaryDTO(novel, true))
                 .collect(Collectors.toList());
@@ -108,5 +112,11 @@ public class HomeServiceImpl implements HomeService {
                 .updatedAt(novel.getUpdatedAt())
                 .latestChapters(latestChapters)
                 .build();
+    }
+
+    private List<Novel> publicNovels(List<Novel> novels) {
+        return novels.stream()
+                .filter(novel -> !"ARCHIVED".equals(novel.getStatus()))
+                .collect(Collectors.toList());
     }
 }

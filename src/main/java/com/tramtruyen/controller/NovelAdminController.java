@@ -107,6 +107,17 @@ public class NovelAdminController {
         return "redirect:/admin/novels";
     }
 
+    @PostMapping("/{id}/archive")
+    public String archiveNovel(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
+        try {
+            novelService.archiveNovel(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Đã lưu trữ truyện.");
+        } catch (ResourceNotFoundException exception) {
+            redirectAttributes.addFlashAttribute("errorMessage", exception.getMessage());
+        }
+        return "redirect:/admin/novels";
+    }
+
     private NovelForm toForm(com.tramtruyen.entity.Novel novel) {
         NovelForm form = new NovelForm();
         form.setTitle(novel.getTitle());
