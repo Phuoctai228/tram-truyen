@@ -31,8 +31,4 @@ public class NotificationDTO {
     public boolean isSystem() {
         return this.isSystem;
     }
-
-    public boolean getIsSystem() {
-        return this.isSystem;
-    }
 }

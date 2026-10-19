@@ -480,18 +480,37 @@
                                 data.forEach(user => {
                                     const item = document.createElement('div');
                                     item.className = 'p-3 hover:bg-[#faf7f2] cursor-pointer flex items-center justify-between text-xs';
-                                    item.innerHTML = `
-                                    <div class="flex items-center gap-2">
-                                        <div class="w-7 h-7 rounded-full bg-[#f4ece1] text-[#875200] font-bold flex items-center justify-center text-xs">
-                                            ${user.initial || 'U'}
-                                        </div>
-                                        <div>
-                                            <div class="font-bold text-[#2b2118]">${user.fullName}</div>
-                                            <div class="text-[11px] text-[#8a7664]">${user.email} (ID: #${user.id})</div>
-                                        </div>
-                                    </div>
-                                    <span class="text-[#bc7d39] font-semibold text-[11px]">Chọn</span>
-                                `;
+
+                                    const leftWrapper = document.createElement('div');
+                                    leftWrapper.className = 'flex items-center gap-2';
+
+                                    const avatarEl = document.createElement('div');
+                                    avatarEl.className = 'w-7 h-7 rounded-full bg-[#f4ece1] text-[#875200] font-bold flex items-center justify-center text-xs';
+                                    avatarEl.textContent = user.initial || 'U';
+
+                                    const infoWrapper = document.createElement('div');
+
+                                    const nameEl = document.createElement('div');
+                                    nameEl.className = 'font-bold text-[#2b2118]';
+                                    nameEl.textContent = user.fullName || '';
+
+                                    const emailEl = document.createElement('div');
+                                    emailEl.className = 'text-[11px] text-[#8a7664]';
+                                    emailEl.textContent = (user.email || '') + ' (ID: #' + user.id + ')';
+
+                                    infoWrapper.appendChild(nameEl);
+                                    infoWrapper.appendChild(emailEl);
+
+                                    leftWrapper.appendChild(avatarEl);
+                                    leftWrapper.appendChild(infoWrapper);
+
+                                    const selectBtn = document.createElement('span');
+                                    selectBtn.className = 'text-[#bc7d39] font-semibold text-[11px]';
+                                    selectBtn.textContent = 'Chọn';
+
+                                    item.appendChild(leftWrapper);
+                                    item.appendChild(selectBtn);
+
                                     item.onclick = () => selectRecipient(user);
                                     dropdown.appendChild(item);
                                 });

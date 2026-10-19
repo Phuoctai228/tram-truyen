@@ -66,6 +66,9 @@ public class ReportServiceImpl implements ReportService {
         if (description.isEmpty()) {
             throw new IllegalArgumentException("Mô tả lý do không được để trống");
         }
+        if (description.length() < 10) {
+            throw new IllegalArgumentException("Chi tiết lý do phải từ 10 đến 500 ký tự");
+        }
         if (description.length() > 500) {
             throw new IllegalArgumentException("Mô tả lý do không được vượt quá 500 ký tự");
         }
@@ -115,6 +118,9 @@ public class ReportServiceImpl implements ReportService {
         String description = request.getDescription() != null ? request.getDescription().trim() : "";
         if (description.isEmpty()) {
             throw new IllegalArgumentException("Mô tả chi tiết không được để trống");
+        }
+        if (description.length() < 10) {
+            throw new IllegalArgumentException("Chi tiết vấn đề phải từ 10 đến 500 ký tự");
         }
         if (description.length() > 500) {
             throw new IllegalArgumentException("Mô tả chi tiết không được vượt quá 500 ký tự");

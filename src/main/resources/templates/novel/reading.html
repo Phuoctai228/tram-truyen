@@ -1,36 +1,41 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title th:text="${chapter.title} + ' - ' + ${novel.title} + ' - Trạm Truyện'">Trạm Truyện</title>
-  <meta name="_csrf" th:if="${_csrf != null}" th:content="${_csrf.token}"/>
-  <meta name="_csrf_header" th:if="${_csrf != null}" th:content="${_csrf.headerName}"/>
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <meta name="_csrf" th:if="${_csrf != null}" th:content="${_csrf.token}" />
+  <meta name="_csrf_header" th:if="${_csrf != null}" th:content="${_csrf.headerName}" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    rel="stylesheet">
   <link href="https://fonts.googleapis.com" rel="preconnect">
   <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Lora:ital,wght@0,400;0,700;1,400&amp;display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Lora:ital,wght@0,400;0,700;1,400&amp;display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" th:href="@{/css/novel/novel-ui.css}">
   <link rel="stylesheet" th:href="@{/css/novel/vip-unlock.css}">
   <script src="https://cdn.tailwindcss.com"></script>
   <script th:src="@{/js/novel/tailwind-config.js}"></script>
 </head>
-<body class="font-body-reading antialiased"
-      th:data-chapter-id="${chapter.id}"
-      th:data-is-read="${isChapterRead}"
-      th:data-novel-slug="${novel.slug}"
-      th:data-chapter-number="${chapter.chapterNumber}"
-      th:data-is-unlocked="${isChapterUnlocked}"
-      th:data-is-vip="${isVip}">
+
+<body class="font-body-reading antialiased" th:data-chapter-id="${chapter.id}" th:data-is-read="${isChapterRead}"
+  th:data-novel-slug="${novel.slug}" th:data-chapter-number="${chapter.chapterNumber}"
+  th:data-is-unlocked="${isChapterUnlocked}" th:data-is-vip="${isVip}">
   <header class="fixed top-0 w-full z-50 backdrop-blur-md shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
     <div class="h-14 max-w-5xl mx-auto px-4 sm:px-6 flex items-center gap-4">
       <div class="flex items-center gap-3 min-w-0">
-        <a class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors flex items-center justify-center" th:href="@{/truyen/{slug}(slug=${novel.slug})}">
+        <a class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors flex items-center justify-center"
+          th:href="@{/truyen/{slug}(slug=${novel.slug})}">
           <span class="material-symbols-outlined text-[20px]">arrow_back</span>
         </a>
         <div class="flex flex-col truncate">
-          <span class="font-label-lg text-label-lg text-on-surface truncate" th:text="${novel.title}">Trang Đọc Sách</span>
-          <span class="font-label-sm text-label-sm text-outline truncate" th:text="'Chương ' + ${chapter.chapterNumber}">Chương Đang Đọc</span>
+          <span class="font-label-lg text-label-lg text-on-surface truncate" th:text="${novel.title}">Trang Đọc
+            Sách</span>
+          <span class="font-label-sm text-label-sm text-outline truncate"
+            th:text="'Chương ' + ${chapter.chapterNumber}">Chương Đang Đọc</span>
         </div>
       </div>
     </div>
@@ -41,7 +46,8 @@
       <aside class="sticky top-14 z-40 w-full backdrop-blur-md transition-all shadow-[0_1px_3px_rgba(0,0,0,0.03)]">
         <div class="max-w-4xl mx-auto px-6 h-11 flex items-center justify-between">
           <div class="flex items-center gap-3 min-w-0">
-            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-container text-on-tertiary-container font-label-sm text-label-sm">
+            <span
+              class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-container text-on-tertiary-container font-label-sm text-label-sm">
               <span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span> Đang đọc
             </span>
             <span class="font-label-md text-label-md truncate" th:text="${novel.title}">Title</span>
@@ -52,219 +58,288 @@
       <main class="relative z-10 w-full max-w-[720px] mx-auto px-5 sm:px-8 pt-10 pb-36">
         <header class="mb-12 text-left">
           <div class="flex items-center gap-2 mb-3">
-            <span class="font-label-md text-label-md text-primary font-bold uppercase tracking-widest" th:text="${novel.title}">Novel</span>
+            <span class="font-label-md text-label-md text-primary font-bold uppercase tracking-widest"
+              th:text="${novel.title}">Novel</span>
             <span class="w-1 h-1 rounded-full bg-outline-variant"></span>
-            <span class="font-label-md text-label-md text-tertiary" th:text="'Tác giả: ' + ${novel.author}">Tác giả</span>
+            <span class="font-label-md text-label-md text-tertiary" th:text="'Tác giả: ' + ${novel.author}">Tác
+              giả</span>
           </div>
-          <h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight mb-4 leading-snug" th:text="${chapter.title}">
+          <h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight mb-4 leading-snug"
+            th:text="${chapter.title}">
             Chương 1
           </h1>
         </header>
 
-        <article class="space-y-6 text-on-surface font-body-reading text-body-reading leading-[1.95] select-text" id="reader-body">
-           <!-- Khi chương đã mở khóa hoặc miễn phí -->
-           <th:block th:if="${isChapterUnlocked}">
-              <!-- Render rich text nếu nội dung có chứa các thẻ định dạng HTML -->
-              <th:block th:if="${#strings.contains(chapter.content, '<p') or #strings.contains(chapter.content, '<br') or #strings.contains(chapter.content, '<div')}">
-                 <div th:utext="${chapter.content}">Nội dung</div>
-              </th:block>
-              <!-- Render từng đoạn nếu là văn bản thuần (plain text) -->
-              <th:block th:unless="${#strings.contains(chapter.content, '<p') or #strings.contains(chapter.content, '<br') or #strings.contains(chapter.content, '<div')}">
-                 <th:block th:each="para : ${paragraphs}">
-                    <p th:if="${!#strings.isEmpty(#strings.trim(para))}" class="indent-8 text-justify" th:text="${para}">Nội dung</p>
-                 </th:block>
-              </th:block>
-           </th:block>
-
-           <!-- Khi chương VIP bị khóa: Chỉ hiển thị các đoạn đọc thử (server-side masked) và Paywall Card -->
-           <th:block th:if="${!isChapterUnlocked}">
+        <article class="space-y-6 text-on-surface font-body-reading text-body-reading leading-[1.95] select-text"
+          id="reader-body">
+          <!-- Khi chương đã mở khóa hoặc miễn phí -->
+          <th:block th:if="${isChapterUnlocked}">
+            <!-- Render rich text nếu nội dung có chứa các thẻ định dạng HTML -->
+            <th:block
+              th:if="${#strings.contains(chapter.content, '<p') or #strings.contains(chapter.content, '<br') or #strings.contains(chapter.content, '<div')}">
+              <div th:utext="${chapter.content}">Nội dung</div>
+            </th:block>
+            <!-- Render từng đoạn nếu là văn bản thuần (plain text) -->
+            <th:block
+              th:unless="${#strings.contains(chapter.content, '<p') or #strings.contains(chapter.content, '<br') or #strings.contains(chapter.content, '<div')}">
               <th:block th:each="para : ${paragraphs}">
-                 <div th:if="${!#strings.isEmpty(#strings.trim(para))}" class="indent-8 text-justify mb-6" th:utext="${para}">Nội dung</div>
+                <p th:if="${!#strings.isEmpty(#strings.trim(para))}" class="indent-8 text-justify" th:text="${para}">Nội
+                  dung</p>
               </th:block>
+            </th:block>
+          </th:block>
 
-              <!-- In-flow VIP Paywall Section (If Chapter is Locked) -->
-              <div class="relative pt-6 pb-12 mt-6 select-none" id="vip-paywall-container">
-                 <!-- Gradient Fade Over Preview Content -->
-                 <div class="absolute -top-28 left-0 right-0 h-28 bg-gradient-to-b from-transparent to-surface pointer-events-none"></div>
+          <!-- Khi chương VIP bị khóa: Chỉ hiển thị các đoạn đọc thử (server-side masked) và Paywall Card -->
+          <th:block th:if="${!isChapterUnlocked}">
+            <th:block th:each="para : ${paragraphs}">
+              <div th:if="${!#strings.isEmpty(#strings.trim(para))}" class="indent-8 text-justify mb-6"
+                th:utext="${para}">Nội dung</div>
+            </th:block>
 
-                 <!-- In-flow Paywall Card matching image10.png theme -->
-                 <div class="rounded-3xl p-6 sm:p-8 text-center border border-[#ecd9c2] bg-[#fdfaf6] shadow-xl max-w-lg mx-auto relative z-10 transition-all">
-                    <div class="w-16 h-16 rounded-full bg-[#fbf0e0] border border-[#f3ddc3] flex items-center justify-center mx-auto mb-4 text-[#874b02] shadow-sm">
-                       <span class="material-symbols-outlined text-[30px] icon-fill">lock</span>
-                    </div>
-
-                    <h3 class="font-serif text-2xl sm:text-3xl font-bold text-[#2d1b09] mb-2 tracking-tight">Chương VIP</h3>
-
-                    <p class="text-sm text-[#5d4a3b] mb-6 leading-relaxed">
-                       Bạn đang xem bản đọc thử. Hãy mở khóa <strong class="text-[#2d1b09]">Chương <span th:text="${chapter.chapterNumber}">1</span>: <span th:text="${chapter.title}">Tiêu đề</span></strong> với giá <strong class="text-[#874b02]" th:text="${chapter.price} + ' Coin'">50 Coin</strong> để tiếp tục theo dõi trọn vẹn câu chuyện.
-                    </p>
-
-                    <!-- Action Button -->
-                    <button type="button" onclick="openVipUnlockModal()"
-                            class="w-full sm:w-auto px-8 py-3.5 bg-[#874b02] hover:bg-[#723e00] text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all inline-flex items-center justify-center gap-2 text-sm">
-                       <span class="material-symbols-outlined text-[18px]">key</span>
-                       <span th:text="'Mở khóa chương (' + ${chapter.price} + ' Coin)'">Mở khóa chương</span>
-                    </button>
-
-                    <div class="flex items-center justify-center gap-1.5 text-[11px] text-[#8c7a6b] mt-4">
-                       <span class="material-symbols-outlined text-[15px] text-[#874b02]">verified_user</span>
-                       <span>Đã đọc một lần, lưu vĩnh viễn trong tủ sách</span>
-                    </div>
-                 </div>
+            <!-- In-flow VIP Paywall Section (If Chapter is Locked) -->
+            <div class="relative pt-6 pb-12 mt-6 select-none" id="vip-paywall-container">
+              <!-- Gradient Fade Over Preview Content -->
+              <div
+                class="absolute -top-28 left-0 right-0 h-28 bg-gradient-to-b from-transparent to-surface pointer-events-none">
               </div>
-           </th:block>
+
+              <!-- In-flow Paywall Card matching image10.png theme -->
+              <div
+                class="rounded-3xl p-6 sm:p-8 text-center border border-[#ecd9c2] bg-[#fdfaf6] shadow-xl max-w-lg mx-auto relative z-10 transition-all">
+                <div
+                  class="w-16 h-16 rounded-full bg-[#fbf0e0] border border-[#f3ddc3] flex items-center justify-center mx-auto mb-4 text-[#874b02] shadow-sm">
+                  <span class="material-symbols-outlined text-[30px] icon-fill">lock</span>
+                </div>
+
+                <h3 class="font-serif text-2xl sm:text-3xl font-bold text-[#2d1b09] mb-2 tracking-tight">Chương VIP</h3>
+
+                <p class="text-sm text-[#5d4a3b] mb-6 leading-relaxed">
+                  Bạn đang xem bản đọc thử. Hãy mở khóa <strong class="text-[#2d1b09]">Chương <span
+                      th:text="${chapter.chapterNumber}">1</span>: <span th:text="${chapter.title}">Tiêu
+                      đề</span></strong> với giá <strong class="text-[#874b02]" th:text="${chapter.price} + ' Coin'">50
+                    Coin</strong> để tiếp tục theo dõi trọn vẹn câu chuyện.
+                </p>
+
+                <!-- Action Button -->
+                <button type="button" onclick="openVipUnlockModal()"
+                  class="w-full sm:w-auto px-8 py-3.5 bg-[#874b02] hover:bg-[#723e00] text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all inline-flex items-center justify-center gap-2 text-sm">
+                  <span class="material-symbols-outlined text-[18px]">key</span>
+                  <span th:text="'Mở khóa chương (' + ${chapter.price} + ' Coin)'">Mở khóa chương</span>
+                </button>
+
+                <div class="flex items-center justify-center gap-1.5 text-[11px] text-[#8c7a6b] mt-4">
+                  <span class="material-symbols-outlined text-[15px] text-[#874b02]">verified_user</span>
+                  <span>Đã đọc một lần, lưu vĩnh viễn trong tủ sách</span>
+                </div>
+              </div>
+            </div>
+          </th:block>
         </article>
 
+        <!-- Nút Báo lỗi chương cuối nội dung chương -->
+        <div class="mt-8 pt-4 border-t border-outline-variant/30 flex justify-end">
+          <button type="button" onclick="openReportContentModal(this)" th:data-chapter-id="${chapter.id}"
+            th:data-novel-title="${novel.title}" th:data-chapter-number="${chapter.chapterNumber}"
+            th:data-chapter-title="${chapter.title}" th:data-author="${novel.author}"
+            class="inline-flex items-center gap-1.5 text-xs text-[#8a7664] hover:text-[#d97706] font-semibold transition-colors"
+            title="Báo lỗi chương">
+            <span class="material-symbols-outlined text-[16px]">flag</span>
+            <span>Báo lỗi chương</span>
+          </button>
+        </div>
 
       </main>
 
       <!-- Floating Vertical Toolbar (Right side - Chuẩn docln/Hako) -->
-      <nav id="reading-vertical-toolbar" class="fixed right-2 sm:right-6 top-1/2 -translate-y-1/2 z-40 flex flex-col items-center rounded-2xl shadow-xl border border-outline-variant/30 py-2 px-1 transition-all space-y-1 select-none">
-          <!-- 1. Previous Chapter -->
-          <a th:if="${prevChapterNumber != null}" th:href="@{'/truyen/' + ${novel.slug} + '/chuong-' + ${prevChapterNumber}}"
-             class="w-10 h-10 rounded-xl flex items-center justify-center transition-all group relative"
-             title="Chương trước">
-              <span class="material-symbols-outlined text-[20px]">fast_rewind</span>
-              <span class="absolute right-12 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Chương trước</span>
-          </a>
-          <button th:if="${prevChapterNumber == null}" disabled
-             class="w-10 h-10 rounded-xl flex items-center justify-center opacity-30 cursor-not-allowed group relative"
-             title="Đã là chương đầu">
-              <span class="material-symbols-outlined text-[20px]">fast_rewind</span>
-              <span class="absolute right-12 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Đã là chương đầu</span>
-          </button>
+      <nav id="reading-vertical-toolbar"
+        class="fixed right-2 sm:right-6 top-1/2 -translate-y-1/2 z-40 flex flex-col items-center rounded-2xl shadow-xl border border-outline-variant/30 py-2 px-1 transition-all space-y-1 select-none">
+        <!-- 1. Previous Chapter -->
+        <a th:if="${prevChapterNumber != null}"
+          th:href="@{'/truyen/' + ${novel.slug} + '/chuong-' + ${prevChapterNumber}}"
+          class="w-10 h-10 rounded-xl flex items-center justify-center transition-all group relative"
+          title="Chương trước">
+          <span class="material-symbols-outlined text-[20px]">fast_rewind</span>
+          <span
+            class="absolute right-12 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Chương
+            trước</span>
+        </a>
+        <button th:if="${prevChapterNumber == null}" disabled
+          class="w-10 h-10 rounded-xl flex items-center justify-center opacity-30 cursor-not-allowed group relative"
+          title="Đã là chương đầu">
+          <span class="material-symbols-outlined text-[20px]">fast_rewind</span>
+          <span
+            class="absolute right-12 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Đã
+            là chương đầu</span>
+        </button>
 
-          <!-- 2. Home / Novel Details -->
-          <a th:href="@{'/truyen/' + ${novel.slug}}"
-             class="w-10 h-10 rounded-xl flex items-center justify-center transition-all group relative"
-             title="Thông tin truyện">
-              <span class="material-symbols-outlined text-[20px]">home</span>
-              <span class="absolute right-12 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Thông tin truyện</span>
-          </a>
+        <!-- 2. Home / Novel Details -->
+        <a th:href="@{'/truyen/' + ${novel.slug}}"
+          class="w-10 h-10 rounded-xl flex items-center justify-center transition-all group relative"
+          title="Thông tin truyện">
+          <span class="material-symbols-outlined text-[20px]">home</span>
+          <span
+            class="absolute right-12 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Thông
+            tin truyện</span>
+        </a>
 
-          <!-- 3. Appearance Settings (A) -->
-          <button type="button" onclick="toggleAppearanceSettings()"
-             class="w-10 h-10 rounded-xl flex items-center justify-center transition-all group relative"
-             title="Tùy chỉnh giao diện">
-              <span class="font-serif font-bold text-[18px]">A</span>
-              <span class="absolute right-12 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Tùy chỉnh giao diện</span>
-          </button>
+        <!-- 3. Appearance Settings (A) -->
+        <button type="button" onclick="toggleAppearanceSettings()"
+          class="w-10 h-10 rounded-xl flex items-center justify-center transition-all group relative"
+          title="Tùy chỉnh giao diện">
+          <span class="font-serif font-bold text-[18px]">A</span>
+          <span
+            class="absolute right-12 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Tùy
+            chỉnh giao diện</span>
+        </button>
 
-          <!-- 4. Text-to-Speech / Audio -->
-          <button type="button" id="btn-audio-read-vertical" onclick="toggleAudioPanel()"
-             class="w-10 h-10 rounded-xl flex items-center justify-center transition-all group relative"
-             title="Nghe đọc">
-              <span class="material-symbols-outlined text-[20px]" id="audio-icon-vertical">volume_up</span>
-              <span class="absolute right-12 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Nghe đọc</span>
-          </button>
+        <!-- 4. Text-to-Speech / Audio -->
+        <button type="button" id="btn-audio-read-vertical" onclick="toggleAudioPanel()"
+          class="w-10 h-10 rounded-xl flex items-center justify-center transition-all group relative" title="Nghe đọc">
+          <span class="material-symbols-outlined text-[20px]" id="audio-icon-vertical">volume_up</span>
+          <span
+            class="absolute right-12 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Nghe
+            đọc</span>
+        </button>
 
-          <!-- 5. Chapter List / Drawer (i) -->
-          <button type="button" onclick="toggleChapterListDrawer()"
-             class="w-10 h-10 rounded-xl flex items-center justify-center transition-all group relative"
-             title="Mục lục chương">
-              <span class="font-serif italic font-bold text-[18px]">i</span>
-              <span class="absolute right-12 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Mục lục chương</span>
-          </button>
+        <!-- 5. Chapter List / Drawer (i) -->
+        <button type="button" onclick="toggleChapterListDrawer()"
+          class="w-10 h-10 rounded-xl flex items-center justify-center transition-all group relative"
+          title="Mục lục chương">
+          <span class="font-serif italic font-bold text-[18px]">i</span>
+          <span
+            class="absolute right-12 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Mục
+            lục chương</span>
+        </button>
 
-          <!-- 6. Bookshelf Action -->
-          <div sec:authorize="isAuthenticated()" class="w-10 h-10 flex items-center justify-center">
-              <form th:if="${inBookshelf}" th:action="@{/user/bookshelf/{id}/remove(id=${novel.id})}" method="POST" class="m-0">
-                  <input type="hidden" name="source" th:value="'/truyen/' + ${novel.slug} + '/chuong-' + ${chapter.chapterNumber}">
-                  <button type="submit" class="w-10 h-10 rounded-xl flex items-center justify-center text-primary transition-all group relative" title="Đã trong Tủ sách (Bấm để xóa)">
-                      <span class="material-symbols-outlined text-[20px] icon-fill">bookmark</span>
-                      <span class="absolute right-12 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Đã trong tủ sách</span>
-                  </button>
-              </form>
-              <form th:unless="${inBookshelf}" th:action="@{/user/bookshelf/{id}(id=${novel.id})}" method="POST" class="m-0">
-                  <input type="hidden" name="source" th:value="'/truyen/' + ${novel.slug} + '/chuong-' + ${chapter.chapterNumber}">
-                  <button type="submit" class="w-10 h-10 rounded-xl flex items-center justify-center transition-all group relative" title="Lưu vào Tủ sách">
-                      <span class="material-symbols-outlined text-[20px]">bookmark</span>
-                      <span class="absolute right-12 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Thêm vào tủ sách</span>
-                  </button>
-              </form>
-          </div>
-          <div sec:authorize="!isAuthenticated()" class="w-10 h-10 flex items-center justify-center">
-              <button type="button" onclick="openLoginRequiredModal('Vui lòng đăng nhập để lưu truyện vào Tủ sách và theo dõi tiến độ đọc của bạn.')"
-                      class="w-10 h-10 rounded-xl flex items-center justify-center transition-all group relative" title="Lưu vào Tủ sách">
-                  <span class="material-symbols-outlined text-[20px]">bookmark</span>
-                  <span class="absolute right-12 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Thêm vào tủ sách</span>
-              </button>
-          </div>
-
-          <!-- 7. Next Chapter -->
-          <a th:if="${!isLatestChapter}" th:href="@{'/truyen/' + ${novel.slug} + '/chuong-' + ${nextChapterNumber}}"
-             class="w-10 h-10 rounded-xl flex items-center justify-center transition-all group relative"
-             title="Chương sau">
-              <span class="material-symbols-outlined text-[20px]">fast_forward</span>
-              <span class="absolute right-12 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Chương sau</span>
-          </a>
-          <button th:if="${isLatestChapter}" type="button" onclick="openEndOfChapterModal()"
-             class="w-10 h-10 rounded-xl flex items-center justify-center text-primary transition-all group relative"
-             title="Đã hết chương mới nhất">
-              <span class="material-symbols-outlined text-[20px]">fast_forward</span>
-              <span class="absolute right-12 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Đã hết chương mới nhất</span>
-          </button>
-
-          <!-- 8. Report Content / Chapter (UC-21) -->
+        <!-- 6. Bookshelf Action -->
+        <div sec:authorize="isAuthenticated()" class="w-10 h-10 flex items-center justify-center">
+          <form th:if="${inBookshelf}" th:action="@{/user/bookshelf/{id}/remove(id=${novel.id})}" method="POST"
+            class="m-0">
+            <input type="hidden" name="source"
+              th:value="'/truyen/' + ${novel.slug} + '/chuong-' + ${chapter.chapterNumber}">
+            <button type="submit"
+              class="w-10 h-10 rounded-xl flex items-center justify-center text-primary transition-all group relative"
+              title="Đã trong Tủ sách (Bấm để xóa)">
+              <span class="material-symbols-outlined text-[20px] icon-fill">bookmark</span>
+              <span
+                class="absolute right-12 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Đã
+                trong tủ sách</span>
+            </button>
+          </form>
+          <form th:unless="${inBookshelf}" th:action="@{/user/bookshelf/{id}(id=${novel.id})}" method="POST"
+            class="m-0">
+            <input type="hidden" name="source"
+              th:value="'/truyen/' + ${novel.slug} + '/chuong-' + ${chapter.chapterNumber}">
+            <button type="submit"
+              class="w-10 h-10 rounded-xl flex items-center justify-center transition-all group relative"
+              title="Lưu vào Tủ sách">
+              <span class="material-symbols-outlined text-[20px]">bookmark</span>
+              <span
+                class="absolute right-12 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Thêm
+                vào tủ sách</span>
+            </button>
+          </form>
+        </div>
+        <div sec:authorize="!isAuthenticated()" class="w-10 h-10 flex items-center justify-center">
           <button type="button"
-             onclick="openReportContentModal(this)"
-             th:data-chapter-id="${chapter.id}"
-             th:data-novel-title="${novel.title}"
-             th:data-chapter-number="${chapter.chapterNumber}"
-             th:data-chapter-title="${chapter.title}"
-             th:data-author="${novel.author}"
-             class="w-10 h-10 rounded-xl flex items-center justify-center text-[#d97706] hover:bg-surface-container transition-all group relative"
-             title="Báo cáo lỗi / vi phạm chương">
-              <span class="material-symbols-outlined text-[20px]">flag</span>
-              <span class="absolute right-12 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Báo cáo nội dung</span>
+            onclick="openLoginRequiredModal('Vui lòng đăng nhập để lưu truyện vào Tủ sách và theo dõi tiến độ đọc của bạn.')"
+            class="w-10 h-10 rounded-xl flex items-center justify-center transition-all group relative"
+            title="Lưu vào Tủ sách">
+            <span class="material-symbols-outlined text-[20px]">bookmark</span>
+            <span
+              class="absolute right-12 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Thêm
+              vào tủ sách</span>
           </button>
+        </div>
+
+        <!-- 7. Next Chapter -->
+        <a th:if="${!isLatestChapter}" th:href="@{'/truyen/' + ${novel.slug} + '/chuong-' + ${nextChapterNumber}}"
+          class="w-10 h-10 rounded-xl flex items-center justify-center transition-all group relative"
+          title="Chương sau">
+          <span class="material-symbols-outlined text-[20px]">fast_forward</span>
+          <span
+            class="absolute right-12 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Chương
+            sau</span>
+        </a>
+        <button th:if="${isLatestChapter}" type="button" onclick="openEndOfChapterModal()"
+          class="w-10 h-10 rounded-xl flex items-center justify-center text-primary transition-all group relative"
+          title="Đã hết chương mới nhất">
+          <span class="material-symbols-outlined text-[20px]">fast_forward</span>
+          <span
+            class="absolute right-12 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Đã
+            hết chương mới nhất</span>
+        </button>
+
+        <!-- 8. Report Content / Chapter (UC-21) -->
+        <button type="button" onclick="openReportContentModal(this)" th:data-chapter-id="${chapter.id}"
+          th:data-novel-title="${novel.title}" th:data-chapter-number="${chapter.chapterNumber}"
+          th:data-chapter-title="${chapter.title}" th:data-author="${novel.author}"
+          class="w-10 h-10 rounded-xl flex items-center justify-center text-[#d97706] hover:bg-surface-container transition-all group relative"
+          title="Báo lỗi chương">
+          <span class="material-symbols-outlined text-[20px]">flag</span>
+          <span
+            class="absolute right-12 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Báo
+            lỗi chương</span>
+        </button>
       </nav>
 
       <!-- Left Chapter List Drawer (Image 4 style) -->
-      <div id="chapter-list-drawer-backdrop" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden transition-opacity" onclick="toggleChapterListDrawer()"></div>
-      <aside id="chapter-list-drawer" class="fixed top-0 left-0 w-80 sm:w-96 h-full z-50 shadow-2xl flex flex-col -translate-x-full transition-transform duration-300 border-r border-outline-variant/30">
-          <div class="p-4 border-b border-outline-variant/30 flex items-center gap-3.5 bg-surface-container-low">
-              <img th:src="${novel.coverUrl != null ? novel.coverUrl : '/images/default-cover.jpg'}" alt="Cover" class="w-12 h-16 object-cover rounded-lg shadow-sm border border-outline-variant/30 flex-shrink-0">
-              <div class="min-w-0 flex-1">
-                  <h4 class="font-headline-sm text-sm font-bold text-on-surface line-clamp-2" th:text="${novel.title}">Tên truyện</h4>
-                  <p class="text-xs text-outline truncate mt-0.5" th:text="${novel.author}">Tác giả</p>
-                  <span class="inline-block mt-1 text-[11px] font-semibold text-primary" th:text="${#lists.size(chapters)} + ' chương'">20 chương</span>
-              </div>
-              <button type="button" onclick="toggleChapterListDrawer()" class="p-1.5 rounded-lg text-outline hover:text-on-surface hover:bg-surface-container transition-colors">
-                  <span class="material-symbols-outlined text-[20px]">close</span>
-              </button>
+      <div id="chapter-list-drawer-backdrop"
+        class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden transition-opacity"
+        onclick="toggleChapterListDrawer()"></div>
+      <aside id="chapter-list-drawer"
+        class="fixed top-0 left-0 w-80 sm:w-96 h-full z-50 shadow-2xl flex flex-col -translate-x-full transition-transform duration-300 border-r border-outline-variant/30">
+        <div class="p-4 border-b border-outline-variant/30 flex items-center gap-3.5 bg-surface-container-low">
+          <img th:src="${novel.coverUrl != null ? novel.coverUrl : '/images/default-cover.jpg'}" alt="Cover"
+            class="w-12 h-16 object-cover rounded-lg shadow-sm border border-outline-variant/30 flex-shrink-0">
+          <div class="min-w-0 flex-1">
+            <h4 class="font-headline-sm text-sm font-bold text-on-surface line-clamp-2" th:text="${novel.title}">Tên
+              truyện</h4>
+            <p class="text-xs text-outline truncate mt-0.5" th:text="${novel.author}">Tác giả</p>
+            <span class="inline-block mt-1 text-[11px] font-semibold text-primary"
+              th:text="${#lists.size(chapters)} + ' chương'">20 chương</span>
           </div>
+          <button type="button" onclick="toggleChapterListDrawer()"
+            class="p-1.5 rounded-lg text-outline hover:text-on-surface hover:bg-surface-container transition-colors">
+            <span class="material-symbols-outlined text-[20px]">close</span>
+          </button>
+        </div>
 
-          <!-- Search Filter -->
-          <div class="p-3 border-b border-outline-variant/20 bg-surface-container-lowest">
-              <div class="relative flex items-center">
-                  <span class="material-symbols-outlined absolute left-3 text-outline text-[18px]">search</span>
-                  <input type="text" id="chapter-search-input" placeholder="Tìm số chương hoặc tiêu đề..."
-                         oninput="filterChapterList(this.value)"
-                         class="w-full pl-9 pr-3 py-1.5 rounded-lg text-xs bg-surface-container text-on-surface outline-none focus:ring-1 ring-primary border border-outline-variant/30">
-              </div>
+        <!-- Search Filter -->
+        <div class="p-3 border-b border-outline-variant/20 bg-surface-container-lowest">
+          <div class="relative flex items-center">
+            <span class="material-symbols-outlined absolute left-3 text-outline text-[18px]">search</span>
+            <input type="text" id="chapter-search-input" placeholder="Tìm số chương hoặc tiêu đề..."
+              oninput="filterChapterList(this.value)"
+              class="w-full pl-9 pr-3 py-1.5 rounded-lg text-xs bg-surface-container text-on-surface outline-none focus:ring-1 ring-primary border border-outline-variant/30">
           </div>
+        </div>
 
-          <!-- Chapters Container -->
-          <div class="flex-1 overflow-y-auto p-3 space-y-1" id="chapter-list-container">
-              <a th:each="c : ${chapters}" th:href="@{'/truyen/' + ${novel.slug} + '/chuong-' + ${c.chapterNumber}}"
-                 class="chapter-item flex items-center justify-between px-3 py-2.5 rounded-xl transition-all"
-                 th:attr="data-chapter=${c.chapterNumber}, data-title=${c.title}"
-                 th:classappend="${c.chapterNumber == chapter.chapterNumber} ? 'bg-primary/10 text-primary font-bold shadow-sm' : 'text-on-surface hover:bg-surface-container hover:text-primary'">
-                  <div class="min-w-0 flex-1 pr-2">
-                      <span class="text-[11px] block opacity-70 font-medium" th:text="'Chương ' + ${c.chapterNumber}">Chương 1</span>
-                      <span class="text-sm truncate block" th:text="${c.title}">Tiêu đề chương</span>
-                  </div>
-                  <span th:if="${c.chapterNumber == chapter.chapterNumber}" class="text-[10px] uppercase tracking-wider font-semibold text-primary bg-primary-container/20 px-2 py-0.5 rounded-full flex-shrink-0">
-                      Đang đọc
-                  </span>
-              </a>
-          </div>
+        <!-- Chapters Container -->
+        <div class="flex-1 overflow-y-auto p-3 space-y-1" id="chapter-list-container">
+          <a th:each="c : ${chapters}" th:href="@{'/truyen/' + ${novel.slug} + '/chuong-' + ${c.chapterNumber}}"
+            class="chapter-item flex items-center justify-between px-3 py-2.5 rounded-xl transition-all"
+            th:attr="data-chapter=${c.chapterNumber}, data-title=${c.title}"
+            th:classappend="${c.chapterNumber == chapter.chapterNumber} ? 'bg-primary/10 text-primary font-bold shadow-sm' : 'text-on-surface hover:bg-surface-container hover:text-primary'">
+            <div class="min-w-0 flex-1 pr-2">
+              <span class="text-[11px] block opacity-70 font-medium" th:text="'Chương ' + ${c.chapterNumber}">Chương
+                1</span>
+              <span class="text-sm truncate block" th:text="${c.title}">Tiêu đề chương</span>
+            </div>
+            <span th:if="${c.chapterNumber == chapter.chapterNumber}"
+              class="text-[10px] uppercase tracking-wider font-semibold text-primary bg-primary-container/20 px-2 py-0.5 rounded-full flex-shrink-0">
+              Đang đọc
+            </span>
+          </a>
+        </div>
       </aside>
 
       <!-- Settings Drawer Backdrop & Drawer -->
-      <div id="settings-drawer-backdrop" class="fixed inset-0 z-40 bg-black/40 backdrop-blur-xs hidden transition-opacity" onclick="toggleAppearanceSettings()"></div>
-      <aside id="settings-drawer" class="fixed top-14 right-0 w-full sm:w-[360px] h-[calc(100vh-3.5rem)] bg-surface-container-lowest z-50 shadow-2xl flex flex-col justify-between overflow-hidden translate-x-full transition-transform duration-300">
+      <div id="settings-drawer-backdrop"
+        class="fixed inset-0 z-40 bg-black/40 backdrop-blur-xs hidden transition-opacity"
+        onclick="toggleAppearanceSettings()"></div>
+      <aside id="settings-drawer"
+        class="fixed top-14 right-0 w-full sm:w-[360px] h-[calc(100vh-3.5rem)] bg-surface-container-lowest z-50 shadow-2xl flex flex-col justify-between overflow-hidden translate-x-full transition-transform duration-300">
         <div class="px-6 py-5 bg-surface-container-low flex items-center justify-between">
           <div class="flex items-center gap-2.5">
             <div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
@@ -272,7 +347,9 @@
             </div>
             <h2 class="font-headline-sm text-headline-sm text-on-surface">Tùy chỉnh giao diện</h2>
           </div>
-          <button class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" onclick="toggleAppearanceSettings()">
+          <button
+            class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors"
+            onclick="toggleAppearanceSettings()">
             <span class="material-symbols-outlined text-[20px]">close</span>
           </button>
         </div>
@@ -284,7 +361,9 @@
             </label>
             <div class="bg-surface-container-low p-4 rounded-xl flex items-center gap-3">
               <span class="font-display-lg text-body-md text-tertiary select-none font-bold">A-</span>
-              <input class="w-full h-1.5 bg-surface-container-highest rounded-lg appearance-none cursor-pointer accent-primary" id="setting-font-size" max="36" min="14" step="2" type="range" value="18">
+              <input
+                class="w-full h-1.5 bg-surface-container-highest rounded-lg appearance-none cursor-pointer accent-primary"
+                id="setting-font-size" max="36" min="14" step="2" type="range" value="18">
               <span class="font-display-lg text-headline-sm text-on-surface select-none font-bold">A+</span>
             </div>
           </section>
@@ -295,10 +374,18 @@
               <span class="material-symbols-outlined text-[18px] text-tertiary">match_case</span> Kiểu chữ
             </label>
             <div class="grid grid-cols-2 gap-3" id="setting-font-family">
-              <button class="py-2 rounded-lg border border-outline-variant hover:bg-surface-container transition-colors font-body-reading font-semibold" data-value="Lora">Lora</button>
-              <button class="py-2 rounded-lg border border-outline-variant hover:bg-surface-container transition-colors font-sans font-semibold" data-value="Arial">Arial</button>
-              <button class="py-2 rounded-lg border border-outline-variant hover:bg-surface-container transition-colors font-serif font-semibold" data-value="'Times New Roman'">Times New Roman</button>
-              <button class="py-2 rounded-lg border border-outline-variant hover:bg-surface-container transition-colors font-serif font-semibold" data-value="'Palatino Linotype'">Palatino</button>
+              <button
+                class="py-2 rounded-lg border border-outline-variant hover:bg-surface-container transition-colors font-body-reading font-semibold"
+                data-value="Lora">Lora</button>
+              <button
+                class="py-2 rounded-lg border border-outline-variant hover:bg-surface-container transition-colors font-sans font-semibold"
+                data-value="Arial">Arial</button>
+              <button
+                class="py-2 rounded-lg border border-outline-variant hover:bg-surface-container transition-colors font-serif font-semibold"
+                data-value="'Times New Roman'">Times New Roman</button>
+              <button
+                class="py-2 rounded-lg border border-outline-variant hover:bg-surface-container transition-colors font-serif font-semibold"
+                data-value="'Palatino Linotype'">Palatino</button>
             </div>
           </section>
 
@@ -308,9 +395,15 @@
               <span class="material-symbols-outlined text-[18px] text-tertiary">format_line_spacing</span> Giãn dòng
             </label>
             <div class="flex items-center gap-3 bg-surface-container-low p-2 rounded-xl" id="setting-line-height">
-              <button class="flex-1 py-1.5 rounded-md hover:bg-surface-container-high transition-colors text-on-surface font-semibold" data-value="1.5">1.5</button>
-              <button class="flex-1 py-1.5 rounded-md hover:bg-surface-container-high transition-colors text-on-surface font-semibold" data-value="1.8">1.8</button>
-              <button class="flex-1 py-1.5 rounded-md hover:bg-surface-container-high transition-colors text-on-surface font-semibold" data-value="2.0">2.0</button>
+              <button
+                class="flex-1 py-1.5 rounded-md hover:bg-surface-container-high transition-colors text-on-surface font-semibold"
+                data-value="1.5">1.5</button>
+              <button
+                class="flex-1 py-1.5 rounded-md hover:bg-surface-container-high transition-colors text-on-surface font-semibold"
+                data-value="1.8">1.8</button>
+              <button
+                class="flex-1 py-1.5 rounded-md hover:bg-surface-container-high transition-colors text-on-surface font-semibold"
+                data-value="2.0">2.0</button>
             </div>
           </section>
 
@@ -320,179 +413,215 @@
               <span class="material-symbols-outlined text-[18px] text-tertiary">palette</span> Màu nền
             </label>
             <div class="flex items-center gap-4" id="setting-theme">
-              <button class="w-10 h-10 rounded-full bg-[#fcfbf9] border-2 border-outline-variant shadow-sm transition-transform hover:scale-110" data-value="theme-light" title="Sáng"></button>
-              <button class="w-10 h-10 rounded-full bg-[#f4ecd8] border-2 border-transparent shadow-sm transition-transform hover:scale-110" data-value="theme-sepia" title="Giấy cũ"></button>
-              <button class="w-10 h-10 rounded-full bg-[#1e1e1e] border-2 border-transparent shadow-sm transition-transform hover:scale-110" data-value="theme-dark" title="Tối"></button>
-              <button class="w-10 h-10 rounded-full bg-[#eaf2f8] border-2 border-transparent shadow-sm transition-transform hover:scale-110" data-value="theme-blue" title="Dịu mắt"></button>
+              <button
+                class="w-10 h-10 rounded-full bg-[#fcfbf9] border-2 border-outline-variant shadow-sm transition-transform hover:scale-110"
+                data-value="theme-light" title="Sáng"></button>
+              <button
+                class="w-10 h-10 rounded-full bg-[#f4ecd8] border-2 border-transparent shadow-sm transition-transform hover:scale-110"
+                data-value="theme-sepia" title="Giấy cũ"></button>
+              <button
+                class="w-10 h-10 rounded-full bg-[#1e1e1e] border-2 border-transparent shadow-sm transition-transform hover:scale-110"
+                data-value="theme-dark" title="Tối"></button>
+              <button
+                class="w-10 h-10 rounded-full bg-[#eaf2f8] border-2 border-transparent shadow-sm transition-transform hover:scale-110"
+                data-value="theme-blue" title="Dịu mắt"></button>
             </div>
           </section>
         </div>
       </aside>
 
       <!-- End of Chapters Modal -->
-      <div id="endOfChapterModal" class="fixed inset-0 z-[100] items-center justify-center bg-black/60 backdrop-blur-sm hidden transition-all">
-          <div class="bg-surface rounded-2xl p-7 max-w-[440px] w-[90%] flex flex-col items-center text-center shadow-2xl relative border border-outline-variant/30 animate-fade-in-up">
-              <!-- Close Button -->
-              <button type="button" onclick="closeEndOfChapterModal()" aria-label="Đóng"
-                      class="absolute top-4 right-4 text-outline hover:text-on-surface transition-colors p-1 rounded-lg hover:bg-surface-container">
-                  <span class="material-symbols-outlined text-[20px]">close</span>
-              </button>
+      <div id="endOfChapterModal"
+        class="fixed inset-0 z-[100] items-center justify-center bg-black/60 backdrop-blur-sm hidden transition-all">
+        <div
+          class="bg-surface rounded-2xl p-7 max-w-[440px] w-[90%] flex flex-col items-center text-center shadow-2xl relative border border-outline-variant/30 animate-fade-in-up">
+          <!-- Close Button -->
+          <button type="button" onclick="closeEndOfChapterModal()" aria-label="Đóng"
+            class="absolute top-4 right-4 text-outline hover:text-on-surface transition-colors p-1 rounded-lg hover:bg-surface-container">
+            <span class="material-symbols-outlined text-[20px]">close</span>
+          </button>
 
-              <!-- Sparkle/Book Icon -->
-              <div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4 text-primary shadow-inner">
-                  <span class="material-symbols-outlined text-[32px] icon-fill">auto_stories</span>
-              </div>
-
-              <h3 class="text-2xl font-bold font-headline-sm text-on-surface mb-2 tracking-tight">Đã hết chương mới nhất!</h3>
-
-              <p class="text-on-surface-variant font-body-md text-sm mb-6 leading-relaxed px-1">
-                  Bạn đã đọc đến chương cuối cùng hiện có của truyện <strong class="text-primary font-semibold" th:text="${novel.title}">Tên truyện</strong>. Hãy quay lại sau khi tác giả cập nhật thêm chương mới nhé!
-              </p>
-
-              <div class="w-full space-y-3">
-                  <a th:href="@{'/truyen/' + ${novel.slug}}"
-                     class="w-full py-3 bg-primary hover:bg-primary-container text-on-primary font-bold rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2">
-                      <span class="material-symbols-outlined text-[18px]">menu_book</span>
-                      <span>Về trang chi tiết truyện</span>
-                  </a>
-                  <button type="button" onclick="closeEndOfChapterModal()"
-                          class="w-full py-2.5 bg-surface-container hover:bg-surface-container-high text-on-surface font-semibold rounded-xl transition-all flex items-center justify-center gap-2">
-                      <span>Ở lại trang này</span>
-                  </button>
-              </div>
+          <!-- Sparkle/Book Icon -->
+          <div
+            class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4 text-primary shadow-inner">
+            <span class="material-symbols-outlined text-[32px] icon-fill">auto_stories</span>
           </div>
+
+          <h3 class="text-2xl font-bold font-headline-sm text-on-surface mb-2 tracking-tight">Đã hết chương mới nhất!
+          </h3>
+
+          <p class="text-on-surface-variant font-body-md text-sm mb-6 leading-relaxed px-1">
+            Bạn đã đọc đến chương cuối cùng hiện có của truyện <strong class="text-primary font-semibold"
+              th:text="${novel.title}">Tên truyện</strong>. Hãy quay lại sau khi tác giả cập nhật thêm chương mới nhé!
+          </p>
+
+          <div class="w-full space-y-3">
+            <a th:href="@{'/truyen/' + ${novel.slug}}"
+              class="w-full py-3 bg-primary hover:bg-primary-container text-on-primary font-bold rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2">
+              <span class="material-symbols-outlined text-[18px]">menu_book</span>
+              <span>Về trang chi tiết truyện</span>
+            </a>
+            <button type="button" onclick="closeEndOfChapterModal()"
+              class="w-full py-2.5 bg-surface-container hover:bg-surface-container-high text-on-surface font-semibold rounded-xl transition-all flex items-center justify-center gap-2">
+              <span>Ở lại trang này</span>
+            </button>
+          </div>
+        </div>
       </div>
 
       <!-- VIP Unlock Modal (Chuẩn Design RDS image10.png) -->
       <div id="vipUnlockModal" th:if="${!isChapterUnlocked}"
-           class="fixed inset-0 z-[100] items-center justify-center bg-black/60 backdrop-blur-sm hidden transition-all p-4">
-          <div class="bg-[#fffdfa] rounded-3xl p-6 sm:p-8 max-w-[430px] w-full flex flex-col text-center shadow-2xl relative border border-[#f0e4d2] animate-fade-in-up">
-              <!-- Close Button -->
-              <button type="button" onclick="closeVipUnlockModal()" aria-label="Đóng"
-                      class="absolute top-4 right-4 text-[#8c7a6b] hover:text-[#2d1b09] transition-colors p-1.5 rounded-xl hover:bg-[#f6ebd8]">
-                  <span class="material-symbols-outlined text-[20px]">close</span>
-              </button>
+        class="fixed inset-0 z-[100] items-center justify-center bg-black/60 backdrop-blur-sm hidden transition-all p-4">
+        <div
+          class="bg-[#fffdfa] rounded-3xl p-6 sm:p-8 max-w-[430px] w-full flex flex-col text-center shadow-2xl relative border border-[#f0e4d2] animate-fade-in-up">
+          <!-- Close Button -->
+          <button type="button" onclick="closeVipUnlockModal()" aria-label="Đóng"
+            class="absolute top-4 right-4 text-[#8c7a6b] hover:text-[#2d1b09] transition-colors p-1.5 rounded-xl hover:bg-[#f6ebd8]">
+            <span class="material-symbols-outlined text-[20px]">close</span>
+          </button>
 
-              <!-- Circular Lock Icon -->
-              <div class="w-16 h-16 rounded-full bg-[#fbf0e0] border border-[#f3ddc3] flex items-center justify-center mx-auto mb-3 shadow-inner">
-                  <span class="material-symbols-outlined text-[30px] text-[#874b02] icon-fill">lock</span>
-              </div>
-
-              <!-- Title -->
-              <h3 class="font-serif text-2xl sm:text-3xl font-bold text-[#2d1b09] mb-2 tracking-tight">Chương VIP</h3>
-
-              <!-- Description -->
-              <p class="text-xs sm:text-sm text-[#5d4a3b] leading-relaxed mb-5 font-body">
-                  Bạn đang chuẩn bị mở khóa <strong class="text-[#2d1b09]">Chương <span th:text="${chapter.chapterNumber}">15</span>: <span th:text="${chapter.title}">Tiêu đề</span></strong> với giá <strong class="text-[#874b02]" th:text="${chapter.price} + ' Coin'">50 Coin</strong> để tiếp tục theo dõi câu chuyện.
-              </p>
-
-              <!-- Balance Box (Card 2 cột: Số dư hiện tại vs Sau giao dịch) -->
-              <div class="bg-[#fbf4ea]/80 border border-[#f2e1cc] rounded-2xl p-4 flex items-center justify-between gap-3 mb-4 text-left">
-                  <!-- Cột trái: Số dư của bạn -->
-                  <div class="flex items-center gap-3">
-                      <div class="w-10 h-10 rounded-full bg-[#fae8d0] border border-[#ebd2b4] flex items-center justify-center shrink-0">
-                          <span class="material-symbols-outlined text-[20px] text-[#874b02] icon-fill">monetization_on</span>
-                      </div>
-                      <div>
-                          <div class="text-[11px] font-semibold text-[#8c7a6b] uppercase tracking-wider">Số dư của bạn</div>
-                          <div class="text-base font-bold text-[#2d1b09]">
-                              <span th:text="${userWalletBalance != null ? userWalletBalance : 0}">1.250</span> <span class="text-[#874b02] text-xs font-semibold">Coin</span>
-                          </div>
-                      </div>
-                  </div>
-
-                  <!-- Cột phải: Sau giao dịch -->
-                  <div class="text-right">
-                      <div class="text-[11px] font-semibold text-[#8c7a6b] uppercase tracking-wider">Sau giao dịch</div>
-                      <div th:if="${canAfford}" class="text-sm sm:text-base font-bold text-[#5d4a3b]">
-                          <span th:text="${remainingBalanceAfter}">1.200</span> <span class="text-[#8c7a6b] text-xs font-normal">Coin</span>
-                      </div>
-                      <div th:unless="${canAfford}" class="text-xs font-bold text-rose-600">
-                          Không đủ Coin
-                      </div>
-                  </div>
-              </div>
-
-              <!-- Checkbox Auto-Unlock (Image 10) -->
-              <div th:if="${isLoggedIn and canAfford}" class="flex items-center gap-2.5 mb-5 px-1 text-left">
-                  <input type="checkbox" id="modalAutoUnlockNext" name="autoUnlockNext" value="true"
-                         class="w-4 h-4 rounded border-[#d4c3b0] text-[#874b02] focus:ring-[#874b02] accent-[#874b02] cursor-pointer">
-                  <label for="modalAutoUnlockNext" class="text-xs text-[#5d4a3b] cursor-pointer select-none leading-snug">
-                      Tự động mở khóa các chương VIP tiếp theo của tác phẩm này
-                  </label>
-              </div>
-
-              <!-- Actions State -->
-              <!-- Case 1: Chưa đăng nhập -->
-              <div th:if="${!isLoggedIn}" class="space-y-3 mb-2">
-                  <p class="text-xs text-amber-800 bg-amber-50 p-2.5 rounded-xl border border-amber-200">
-                      Vui lòng đăng nhập tài khoản để mở khóa chương VIP này.
-                  </p>
-                  <div class="grid grid-cols-2 gap-3">
-                      <button type="button" onclick="closeVipUnlockModal()" class="py-3 px-4 bg-[#faeee2] hover:bg-[#f3dfce] text-[#784408] font-bold rounded-xl text-center text-sm transition-all">
-                          Hủy
-                      </button>
-                      <a th:href="@{/login(redirect=${'/truyen/' + novel.slug + '/chuong-' + chapter.chapterNumber})}" class="py-3 px-4 bg-[#874b02] hover:bg-[#723e00] text-white font-bold rounded-xl text-center text-sm shadow-md transition-all flex items-center justify-center gap-1.5">
-                          <span class="material-symbols-outlined text-[18px]">login</span>
-                          <span>Đăng nhập</span>
-                      </a>
-                  </div>
-              </div>
-
-              <!-- Case 2: Đã đăng nhập nhưng không đủ Coin -->
-              <div th:if="${isLoggedIn and !canAfford}" class="space-y-3 mb-2">
-                  <div class="p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs text-left flex items-center gap-2">
-                      <span class="material-symbols-outlined text-[18px] text-amber-700 shrink-0">info</span>
-                      <span>Bạn còn thiếu <strong class="text-rose-700"><span th:text="${chapter.price - userWalletBalance}">0</span> Coin</strong> để mở khóa chương này.</span>
-                  </div>
-                  <div class="grid grid-cols-2 gap-3">
-                      <button type="button" onclick="closeVipUnlockModal()" class="py-3 px-4 bg-[#faeee2] hover:bg-[#f3dfce] text-[#784408] font-bold rounded-xl text-center text-sm transition-all">
-                          Hủy
-                      </button>
-                      <a th:href="@{/user/checkin}" class="py-3 px-4 bg-[#874b02] hover:bg-[#723e00] text-white font-bold rounded-xl text-center text-sm shadow-md transition-all flex items-center justify-center gap-1.5">
-                          <span class="material-symbols-outlined text-[18px]">calendar_month</span>
-                          <span>Điểm danh nhận Coin</span>
-                      </a>
-                  </div>
-              </div>
-
-              <!-- Case 3: Đã đăng nhập và đủ Coin -->
-              <form th:if="${isLoggedIn and canAfford}" id="vipUnlockForm"
-                    th:action="@{'/truyen/' + ${novel.slug} + '/chuong-' + ${chapter.chapterNumber} + '/unlock'}"
-                    method="POST" onsubmit="handleVipUnlockSubmit(event)" class="m-0">
-                  <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                  <input type="hidden" name="chapterId" th:value="${chapter.id}">
-                  <div class="grid grid-cols-2 gap-3 mb-2">
-                      <button type="button" onclick="closeVipUnlockModal()" class="py-3 px-4 bg-[#faeee2] hover:bg-[#f3dfce] text-[#784408] font-bold rounded-xl text-center text-sm transition-all">
-                          Hủy
-                      </button>
-                      <button type="submit" id="btnConfirmUnlock" class="py-3 px-4 bg-[#874b02] hover:bg-[#723e00] text-white font-bold rounded-xl text-center text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-1.5">
-                          <span class="material-symbols-outlined text-[18px]">key</span>
-                          <span id="btnConfirmUnlockText" th:text="'Mở khóa (' + ${chapter.price} + ' Coin)'">Mở khóa (50 Coin)</span>
-                      </button>
-                  </div>
-              </form>
-
-              <!-- Footer Verified Badge -->
-              <div class="flex items-center justify-center gap-1.5 text-[11px] text-[#8c7a6b] mt-3">
-                  <span class="material-symbols-outlined text-[15px] text-[#874b02]">verified_user</span>
-                  <span>Đã đọc một lần, lưu vĩnh viễn trong tủ sách</span>
-              </div>
+          <!-- Circular Lock Icon -->
+          <div
+            class="w-16 h-16 rounded-full bg-[#fbf0e0] border border-[#f3ddc3] flex items-center justify-center mx-auto mb-3 shadow-inner">
+            <span class="material-symbols-outlined text-[30px] text-[#874b02] icon-fill">lock</span>
           </div>
+
+          <!-- Title -->
+          <h3 class="font-serif text-2xl sm:text-3xl font-bold text-[#2d1b09] mb-2 tracking-tight">Chương VIP</h3>
+
+          <!-- Description -->
+          <p class="text-xs sm:text-sm text-[#5d4a3b] leading-relaxed mb-5 font-body">
+            Bạn đang chuẩn bị mở khóa <strong class="text-[#2d1b09]">Chương <span
+                th:text="${chapter.chapterNumber}">15</span>: <span th:text="${chapter.title}">Tiêu đề</span></strong>
+            với giá <strong class="text-[#874b02]" th:text="${chapter.price} + ' Coin'">50 Coin</strong> để tiếp tục
+            theo dõi câu chuyện.
+          </p>
+
+          <!-- Balance Box (Card 2 cột: Số dư hiện tại vs Sau giao dịch) -->
+          <div
+            class="bg-[#fbf4ea]/80 border border-[#f2e1cc] rounded-2xl p-4 flex items-center justify-between gap-3 mb-4 text-left">
+            <!-- Cột trái: Số dư của bạn -->
+            <div class="flex items-center gap-3">
+              <div
+                class="w-10 h-10 rounded-full bg-[#fae8d0] border border-[#ebd2b4] flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-[20px] text-[#874b02] icon-fill">monetization_on</span>
+              </div>
+              <div>
+                <div class="text-[11px] font-semibold text-[#8c7a6b] uppercase tracking-wider">Số dư của bạn</div>
+                <div class="text-base font-bold text-[#2d1b09]">
+                  <span th:text="${userWalletBalance != null ? userWalletBalance : 0}">1.250</span> <span
+                    class="text-[#874b02] text-xs font-semibold">Coin</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Cột phải: Sau giao dịch -->
+            <div class="text-right">
+              <div class="text-[11px] font-semibold text-[#8c7a6b] uppercase tracking-wider">Sau giao dịch</div>
+              <div th:if="${canAfford}" class="text-sm sm:text-base font-bold text-[#5d4a3b]">
+                <span th:text="${remainingBalanceAfter}">1.200</span> <span
+                  class="text-[#8c7a6b] text-xs font-normal">Coin</span>
+              </div>
+              <div th:unless="${canAfford}" class="text-xs font-bold text-rose-600">
+                Không đủ Coin
+              </div>
+            </div>
+          </div>
+
+          <!-- Checkbox Auto-Unlock (Image 10) -->
+          <div th:if="${isLoggedIn and canAfford}" class="flex items-center gap-2.5 mb-5 px-1 text-left">
+            <input type="checkbox" id="modalAutoUnlockNext" name="autoUnlockNext" value="true"
+              class="w-4 h-4 rounded border-[#d4c3b0] text-[#874b02] focus:ring-[#874b02] accent-[#874b02] cursor-pointer">
+            <label for="modalAutoUnlockNext" class="text-xs text-[#5d4a3b] cursor-pointer select-none leading-snug">
+              Tự động mở khóa các chương VIP tiếp theo của tác phẩm này
+            </label>
+          </div>
+
+          <!-- Actions State -->
+          <!-- Case 1: Chưa đăng nhập -->
+          <div th:if="${!isLoggedIn}" class="space-y-3 mb-2">
+            <p class="text-xs text-amber-800 bg-amber-50 p-2.5 rounded-xl border border-amber-200">
+              Vui lòng đăng nhập tài khoản để mở khóa chương VIP này.
+            </p>
+            <div class="grid grid-cols-2 gap-3">
+              <button type="button" onclick="closeVipUnlockModal()"
+                class="py-3 px-4 bg-[#faeee2] hover:bg-[#f3dfce] text-[#784408] font-bold rounded-xl text-center text-sm transition-all">
+                Hủy
+              </button>
+              <a th:href="@{/login(redirect=${'/truyen/' + novel.slug + '/chuong-' + chapter.chapterNumber})}"
+                class="py-3 px-4 bg-[#874b02] hover:bg-[#723e00] text-white font-bold rounded-xl text-center text-sm shadow-md transition-all flex items-center justify-center gap-1.5">
+                <span class="material-symbols-outlined text-[18px]">login</span>
+                <span>Đăng nhập</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Case 2: Đã đăng nhập nhưng không đủ Coin -->
+          <div th:if="${isLoggedIn and !canAfford}" class="space-y-3 mb-2">
+            <div
+              class="p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs text-left flex items-center gap-2">
+              <span class="material-symbols-outlined text-[18px] text-amber-700 shrink-0">info</span>
+              <span>Bạn còn thiếu <strong class="text-rose-700"><span
+                    th:text="${chapter.price - userWalletBalance}">0</span> Coin</strong> để mở khóa chương này.</span>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <button type="button" onclick="closeVipUnlockModal()"
+                class="py-3 px-4 bg-[#faeee2] hover:bg-[#f3dfce] text-[#784408] font-bold rounded-xl text-center text-sm transition-all">
+                Hủy
+              </button>
+              <a th:href="@{/user/checkin}"
+                class="py-3 px-4 bg-[#874b02] hover:bg-[#723e00] text-white font-bold rounded-xl text-center text-sm shadow-md transition-all flex items-center justify-center gap-1.5">
+                <span class="material-symbols-outlined text-[18px]">calendar_month</span>
+                <span>Điểm danh nhận Coin</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Case 3: Đã đăng nhập và đủ Coin -->
+          <form th:if="${isLoggedIn and canAfford}" id="vipUnlockForm"
+            th:action="@{'/truyen/' + ${novel.slug} + '/chuong-' + ${chapter.chapterNumber} + '/unlock'}" method="POST"
+            onsubmit="handleVipUnlockSubmit(event)" class="m-0">
+            <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <input type="hidden" name="chapterId" th:value="${chapter.id}">
+            <div class="grid grid-cols-2 gap-3 mb-2">
+              <button type="button" onclick="closeVipUnlockModal()"
+                class="py-3 px-4 bg-[#faeee2] hover:bg-[#f3dfce] text-[#784408] font-bold rounded-xl text-center text-sm transition-all">
+                Hủy
+              </button>
+              <button type="submit" id="btnConfirmUnlock"
+                class="py-3 px-4 bg-[#874b02] hover:bg-[#723e00] text-white font-bold rounded-xl text-center text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-1.5">
+                <span class="material-symbols-outlined text-[18px]">key</span>
+                <span id="btnConfirmUnlockText" th:text="'Mở khóa (' + ${chapter.price} + ' Coin)'">Mở khóa (50
+                  Coin)</span>
+              </button>
+            </div>
+          </form>
+
+          <!-- Footer Verified Badge -->
+          <div class="flex items-center justify-center gap-1.5 text-[11px] text-[#8c7a6b] mt-3">
+            <span class="material-symbols-outlined text-[15px] text-[#874b02]">verified_user</span>
+            <span>Đã đọc một lần, lưu vĩnh viễn trong tủ sách</span>
+          </div>
+        </div>
       </div>
 
       <!-- Bottom Sticky Footer -->
-      <footer class="fixed bottom-0 left-0 right-0 z-40 bg-surface/95 backdrop-blur-md shadow-[0_-4px_20px_rgba(107,91,75,0.06)] border-t border-outline-variant/10">
+      <footer
+        class="fixed bottom-0 left-0 right-0 z-40 bg-surface/95 backdrop-blur-md shadow-[0_-4px_20px_rgba(107,91,75,0.06)] border-t border-outline-variant/10">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
-          <a th:if="${prevChapterNumber != null}" th:href="@{/truyen/{slug}/chuong-{chapterNumber}(slug=${novel.slug}, chapterNumber=${prevChapterNumber})}" class="flex items-center gap-2 px-3.5 py-2 rounded-xl text-outline font-label-md text-label-md hover:text-on-surface">
+          <a th:if="${prevChapterNumber != null}"
+            th:href="@{/truyen/{slug}/chuong-{chapterNumber}(slug=${novel.slug}, chapterNumber=${prevChapterNumber})}"
+            class="flex items-center gap-2 px-3.5 py-2 rounded-xl text-outline font-label-md text-label-md hover:text-on-surface">
             <span class="material-symbols-outlined text-[18px]">chevron_left</span>
             <span class="hidden sm:inline">Chương trước</span>
           </a>
-          <button th:if="${prevChapterNumber == null}" class="flex items-center gap-2 px-3.5 py-2 rounded-xl text-outline font-label-md text-label-md opacity-40 cursor-not-allowed select-none" disabled>
+          <button th:if="${prevChapterNumber == null}"
+            class="flex items-center gap-2 px-3.5 py-2 rounded-xl text-outline font-label-md text-label-md opacity-40 cursor-not-allowed select-none"
+            disabled>
             <span class="material-symbols-outlined text-[18px]">chevron_left</span>
             <span class="hidden sm:inline">Chương trước</span>
           </button>
-          
+
           <div class="flex-1 max-w-md mx-2 flex flex-col items-center gap-1.5">
             <div class="w-full flex items-center justify-between text-label-sm font-label-sm text-tertiary">
               <span th:text="'Chương ' + ${chapter.chapterNumber}">Chương</span>
@@ -502,18 +631,23 @@
               <div class="h-full bg-primary rounded-full transition-all duration-150 w-0" id="reading-bar"></div>
             </div>
           </div>
-          
+
           <div class="flex items-center gap-2">
-            <a th:if="${!isLatestChapter}" th:href="@{/truyen/{slug}/chuong-{chapterNumber}(slug=${novel.slug}, chapterNumber=${nextChapterNumber})}"
-               onclick="if(window.saveReadingProgressBeforeLeave) window.saveReadingProgressBeforeLeave();"
-               class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md shadow-sm transition-transform active:scale-95">
+            <a th:if="${!isLatestChapter}"
+              th:href="@{/truyen/{slug}/chuong-{chapterNumber}(slug=${novel.slug}, chapterNumber=${nextChapterNumber})}"
+              onclick="if(window.saveReadingProgressBeforeLeave) window.saveReadingProgressBeforeLeave();"
+              class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md shadow-sm transition-transform active:scale-95">
               <span class="font-medium">Chương sau</span>
               <span class="material-symbols-outlined text-[18px]">chevron_right</span>
             </a>
-            <button th:if="${isLatestChapter}" type="button" onclick="if(window.saveReadingProgressBeforeLeave) window.saveReadingProgressBeforeLeave(); openEndOfChapterModal();" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md shadow-sm transition-transform active:scale-95 group relative" title="Đã hết chương mới nhất">
+            <button th:if="${isLatestChapter}" type="button"
+              onclick="if(window.saveReadingProgressBeforeLeave) window.saveReadingProgressBeforeLeave(); openEndOfChapterModal();"
+              class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md shadow-sm transition-transform active:scale-95 group relative"
+              title="Đã hết chương mới nhất">
               <span class="font-medium">Chương sau</span>
               <span class="material-symbols-outlined text-[18px]">chevron_right</span>
-              <span class="absolute -top-9 right-0 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+              <span
+                class="absolute -top-9 right-0 bg-surface-container-highest text-on-surface text-xs font-semibold py-1 px-2.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
                 Đã hết chương mới nhất
               </span>
             </button>
@@ -522,46 +656,63 @@
       </footer>
 
       <!-- Audio Floating Player (Placed on empty right space on desktop, non-obtrusive, draggable) -->
-      <div id="audio-player-panel" class="fixed bottom-20 left-1/2 -translate-x-1/2 lg:bottom-auto lg:left-auto lg:translate-x-0 lg:top-36 lg:right-20 xl:right-24 2xl:right-32 w-[92%] sm:w-[340px] bg-surface-container-lowest/95 backdrop-blur-xl shadow-2xl rounded-2xl p-4 z-50 transform translate-y-6 opacity-0 transition-all duration-300 pointer-events-none border border-outline-variant/30">
-          <div id="audio-panel-header" class="flex items-center justify-between mb-3 cursor-move select-none" title="Nhấn giữ và kéo để di chuyển">
-              <span class="font-label-md text-label-md text-primary font-bold flex items-center gap-1.5">
-                  <span class="material-symbols-outlined text-[18px] animate-pulse">graphic_eq</span>
-                  Nghe đọc truyện
-              </span>
-              <div class="flex items-center gap-1">
-                  <span class="material-symbols-outlined text-[18px] text-on-surface-variant/40 hover:text-on-surface-variant cursor-grab active:cursor-grabbing" title="Kéo để di chuyển">drag_indicator</span>
-                  <button id="close-audio-panel" class="p-1 rounded-lg text-on-surface-variant hover:text-error hover:bg-surface-container transition-colors">
-                      <span class="material-symbols-outlined text-[18px]">close</span>
-                  </button>
-              </div>
+      <div id="audio-player-panel"
+        class="fixed bottom-20 left-1/2 -translate-x-1/2 lg:bottom-auto lg:left-auto lg:translate-x-0 lg:top-36 lg:right-20 xl:right-24 2xl:right-32 w-[92%] sm:w-[340px] bg-surface-container-lowest/95 backdrop-blur-xl shadow-2xl rounded-2xl p-4 z-50 transform translate-y-6 opacity-0 transition-all duration-300 pointer-events-none border border-outline-variant/30">
+        <div id="audio-panel-header" class="flex items-center justify-between mb-3 cursor-move select-none"
+          title="Nhấn giữ và kéo để di chuyển">
+          <span class="font-label-md text-label-md text-primary font-bold flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[18px] animate-pulse">graphic_eq</span>
+            Nghe đọc truyện
+          </span>
+          <div class="flex items-center gap-1">
+            <span
+              class="material-symbols-outlined text-[18px] text-on-surface-variant/40 hover:text-on-surface-variant cursor-grab active:cursor-grabbing"
+              title="Kéo để di chuyển">drag_indicator</span>
+            <button id="close-audio-panel"
+              class="p-1 rounded-lg text-on-surface-variant hover:text-error hover:bg-surface-container transition-colors">
+              <span class="material-symbols-outlined text-[18px]">close</span>
+            </button>
           </div>
-          <div class="space-y-4">
-              <!-- Cài đặt giọng & tốc độ -->
-              <div class="grid grid-cols-2 gap-3">
-                  <div class="flex flex-col gap-1">
-                      <label class="text-[10px] uppercase font-bold text-tertiary tracking-wider">Giọng đọc</label>
-                      <select id="audio-voice-select" class="w-full bg-surface-container p-1.5 rounded-lg text-label-sm font-label-sm text-on-surface outline-none focus:ring-1 ring-primary"></select>
-                  </div>
-                  <div class="flex flex-col gap-1">
-                      <label class="text-[10px] uppercase font-bold text-tertiary tracking-wider flex justify-between">Tốc độ: <span id="speed-label">1.0x</span></label>
-                      <input type="range" id="audio-speed" min="0.5" max="2.0" step="0.1" value="1.0" class="w-full h-1.5 bg-outline-variant/40 rounded-lg appearance-none accent-primary mt-1.5">
-                  </div>
-              </div>
-              
-              <!-- Nút điều khiển -->
-              <div class="flex items-center justify-center gap-6 pt-1 border-t border-outline-variant/20">
-                  <button id="audio-prev" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container text-on-surface-variant transition-colors" title="Câu trước"><span class="material-symbols-outlined">skip_previous</span></button>
-                  <button id="audio-toggle" class="w-14 h-14 flex items-center justify-center rounded-full bg-primary text-on-primary shadow-lg hover:scale-105 transition-transform" title="Phát / Tạm dừng"><span class="material-symbols-outlined text-[32px]" id="audio-toggle-icon">play_arrow</span></button>
-                  <button id="audio-stop" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container text-on-surface-variant hover:text-error transition-colors" title="Dừng đọc"><span class="material-symbols-outlined">stop</span></button>
-                  <button id="audio-next" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container text-on-surface-variant transition-colors" title="Câu tiếp theo"><span class="material-symbols-outlined">skip_next</span></button>
-              </div>
+        </div>
+        <div class="space-y-4">
+          <!-- Cài đặt giọng & tốc độ -->
+          <div class="grid grid-cols-2 gap-3">
+            <div class="flex flex-col gap-1">
+              <label class="text-[10px] uppercase font-bold text-tertiary tracking-wider">Giọng đọc</label>
+              <select id="audio-voice-select"
+                class="w-full bg-surface-container p-1.5 rounded-lg text-label-sm font-label-sm text-on-surface outline-none focus:ring-1 ring-primary"></select>
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-[10px] uppercase font-bold text-tertiary tracking-wider flex justify-between">Tốc độ:
+                <span id="speed-label">1.0x</span></label>
+              <input type="range" id="audio-speed" min="0.5" max="2.0" step="0.1" value="1.0"
+                class="w-full h-1.5 bg-outline-variant/40 rounded-lg appearance-none accent-primary mt-1.5">
+            </div>
           </div>
+
+          <!-- Nút điều khiển -->
+          <div class="flex items-center justify-center gap-6 pt-1 border-t border-outline-variant/20">
+            <button id="audio-prev"
+              class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container text-on-surface-variant transition-colors"
+              title="Câu trước"><span class="material-symbols-outlined">skip_previous</span></button>
+            <button id="audio-toggle"
+              class="w-14 h-14 flex items-center justify-center rounded-full bg-primary text-on-primary shadow-lg hover:scale-105 transition-transform"
+              title="Phát / Tạm dừng"><span class="material-symbols-outlined text-[32px]"
+                id="audio-toggle-icon">play_arrow</span></button>
+            <button id="audio-stop"
+              class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container text-on-surface-variant hover:text-error transition-colors"
+              title="Dừng đọc"><span class="material-symbols-outlined">stop</span></button>
+            <button id="audio-next"
+              class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container text-on-surface-variant transition-colors"
+              title="Câu tiếp theo"><span class="material-symbols-outlined">skip_next</span></button>
+          </div>
+        </div>
       </div>
     </div>
   </main>
-  
+
   <script>
-    (function() {
+    (function () {
       // 1. High-Water Mark Progress Bar & Database Completion Sync
       const bodyEl = document.body;
       const chapterId = bodyEl.getAttribute('data-chapter-id');
@@ -644,7 +795,7 @@
       }
 
       let scrollDebounceTimer = null;
-      window.addEventListener('scroll', function() {
+      window.addEventListener('scroll', function () {
         const winScroll = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop;
         const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
         const currentScrolled = height > 0 ? Math.min(100, Math.max(0, Math.round((winScroll / height) * 100))) : 0;
@@ -670,14 +821,14 @@
       // Save scroll on page exit or visibility change
       window.addEventListener('beforeunload', saveScrollProgressToLocalStorage);
       window.addEventListener('pagehide', saveScrollProgressToLocalStorage);
-      document.addEventListener('visibilitychange', function() {
+      document.addEventListener('visibilitychange', function () {
         if (document.visibilityState === 'hidden') {
           saveScrollProgressToLocalStorage();
         }
       });
 
       // Expose globally so "Chương sau" or other navigation triggers save completion
-      window.saveReadingProgressBeforeLeave = function() {
+      window.saveReadingProgressBeforeLeave = function () {
         if (!hasSavedComplete) {
           maxProgress = 100;
           updateProgressBarUI(100);
@@ -773,66 +924,66 @@
       // 2. Reading Settings & LocalStorage
       const article = document.getElementById('reader-body');
       const body = document.body;
-      
+
       const defaultSettings = {
-          fontSize: '18',
-          fontFamily: 'Lora',
-          lineHeight: '1.95',
-          theme: 'theme-light'
+        fontSize: '18',
+        fontFamily: 'Lora',
+        lineHeight: '1.95',
+        theme: 'theme-light'
       };
 
       // Load settings from localStorage
       let currentSettings = JSON.parse(localStorage.getItem('tramtruyen_reading_settings')) || defaultSettings;
 
       function applySettings() {
-          if (!article) return;
-          // Apply Font Size
-          article.style.fontSize = currentSettings.fontSize + 'px';
-          document.getElementById('setting-font-size').value = currentSettings.fontSize;
-          
-          // Apply Font Family
-          article.style.fontFamily = currentSettings.fontFamily;
-          document.querySelectorAll('#setting-font-family button').forEach(btn => {
-              if (btn.dataset.value === currentSettings.fontFamily) {
-                  btn.classList.add('bg-primary-container', 'text-on-primary-container', 'border-primary');
-              } else {
-                  btn.classList.remove('bg-primary-container', 'text-on-primary-container', 'border-primary');
-              }
-          });
+        if (!article) return;
+        // Apply Font Size
+        article.style.fontSize = currentSettings.fontSize + 'px';
+        document.getElementById('setting-font-size').value = currentSettings.fontSize;
 
-          // Apply Line Height
-          article.style.lineHeight = currentSettings.lineHeight;
-          document.querySelectorAll('#setting-line-height button').forEach(btn => {
-              if (btn.dataset.value === currentSettings.lineHeight) {
-                  btn.classList.add('bg-primary', 'text-on-primary');
-              } else {
-                  btn.classList.remove('bg-primary', 'text-on-primary');
-              }
-          });
+        // Apply Font Family
+        article.style.fontFamily = currentSettings.fontFamily;
+        document.querySelectorAll('#setting-font-family button').forEach(btn => {
+          if (btn.dataset.value === currentSettings.fontFamily) {
+            btn.classList.add('bg-primary-container', 'text-on-primary-container', 'border-primary');
+          } else {
+            btn.classList.remove('bg-primary-container', 'text-on-primary-container', 'border-primary');
+          }
+        });
 
-          // Apply Theme to html and body
-          document.documentElement.classList.remove('theme-light', 'theme-sepia', 'theme-dark', 'theme-blue');
-          document.documentElement.classList.add(currentSettings.theme);
-          body.classList.remove('theme-light', 'theme-sepia', 'theme-dark', 'theme-blue');
-          body.classList.add(currentSettings.theme);
-          
-          document.querySelectorAll('#setting-theme button').forEach(btn => {
-              if (btn.dataset.value === currentSettings.theme) {
-                  btn.classList.replace('border-transparent', 'border-primary');
-                  btn.classList.replace('border-outline-variant', 'border-primary');
-                  btn.classList.add('ring-2', 'ring-primary', 'ring-offset-2');
-              } else {
-                  btn.classList.replace('border-primary', 'border-transparent');
-                  if(btn.dataset.value === 'theme-light') btn.classList.replace('border-transparent', 'border-outline-variant');
-                  btn.classList.remove('ring-2', 'ring-primary', 'ring-offset-2');
-              }
-          });
+        // Apply Line Height
+        article.style.lineHeight = currentSettings.lineHeight;
+        document.querySelectorAll('#setting-line-height button').forEach(btn => {
+          if (btn.dataset.value === currentSettings.lineHeight) {
+            btn.classList.add('bg-primary', 'text-on-primary');
+          } else {
+            btn.classList.remove('bg-primary', 'text-on-primary');
+          }
+        });
+
+        // Apply Theme to html and body
+        document.documentElement.classList.remove('theme-light', 'theme-sepia', 'theme-dark', 'theme-blue');
+        document.documentElement.classList.add(currentSettings.theme);
+        body.classList.remove('theme-light', 'theme-sepia', 'theme-dark', 'theme-blue');
+        body.classList.add(currentSettings.theme);
+
+        document.querySelectorAll('#setting-theme button').forEach(btn => {
+          if (btn.dataset.value === currentSettings.theme) {
+            btn.classList.replace('border-transparent', 'border-primary');
+            btn.classList.replace('border-outline-variant', 'border-primary');
+            btn.classList.add('ring-2', 'ring-primary', 'ring-offset-2');
+          } else {
+            btn.classList.replace('border-primary', 'border-transparent');
+            if (btn.dataset.value === 'theme-light') btn.classList.replace('border-transparent', 'border-outline-variant');
+            btn.classList.remove('ring-2', 'ring-primary', 'ring-offset-2');
+          }
+        });
       }
 
       function updateSetting(key, value) {
-          currentSettings[key] = value;
-          localStorage.setItem('tramtruyen_reading_settings', JSON.stringify(currentSettings));
-          applySettings();
+        currentSettings[key] = value;
+        localStorage.setItem('tramtruyen_reading_settings', JSON.stringify(currentSettings));
+        applySettings();
       }
 
       // Initialize
@@ -843,29 +994,29 @@
       // Listeners
       const fontSizeSlider = document.getElementById('setting-font-size');
       if (fontSizeSlider) {
-          fontSizeSlider.addEventListener('input', function() {
-             updateSetting('fontSize', this.value);
-          });
+        fontSizeSlider.addEventListener('input', function () {
+          updateSetting('fontSize', this.value);
+        });
       }
 
       document.querySelectorAll('#setting-font-family button').forEach(btn => {
-          btn.addEventListener('click', function() {
-              updateSetting('fontFamily', this.dataset.value);
-          });
+        btn.addEventListener('click', function () {
+          updateSetting('fontFamily', this.dataset.value);
+        });
       });
 
       document.querySelectorAll('#setting-line-height button').forEach(btn => {
-          btn.addEventListener('click', function() {
-              updateSetting('lineHeight', this.dataset.value);
-          });
+        btn.addEventListener('click', function () {
+          updateSetting('lineHeight', this.dataset.value);
+        });
       });
 
       document.querySelectorAll('#setting-theme button').forEach(btn => {
-          btn.addEventListener('click', function() {
-              updateSetting('theme', this.dataset.value);
-          });
+        btn.addEventListener('click', function () {
+          updateSetting('theme', this.dataset.value);
+        });
       });
-      
+
 
 
       // 3. Audio Reader (Advanced TTS with Karaoke & Auto-scroll)
@@ -883,7 +1034,7 @@
       const voiceSelect = document.getElementById('audio-voice-select');
       const speedSlider = document.getElementById('audio-speed');
       const speedLabel = document.getElementById('speed-label');
-      
+
       let synth = window.speechSynthesis;
       let voices = [];
       let sentences = [];
@@ -893,202 +1044,202 @@
 
       // Load Voices
       function populateVoiceList() {
-          voices = synth.getVoices().filter(v => v.lang.includes('vi')); // Only Vietnamese voices
-          if (voices.length === 0) voices = synth.getVoices(); // Fallback if no VN voices found
-          
-          voiceSelect.innerHTML = '';
-          voices.forEach((voice, i) => {
-              const option = document.createElement('option');
-              option.textContent = voice.name + (voice.default ? ' (Mặc định)' : '');
-              option.value = i;
-              voiceSelect.appendChild(option);
-          });
+        voices = synth.getVoices().filter(v => v.lang.includes('vi')); // Only Vietnamese voices
+        if (voices.length === 0) voices = synth.getVoices(); // Fallback if no VN voices found
+
+        voiceSelect.innerHTML = '';
+        voices.forEach((voice, i) => {
+          const option = document.createElement('option');
+          option.textContent = voice.name + (voice.default ? ' (Mặc định)' : '');
+          option.value = i;
+          voiceSelect.appendChild(option);
+        });
       }
       populateVoiceList();
       if (speechSynthesis.onvoiceschanged !== undefined) {
-          speechSynthesis.onvoiceschanged = populateVoiceList;
+        speechSynthesis.onvoiceschanged = populateVoiceList;
       }
 
       function getParagraphTexts() {
-          const pList = Array.from(article.querySelectorAll('p')).filter(p => p.innerText.trim().length > 0);
-          if (pList.length > 0) {
-              return pList.map(p => p.innerText.trim());
+        const pList = Array.from(article.querySelectorAll('p')).filter(p => p.innerText.trim().length > 0);
+        if (pList.length > 0) {
+          return pList.map(p => p.innerText.trim());
+        }
+        let html = article.innerHTML;
+        const rawParts = html.split(/(?:<p[^>]*><\/p>|<br\s*[\/]?>|\n)+/gi);
+        const results = [];
+        rawParts.forEach(part => {
+          const temp = document.createElement('div');
+          temp.innerHTML = part;
+          const text = (temp.textContent || temp.innerText || '').trim();
+          if (text.length > 0) {
+            results.push(text);
           }
-          let html = article.innerHTML;
-          const rawParts = html.split(/(?:<p[^>]*><\/p>|<br\s*[\/]?>|\n)+/gi);
-          const results = [];
-          rawParts.forEach(part => {
-              const temp = document.createElement('div');
-              temp.innerHTML = part;
-              const text = (temp.textContent || temp.innerText || '').trim();
-              if (text.length > 0) {
-                  results.push(text);
-              }
-          });
-          return results;
+        });
+        return results;
       }
 
       function openPlayerPanel() {
-          playerPanel.classList.remove('translate-y-6', 'opacity-0', 'pointer-events-none');
-          playerPanel.classList.add('translate-y-0', 'opacity-100', 'pointer-events-auto');
-          isPanelOpen = true;
-          if (btnAudioMain) btnAudioMain.classList.add('text-primary');
-          if (audioIcon) audioIcon.textContent = "graphic_eq";
-          if (vAudioBtn) vAudioBtn.classList.add('text-primary');
-          if (vAudioIcon) vAudioIcon.textContent = "graphic_eq";
-          
-          // Prepare document for Karaoke Mode with full paragraph structure preservation
-          if (sentences.length === 0) {
-              const paragraphs = getParagraphTexts();
-              if (paragraphs.length > 0) {
-                  let structuredHtml = '';
-                  paragraphs.forEach(para => {
-                      const sList = para.match(/[^.!?]+(?:[.!?]+["'”’]?|$)/g) || [para];
-                      let paraHtml = '<p class="indent-8 text-justify mb-5">';
-                      sList.forEach(s => {
-                          const clean = s.trim();
-                          if (clean.length > 0) {
-                              const idx = sentences.length;
-                              sentences.push(clean);
-                              paraHtml += `<span class="karaoke-sentence transition-colors duration-200 rounded px-0.5" id="sen-${idx}">${clean}</span> `;
-                          }
-                      });
-                      paraHtml += '</p>';
-                      structuredHtml += paraHtml;
-                  });
-                  article.innerHTML = structuredHtml;
-              }
+        playerPanel.classList.remove('translate-y-6', 'opacity-0', 'pointer-events-none');
+        playerPanel.classList.add('translate-y-0', 'opacity-100', 'pointer-events-auto');
+        isPanelOpen = true;
+        if (btnAudioMain) btnAudioMain.classList.add('text-primary');
+        if (audioIcon) audioIcon.textContent = "graphic_eq";
+        if (vAudioBtn) vAudioBtn.classList.add('text-primary');
+        if (vAudioIcon) vAudioIcon.textContent = "graphic_eq";
+
+        // Prepare document for Karaoke Mode with full paragraph structure preservation
+        if (sentences.length === 0) {
+          const paragraphs = getParagraphTexts();
+          if (paragraphs.length > 0) {
+            let structuredHtml = '';
+            paragraphs.forEach(para => {
+              const sList = para.match(/[^.!?]+(?:[.!?]+["'”’]?|$)/g) || [para];
+              let paraHtml = '<p class="indent-8 text-justify mb-5">';
+              sList.forEach(s => {
+                const clean = s.trim();
+                if (clean.length > 0) {
+                  const idx = sentences.length;
+                  sentences.push(clean);
+                  paraHtml += `<span class="karaoke-sentence transition-colors duration-200 rounded px-0.5" id="sen-${idx}">${clean}</span> `;
+                }
+              });
+              paraHtml += '</p>';
+              structuredHtml += paraHtml;
+            });
+            article.innerHTML = structuredHtml;
           }
+        }
       }
 
       function closePlayerPanel() {
-          playerPanel.classList.add('translate-y-6', 'opacity-0', 'pointer-events-none');
-          playerPanel.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
-          isPanelOpen = false;
-          if (btnAudioMain) btnAudioMain.classList.remove('text-primary');
-          if (audioIcon) audioIcon.textContent = "headphones";
-          if (vAudioBtn) vAudioBtn.classList.remove('text-primary');
-          if (vAudioIcon) vAudioIcon.textContent = "volume_up";
-          stopAudio();
-          // Remove Karaoke Highlights
-          document.querySelectorAll('.karaoke-sentence').forEach(el => {
-              el.classList.remove('bg-primary', 'text-on-primary', 'shadow-sm');
-          });
+        playerPanel.classList.add('translate-y-6', 'opacity-0', 'pointer-events-none');
+        playerPanel.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
+        isPanelOpen = false;
+        if (btnAudioMain) btnAudioMain.classList.remove('text-primary');
+        if (audioIcon) audioIcon.textContent = "headphones";
+        if (vAudioBtn) vAudioBtn.classList.remove('text-primary');
+        if (vAudioIcon) vAudioIcon.textContent = "volume_up";
+        stopAudio();
+        // Remove Karaoke Highlights
+        document.querySelectorAll('.karaoke-sentence').forEach(el => {
+          el.classList.remove('bg-primary', 'text-on-primary', 'shadow-sm');
+        });
       }
 
       function highlightSentence(index) {
-          document.querySelectorAll('.karaoke-sentence').forEach((el, i) => {
-              if (i === index) {
-                  el.classList.add('bg-primary', 'text-on-primary', 'shadow-sm');
-                  // Auto-scroll
-                  const rect = el.getBoundingClientRect();
-                  if (rect.top > window.innerHeight - 200 || rect.bottom < 100) {
-                      window.scrollTo({
-                          top: el.offsetTop - 150,
-                          behavior: 'smooth'
-                      });
-                  }
-              } else {
-                  el.classList.remove('bg-primary', 'text-on-primary', 'shadow-sm');
-              }
-          });
+        document.querySelectorAll('.karaoke-sentence').forEach((el, i) => {
+          if (i === index) {
+            el.classList.add('bg-primary', 'text-on-primary', 'shadow-sm');
+            // Auto-scroll
+            const rect = el.getBoundingClientRect();
+            if (rect.top > window.innerHeight - 200 || rect.bottom < 100) {
+              window.scrollTo({
+                top: el.offsetTop - 150,
+                behavior: 'smooth'
+              });
+            }
+          } else {
+            el.classList.remove('bg-primary', 'text-on-primary', 'shadow-sm');
+          }
+        });
       }
 
       function speakSentence(index) {
-          if (index < 0 || index >= sentences.length) {
-              isPlaying = false;
-              toggleIcon.textContent = "play_arrow";
-              return;
+        if (index < 0 || index >= sentences.length) {
+          isPlaying = false;
+          toggleIcon.textContent = "play_arrow";
+          return;
+        }
+
+        synth.cancel(); // clear queue
+
+        let utterance = new SpeechSynthesisUtterance(sentences[index]);
+        const selectedVoice = voices[voiceSelect.value];
+        if (selectedVoice) utterance.voice = selectedVoice;
+
+        utterance.rate = parseFloat(speedSlider.value);
+        utterance.pitch = 1.0;
+
+        utterance.onstart = () => {
+          highlightSentence(index);
+        };
+
+        utterance.onend = () => {
+          if (isPlaying && index + 1 < sentences.length) {
+            currentSentenceIndex++;
+            speakSentence(currentSentenceIndex);
+          } else if (index + 1 >= sentences.length) {
+            isPlaying = false;
+            toggleIcon.textContent = "play_arrow";
           }
-          
-          synth.cancel(); // clear queue
-          
-          let utterance = new SpeechSynthesisUtterance(sentences[index]);
-          const selectedVoice = voices[voiceSelect.value];
-          if (selectedVoice) utterance.voice = selectedVoice;
-          
-          utterance.rate = parseFloat(speedSlider.value);
-          utterance.pitch = 1.0;
-          
-          utterance.onstart = () => {
-              highlightSentence(index);
-          };
-          
-          utterance.onend = () => {
-              if (isPlaying && index + 1 < sentences.length) {
-                  currentSentenceIndex++;
-                  speakSentence(currentSentenceIndex);
-              } else if (index + 1 >= sentences.length) {
-                  isPlaying = false;
-                  toggleIcon.textContent = "play_arrow";
-              }
-          };
-          
-          synth.speak(utterance);
+        };
+
+        synth.speak(utterance);
       }
 
       function toggleAudio() {
-          if (!isPlaying) {
-              isPlaying = true;
-              toggleIcon.textContent = "pause";
-              speakSentence(currentSentenceIndex);
-          } else {
-              isPlaying = false;
-              toggleIcon.textContent = "play_arrow";
-              synth.cancel();
-          }
-      }
-
-      function stopAudio() {
+        if (!isPlaying) {
+          isPlaying = true;
+          toggleIcon.textContent = "pause";
+          speakSentence(currentSentenceIndex);
+        } else {
           isPlaying = false;
           toggleIcon.textContent = "play_arrow";
           synth.cancel();
-          currentSentenceIndex = 0;
-          highlightSentence(-1);
+        }
+      }
+
+      function stopAudio() {
+        isPlaying = false;
+        toggleIcon.textContent = "play_arrow";
+        synth.cancel();
+        currentSentenceIndex = 0;
+        highlightSentence(-1);
       }
 
       // Event Listeners for Player
       if (btnAudioMain) {
-          btnAudioMain.addEventListener('click', () => {
-              if (!('speechSynthesis' in window)) {
-                  alert("Trình duyệt của bạn không hỗ trợ tính năng đọc âm thanh.");
-                  return;
-              }
-              if (isPanelOpen) closePlayerPanel();
-              else openPlayerPanel();
-          });
+        btnAudioMain.addEventListener('click', () => {
+          if (!('speechSynthesis' in window)) {
+            alert("Trình duyệt của bạn không hỗ trợ tính năng đọc âm thanh.");
+            return;
+          }
+          if (isPanelOpen) closePlayerPanel();
+          else openPlayerPanel();
+        });
       }
 
       closePanelBtn.addEventListener('click', closePlayerPanel);
       toggleBtn.addEventListener('click', toggleAudio);
       stopBtn.addEventListener('click', stopAudio);
-      
+
       nextBtn.addEventListener('click', () => {
-          if (currentSentenceIndex < sentences.length - 1) {
-              currentSentenceIndex++;
-              if (isPlaying) speakSentence(currentSentenceIndex);
-              else highlightSentence(currentSentenceIndex);
-          }
-      });
-      
-      prevBtn.addEventListener('click', () => {
-          if (currentSentenceIndex > 0) {
-              currentSentenceIndex--;
-              if (isPlaying) speakSentence(currentSentenceIndex);
-              else highlightSentence(currentSentenceIndex);
-          }
-      });
-      
-      speedSlider.addEventListener('input', function() {
-          speedLabel.textContent = this.value + 'x';
-          if (isPlaying) {
-              // Restart current sentence to apply new speed
-              speakSentence(currentSentenceIndex);
-          }
-      });
-      
-      voiceSelect.addEventListener('change', () => {
+        if (currentSentenceIndex < sentences.length - 1) {
+          currentSentenceIndex++;
           if (isPlaying) speakSentence(currentSentenceIndex);
+          else highlightSentence(currentSentenceIndex);
+        }
+      });
+
+      prevBtn.addEventListener('click', () => {
+        if (currentSentenceIndex > 0) {
+          currentSentenceIndex--;
+          if (isPlaying) speakSentence(currentSentenceIndex);
+          else highlightSentence(currentSentenceIndex);
+        }
+      });
+
+      speedSlider.addEventListener('input', function () {
+        speedLabel.textContent = this.value + 'x';
+        if (isPlaying) {
+          // Restart current sentence to apply new speed
+          speakSentence(currentSentenceIndex);
+        }
+      });
+
+      voiceSelect.addEventListener('change', () => {
+        if (isPlaying) speakSentence(currentSentenceIndex);
       });
 
       // Stop audio if user leaves page
@@ -1097,199 +1248,199 @@
       // Draggable Audio Player Panel on desktop
       const panelHeader = document.getElementById('audio-panel-header');
       if (panelHeader && playerPanel) {
-          let isDragging = false;
-          let dragStartX, dragStartY, initialLeft, initialTop;
+        let isDragging = false;
+        let dragStartX, dragStartY, initialLeft, initialTop;
 
-          panelHeader.addEventListener('mousedown', (e) => {
-              if (e.target.closest('button') || e.target.closest('select') || e.target.closest('input')) return;
-              isDragging = true;
-              dragStartX = e.clientX;
-              dragStartY = e.clientY;
-              const rect = playerPanel.getBoundingClientRect();
-              initialLeft = rect.left;
-              initialTop = rect.top;
-              playerPanel.style.transition = 'none';
-              playerPanel.style.bottom = 'auto';
-              playerPanel.style.right = 'auto';
-              playerPanel.style.left = initialLeft + 'px';
-              playerPanel.style.top = initialTop + 'px';
-              playerPanel.style.margin = '0';
-              document.body.style.userSelect = 'none';
-          });
+        panelHeader.addEventListener('mousedown', (e) => {
+          if (e.target.closest('button') || e.target.closest('select') || e.target.closest('input')) return;
+          isDragging = true;
+          dragStartX = e.clientX;
+          dragStartY = e.clientY;
+          const rect = playerPanel.getBoundingClientRect();
+          initialLeft = rect.left;
+          initialTop = rect.top;
+          playerPanel.style.transition = 'none';
+          playerPanel.style.bottom = 'auto';
+          playerPanel.style.right = 'auto';
+          playerPanel.style.left = initialLeft + 'px';
+          playerPanel.style.top = initialTop + 'px';
+          playerPanel.style.margin = '0';
+          document.body.style.userSelect = 'none';
+        });
 
-          document.addEventListener('mousemove', (e) => {
-              if (!isDragging) return;
-              const dx = e.clientX - dragStartX;
-              const dy = e.clientY - dragStartY;
-              const newLeft = Math.max(10, Math.min(window.innerWidth - playerPanel.offsetWidth - 10, initialLeft + dx));
-              const newTop = Math.max(56, Math.min(window.innerHeight - playerPanel.offsetHeight - 10, initialTop + dy));
-              playerPanel.style.left = newLeft + 'px';
-              playerPanel.style.top = newTop + 'px';
-          });
+        document.addEventListener('mousemove', (e) => {
+          if (!isDragging) return;
+          const dx = e.clientX - dragStartX;
+          const dy = e.clientY - dragStartY;
+          const newLeft = Math.max(10, Math.min(window.innerWidth - playerPanel.offsetWidth - 10, initialLeft + dx));
+          const newTop = Math.max(56, Math.min(window.innerHeight - playerPanel.offsetHeight - 10, initialTop + dy));
+          playerPanel.style.left = newLeft + 'px';
+          playerPanel.style.top = newTop + 'px';
+        });
 
-          document.addEventListener('mouseup', () => {
-              if (isDragging) {
-                  isDragging = false;
-                  playerPanel.style.transition = '';
-                  document.body.style.userSelect = '';
-              }
-          });
+        document.addEventListener('mouseup', () => {
+          if (isDragging) {
+            isDragging = false;
+            playerPanel.style.transition = '';
+            document.body.style.userSelect = '';
+          }
+        });
       }
 
       // 4. Global UI Helper Functions for Drawer, Modals & Floating Toolbar
-      window.toggleAppearanceSettings = function() {
-          const drawer = document.getElementById('settings-drawer');
-          const backdrop = document.getElementById('settings-drawer-backdrop');
-          if (!drawer) return;
-          const isClosed = drawer.classList.contains('translate-x-full');
-          if (isClosed) {
-              drawer.classList.remove('translate-x-full');
-              if (backdrop) backdrop.classList.remove('hidden');
+      window.toggleAppearanceSettings = function () {
+        const drawer = document.getElementById('settings-drawer');
+        const backdrop = document.getElementById('settings-drawer-backdrop');
+        if (!drawer) return;
+        const isClosed = drawer.classList.contains('translate-x-full');
+        if (isClosed) {
+          drawer.classList.remove('translate-x-full');
+          if (backdrop) backdrop.classList.remove('hidden');
+        } else {
+          drawer.classList.add('translate-x-full');
+          if (backdrop) backdrop.classList.add('hidden');
+        }
+      };
+
+      window.toggleChapterListDrawer = function () {
+        const drawer = document.getElementById('chapter-list-drawer');
+        const backdrop = document.getElementById('chapter-list-drawer-backdrop');
+        if (!drawer) return;
+        const isClosed = drawer.classList.contains('-translate-x-full');
+        if (isClosed) {
+          drawer.classList.remove('-translate-x-full');
+          if (backdrop) backdrop.classList.remove('hidden');
+          const activeChapter = drawer.querySelector('.chapter-item.bg-primary\\/10, .chapter-item[class*="bg-primary"]');
+          if (activeChapter) {
+            activeChapter.scrollIntoView({ block: 'center', behavior: 'smooth' });
+          }
+        } else {
+          drawer.classList.add('-translate-x-full');
+          if (backdrop) backdrop.classList.add('hidden');
+        }
+      };
+
+      window.filterChapterList = function (query) {
+        const q = (query || '').toLowerCase().trim();
+        document.querySelectorAll('#chapter-list-container .chapter-item').forEach(item => {
+          const num = (item.getAttribute('data-chapter') || '').toLowerCase();
+          const title = (item.getAttribute('data-title') || '').toLowerCase();
+          if (!q || num.includes(q) || title.includes(q)) {
+            item.style.display = 'flex';
           } else {
-              drawer.classList.add('translate-x-full');
-              if (backdrop) backdrop.classList.add('hidden');
+            item.style.display = 'none';
           }
+        });
       };
 
-      window.toggleChapterListDrawer = function() {
-          const drawer = document.getElementById('chapter-list-drawer');
-          const backdrop = document.getElementById('chapter-list-drawer-backdrop');
-          if (!drawer) return;
-          const isClosed = drawer.classList.contains('-translate-x-full');
-          if (isClosed) {
-              drawer.classList.remove('-translate-x-full');
-              if (backdrop) backdrop.classList.remove('hidden');
-              const activeChapter = drawer.querySelector('.chapter-item.bg-primary\\/10, .chapter-item[class*="bg-primary"]');
-              if (activeChapter) {
-                  activeChapter.scrollIntoView({ block: 'center', behavior: 'smooth' });
-              }
-          } else {
-              drawer.classList.add('-translate-x-full');
-              if (backdrop) backdrop.classList.add('hidden');
-          }
+      window.openEndOfChapterModal = function () {
+        const modal = document.getElementById('endOfChapterModal');
+        if (modal) {
+          modal.classList.remove('hidden');
+          modal.classList.add('flex');
+        }
       };
 
-      window.filterChapterList = function(query) {
-          const q = (query || '').toLowerCase().trim();
-          document.querySelectorAll('#chapter-list-container .chapter-item').forEach(item => {
-              const num = (item.getAttribute('data-chapter') || '').toLowerCase();
-              const title = (item.getAttribute('data-title') || '').toLowerCase();
-              if (!q || num.includes(q) || title.includes(q)) {
-                  item.style.display = 'flex';
-              } else {
-                  item.style.display = 'none';
-              }
-          });
-      };
-
-      window.openEndOfChapterModal = function() {
-          const modal = document.getElementById('endOfChapterModal');
-          if (modal) {
-              modal.classList.remove('hidden');
-              modal.classList.add('flex');
-          }
-      };
-
-      window.closeEndOfChapterModal = function() {
-          const modal = document.getElementById('endOfChapterModal');
-          if (modal) {
-              modal.classList.remove('flex');
-              modal.classList.add('hidden');
-          }
+      window.closeEndOfChapterModal = function () {
+        const modal = document.getElementById('endOfChapterModal');
+        if (modal) {
+          modal.classList.remove('flex');
+          modal.classList.add('hidden');
+        }
       };
 
       // VIP Unlock Modal Functions
-      window.openVipUnlockModal = function() {
-          const modal = document.getElementById('vipUnlockModal');
-          if (modal) {
-              modal.classList.remove('hidden');
-              modal.classList.add('flex');
-          }
+      window.openVipUnlockModal = function () {
+        const modal = document.getElementById('vipUnlockModal');
+        if (modal) {
+          modal.classList.remove('hidden');
+          modal.classList.add('flex');
+        }
       };
 
-      window.closeVipUnlockModal = function() {
-          const modal = document.getElementById('vipUnlockModal');
-          if (modal) {
-              modal.classList.remove('flex');
-              modal.classList.add('hidden');
-          }
+      window.closeVipUnlockModal = function () {
+        const modal = document.getElementById('vipUnlockModal');
+        if (modal) {
+          modal.classList.remove('flex');
+          modal.classList.add('hidden');
+        }
       };
 
-      window.handleVipUnlockSubmit = function(event) {
-          event.preventDefault();
-          const form = document.getElementById('vipUnlockForm');
-          if (!form) return;
-          const btn = document.getElementById('btnConfirmUnlock');
-          const btnText = document.getElementById('btnConfirmUnlockText');
-          const autoUnlock = document.getElementById('modalAutoUnlockNext')?.checked || false;
+      window.handleVipUnlockSubmit = function (event) {
+        event.preventDefault();
+        const form = document.getElementById('vipUnlockForm');
+        if (!form) return;
+        const btn = document.getElementById('btnConfirmUnlock');
+        const btnText = document.getElementById('btnConfirmUnlockText');
+        const autoUnlock = document.getElementById('modalAutoUnlockNext')?.checked || false;
 
-          if (btn) {
-              btn.disabled = true;
-              if (btnText) btnText.textContent = 'Đang mở khóa...';
-          }
+        if (btn) {
+          btn.disabled = true;
+          if (btnText) btnText.textContent = 'Đang mở khóa...';
+        }
 
-          const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
-          const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content') || 'X-CSRF-TOKEN';
+        const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content') || 'X-CSRF-TOKEN';
 
-          const formData = new FormData();
-          formData.append('autoUnlockNext', autoUnlock);
+        const formData = new FormData();
+        formData.append('autoUnlockNext', autoUnlock);
 
-          fetch(form.action, {
-              method: 'POST',
-              headers: {
-                  'X-Requested-With': 'XMLHttpRequest',
-                  'Accept': 'application/json',
-                  ...(csrfToken && { [csrfHeader]: csrfToken })
-              },
-              body: formData
-          })
+        fetch(form.action, {
+          method: 'POST',
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json',
+            ...(csrfToken && { [csrfHeader]: csrfToken })
+          },
+          body: formData
+        })
           .then(async response => {
-              const data = await response.json();
-              if (response.ok && data.success) {
-                  window.location.reload();
-              } else {
-                  alert(data.message || 'Mở khóa thất bại, vui lòng kiểm tra lại số dư.');
-                  if (btn) {
-                      btn.disabled = false;
-                      if (btnText) btnText.textContent = 'Thử lại';
-                  }
+            const data = await response.json();
+            if (response.ok && data.success) {
+              window.location.reload();
+            } else {
+              alert(data.message || 'Mở khóa thất bại, vui lòng kiểm tra lại số dư.');
+              if (btn) {
+                btn.disabled = false;
+                if (btnText) btnText.textContent = 'Thử lại';
               }
+            }
           })
           .catch(err => {
-              form.submit();
+            form.submit();
           });
       };
 
       // Auto pop up VIP modal on locked chapter
       if (bodyEl.getAttribute('data-is-unlocked') === 'false') {
-          setTimeout(() => {
-              openVipUnlockModal();
-          }, 400);
+        setTimeout(() => {
+          openVipUnlockModal();
+        }, 400);
       }
 
-      window.toggleAudioPanel = function() {
-          if (!('speechSynthesis' in window)) {
-              alert("Trình duyệt của bạn không hỗ trợ tính năng đọc âm thanh.");
-              return;
-          }
-          if (isPanelOpen) closePlayerPanel();
-          else openPlayerPanel();
+      window.toggleAudioPanel = function () {
+        if (!('speechSynthesis' in window)) {
+          alert("Trình duyệt của bạn không hỗ trợ tính năng đọc âm thanh.");
+          return;
+        }
+        if (isPanelOpen) closePlayerPanel();
+        else openPlayerPanel();
       };
 
       // Keyboard shortcuts
-      document.addEventListener('keydown', function(e) {
-          if (e.key === 'Escape') {
-              closeEndOfChapterModal();
-              closeVipUnlockModal();
-              const cDrawer = document.getElementById('chapter-list-drawer');
-              if (cDrawer && !cDrawer.classList.contains('-translate-x-full')) {
-                  toggleChapterListDrawer();
-              }
-              const sDrawer = document.getElementById('settings-drawer');
-              if (sDrawer && !sDrawer.classList.contains('translate-x-full')) {
-                  toggleAppearanceSettings();
-              }
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+          closeEndOfChapterModal();
+          closeVipUnlockModal();
+          const cDrawer = document.getElementById('chapter-list-drawer');
+          if (cDrawer && !cDrawer.classList.contains('-translate-x-full')) {
+            toggleChapterListDrawer();
           }
+          const sDrawer = document.getElementById('settings-drawer');
+          if (sDrawer && !sDrawer.classList.contains('translate-x-full')) {
+            toggleAppearanceSettings();
+          }
+        }
       });
     })();
   </script>
@@ -1300,4 +1451,5 @@
   <!-- Report Modals (UC-21 & UC-22) -->
   <div th:replace="~{fragments/report-modals :: report-modals}"></div>
 </body>
+
 </html>

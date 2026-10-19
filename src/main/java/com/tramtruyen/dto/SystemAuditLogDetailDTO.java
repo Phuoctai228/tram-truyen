@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * DTO chi tiết nhật ký hệ thống cho modal.
+ * DTO chi tiết nhật ký hệ thống cho trang server-rendered GET /admin/audit-logs/{id}.
  */
 @Getter
 @Setter
@@ -19,6 +19,7 @@ public class SystemAuditLogDetailDTO {
     private Integer adminId;
     private String adminName;
     private String adminEmail;
+    private String adminRoleBadge; // ROLE_ADMIN = "Quản trị viên", ROLE_STAFF = "Nhân viên", AUTO_UNBAN = null
     private String actionType;
     private String actionTypeDisplay;
     private String actionChipClass;
@@ -26,16 +27,13 @@ public class SystemAuditLogDetailDTO {
     private String targetEntity;
     private Integer targetId;
     private String targetDisplay;
+    private String targetUrl; // Route thật tới đối tượng (nếu có)
 
     private String ipAddress;
     private LocalDateTime createdAt;
     private String formattedCreatedAt;
 
-    private String rawOldValue;
-    private String prettyOldValue;
-    private String rawNewValue;
-    private String prettyNewValue;
-
     private boolean isJsonDiffAvailable;
     private List<AuditLogFieldDiffDTO> fieldDiffs;
+    private String plainFallbackNote; // Nội dung ghi nhận nếu không phải JSON object hoặc rỗng
 }
