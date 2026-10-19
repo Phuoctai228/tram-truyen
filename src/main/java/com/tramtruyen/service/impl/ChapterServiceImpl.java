@@ -55,7 +55,7 @@ public class ChapterServiceImpl implements ChapterService {
                 .title(form.getTitle().trim())
                 .content(richTextSanitizer.sanitize(form.getContent()))
                 .status(resolveStatus(action))
-                .price(DEFAULT_PRICE)
+                .price(resolvePrice(form))
                 .build();
         return chapterRepository.save(chapter);
     }
@@ -87,6 +87,7 @@ public class ChapterServiceImpl implements ChapterService {
         chapter.setTitle(form.getTitle().trim());
         chapter.setContent(richTextSanitizer.sanitize(form.getContent()));
         chapter.setStatus(resolveStatus(action));
+        chapter.setPrice(resolvePrice(form));
         return chapterRepository.save(chapter);
     }
 
@@ -141,5 +142,13 @@ public class ChapterServiceImpl implements ChapterService {
 
     private String resolveStatus(ChapterSaveAction action) {
         return action == ChapterSaveAction.PUBLISHED ? "PUBLISHED" : DEFAULT_STATUS;
+    }
+
+    private int resolvePrice(ChapterForm form) {
+        Integer price = form.getPrice();
+        if (price == null || price < DEFAULT_PRICE) {
+            throw new IllegalArgumentException("Giá Coin phải lớn hơn hoặc bằng 0");
+        }
+        return price;
     }
 }

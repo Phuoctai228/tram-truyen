@@ -37,6 +37,13 @@
                             <input id="chapterTitle" th:field="*{title}" placeholder="Ví dụ: Khởi đầu">
                             <small class="field-error" th:errors="*{title}"></small>
                         </div>
+                        <div class="form-field">
+                            <label for="chapterPrice">Giá mở khóa (Coin)</label>
+                            <input id="chapterPrice" type="number" min="0" step="1" th:field="*{price}"
+                                placeholder="0 = miễn phí">
+                            <small class="field-hint">Giá lớn hơn 0 sẽ gắn thẻ VIP.</small>
+                            <small class="field-error" th:errors="*{price}"></small>
+                        </div>
                     </div>
 
                     <div class="form-field chapter-content-field">
@@ -106,13 +113,12 @@
                         <small class="field-error" th:errors="*{content}"></small>
                     </div>
 
-                    <p class="form-note">Chương mới được lưu ở trạng thái Bản nháp và miễn phí. Thiết lập xuất bản hoặc VIP thuộc chức năng riêng.</p>
                     <div class="form-actions chapter-form-actions">
                         <a class="button button-secondary" th:href="@{/admin/novels/{id}/chapters(id=${novel.id})}">Hủy</a>
                         <button class="button button-primary" type="submit" name="saveAction" value="DRAFT"
-                            th:text="${pageTitle == 'Tạo chương mới' ? 'Lưu bản nháp' : 'Lưu thay đổi'}">Lưu bản nháp</button>
+                            th:text="${pageTitle == 'Tạo chương mới' ? 'Lưu bản nháp' : 'Lưu bản nháp'}">Lưu bản nháp</button>
                         <button class="button button-publish" type="submit" name="saveAction" value="PUBLISHED"
-                            th:text="${pageTitle == 'Tạo chương mới' ? 'Xuất bản' : 'Lưu và xuất bản'}">Xuất bản</button>
+                            th:text="${pageTitle == 'Tạo chương mới' ? 'Xuất bản' : 'Xuất bản'}">Xuất bản</button>
                     </div>
                 </form>
             </div>

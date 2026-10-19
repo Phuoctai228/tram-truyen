@@ -155,6 +155,7 @@ public class StaffChapterController {
         form.setChapterNumber(chapter.getChapterNumber());
         form.setTitle(chapter.getTitle());
         form.setContent(chapter.getContent());
+        form.setPrice(chapter.getPrice());
         return form;
     }
 }

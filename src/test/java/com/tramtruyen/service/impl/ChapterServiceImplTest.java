@@ -70,6 +70,21 @@ class ChapterServiceImplTest {
     }
 
     @Test
+    void createChapterStoresPositivePriceForVipChapter() {
+        Novel novel = Novel.builder().id(1).isDeleted(false).build();
+        when(novelRepository.findByIdAndIsDeletedFalse(1)).thenReturn(Optional.of(novel));
+        when(chapterRepository.existsByNovelIdAndChapterNumber(1, 1)).thenReturn(false);
+        when(chapterRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        ChapterForm chapterForm = form();
+        chapterForm.setPrice(25);
+
+        var result = chapterService.createChapter(1, chapterForm);
+
+        assertThat(result.getPrice()).isEqualTo(25);
+    }
+
+    @Test
     void createChapterRejectsMissingNovel() {
         when(novelRepository.findByIdAndIsDeletedFalse(1)).thenReturn(Optional.empty());
 
@@ -129,6 +144,40 @@ class ChapterServiceImplTest {
         var result = chapterService.updateChapter(1, 5, updatedForm(), ChapterSaveAction.PUBLISHED);
 
         assertThat(result.getStatus()).isEqualTo("PUBLISHED");
+    }
+
+    @Test
+    void updateChapterChangesVipPrice() {
+        Novel novel = Novel.builder().id(1).isDeleted(false).build();
+        var chapter = com.tramtruyen.entity.Chapter.builder()
+                .id(5).novel(novel).chapterNumber(1).title("Old title")
+                .content("Old content").status("DRAFT").price(0).isDeleted(false).build();
+        when(chapterRepository.findByIdAndNovelIdAndIsDeletedFalse(5, 1)).thenReturn(Optional.of(chapter));
+        when(novelRepository.findByIdAndIsDeletedFalse(1)).thenReturn(Optional.of(novel));
+        when(chapterRepository.existsByNovelIdAndChapterNumberAndIdNot(1, 2, 5)).thenReturn(false);
+        when(chapterRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        ChapterForm chapterForm = updatedForm();
+        chapterForm.setPrice(40);
+
+        var result = chapterService.updateChapter(1, 5, chapterForm);
+
+        assertThat(result.getPrice()).isEqualTo(40);
+    }
+
+    @Test
+    void createChapterRejectsNegativePrice() {
+        Novel novel = Novel.builder().id(1).isDeleted(false).build();
+        when(novelRepository.findByIdAndIsDeletedFalse(1)).thenReturn(Optional.of(novel));
+        when(chapterRepository.existsByNovelIdAndChapterNumber(1, 1)).thenReturn(false);
+
+        ChapterForm chapterForm = form();
+        chapterForm.setPrice(-1);
+
+        assertThatThrownBy(() -> chapterService.createChapter(1, chapterForm))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Giá Coin phải lớn hơn hoặc bằng 0");
+        verify(chapterRepository, never()).save(any());
     }
 
     @Test
