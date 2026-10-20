@@ -2,12 +2,13 @@ package com.tramtruyen.repository;
 
 import com.tramtruyen.entity.Novel;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 @Repository
 public interface NovelRepository extends JpaRepository<Novel, Integer>, JpaSpecificationExecutor<Novel> {
@@ -52,13 +53,13 @@ public interface NovelRepository extends JpaRepository<Novel, Integer>, JpaSpeci
 
     List<Novel> findByCategoriesIdAndIsDeletedFalseOrderByUpdatedAtDesc(Integer categoryId);
 
-    org.springframework.data.domain.Page<Novel> findByCategoriesIdAndIsDeletedFalseOrderByUpdatedAtDesc(Integer categoryId, org.springframework.data.domain.Pageable pageable);
+    Page<Novel> findByCategoriesIdAndIsDeletedFalseOrderByUpdatedAtDesc(Integer categoryId, Pageable pageable);
 
     List<Novel> findByCategoriesIdAndIsDeletedFalseAndStatusNotOrderByUpdatedAtDesc(
             Integer categoryId, String status);
 
-    org.springframework.data.domain.Page<Novel> findByCategoriesIdAndIsDeletedFalseAndStatusNotOrderByUpdatedAtDesc(
-            Integer categoryId, String status, org.springframework.data.domain.Pageable pageable);
+    Page<Novel> findByCategoriesIdAndIsDeletedFalseAndStatusNotOrderByUpdatedAtDesc(
+            Integer categoryId, String status, Pageable pageable);
 
     List<Novel> findAllByIsDeletedFalseOrderByViewsDesc();
 
