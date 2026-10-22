@@ -52,6 +52,9 @@
 
                     <label class="cover-field">
                         Ảnh bìa
+                        <img th:if="${novelForm.currentCoverUrl != null and !#strings.isEmpty(novelForm.currentCoverUrl)}"
+                            th:src="${novelForm.currentCoverUrl}" alt="Ảnh bìa hiện tại"
+                            style="display: block; width: 160px; height: 220px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;">
                         <input type="file" th:field="*{cover}" accept="image/png,image/jpeg,image/webp">
                         <small>PNG, JPG hoặc WEBP. Ảnh được lưu trên Cloudinary.</small>
                     </label>

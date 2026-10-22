@@ -3,6 +3,7 @@ package com.tramtruyen.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,4 +25,8 @@ public class ChapterForm {
 
     @NotBlank(message = "Nội dung chương không được để trống")
     private String content;
+
+    @NotNull(message = "Giá Coin không được để trống")
+    @PositiveOrZero(message = "Giá Coin phải lớn hơn hoặc bằng 0")
+    private Integer price = 0;
 }

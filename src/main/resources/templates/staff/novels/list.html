@@ -93,6 +93,13 @@
                                             th:href="@{/staff/novels/{id}/edit(id=${novel.id})}">
                                             <span aria-hidden="true">✎</span> Sửa
                                         </a>
+                                        <form th:if="${novel.status != 'ARCHIVED'}"
+                                            th:action="@{/staff/novels/{id}/archive(id=${novel.id})}" method="post"
+                                            onsubmit="return confirm('Lưu trữ truyện này để ẩn khỏi người đọc?');">
+                                            <button class="action-button" title="Lưu trữ" type="submit">
+                                                <span aria-hidden="true">▣</span> Lưu trữ
+                                            </button>
+                                        </form>
                                         <form th:action="@{/staff/novels/{id}/delete(id=${novel.id})}" method="post"
                                             onsubmit="return confirm('Xóa mềm tác phẩm này?');">
                                             <button class="action-button danger" title="Xóa" type="submit">

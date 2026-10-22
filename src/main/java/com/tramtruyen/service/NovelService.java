@@ -25,6 +25,8 @@ public interface NovelService {
 
     Novel updateNovel(Integer id, NovelForm form);
 
+    void archiveNovel(Integer id);
+
     void deleteNovel(Integer id);
 
     List<Novel> getNovelsBySameAuthor(String author, Integer currentNovelId);

@@ -85,6 +85,7 @@ public class StaffNovelController {
             model.addAttribute("pageTitle", "Cập nhật truyện");
             model.addAttribute("formAction", "/staff/novels/" + id);
             model.addAttribute("allCategories", categoryService.getAllCategories());
+            form.setCurrentCoverUrl(novelService.getEditableNovel(id).getCoverUrl());
             return "staff/novels/form";
         }
         try {
@@ -107,12 +108,24 @@ public class StaffNovelController {
         return "redirect:/staff/novels";
     }
 
+    @PostMapping("/{id}/archive")
+    public String archiveNovel(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
+        try {
+            novelService.archiveNovel(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Đã lưu trữ truyện.");
+        } catch (ResourceNotFoundException exception) {
+            redirectAttributes.addFlashAttribute("errorMessage", exception.getMessage());
+        }
+        return "redirect:/staff/novels";
+    }
+
     private NovelForm toForm(Novel novel) {
         NovelForm form = new NovelForm();
         form.setTitle(novel.getTitle());
         form.setAuthor(novel.getAuthor());
         form.setSummary(novel.getSummary());
         form.setStatus(novel.getStatus());
+        form.setCurrentCoverUrl(novel.getCoverUrl());
         if (novel.getCategories() != null) {
             form.setCategoryIds(novel.getCategories().stream().map(Category::getId).collect(Collectors.toList()));
         }

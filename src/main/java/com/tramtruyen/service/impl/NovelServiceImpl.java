@@ -13,10 +13,20 @@ import com.tramtruyen.repository.NovelRepository;
 import com.tramtruyen.service.MediaStorageService;
 import com.tramtruyen.service.NovelService;
 import com.tramtruyen.util.DateTimeUtils;
+import com.tramtruyen.util.SlugUtils;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -26,6 +36,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class NovelServiceImpl implements NovelService {
 
+    private static final String ARCHIVED_STATUS = "ARCHIVED";
     private static final Set<String> NOVEL_STATUSES = Set.of("ONGOING", "COMPLETED", "ON_HOLD", "ARCHIVED");
 
     private final NovelRepository novelRepository;
@@ -57,7 +68,8 @@ public class NovelServiceImpl implements NovelService {
     @Override
     @Transactional(readOnly = true)
     public Novel getPublicNovel(Integer id) {
-        return findActiveNovel(id);
+        return novelRepository.findByIdAndIsDeletedFalseAndStatusNot(id, ARCHIVED_STATUS)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy truyện"));
     }
 
     @Override
@@ -66,7 +78,7 @@ public class NovelServiceImpl implements NovelService {
         if (slug == null || slug.isBlank()) {
             throw new ResourceNotFoundException("Slug không hợp lệ");
         }
-        return novelRepository.findBySlugAndIsDeletedFalse(slug.trim())
+        return novelRepository.findBySlugAndIsDeletedFalseAndStatusNot(slug.trim(), ARCHIVED_STATUS)
                 .orElseGet(() -> {
                     // Try parsing as integer id in case URL is numeric like /truyen/1
                     try {
@@ -75,9 +87,9 @@ public class NovelServiceImpl implements NovelService {
                     } catch (NumberFormatException ignored) {}
 
                     // Fallback: match by generated slug or check all active novels
-                    List<Novel> all = novelRepository.findAllByIsDeletedFalseOrderByUpdatedAtDesc();
+                    List<Novel> all = getPublicNovels(novelRepository.findAllByIsDeletedFalseOrderByUpdatedAtDesc());
                     for (Novel n : all) {
-                        String generatedSlug = com.tramtruyen.util.SlugUtils.toSlug(n.getTitle());
+                        String generatedSlug = SlugUtils.toSlug(n.getTitle());
                         if (slug.equalsIgnoreCase(n.getSlug()) || slug.equalsIgnoreCase(generatedSlug)
                                 || slug.equalsIgnoreCase(generatedSlug + "-" + n.getId())
                                 || slug.equalsIgnoreCase("novel-" + n.getId())) {
@@ -96,28 +108,32 @@ public class NovelServiceImpl implements NovelService {
     @Transactional(readOnly = true)
     public List<Novel> getNovelsBySameAuthor(String author, Integer currentNovelId) {
         if (author == null || author.isBlank()) {
-            return java.util.Collections.emptyList();
+            return Collections.emptyList();
         }
         return novelRepository.findTop5ByAuthorIgnoreCaseAndIdNotAndIsDeletedFalseOrderByViewsDesc(
-                author.trim(), currentNovelId);
+                        author.trim(), currentNovelId)
+                .stream()
+                .filter(this::isPublicNovel)
+                .collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Novel> searchPublicNovels(String query) {
         if (query == null || query.isBlank()) {
-            return novelRepository.findAllByIsDeletedFalseOrderByUpdatedAtDesc();
+            return getPublicNovels(novelRepository.findAllByIsDeletedFalseOrderByUpdatedAtDesc());
         }
-        return novelRepository
+        return getPublicNovels(novelRepository
                 .findAllByIsDeletedFalseAndTitleContainingIgnoreCaseOrIsDeletedFalseAndAuthorContainingIgnoreCaseOrderByUpdatedAtDesc(
-                        query.trim(), query.trim());
+                        query.trim(), query.trim()));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public org.springframework.data.domain.Page<Novel> advancedSearch(String query, List<Integer> categoryIds, String status, Integer minChapters, Integer maxChapters, Double minRating, org.springframework.data.domain.Pageable pageable) {
-        org.springframework.data.jpa.domain.Specification<Novel> spec = (root, cq, cb) -> {
-            java.util.List<jakarta.persistence.criteria.Predicate> predicates = new java.util.ArrayList<>();
+    public Page<Novel> advancedSearch(String query, List<Integer> categoryIds, String status,
+            Integer minChapters, Integer maxChapters, Double minRating, Pageable pageable) {
+        Specification<Novel> spec = (root, cq, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
             predicates.add(cb.isFalse(root.get("isDeleted")));
 
             if (query != null && !query.isBlank()) {
@@ -130,10 +146,12 @@ public class NovelServiceImpl implements NovelService {
 
             if (status != null && !status.isBlank() && NOVEL_STATUSES.contains(status)) {
                 predicates.add(cb.equal(root.get("status"), status));
+            } else {
+                predicates.add(cb.notEqual(root.get("status"), ARCHIVED_STATUS));
             }
 
             if (minRating != null && minRating > 0.0) {
-                predicates.add(cb.greaterThanOrEqualTo(root.get("averageRating"), java.math.BigDecimal.valueOf(minRating)));
+                predicates.add(cb.greaterThanOrEqualTo(root.get("averageRating"), BigDecimal.valueOf(minRating)));
             }
 
             if (minChapters != null) {
@@ -144,13 +162,13 @@ public class NovelServiceImpl implements NovelService {
             }
 
             if (categoryIds != null && !categoryIds.isEmpty()) {
-                jakarta.persistence.criteria.Join<Novel, Category> categoryJoin = root.join("categories");
+                Join<Novel, Category> categoryJoin = root.join("categories");
                 predicates.add(categoryJoin.get("id").in(categoryIds));
             }
 
             // Distinct is needed when joining collections to prevent duplicate rows
             cq.distinct(true);
-            return cb.and(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
+            return cb.and(predicates.toArray(new Predicate[0]));
         };
         return novelRepository.findAll(spec, pageable);
     }
@@ -159,18 +177,20 @@ public class NovelServiceImpl implements NovelService {
     @Transactional(readOnly = true)
     public List<Novel> getNovelsByCategory(Integer categoryId) {
         if (categoryId == null) {
-            return java.util.Collections.emptyList();
+            return Collections.emptyList();
         }
-        return novelRepository.findByCategoriesIdAndIsDeletedFalseOrderByUpdatedAtDesc(categoryId);
+        return novelRepository.findByCategoriesIdAndIsDeletedFalseAndStatusNotOrderByUpdatedAtDesc(
+                categoryId, ARCHIVED_STATUS);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<NovelSummaryDTO> getNovelSummariesByCategory(Integer categoryId) {
         if (categoryId == null) {
-            return java.util.Collections.emptyList();
+            return Collections.emptyList();
         }
-        List<Novel> novels = novelRepository.findByCategoriesIdAndIsDeletedFalseOrderByUpdatedAtDesc(categoryId);
+        List<Novel> novels = novelRepository.findByCategoriesIdAndIsDeletedFalseAndStatusNotOrderByUpdatedAtDesc(
+                categoryId, ARCHIVED_STATUS);
         return novels.stream()
                 .map(this::toNovelSummaryDTO)
                 .collect(Collectors.toList());
@@ -178,11 +198,13 @@ public class NovelServiceImpl implements NovelService {
 
     @Override
     @Transactional(readOnly = true)
-    public org.springframework.data.domain.Page<NovelSummaryDTO> getNovelSummariesByCategoryPage(Integer categoryId, org.springframework.data.domain.Pageable pageable) {
+    public Page<NovelSummaryDTO> getNovelSummariesByCategoryPage(Integer categoryId, Pageable pageable) {
         if (categoryId == null) {
-            return org.springframework.data.domain.Page.empty(pageable);
+            return Page.empty(pageable);
         }
-        org.springframework.data.domain.Page<Novel> page = novelRepository.findByCategoriesIdAndIsDeletedFalseOrderByUpdatedAtDesc(categoryId, pageable);
+        Page<Novel> page = novelRepository
+                .findByCategoriesIdAndIsDeletedFalseAndStatusNotOrderByUpdatedAtDesc(
+                        categoryId, ARCHIVED_STATUS, pageable);
         return page.map(this::toNovelSummaryDTO);
     }
 
@@ -203,7 +225,7 @@ public class NovelServiceImpl implements NovelService {
 
         List<Category> novelCategories = null;
         if (novel.getCategories() != null && !novel.getCategories().isEmpty()) {
-            novelCategories = new java.util.ArrayList<>(novel.getCategories());
+            novelCategories = new ArrayList<>(novel.getCategories());
         }
 
         return NovelSummaryDTO.builder()
@@ -245,6 +267,14 @@ public class NovelServiceImpl implements NovelService {
 
     @Override
     @Transactional
+    public void archiveNovel(Integer id) {
+        Novel novel = findActiveNovel(id);
+        novel.setStatus(ARCHIVED_STATUS);
+        novelRepository.save(novel);
+    }
+
+    @Override
+    @Transactional
     public void deleteNovel(Integer id) {
         Novel novel = findActiveNovel(id);
         novel.setIsDeleted(true);
@@ -268,14 +298,14 @@ public class NovelServiceImpl implements NovelService {
         }
 
         if (novel.getSlug() == null || novel.getSlug().isBlank()) {
-            novel.setSlug(com.tramtruyen.util.SlugUtils.toSlug(form.getTitle().trim()));
+            novel.setSlug(SlugUtils.toSlug(form.getTitle().trim()));
         }
 
         if (form.getCategoryIds() != null && !form.getCategoryIds().isEmpty()) {
-            Set<Category> categories = new java.util.HashSet<>(categoryRepository.findAllById(form.getCategoryIds()));
+            Set<Category> categories = new HashSet<>(categoryRepository.findAllById(form.getCategoryIds()));
             novel.setCategories(categories);
         } else {
-            novel.setCategories(new java.util.HashSet<>());
+            novel.setCategories(new HashSet<>());
         }
     }
 
@@ -283,5 +313,15 @@ public class NovelServiceImpl implements NovelService {
         if (!NOVEL_STATUSES.contains(status)) {
             throw new IllegalArgumentException("Trạng thái truyện không hợp lệ");
         }
+    }
+
+    private List<Novel> getPublicNovels(List<Novel> novels) {
+        return novels.stream()
+                .filter(this::isPublicNovel)
+                .collect(Collectors.toList());
+    }
+
+    private boolean isPublicNovel(Novel novel) {
+        return !ARCHIVED_STATUS.equals(novel.getStatus());
     }
 }
