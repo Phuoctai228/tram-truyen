@@ -4,6 +4,7 @@ import com.tramtruyen.entity.Chapter;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 /** Persistence access for chapters. */
 public interface ChapterRepository extends JpaRepository<Chapter, Integer> {
@@ -12,13 +13,15 @@ public interface ChapterRepository extends JpaRepository<Chapter, Integer> {
 
     boolean existsByNovelIdAndChapterNumberAndIdNot(Integer novelId, Integer chapterNumber, Integer id);
 
-    java.util.Optional<Chapter> findByIdAndNovelIdAndIsDeletedFalse(Integer id, Integer novelId);
+    Optional<Chapter> findByIdAndNovelIdAndIsDeletedFalse(Integer id, Integer novelId);
 
     List<Chapter> findAllByNovelIdAndIsDeletedFalseOrderByChapterNumberAsc(Integer novelId);
 
-    List<Chapter> findAllByNovelIdAndIsDeletedFalseAndStatusOrderByChapterNumberAsc(Integer novelId, String status);
+    List<Chapter> findAllByNovelIdAndIsDeletedFalseAndStatusInOrderByChapterNumberAsc(
+            Integer novelId, List<String> statuses);
 
-    java.util.Optional<Chapter> findByNovelIdAndChapterNumberAndIsDeletedFalseAndStatus(Integer novelId, Integer chapterNumber, String status);
+    Optional<Chapter> findByNovelIdAndChapterNumberAndIsDeletedFalseAndStatusIn(
+            Integer novelId, Integer chapterNumber, List<String> statuses);
 
     long countByNovelIdAndIsDeletedFalse(Integer novelId);
 

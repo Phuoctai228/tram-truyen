@@ -70,6 +70,36 @@ class ChapterServiceImplTest {
     }
 
     @Test
+    void createPublishedPaidChapterUsesLockedStatus() {
+        Novel novel = Novel.builder().id(1).isDeleted(false).build();
+        when(novelRepository.findByIdAndIsDeletedFalse(1)).thenReturn(Optional.of(novel));
+        when(chapterRepository.existsByNovelIdAndChapterNumber(1, 1)).thenReturn(false);
+        when(chapterRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        ChapterForm chapterForm = form();
+        chapterForm.setPrice(25);
+
+        var result = chapterService.createChapter(1, chapterForm, ChapterSaveAction.PUBLISHED);
+
+        assertThat(result.getStatus()).isEqualTo("LOCKED");
+    }
+
+    @Test
+    void createDraftPaidChapterRemainsDraft() {
+        Novel novel = Novel.builder().id(1).isDeleted(false).build();
+        when(novelRepository.findByIdAndIsDeletedFalse(1)).thenReturn(Optional.of(novel));
+        when(chapterRepository.existsByNovelIdAndChapterNumber(1, 1)).thenReturn(false);
+        when(chapterRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        ChapterForm chapterForm = form();
+        chapterForm.setPrice(25);
+
+        var result = chapterService.createChapter(1, chapterForm, ChapterSaveAction.DRAFT);
+
+        assertThat(result.getStatus()).isEqualTo("DRAFT");
+    }
+
+    @Test
     void createChapterStoresPositivePriceForVipChapter() {
         Novel novel = Novel.builder().id(1).isDeleted(false).build();
         when(novelRepository.findByIdAndIsDeletedFalse(1)).thenReturn(Optional.of(novel));
