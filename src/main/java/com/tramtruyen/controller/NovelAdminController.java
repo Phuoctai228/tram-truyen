@@ -84,6 +84,7 @@ public class NovelAdminController {
             model.addAttribute("pageTitle", "Cập nhật truyện");
             model.addAttribute("formAction", "/admin/novels/" + id);
             model.addAttribute("allCategories", categoryService.getAllCategories());
+            form.setCurrentCoverUrl(novelService.getEditableNovel(id).getCoverUrl());
             return "admin/novels/form";
         }
         try {
@@ -106,12 +107,24 @@ public class NovelAdminController {
         return "redirect:/admin/novels";
     }
 
+    @PostMapping("/{id}/archive")
+    public String archiveNovel(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
+        try {
+            novelService.archiveNovel(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Đã lưu trữ truyện.");
+        } catch (ResourceNotFoundException exception) {
+            redirectAttributes.addFlashAttribute("errorMessage", exception.getMessage());
+        }
+        return "redirect:/admin/novels";
+    }
+
     private NovelForm toForm(com.tramtruyen.entity.Novel novel) {
         NovelForm form = new NovelForm();
         form.setTitle(novel.getTitle());
         form.setAuthor(novel.getAuthor());
         form.setSummary(novel.getSummary());
         form.setStatus(novel.getStatus());
+        form.setCurrentCoverUrl(novel.getCoverUrl());
         if (novel.getCategories() != null) {
             form.setCategoryIds(novel.getCategories().stream().map(com.tramtruyen.entity.Category::getId).collect(java.util.stream.Collectors.toList()));
         }

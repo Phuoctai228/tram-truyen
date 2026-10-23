@@ -336,17 +336,12 @@ public class NovelController {
             }
         }
 
-        // Automatic reading activity tracking if unlocked
+        // Reading activity tracking
         boolean isChapterRead = false;
         boolean inBookshelf = false;
         if (isLoggedIn) {
             inBookshelf = bookshelfService.isNovelInBookshelf(authentication.getName(), novel.getId());
-            if (isChapterUnlocked) {
-                bookshelfService.recordChapterRead(authentication.getName(), chapter.getId());
-                isChapterRead = true;
-            } else {
-                isChapterRead = bookshelfService.isChapterRead(authentication.getName(), chapter.getId());
-            }
+            isChapterRead = bookshelfService.isChapterRead(authentication.getName(), chapter.getId());
         }
 
         // Server-side content security: If locked, extract first 2 paragraphs as preview only

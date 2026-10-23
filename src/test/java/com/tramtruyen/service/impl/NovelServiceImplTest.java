@@ -78,6 +78,18 @@ class NovelServiceImplTest {
         verify(novelRepository).save(existing);
     }
 
+    @Test
+    void archiveNovelSetsArchivedStatusWithoutDeletingRecord() {
+        Novel existing = Novel.builder().id(7).status("ONGOING").isDeleted(false).build();
+        when(novelRepository.findByIdAndIsDeletedFalse(7)).thenReturn(Optional.of(existing));
+
+        novelService.archiveNovel(7);
+
+        assertThat(existing.getStatus()).isEqualTo("ARCHIVED");
+        assertThat(existing.getIsDeleted()).isFalse();
+        verify(novelRepository).save(existing);
+    }
+
     private NovelForm form() {
         NovelForm form = new NovelForm();
         form.setTitle("  Novel title  ");

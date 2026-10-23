@@ -67,11 +67,14 @@ public class StaffChapterController {
         }
 
         try {
-            chapterService.createChapter(novelId, form, saveAction);
+            Chapter chapter = chapterService.createChapter(novelId, form, saveAction);
             redirectAttributes.addFlashAttribute("successMessage",
                     saveAction == ChapterSaveAction.PUBLISHED
                             ? "Đã tạo và xuất bản chương thành công."
                             : "Đã lưu chương ở dạng bản nháp.");
+            if (saveAction == ChapterSaveAction.DRAFT) {
+                return "redirect:/staff/novels/" + novelId + "/chapters/" + chapter.getId() + "/edit";
+            }
             return "redirect:/staff/novels/" + novelId + "/chapters";
         } catch (DuplicateResourceException exception) {
             bindingResult.rejectValue("chapterNumber", "duplicate", exception.getMessage());
@@ -119,6 +122,10 @@ public class StaffChapterController {
                     "Chỉnh sửa chương", "/staff/novels/" + novelId + "/chapters/" + chapterId);
         } catch (ResourceNotFoundException exception) {
             redirectAttributes.addFlashAttribute("errorMessage", exception.getMessage());
+            return "redirect:/staff/novels/" + novelId + "/chapters";
+        }
+        if (saveAction == ChapterSaveAction.DRAFT) {
+            return "redirect:/staff/novels/" + novelId + "/chapters/" + chapterId + "/edit";
         }
         return "redirect:/staff/novels/" + novelId + "/chapters";
     }
@@ -155,6 +162,7 @@ public class StaffChapterController {
         form.setChapterNumber(chapter.getChapterNumber());
         form.setTitle(chapter.getTitle());
         form.setContent(chapter.getContent());
+        form.setPrice(chapter.getPrice());
         return form;
     }
 }

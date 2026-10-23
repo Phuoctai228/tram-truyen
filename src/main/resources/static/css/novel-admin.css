@@ -323,6 +323,11 @@ th {
     text-transform: uppercase;
 }
 
+.novels-page th,
+.chapter-list-content th {
+    text-align: center;
+}
+
 td {
     border-top: 1px solid var(--line);
     padding: 17px 18px;
@@ -515,6 +520,14 @@ tr.novel-row:hover td {
     gap: 8px;
 }
 
+.novels-page .novel-table tbody td:not(:first-child) {
+    text-align: center;
+}
+
+.novels-page .novel-table tbody td:not(:first-child) .actions {
+    justify-content: center;
+}
+
 .novels-page .novel-table .actions form {
     display: inline-flex;
 }
@@ -572,6 +585,10 @@ tr.novel-row:hover td {
     display: grid;
     gap: 7px;
     font-weight: 700;
+}
+
+.novel-form select {
+    align-self: start;
 }
 
 .novel-form small {
@@ -632,6 +649,14 @@ tr.novel-row:hover td {
 
 .chapter-list-content .table-panel {
     margin-top: 26px;
+}
+
+.chapter-list-content table tbody td {
+    text-align: center;
+}
+
+.chapter-list-content table tbody .actions {
+    justify-content: center;
 }
 
 .chapter-list-content .back-link {

@@ -35,6 +35,9 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("SELECT u.status FROM User u WHERE u.id = :id")
     Optional<String> findStatusById(@Param("id") Integer id);
 
+    @Query("SELECT u.walletBalance FROM User u WHERE u.id = :id")
+    Optional<Integer> findWalletBalanceById(@Param("id") Integer id);
+
     @Query(value = "SELECT DISTINCT u FROM User u LEFT JOIN u.roles r " +
             "WHERE (:status IS NULL OR :status = '' OR u.status = :status) " +
             "AND (:roleName IS NULL OR :roleName = '' OR r.name = :roleName) " +

@@ -68,11 +68,14 @@ public class ChapterAdminController {
         }
 
         try {
-            chapterService.createChapter(novelId, form, saveAction);
+            com.tramtruyen.entity.Chapter chapter = chapterService.createChapter(novelId, form, saveAction);
             redirectAttributes.addFlashAttribute("successMessage",
                     saveAction == ChapterSaveAction.PUBLISHED
                             ? "Đã tạo và xuất bản chương thành công."
                             : "Đã lưu chương ở dạng bản nháp.");
+            if (saveAction == ChapterSaveAction.DRAFT) {
+                return "redirect:/admin/novels/" + novelId + "/chapters/" + chapter.getId() + "/edit";
+            }
             return "redirect:/admin/novels/" + novelId + "/chapters";
         } catch (DuplicateResourceException exception) {
             bindingResult.rejectValue("chapterNumber", "duplicate", exception.getMessage());
@@ -120,6 +123,10 @@ public class ChapterAdminController {
                     "Chỉnh sửa chương", "/admin/novels/" + novelId + "/chapters/" + chapterId);
         } catch (ResourceNotFoundException exception) {
             redirectAttributes.addFlashAttribute("errorMessage", exception.getMessage());
+            return "redirect:/admin/novels/" + novelId + "/chapters";
+        }
+        if (saveAction == ChapterSaveAction.DRAFT) {
+            return "redirect:/admin/novels/" + novelId + "/chapters/" + chapterId + "/edit";
         }
         return "redirect:/admin/novels/" + novelId + "/chapters";
     }
@@ -156,6 +163,7 @@ public class ChapterAdminController {
         form.setChapterNumber(chapter.getChapterNumber());
         form.setTitle(chapter.getTitle());
         form.setContent(chapter.getContent());
+        form.setPrice(chapter.getPrice());
         return form;
     }
 }

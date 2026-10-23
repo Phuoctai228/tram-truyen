@@ -723,16 +723,23 @@
       const chapterStorageKey = chapterId ? ('tramtruyen_scroll_ch_' + chapterId) : null;
       const novelStorageKey = novelSlug ? ('tramtruyen_last_read_' + novelSlug) : null;
 
-      let maxProgress = isInitiallyRead ? 100 : 0;
+      let maxProgress = 0;
       let hasSavedComplete = isInitiallyRead;
 
       const progressBar = document.getElementById('reading-bar');
       const progressLabel = document.getElementById('progress-percent');
 
+      function calculateCurrentScroll() {
+        const winScroll = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        return height > 0 ? Math.min(100, Math.max(0, Math.round((winScroll / height) * 100))) : 0;
+      }
+
       function updateProgressBarUI(pct) {
         if (progressBar && progressLabel) {
-          progressBar.style.width = pct + '%';
-          progressLabel.textContent = pct + '% hoàn thành';
+          const safePct = Math.min(100, Math.max(0, Math.round(pct)));
+          progressBar.style.width = safePct + '%';
+          progressLabel.textContent = safePct + '% hoàn thành';
         }
       }
 
@@ -756,17 +763,14 @@
       }
 
       // Initial progress render
-      if (isInitiallyRead) {
-        updateProgressBarUI(100);
-      }
+      maxProgress = calculateCurrentScroll();
+      updateProgressBarUI(maxProgress);
 
       // LocalStorage Reading Progress Management
       function saveScrollProgressToLocalStorage() {
         if (!chapterId || !chapterStorageKey) return;
-        const winScroll = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop;
-        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        const currentScrolled = height > 0 ? Math.min(100, Math.max(0, Math.round((winScroll / height) * 100))) : 0;
-        const isFinished = currentScrolled >= 95 || maxProgress >= 95 || hasSavedComplete;
+        const currentScrolled = calculateCurrentScroll();
+        const isFinished = currentScrolled >= 95 || maxProgress >= 95;
 
         try {
           const scrollData = {
@@ -796,9 +800,7 @@
 
       let scrollDebounceTimer = null;
       window.addEventListener('scroll', function () {
-        const winScroll = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop;
-        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        const currentScrolled = height > 0 ? Math.min(100, Math.max(0, Math.round((winScroll / height) * 100))) : 0;
+        const currentScrolled = calculateCurrentScroll();
 
         // High-water mark: only increases, never regresses when scrolling back up!
         if (currentScrolled > maxProgress) {
@@ -920,6 +922,9 @@
           console.warn('Cannot restore scroll position:', e);
         }
       }
+
+      // Restore scroll position if previously reading this chapter
+      restoreSavedScrollPosition();
 
       // 2. Reading Settings & LocalStorage
       const article = document.getElementById('reader-body');
