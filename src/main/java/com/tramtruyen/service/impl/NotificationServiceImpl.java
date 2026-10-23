@@ -7,7 +7,11 @@ import com.tramtruyen.dto.UserRecipientDTO;
 import com.tramtruyen.entity.Notification;
 import com.tramtruyen.entity.SystemAuditLog;
 import com.tramtruyen.entity.User;
+import com.tramtruyen.entity.Chapter;
+import com.tramtruyen.entity.Novel;
+import com.tramtruyen.repository.ChapterRepository;
 import com.tramtruyen.repository.NotificationRepository;
+import com.tramtruyen.repository.NovelRepository;
 import com.tramtruyen.repository.SystemAuditLogRepository;
 import com.tramtruyen.repository.UserRepository;
 import com.tramtruyen.service.NotificationService;
@@ -15,7 +19,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -34,13 +43,16 @@ public class NotificationServiceImpl implements NotificationService {
     private final UserRepository userRepository;
     private final SystemAuditLogRepository systemAuditLogRepository;
     private final ObjectMapper objectMapper;
+    private final NovelRepository novelRepository;
+    private final ChapterRepository chapterRepository;
+    private final PlatformTransactionManager transactionManager;
 
-    public static final String REPORT_NOTIFICATION_PREFIX = "Phản hồi về báo cáo";
+    public static final String REPORT_NOTIFICATION_PREFIX = NotificationService.REPORT_NOTIFICATION_PREFIX;
     private static final Pattern CODE_PATTERN = Pattern.compile("#(RP|FB|TR|CR)-\\d+", Pattern.CASE_INSENSITIVE);
 
     @Override
     @Transactional(readOnly = true)
-    public Page<NotificationDTO> getMailboxNotifications(Integer userId, String tab, int page, int size) {
+    public Page<NotificationDTO> getUserNotifications(Integer userId, String tab, int page, int size) {
         int safePage = Math.max(0, page);
         int safeSize = (size < 1 || size > 50) ? 10 : size;
         Pageable pageable = PageRequest.of(safePage, safeSize);
@@ -82,6 +94,32 @@ public class NotificationServiceImpl implements NotificationService {
     public long getUnreadCount(Integer userId) {
         if (userId == null) return 0;
         return notificationRepository.countUnreadByUserId(userId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public long getUnreadGeneralCount(Integer userId) {
+        if (userId == null) return 0;
+        return notificationRepository.countUnreadGeneralByUserId(userId, REPORT_NOTIFICATION_PREFIX);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public long getUnreadReportCount(Integer userId) {
+        if (userId == null) return 0;
+        return notificationRepository.countUnreadReportByUserId(userId, REPORT_NOTIFICATION_PREFIX);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public NotificationDTO getNotificationDetail(Integer notificationId, Integer userId) {
+        if (notificationId == null || userId == null) return null;
+        Notification n = notificationRepository.findById(notificationId).orElse(null);
+        if (n == null) return null;
+        if (n.getUserId() != null && !n.getUserId().equals(userId)) {
+            return null; // Not accessible by this user
+        }
+        return mapToDTO(n);
     }
 
     @Override
@@ -235,33 +273,55 @@ public class NotificationServiceImpl implements NotificationService {
         boolean isSys = (n.getUserId() == null);
         String formattedTime = formatTime(n.getCreatedAt());
 
+        boolean isReport = NotificationService.isReportNotification(n.getTitle());
+
         String refCode = null;
-        if (n.getContent() != null) {
-            Matcher m = CODE_PATTERN.matcher(n.getContent());
-            if (m.find()) {
-                refCode = m.group();
+        if (isReport) {
+            if (n.getTitle() != null) {
+                Matcher m = CODE_PATTERN.matcher(n.getTitle());
+                if (m.find()) {
+                    refCode = m.group();
+                }
+            }
+            if (refCode == null && n.getContent() != null) {
+                Matcher m = CODE_PATTERN.matcher(n.getContent());
+                if (m.find()) {
+                    refCode = m.group();
+                }
             }
         }
-        if (refCode == null) {
-            refCode = "#RP-" + (1000 + (n.getId() != null ? n.getId() : 0));
-        }
 
-        String statusBadge = isSys ? "Hệ thống" : "Đã xử lý";
-        String category = isSys ? "SYSTEM" : "PERSONAL";
-        String categoryDisplayName = isSys ? "Thông báo hệ thống" : "Hộp thư cá nhân";
+        String targetTab = isReport ? "reports" : "all";
+        String statusBadge;
+        String category;
+        String categoryDisplayName;
 
-        if (n.getTitle() != null && n.getTitle().toLowerCase().startsWith(REPORT_NOTIFICATION_PREFIX.toLowerCase())) {
+        if (isReport) {
             category = "REPORT_FEEDBACK";
             categoryDisplayName = "Phản hồi báo cáo";
-            statusBadge = n.getTitle().contains("Từ chối") ? "Từ chối" : "Đã xử lý";
-        } else if (n.getTitle() != null && (n.getTitle().toLowerCase().contains("thưởng") || n.getTitle().toLowerCase().contains("coin"))) {
-            category = "REWARD";
-            categoryDisplayName = "Thưởng & Tri ân";
-            statusBadge = "Đã cộng Coin";
-        } else if (n.getTitle() != null && n.getTitle().toLowerCase().contains("cảnh báo")) {
-            category = "WARNING";
-            categoryDisplayName = "Cảnh báo vi phạm";
-            statusBadge = "Cần lưu ý";
+            statusBadge = (n.getTitle() != null && n.getTitle().contains("Từ chối")) ? "Từ chối" : "Đã xử lý";
+        } else if (isSys) {
+            category = "SYSTEM";
+            categoryDisplayName = "Thông báo hệ thống";
+            statusBadge = "Hệ thống";
+        } else {
+            category = "PERSONAL";
+            categoryDisplayName = "Hộp thư cá nhân";
+            statusBadge = "Cá nhân";
+
+            if (n.getTitle() != null && (n.getTitle().toLowerCase().contains("thưởng") || n.getTitle().toLowerCase().contains("coin"))) {
+                category = "REWARD";
+                categoryDisplayName = "Thưởng & Tri ân";
+                statusBadge = "Đã cộng Coin";
+            } else if (n.getTitle() != null && n.getTitle().toLowerCase().contains("cảnh báo")) {
+                category = "WARNING";
+                categoryDisplayName = "Cảnh báo vi phạm";
+                statusBadge = "Cần lưu ý";
+            } else if (n.getTitle() != null && n.getTitle().startsWith("Chương mới:")) {
+                category = "CHAPTER_UPDATE";
+                categoryDisplayName = "Cập nhật chương";
+                statusBadge = "Chương mới";
+            }
         }
 
         String recipientName = "Toàn hệ thống";
@@ -302,6 +362,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .referenceCode(refCode)
                 .statusBadge(statusBadge)
                 .isSystem(isSys)
+                .targetTab(targetTab)
                 .build();
     }
 
@@ -328,5 +389,80 @@ public class NotificationServiceImpl implements NotificationService {
         String[] parts = name.trim().split("\\s+");
         if (parts.length == 1) return parts[0].substring(0, Math.min(2, parts[0].length())).toUpperCase();
         return ("" + parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+    }
+
+    @Override
+    public void notifyNewChapterPublished(Integer novelId, Integer chapterId) {
+        if (novelId == null || chapterId == null) {
+            return;
+        }
+
+        Runnable task = () -> executeChapterNotification(novelId, chapterId);
+
+        if (TransactionSynchronizationManager.isActualTransactionActive()) {
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                @Override
+                public void afterCommit() {
+                    task.run();
+                }
+            });
+        } else {
+            task.run();
+        }
+    }
+
+    private void executeChapterNotification(Integer novelId, Integer chapterId) {
+        try {
+            TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
+            transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+
+            transactionTemplate.executeWithoutResult(status -> {
+                Novel novel = novelRepository.findByIdAndIsDeletedFalse(novelId).orElse(null);
+                if (novel == null || "ARCHIVED".equalsIgnoreCase(novel.getStatus())) {
+                    log.warn("Novel {} is not active or archived, skipping chapter notifications", novelId);
+                    return;
+                }
+
+                Chapter chapter = chapterRepository.findByIdAndNovelIdAndIsDeletedFalse(chapterId, novelId).orElse(null);
+                if (chapter == null) {
+                    log.warn("Chapter {} not found for novel {}, skipping notifications", chapterId, novelId);
+                    return;
+                }
+
+                String chapterStatus = chapter.getStatus();
+                if (!"PUBLISHED".equalsIgnoreCase(chapterStatus)
+                        && !"PUBLISHED_REGULAR".equalsIgnoreCase(chapterStatus)
+                        && !"PUBLISHED_VIP".equalsIgnoreCase(chapterStatus)) {
+                    log.info("Chapter {} status is '{}', not published. Skipping notifications", chapterId, chapterStatus);
+                    return;
+                }
+
+                String novelTitle = novel.getTitle() != null ? novel.getTitle().trim() : "Truyện";
+                Integer chapterNumber = chapter.getChapterNumber() != null ? chapter.getChapterNumber() : 0;
+                String chapterTitle = chapter.getTitle() != null ? chapter.getTitle().trim() : ("Chương " + chapterNumber);
+                Integer price = chapter.getPrice() != null ? chapter.getPrice() : 0;
+                Integer uploaderId = novel.getUploaderId();
+
+                // Build title: "Chương mới: {Tên truyện} - Chương {Số chương}"
+                String baseTitle = "Chương mới: " + novelTitle + " - Chương " + chapterNumber;
+                String title = (baseTitle.length() > 255) ? (baseTitle.substring(0, 252) + "...") : baseTitle;
+
+                // Build content without publication time:
+                String typeStr = (price > 0) ? ("Chương VIP - " + price + " Coin") : "Chương thường (Miễn phí)";
+                String content = "Tác phẩm \"" + novelTitle + "\" trong Tủ sách của bạn vừa cập nhật chương mới:\n"
+                        + "• Chương " + chapterNumber + ": " + chapterTitle + "\n"
+                        + "• Hình thức: " + typeStr + "\n\n"
+                        + "Bạn có thể mở mục \"Tủ sách của tôi\" hoặc tìm kiếm truyện \"" + novelTitle + "\" tại Trạm Truyện để đón đọc ngay!";
+
+                int insertedCount = notificationRepository.insertChapterNotificationsForFollowers(
+                        novelId, chapterId, title, content, uploaderId);
+
+                log.info("Successfully sent {} chapter notifications for novel '{}' chapter #{}",
+                        insertedCount, novelTitle, chapterNumber);
+            });
+        } catch (Throwable t) {
+            log.error("Failed to execute chapter notifications for novelId={}, chapterId={}: {}",
+                    novelId, chapterId, t.getMessage(), t);
+        }
     }
 }

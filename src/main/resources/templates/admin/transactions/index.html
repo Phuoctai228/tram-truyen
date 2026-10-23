@@ -62,10 +62,6 @@
                                 <span class="text-xs text-[#a09081]">Toàn hệ thống (SUCCESS)</span>
                             </div>
                         </div>
-                        <span class="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full bg-[#e8f7ee] text-[#1b7a42]">
-                            <span class="material-symbols-outlined text-[14px]">trending_up</span>
-                            <span th:text="${stats.topupGrowthText}">+14.8%</span>
-                        </span>
                     </div>
 
                     <div class="mb-4">
@@ -83,17 +79,6 @@
                             <span class="font-bold text-[#231a11]" th:text="${#numbers.formatDecimal(stats.successTopupOrdersCount, 0, 'POINT', 0, 'POINT')}">0</span> lượt giao dịch thành công
                         </span>
                     </div>
-                </div>
-
-                <!-- Graphic bar decorative -->
-                <div class="flex items-end gap-1.5 mt-6 pt-4 border-t border-[#f4eae1] h-8">
-                    <span class="w-full bg-[#fdecdb] rounded-t h-2"></span>
-                    <span class="w-full bg-[#fdecdb] rounded-t h-3"></span>
-                    <span class="w-full bg-[#fdecdb] rounded-t h-2.5"></span>
-                    <span class="w-full bg-[#fdecdb] rounded-t h-4"></span>
-                    <span class="w-full bg-[#fdecdb] rounded-t h-3.5"></span>
-                    <span class="w-full bg-[#c07c2a] rounded-t h-6"></span>
-                    <span class="w-full bg-[#875200] rounded-t h-7"></span>
                 </div>
             </div>
 
@@ -253,13 +238,12 @@
                         <th class="py-4 px-4">CHI TIẾT TÁC PHẨM / CỔNG TT</th>
                         <th class="py-4 px-4">BIẾN ĐỘNG COIN / TIỀN</th>
                         <th class="py-4 px-4">THỜI GIAN</th>
-                        <th class="py-4 px-4">TRẠNG THÁI</th>
-                        <th class="py-4 px-4 pr-6 text-center">THAO TÁC</th>
+                        <th class="py-4 px-4 pr-6">TRẠNG THÁI</th>
                     </tr>
                     </thead>
                     <tbody class="divide-y divide-[#f4eae1] text-xs">
                     <tr th:if="${transactions.empty}" class="hover:bg-[#fffbf8] transition-colors">
-                        <td colspan="8" class="py-12 text-center text-[#a09081]">
+                        <td colspan="7" class="py-12 text-center text-[#a09081]">
                             <div class="flex flex-col items-center justify-center">
                                 <span class="material-symbols-outlined text-[48px] text-[#cfc3b7] mb-2">find_in_page</span>
                                 <p class="text-sm font-semibold text-[#75695d]">Không tìm thấy giao dịch phù hợp</p>
@@ -300,9 +284,20 @@
                         <!-- Chi tiết tác phẩm / Cổng TT -->
                         <td class="py-3.5 px-4 max-w-xs">
                             <p class="font-medium text-[#231a11] truncate" th:text="${tx.detail}">Chi tiết</p>
-                            <span th:if="${tx.bankTransactionCode != null and tx.bankTransactionCode != '—'}"
-                                  class="text-[11px] text-[#a09081] block truncate"
-                                  th:text="'Mã GD Cổng: ' + ${tx.bankTransactionCode}">Mã GD</span>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span th:if="${tx.bankTransactionCode != null and tx.bankTransactionCode != '—'}"
+                                      class="text-[11px] text-[#a09081] truncate"
+                                      th:text="'Mã GD Cổng: ' + ${tx.bankTransactionCode}">Mã GD</span>
+                                <button th:if="${tx.hasIpnLog}"
+                                        type="button"
+                                        th:data-order-code="${tx.orderCode}"
+                                        onclick="openIpnModal(this.getAttribute('data-order-code'))"
+                                        class="px-2 py-0.5 rounded-lg bg-[#faf6f0] hover:bg-[#f2e7dc] text-[#875200] border border-[#ead8cb] text-[10px] font-semibold transition-colors inline-flex items-center gap-1 shadow-xs"
+                                        title="Xem chi tiết IPN Webhook Log">
+                                    <span class="material-symbols-outlined text-[13px]">receipt</span>
+                                    <span>Xem IPN Log</span>
+                                </button>
+                            </div>
                         </td>
 
                         <!-- Biến động Coin / Tiền -->
@@ -323,24 +318,10 @@
                         </td>
 
                         <!-- Trạng thái -->
-                        <td class="py-3.5 px-4">
+                        <td class="py-3.5 px-4 pr-6">
                             <span class="inline-flex items-center px-2.5 py-1 rounded-xl text-[11px] font-bold"
                                   th:classappend="${tx.statusBadgeClass}"
                                   th:text="${tx.statusDisplay}">Thành công</span>
-                        </td>
-
-                        <!-- Thao tác: Xem IPN log -->
-                        <td class="py-3.5 px-4 pr-6 text-center">
-                            <button th:if="${tx.hasIpnLog}"
-                                    type="button"
-                                    th:data-order-code="${tx.orderCode}"
-                                    onclick="openIpnModal(this.getAttribute('data-order-code'))"
-                                    class="px-2.5 py-1.5 rounded-xl bg-[#faf6f2] hover:bg-[#f2e7dc] text-[#875200] border border-[#ead8cb] text-[11px] font-semibold transition-colors inline-flex items-center gap-1 shadow-sm"
-                                    title="Xem chi tiết IPN Webhook Log">
-                                <span class="material-symbols-outlined text-[14px]">receipt</span>
-                                <span>IPN Log</span>
-                            </button>
-                            <span th:if="${!tx.hasIpnLog}" class="text-[#cfc3b7]">—</span>
                         </td>
                     </tr>
                     </tbody>

@@ -56,7 +56,7 @@ public class SystemSettingServiceImpl implements SystemSettingService {
             }
         }
 
-        String adminName = "Ban Quản trị (SuperAdmin)";
+        String adminName = "Ban Quản trị";
         if (lastUpdatedBy != null) {
             Optional<User> uOpt = userRepository.findById(lastUpdatedBy);
             if (uOpt.isPresent()) {

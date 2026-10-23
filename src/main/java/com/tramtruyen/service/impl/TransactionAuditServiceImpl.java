@@ -81,7 +81,7 @@ public class TransactionAuditServiceImpl implements TransactionAuditService {
                 .totalCoinSpent(totalCoinSpent)
                 .totalTransactionsCount(totalTxCount)
                 .successTopupOrdersCount(successOrdersCount)
-                .topupGrowthText("+14.8%")
+                .topupGrowthText("—")
                 .spendRatioText(String.format(Locale.US, "%.1f%%", ratio))
                 .spendRatioPercent(ratio)
                 .build();
@@ -124,8 +124,12 @@ public class TransactionAuditServiceImpl implements TransactionAuditService {
                 whereClause.append(" AND combined.source_type = 'TOPUP' ");
             } else if ("UNLOCK_CHAPTER".equals(normType) || "MO_KHOA".equals(normType)) {
                 whereClause.append(" AND combined.source_type = 'LEDGER' AND combined.tx_type = 'UNLOCK_CHAPTER' ");
-            } else if ("OTHER".equals(normType) || "KHAC".equals(normType)) {
-                whereClause.append(" AND combined.source_type = 'LEDGER' AND combined.tx_type <> 'UNLOCK_CHAPTER' ");
+            } else if ("OTHER".equals(normType) || "KHAC".equals(normType) || "GIFT_COIN".equals(normType)) {
+                if ("GIFT_COIN".equals(normType)) {
+                    whereClause.append(" AND combined.source_type = 'LEDGER' AND combined.tx_type = 'GIFT_COIN' ");
+                } else {
+                    whereClause.append(" AND combined.source_type = 'LEDGER' AND combined.tx_type <> 'UNLOCK_CHAPTER' ");
+                }
             }
         }
 
@@ -248,6 +252,9 @@ public class TransactionAuditServiceImpl implements TransactionAuditService {
                 if ("UNLOCK_CHAPTER".equalsIgnoreCase(txType)) {
                     typeDisplay = "Mở khóa chương";
                     typeBadgeClass = "bg-[#fdf0ee] text-[#a53b27] border border-[#f7c8c0]";
+                } else if ("GIFT_COIN".equalsIgnoreCase(txType)) {
+                    typeDisplay = "Thưởng điểm danh";
+                    typeBadgeClass = "bg-[#fef4e8] text-[#c07c2a] border border-[#f5d9b8]";
                 } else {
                     typeDisplay = txType != null ? txType : "Khác";
                     typeBadgeClass = "bg-[#f3f0ec] text-[#6d5b4a] border border-[#ddd3c8]";

@@ -10,6 +10,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script th:src="@{/js/authentication/tailwind-config.js}"></script>
     <link rel="stylesheet" th:href="@{/css/novel-admin.css}">
+    <link rel="stylesheet" th:href="@{/css/admin-common.css}">
 </head>
 <body class="bg-[#fff8f5] text-[#231a11] font-sans antialiased min-h-screen">
 
@@ -43,7 +44,7 @@
                 <div class="text-xs">
                     <span class="text-[#8a7664]">Lần sửa cuối: </span>
                     <span class="font-semibold text-[#2b2118]" th:text="${settings.lastUpdatedFormatted}">10:24 - Hôm nay</span>
-                    <div class="text-[11px] text-[#8a7664]" th:text="'Bởi: ' + ${settings.lastUpdatedByAdmin}">Bởi: Quản trị viên (SuperAdmin)</div>
+                    <div class="text-[11px] text-[#8a7664]" th:text="'Bởi: ' + ${settings.lastUpdatedByAdmin}">Bởi: Quản trị viên</div>
                 </div>
             </div>
         </div>
@@ -65,7 +66,7 @@
                 <div class="space-y-4 max-w-2xl">
                     <div class="flex items-center justify-between">
                         <label class="text-sm font-bold text-[#2b2118]">
-                            Tỷ giá quy đổi tiền mặt VNĐ → Coin *
+                            Tỷ giá quy đổi tiền mặt VNĐ → Coin <span class="required-star">*</span>
                         </label>
                         <span class="text-xs text-[#8a7664] bg-[#faf7f2] px-2 py-0.5 rounded-md border border-[#eae2d5]">Hiển thị tham chiếu</span>
                     </div>
@@ -106,7 +107,7 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="text-xs font-bold text-[#2b2118] block mb-1.5">Hotline hỗ trợ độc giả (contact_phone) *</label>
+                        <label class="text-xs font-bold text-[#2b2118] block mb-1.5">Hotline hỗ trợ độc giả (contact_phone) <span class="required-star">*</span></label>
                         <div class="relative">
                             <span class="material-symbols-outlined absolute left-3.5 top-3 text-[#8a7664] text-[18px]">call</span>
                             <input type="text" th:field="*{contactPhone}" required maxlength="20"
@@ -116,7 +117,7 @@
                     </div>
 
                     <div>
-                        <label class="text-xs font-bold text-[#2b2118] block mb-1.5">Email hỗ trợ kỹ thuật & bản quyền (support_email) *</label>
+                        <label class="text-xs font-bold text-[#2b2118] block mb-1.5">Email hỗ trợ kỹ thuật & bản quyền (support_email) <span class="required-star">*</span></label>
                         <div class="relative">
                             <span class="material-symbols-outlined absolute left-3.5 top-3 text-[#8a7664] text-[18px]">mail</span>
                             <input type="email" th:field="*{supportEmail}" required maxlength="100"
@@ -141,7 +142,7 @@
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div>
                         <div class="flex items-center justify-between mb-2">
-                            <label class="text-xs font-bold text-[#2b2118]">Điều khoản sử dụng nền tảng (terms_of_service) *</label>
+                            <label class="text-xs font-bold text-[#2b2118]">Điều khoản sử dụng nền tảng (terms_of_service) <span class="required-star">*</span></label>
                             <span class="text-[11px] text-[#8a7664]">Văn bản có hiệu lực</span>
                         </div>
                         <textarea th:field="*{termsOfService}" rows="8" maxlength="20000" required
@@ -150,7 +151,7 @@
 
                     <div>
                         <div class="flex items-center justify-between mb-2">
-                            <label class="text-xs font-bold text-[#2b2118]">Chính sách bảo mật (privacy_policy) *</label>
+                            <label class="text-xs font-bold text-[#2b2118]">Chính sách bảo mật (privacy_policy) <span class="required-star">*</span></label>
                             <span class="text-[11px] text-[#bc7d39] font-semibold">Bảo mật thông tin</span>
                         </div>
                         <textarea th:field="*{privacyPolicy}" rows="8" maxlength="20000" required

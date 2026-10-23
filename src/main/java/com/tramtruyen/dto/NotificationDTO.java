@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import com.tramtruyen.service.NotificationService;
+
 import java.time.LocalDateTime;
 
 @Data
@@ -28,7 +30,12 @@ public class NotificationDTO {
     private boolean isSystem;
     private String sentTimeFormatted; // e.g. "24/05/2026 10:30"
 
-    public boolean isSystem() {
-        return this.isSystem;
+    private String targetTab; // "all" or "reports"
+
+    public String getTargetTab() {
+        if (this.targetTab != null && !this.targetTab.isBlank()) {
+            return this.targetTab;
+        }
+        return NotificationService.isReportNotification(this.title) ? "reports" : "all";
     }
 }

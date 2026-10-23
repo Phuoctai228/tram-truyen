@@ -9,8 +9,10 @@ import com.tramtruyen.exception.ResourceNotFoundException;
 import com.tramtruyen.repository.ChapterRepository;
 import com.tramtruyen.repository.NovelRepository;
 import com.tramtruyen.service.ChapterService;
+import com.tramtruyen.service.NotificationService;
 import com.tramtruyen.util.RichTextSanitizer;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +20,6 @@ import java.util.List;
 
 /** Default business implementation for chapter creation. */
 @Service
-@RequiredArgsConstructor
 public class ChapterServiceImpl implements ChapterService {
 
     private static final String DEFAULT_STATUS = "DRAFT";
@@ -27,6 +28,24 @@ public class ChapterServiceImpl implements ChapterService {
     private final ChapterRepository chapterRepository;
     private final NovelRepository novelRepository;
     private final RichTextSanitizer richTextSanitizer;
+    private final NotificationService notificationService;
+
+    @Autowired
+    public ChapterServiceImpl(ChapterRepository chapterRepository,
+                              NovelRepository novelRepository,
+                              RichTextSanitizer richTextSanitizer,
+                              NotificationService notificationService) {
+        this.chapterRepository = chapterRepository;
+        this.novelRepository = novelRepository;
+        this.richTextSanitizer = richTextSanitizer;
+        this.notificationService = notificationService;
+    }
+
+    public ChapterServiceImpl(ChapterRepository chapterRepository,
+                              NovelRepository novelRepository,
+                              RichTextSanitizer richTextSanitizer) {
+        this(chapterRepository, novelRepository, richTextSanitizer, null);
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -57,7 +76,11 @@ public class ChapterServiceImpl implements ChapterService {
                 .status(resolveStatus(action))
                 .price(DEFAULT_PRICE)
                 .build();
-        return chapterRepository.save(chapter);
+        Chapter savedChapter = chapterRepository.save(chapter);
+        if (ChapterSaveAction.PUBLISHED == action && notificationService != null) {
+            notificationService.notifyNewChapterPublished(novelId, savedChapter.getId());
+        }
+        return savedChapter;
     }
 
     @Override
@@ -78,6 +101,7 @@ public class ChapterServiceImpl implements ChapterService {
     public Chapter updateChapter(Integer novelId, Integer chapterId, ChapterForm form, ChapterSaveAction action) {
         findActiveNovel(novelId);
         Chapter chapter = findActiveChapter(novelId, chapterId);
+        String oldStatus = chapter.getStatus();
         if (chapterRepository.existsByNovelIdAndChapterNumberAndIdNot(
                 novelId, form.getChapterNumber(), chapterId)) {
             throw new DuplicateResourceException("Số chương đã tồn tại trong truyện này");
@@ -87,7 +111,11 @@ public class ChapterServiceImpl implements ChapterService {
         chapter.setTitle(form.getTitle().trim());
         chapter.setContent(richTextSanitizer.sanitize(form.getContent()));
         chapter.setStatus(resolveStatus(action));
-        return chapterRepository.save(chapter);
+        Chapter savedChapter = chapterRepository.save(chapter);
+        if ("DRAFT".equalsIgnoreCase(oldStatus) && ChapterSaveAction.PUBLISHED == action && notificationService != null) {
+            notificationService.notifyNewChapterPublished(novelId, savedChapter.getId());
+        }
+        return savedChapter;
     }
 
     @Override

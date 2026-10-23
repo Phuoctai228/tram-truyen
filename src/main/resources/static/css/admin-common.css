@@ -50,3 +50,9 @@ input[type="radio"], input[type="checkbox"] {
     flex-shrink: 0 !important;
     accent-color: #875200;
 }
+
+/* 4. Dấu * bắt buộc (Required Field Asterisk) */
+.required-star {
+    color: #ba1a1a !important;
+    font-weight: bold;
+}
