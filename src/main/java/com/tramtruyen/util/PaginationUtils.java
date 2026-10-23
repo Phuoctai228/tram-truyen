@@ -71,7 +71,7 @@ public final class PaginationUtils {
      * Tạo chuỗi query string từ Map các tham số lọc.
      * - Bỏ qua các giá trị null, chuỗi rỗng.
      * - Bỏ qua các key 'page' và 'size' (fragment tự gắn).
-     * - Bỏ qua 'selectedId' (dành riêng cho mailbox).
+     * - Bỏ qua 'selectedId' (dành riêng cho notifications).
      * - Mã hóa từng giá trị an toàn theo UTF-8 (hỗ trợ tiếng Việt, khoảng trắng, &, %, +, #).
      */
     public static String buildFilterQuery(Map<String, ?> params) {

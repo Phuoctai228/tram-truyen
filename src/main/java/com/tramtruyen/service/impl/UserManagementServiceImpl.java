@@ -38,7 +38,7 @@ public class UserManagementServiceImpl implements UserManagementService {
     private static final Set<String> VALID_BAN_REASONS = Set.of("spam", "hate", "fraud", "other");
     private static final Set<String> VALID_BAN_DURATIONS = Set.of("3", "7", "30", "forever");
 
-    private static final Map<String, String> BAN_REASON_MAP = Map.of(
+    public static final Map<String, String> BAN_REASON_MAP = Map.of(
             "spam", "Spam quảng cáo thương mại / bình luận rác trái phép",
             "hate", "Xúc phạm thành viên, ngôn từ thù địch lặp lại",
             "fraud", "Hành vi gian lận nạp Coin / trục lợi hệ thống",
@@ -79,7 +79,21 @@ public class UserManagementServiceImpl implements UserManagementService {
         Pageable pageable = PageRequest.of(safePage, safeSize, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<User> userPage = userRepository.searchUsers(safeKeyword, keywordId, safeRole, safeStatus, pageable);
 
-        return userPage.map(this::toDTO);
+        List<Integer> bannedUserIds = userPage.getContent().stream()
+                .filter(u -> "BANNED".equalsIgnoreCase(u.getStatus()))
+                .map(User::getId)
+                .toList();
+
+        Map<Integer, SystemAuditLog> latestBanLogMap = new HashMap<>();
+        if (!bannedUserIds.isEmpty()) {
+            List<SystemAuditLog> logs = systemAuditLogRepository.findByTargetEntityAndActionTypeAndTargetIdInOrderByCreatedAtDesc(
+                    "USERS", "BAN_USER", bannedUserIds);
+            for (SystemAuditLog l : logs) {
+                latestBanLogMap.putIfAbsent(l.getTargetId(), l);
+            }
+        }
+
+        return userPage.map(u -> toDTO(u, latestBanLogMap.get(u.getId())));
     }
 
     @Override
@@ -326,6 +340,10 @@ public class UserManagementServiceImpl implements UserManagementService {
     }
 
     private UserManagementDTO toDTO(User user) {
+        return toDTO(user, null);
+    }
+
+    private UserManagementDTO toDTO(User user, SystemAuditLog lastBanLog) {
         Set<String> roleNames = user.getRoles().stream()
                 .map(Role::getName)
                 .collect(Collectors.toSet());
@@ -373,26 +391,23 @@ public class UserManagementServiceImpl implements UserManagementService {
         String lastBanDate = "";
         String lastBanNote = "";
 
-        if (isBanned) {
-            Optional<SystemAuditLog> lastBanLog = systemAuditLogRepository
-                    .findFirstByTargetEntityAndTargetIdAndActionTypeOrderByCreatedAtDesc("USERS", user.getId(), "BAN_USER");
-            if (lastBanLog.isPresent()) {
-                SystemAuditLog logEntry = lastBanLog.get();
-                if (logEntry.getCreatedAt() != null) {
-                    lastBanDate = logEntry.getCreatedAt().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-                }
-                if (logEntry.getNewValue() != null && !logEntry.getNewValue().isBlank()) {
-                    try {
-                        Map<String, Object> data = objectMapper.readValue(logEntry.getNewValue(), new TypeReference<>() {});
-                        lastBanReasonKey = String.valueOf(data.getOrDefault("reason", ""));
-                        lastBanReason = String.valueOf(data.getOrDefault("reasonDisplay", ""));
-                        if (lastBanReason.isBlank() && !lastBanReasonKey.isBlank()) {
-                            lastBanReason = BAN_REASON_MAP.getOrDefault(lastBanReasonKey, lastBanReasonKey);
-                        }
-                        lastBanNote = String.valueOf(data.getOrDefault("note", ""));
-                    } catch (Exception ignored) {}
-                }
+        if (isBanned && lastBanLog != null) {
+            if (lastBanLog.getCreatedAt() != null) {
+                lastBanDate = lastBanLog.getCreatedAt().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
             }
+            if (lastBanLog.getNewValue() != null && !lastBanLog.getNewValue().isBlank()) {
+                try {
+                    Map<String, Object> data = objectMapper.readValue(lastBanLog.getNewValue(), new TypeReference<>() {});
+                    lastBanReasonKey = String.valueOf(data.getOrDefault("reason", ""));
+                    lastBanReason = String.valueOf(data.getOrDefault("reasonDisplay", ""));
+                    if (lastBanReason.isBlank() && !lastBanReasonKey.isBlank()) {
+                        lastBanReason = BAN_REASON_MAP.getOrDefault(lastBanReasonKey, lastBanReasonKey);
+                    }
+                    lastBanNote = String.valueOf(data.getOrDefault("note", ""));
+                } catch (Exception ignored) {}
+            }
+        }
+        if (isBanned) {
             if (lastBanReason.isBlank()) {
                 lastBanReason = "Vi phạm điều khoản cộng đồng";
             }

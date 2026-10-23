@@ -10,6 +10,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script th:src="@{/js/authentication/tailwind-config.js}"></script>
     <link rel="stylesheet" th:href="@{/css/novel-admin.css}">
+    <link rel="stylesheet" th:href="@{/css/admin-common.css}">
 </head>
 <body class="bg-[#fff8f5] text-[#231a11] font-sans antialiased min-h-screen">
 
@@ -422,7 +423,7 @@
 
             <!-- Reason select -->
             <div class="mb-4">
-                <label class="block text-xs font-bold text-[#231a11] mb-1.5">Lý do xử lý *</label>
+                <label class="block text-xs font-bold text-[#231a11] mb-1.5">Lý do xử lý <span class="required-star">*</span></label>
                 <select name="reason" id="banReasonSelect" required
                         class="w-full bg-white border border-[#ead8cb] rounded-xl px-3 py-2.5 text-sm text-[#231a11] outline-none focus:border-[#9e422c] transition-colors cursor-pointer">
                     <option value="spam">Spam quảng cáo thương mại / bình luận rác trái phép</option>
@@ -551,7 +552,7 @@
                 <!-- Unban Reason Textarea with live character counter -->
                 <div class="mb-4">
                     <div class="flex items-center justify-between mb-1.5">
-                        <label class="text-xs font-bold text-[#231a11]">Ghi chú thẩm định & Lý do mở khóa *</label>
+                        <label class="text-xs font-bold text-[#231a11]">Ghi chú thẩm định & Lý do mở khóa <span class="required-star">*</span></label>
                         <span class="text-[11px] text-[#75695d]">Tối thiểu 20 ký tự</span>
                     </div>
                     <textarea name="unbanReason" id="unbanReasonTextarea" rows="3" minlength="20" maxlength="500" required

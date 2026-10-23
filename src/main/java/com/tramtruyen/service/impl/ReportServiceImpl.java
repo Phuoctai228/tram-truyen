@@ -6,6 +6,7 @@ import com.tramtruyen.dto.ReportContentRequest;
 import com.tramtruyen.dto.ResolveReportRequest;
 import com.tramtruyen.entity.*;
 import com.tramtruyen.repository.*;
+import com.tramtruyen.service.NotificationService;
 import com.tramtruyen.service.ReportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -230,13 +232,71 @@ public class ReportServiceImpl implements ReportService {
         Comment comment = report.getComment();
         String oldCommentStatus = (comment != null) ? comment.getStatus() : "UNKNOWN";
 
+        int affectedReplyCount = 0;
+        List<Integer> affectedReplyIds = new ArrayList<>();
+
         if (!isRejected && comment != null) {
-            if ("HIDE".equalsIgnoreCase(actionApplied)) {
-                comment.setStatus("HIDDEN");
+            boolean isHide = "HIDE".equalsIgnoreCase(actionApplied);
+            boolean isDelete = "DELETE".equalsIgnoreCase(actionApplied);
+
+            if (isHide || isDelete) {
+                String targetStatus = isDelete ? "DELETED" : "HIDDEN";
+                LocalDateTime now = LocalDateTime.now();
+
+                // 1. Cập nhật bình luận gốc bị báo cáo
+                comment.setStatus(targetStatus);
+                comment.setUpdatedAt(now);
                 commentRepository.save(comment);
-            } else if ("DELETE".equalsIgnoreCase(actionApplied)) {
-                comment.setStatus("DELETED");
-                commentRepository.save(comment);
+
+                // 2. Duyệt theo tầng (BFS) tìm toàn bộ bình luận con cháu
+                // Dùng tập visited chống lặp/vòng lặp, giới hạn độ sâu 50
+                Set<Integer> visited = new HashSet<>();
+                visited.add(comment.getId());
+                List<Integer> currentLayer = Collections.singletonList(comment.getId());
+                List<Comment> allDescendants = new ArrayList<>();
+                int depth = 0;
+                final int MAX_DEPTH = 50;
+
+                while (!currentLayer.isEmpty() && depth < MAX_DEPTH) {
+                    List<Comment> children = commentRepository.findByParentIdIn(currentLayer);
+                    List<Integer> nextLayer = new ArrayList<>();
+                    for (Comment child : children) {
+                        if (child != null && child.getId() != null && visited.add(child.getId())) {
+                            allDescendants.add(child);
+                            nextLayer.add(child.getId());
+                        }
+                    }
+                    currentLayer = nextLayer;
+                    depth++;
+                }
+
+                affectedReplyCount = allDescendants.size();
+
+                // 3. Quy tắc thăng hạng: VISIBLE < HIDDEN < DELETED (chỉ nâng, không hạ)
+                // - Nếu targetStatus là DELETED: nâng mọi con có status != DELETED lên DELETED (con đã DELETED giữ DELETED)
+                // - Nếu targetStatus là HIDDEN: nâng mọi con có status == VISIBLE lên HIDDEN (con đã DELETED giữ DELETED, con đã HIDDEN giữ HIDDEN)
+                List<Integer> idsToUpdate = new ArrayList<>();
+                for (Comment c : allDescendants) {
+                    if (isDelete) {
+                        if (!"DELETED".equalsIgnoreCase(c.getStatus())) {
+                            idsToUpdate.add(c.getId());
+                        }
+                    } else if (isHide) {
+                        if ("VISIBLE".equalsIgnoreCase(c.getStatus())) {
+                            idsToUpdate.add(c.getId());
+                        }
+                    }
+                }
+
+                if (!idsToUpdate.isEmpty()) {
+                    commentRepository.updateStatusForIds(idsToUpdate, targetStatus, now);
+                }
+
+                // Ghi nhận danh sách ID bị ảnh hưởng (cắt tối đa 50)
+                affectedReplyIds = allDescendants.stream()
+                        .map(Comment::getId)
+                        .limit(50)
+                        .collect(Collectors.toList());
             }
         }
 
@@ -254,10 +314,11 @@ public class ReportServiceImpl implements ReportService {
                     : "bình luận";
 
             String notifTitle = isRejected
-                    ? "Phản hồi về báo cáo: Từ chối báo cáo bình luận #RP-" + report.getId()
-                    : "Phản hồi về báo cáo: Bình luận đã được xử lý #RP-" + report.getId();
+                    ? NotificationService.REPORT_NOTIFICATION_PREFIX + ": Từ chối báo cáo bình luận #RP-" + report.getId()
+                    : NotificationService.REPORT_NOTIFICATION_PREFIX + ": Bình luận đã được xử lý #RP-" + report.getId();
 
-            String actionText = isRejected ? "Từ chối tiếp nhận" : ("HIDE".equalsIgnoreCase(actionApplied) ? "Đã ẩn bình luận vi phạm" : "Đã gỡ bỏ bình luận vi phạm");
+            String repliesSuffix = affectedReplyCount > 0 ? " và " + affectedReplyCount + " câu trả lời bên dưới" : "";
+            String actionText = isRejected ? "Từ chối tiếp nhận" : ("HIDE".equalsIgnoreCase(actionApplied) ? "Đã ẩn bình luận vi phạm" + repliesSuffix : "Đã gỡ bỏ bình luận vi phạm" + repliesSuffix);
 
             String notifContent = "Kính gửi bạn " + reporterName + ",\n\n"
                     + "Ban Quản Trị Trạm Truyện xin chân thành cảm ơn bạn đã gửi báo cáo về bình luận: \"" + commentSnippet + "\".\n\n"
@@ -277,7 +338,14 @@ public class ReportServiceImpl implements ReportService {
         // Audit Log
         try {
             Map<String, Object> oldVal = Map.of("status", "RECEIVED", "commentStatus", oldCommentStatus);
-            Map<String, Object> newVal = Map.of("status", newStatus, "action", actionApplied, "adminNote", note);
+            Map<String, Object> newVal = new LinkedHashMap<>();
+            newVal.put("status", newStatus);
+            newVal.put("action", actionApplied);
+            newVal.put("adminNote", note);
+            if (!isRejected && affectedReplyCount > 0) {
+                newVal.put("affectedReplyCount", affectedReplyCount);
+                newVal.put("affectedReplyIds", affectedReplyIds);
+            }
 
             systemAuditLogRepository.save(SystemAuditLog.builder()
                     .adminId(adminId != null ? adminId : 1)
@@ -346,8 +414,8 @@ public class ReportServiceImpl implements ReportService {
                     : "chương truyện";
 
             String notifTitle = isRejected
-                    ? "Phản hồi về báo cáo: Từ chối báo cáo nội dung #RP-" + report.getId()
-                    : "Phản hồi về báo cáo: Đã xử lý nội dung " + chapterTitle + " #RP-" + report.getId();
+                    ? NotificationService.REPORT_NOTIFICATION_PREFIX + ": Từ chối báo cáo nội dung #RP-" + report.getId()
+                    : NotificationService.REPORT_NOTIFICATION_PREFIX + ": Đã xử lý nội dung " + chapterTitle + " #RP-" + report.getId();
 
             String actionText = isRejected ? "Từ chối tiếp nhận" : ("DRAFT_CHAPTER".equalsIgnoreCase(actionApplied) ? "Tạm ẩn chương để biên tập lại" : "Chỉ ghi nhận, không thay đổi nội dung");
 

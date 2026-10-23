@@ -48,7 +48,9 @@ public final class AuditLogFieldFormatter {
             Map.entry("adminNote", "Ghi chú kiểm duyệt"),
             Map.entry("scope", "Phạm vi thông báo"),
             Map.entry("recipientId", "ID người nhận"),
-            Map.entry("title", "Tiêu đề thông báo")
+            Map.entry("title", "Tiêu đề thông báo"),
+            Map.entry("affectedReplyCount", "Số trả lời bị ảnh hưởng"),
+            Map.entry("affectedReplyIds", "Danh sách ID trả lời bị ảnh hưởng")
     );
 
     // 2. Giá trị thời hạn khóa thực tế (UserManagementServiceImpl)
@@ -60,12 +62,7 @@ public final class AuditLogFieldFormatter {
     );
 
     // 3. Giá trị lý do khóa thực tế (UserManagementServiceImpl)
-    private static final Map<String, String> BAN_REASON_MAP = Map.of(
-            "spam", "Spam quảng cáo thương mại / bình luận rác trái phép",
-            "hate", "Xúc phạm thành viên, ngôn từ thù địch lặp lại",
-            "fraud", "Hành vi gian lận nạp Coin / trục lợi hệ thống",
-            "other", "Lý do khác"
-    );
+    private static final Map<String, String> BAN_REASON_MAP = com.tramtruyen.service.impl.UserManagementServiceImpl.BAN_REASON_MAP;
 
     // 4. Trạng thái theo Dữ liệu chuẩn
     private static final Map<String, String> STATUS_MAP = Map.ofEntries(

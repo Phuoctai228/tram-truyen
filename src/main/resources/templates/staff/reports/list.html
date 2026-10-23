@@ -10,6 +10,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script th:src="@{/js/authentication/tailwind-config.js}"></script>
     <link rel="stylesheet" th:href="@{/css/novel-admin.css}">
+    <link rel="stylesheet" th:href="@{/css/admin-common.css}">
 </head>
 <body class="bg-[#fff8f5] text-[#231a11] font-sans antialiased min-h-screen">
 
@@ -160,6 +161,10 @@
                                             th:data-status="${r.status}"
                                             th:data-reporter="${r.user != null ? r.user.fullName : ''}"
                                             th:data-comment="${r.comment != null ? r.comment.content : ''}"
+                                            th:data-comment-author="${r.comment != null and r.comment.user != null ? r.comment.user.fullName : 'Độc giả'}"
+                                            th:data-novel-title="${r.comment != null and r.comment.novel != null ? r.comment.novel.title : ''}"
+                                            th:data-novel-slug="${r.comment != null and r.comment.novel != null ? r.comment.novel.slug : ''}"
+                                            th:data-comment-id="${r.comment != null ? r.comment.id : ''}"
                                             th:data-reason="${r.reason}"
                                             th:data-note="${r.adminNote != null ? r.adminNote : ''}"
                                             class="px-3 py-1.5 rounded-xl bg-[#f4ece1] text-[#875200] hover:bg-[#eae2d5] text-xs font-bold transition-colors">
@@ -294,8 +299,13 @@
         </div>
 
         <div class="p-4 rounded-xl bg-[#faf6f0] border border-[#f0e8dc] space-y-2 text-xs">
-            <div class="flex justify-between text-[#8a7664]">
+            <div class="flex justify-between items-center text-[#8a7664] flex-wrap gap-2">
                 <span class="font-semibold text-[#875200]">Người báo cáo: <span id="mCommentReporter" class="font-normal text-[#2b2118]"></span></span>
+                <span class="font-semibold text-[#8a7664]">Người viết: <span id="mCommentAuthor" class="font-bold text-[#2b2118]"></span></span>
+            </div>
+            <div id="mCommentNovelWrapper" class="text-xs">
+                <span class="font-semibold text-[#8a7664]">Thuộc tác phẩm:</span>
+                <a id="mCommentNovelLink" href="#" target="_blank" rel="noopener noreferrer" class="font-bold text-[#875200] hover:underline ml-1"></a>
             </div>
             <div>
                 <span class="font-semibold text-[#8a7664]">Bình luận bị báo cáo:</span>
@@ -321,11 +331,11 @@
                 <div class="space-y-2">
                     <label class="flex items-center gap-3 p-3 rounded-xl border border-[#eae2d5] hover:bg-[#faf7f2] cursor-pointer text-xs font-semibold text-[#2b2118] transition-all">
                         <input type="radio" name="action" value="HIDE" class="!w-4 !h-4 shrink-0 accent-[#875200] text-[#bc7d39] focus:ring-[#bc7d39] cursor-pointer" checked>
-                        <span>Ẩn bình luận (status = HIDDEN)</span>
+                        <span>Ẩn bình luận (kèm các câu trả lời bên dưới)</span>
                     </label>
                     <label class="flex items-center gap-3 p-3 rounded-xl border border-[#eae2d5] hover:bg-[#faf7f2] cursor-pointer text-xs font-semibold text-[#2b2118] transition-all">
                         <input type="radio" name="action" value="DELETE" class="!w-4 !h-4 shrink-0 accent-[#875200] text-[#bc7d39] focus:ring-[#bc7d39] cursor-pointer">
-                        <span>Xóa bình luận hoàn toàn (status = DELETED)</span>
+                        <span>Xóa bình luận (kèm các câu trả lời bên dưới)</span>
                     </label>
                     <label class="flex items-center gap-3 p-3 rounded-xl border border-[#eae2d5] hover:bg-[#faf7f2] cursor-pointer text-xs font-semibold text-[#2b2118] transition-all">
                         <input type="radio" name="action" value="NO_CHANGE" class="!w-4 !h-4 shrink-0 accent-[#875200] text-[#bc7d39] focus:ring-[#bc7d39] cursor-pointer">
@@ -335,7 +345,7 @@
             </div>
 
             <div>
-                <label class="text-xs font-bold text-[#2b2118] block mb-1">Ghi chú xử lý / Lý do từ chối * (Tối đa 500 ký tự)</label>
+                <label class="text-xs font-bold text-[#2b2118] block mb-1">Ghi chú xử lý / Lý do từ chối <span class="required-star">*</span> (Tối đa 500 ký tự)</label>
                 <textarea id="commentAdminNote" name="adminNote" rows="3" maxlength="500" required
                           placeholder="Nhập ghi chú phản hồi gửi tới hòm thư người báo cáo..."
                           class="w-full px-3 py-2 text-xs border border-[#eae2d5] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#bc7d39]"></textarea>
@@ -411,7 +421,7 @@
             </div>
 
             <div>
-                <label class="text-xs font-bold text-[#2b2118] block mb-1">Ghi chú xử lý / Lý do từ chối * (Tối đa 500 ký tự)</label>
+                <label class="text-xs font-bold text-[#2b2118] block mb-1">Ghi chú xử lý / Lý do từ chối <span class="required-star">*</span> (Tối đa 500 ký tự)</label>
                 <textarea id="contentAdminNote" name="adminNote" rows="3" maxlength="500" required
                           placeholder="Nhập ghi chú phản hồi gửi tới hòm thư người báo cáo..."
                           class="w-full px-3 py-2 text-xs border border-[#eae2d5] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#bc7d39]"></textarea>
@@ -472,7 +482,7 @@
     }
 
     function openCommentResolveModal(el) {
-        let id, status, reporter, comment, reason, note;
+        let id, status, reporter, comment, reason, note, author, novelTitle, novelSlug, commentId;
         if (el && el.dataset) {
             id = el.dataset.id;
             status = el.dataset.status;
@@ -480,6 +490,10 @@
             comment = el.dataset.comment;
             reason = el.dataset.reason;
             note = el.dataset.note;
+            author = el.dataset.commentAuthor;
+            novelTitle = el.dataset.novelTitle;
+            novelSlug = el.dataset.novelSlug;
+            commentId = el.dataset.commentId;
         } else if (arguments.length > 1) {
             id = arguments[0];
             status = arguments[1];
@@ -490,6 +504,18 @@
         }
         document.getElementById('modalCommentTitle').textContent = 'Xử lý báo cáo bình luận #CR-' + id;
         document.getElementById('mCommentReporter').textContent = reporter || 'Độc giả';
+        document.getElementById('mCommentAuthor').textContent = author || 'Độc giả';
+
+        const novelLink = document.getElementById('mCommentNovelLink');
+        const novelWrapper = document.getElementById('mCommentNovelWrapper');
+        if (novelSlug) {
+            novelLink.textContent = novelTitle || 'Xem truyện';
+            novelLink.href = '/truyen/' + encodeURIComponent(novelSlug) + (commentId ? '#comment-' + commentId : '');
+            novelWrapper.style.display = 'block';
+        } else {
+            novelWrapper.style.display = 'none';
+        }
+
         document.getElementById('mCommentContent').textContent = '"' + (comment || '') + '"';
         document.getElementById('mCommentReason').innerHTML = renderReasonWithBadge(reason);
         document.getElementById('commentAdminNote').value = note || '';

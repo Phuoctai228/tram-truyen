@@ -17,18 +17,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Optional;
+import com.tramtruyen.service.impl.UserManagementServiceImpl;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class AccountLockService {
-
-    private static final Map<String, String> BAN_REASON_MAP = Map.of(
-            "spam", "Vi phạm quy chuẩn cộng đồng: Phát tán spam quảng cáo hoặc bình luận rác trái phép.",
-            "hate", "Vi phạm quy chuẩn cộng đồng: Phát tán bình luận đả kích cá nhân và nội dung tiêu cực nhiều lần.",
-            "fraud", "Vi phạm chính sách: Gian lận hoặc trục lợi tính năng hệ thống.",
-            "other", "Vi phạm điều khoản dịch vụ và quy chuẩn cộng đồng của Trạm Truyện."
-    );
 
     private static final DateTimeFormatter BANNED_AT_FORMATTER = DateTimeFormatter.ofPattern("HH:mm — dd/MM/yyyy");
     private static final DateTimeFormatter EXPIRES_DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -93,8 +87,6 @@ public class AccountLockService {
                         .newValue(objectMapper.writeValueAsString(unbanData))
                         .ipAddress("SYSTEM_SCHEDULER")
                         .build());
-
-                log.info("Auto-unbanned expired account: user_id={}", user.getId());
                 return true;
             }
         } catch (Exception e) {
@@ -138,7 +130,7 @@ public class AccountLockService {
             Map<String, Object> data = objectMapper.readValue(banLog.getNewValue(), new TypeReference<>() {});
 
             String reasonKey = String.valueOf(data.getOrDefault("reason", ""));
-            String reasonDisplay = BAN_REASON_MAP.getOrDefault(reasonKey, "Vi phạm quy chuẩn và điều khoản dịch vụ của Trạm Truyện.");
+            String reasonDisplay = UserManagementServiceImpl.BAN_REASON_MAP.getOrDefault(reasonKey, "Vi phạm điều khoản dịch vụ và quy chuẩn cộng đồng của Trạm Truyện.");
 
             LocalDateTime bannedAtTime = null;
             if (banLog.getCreatedAt() != null) {

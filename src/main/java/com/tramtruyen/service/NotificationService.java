@@ -9,9 +9,28 @@ import java.util.List;
 
 public interface NotificationService {
 
-    Page<NotificationDTO> getMailboxNotifications(Integer userId, String tab, int page, int size);
+    String REPORT_NOTIFICATION_PREFIX = "Phản hồi về báo cáo";
+
+    static boolean isReportNotification(String title) {
+        if (title == null) {
+            return false;
+        }
+        return title.trim().toLowerCase().startsWith(REPORT_NOTIFICATION_PREFIX.toLowerCase());
+    }
+
+    Page<NotificationDTO> getUserNotifications(Integer userId, String tab, int page, int size);
+
+    default Page<NotificationDTO> getMailboxNotifications(Integer userId, String tab, int page, int size) {
+        return getUserNotifications(userId, tab, page, size);
+    }
 
     long getUnreadCount(Integer userId);
+
+    long getUnreadGeneralCount(Integer userId);
+
+    long getUnreadReportCount(Integer userId);
+
+    NotificationDTO getNotificationDetail(Integer notificationId, Integer userId);
 
     void markAllAsRead(Integer userId);
 
@@ -24,4 +43,6 @@ public interface NotificationService {
     List<UserRecipientDTO> searchRecipients(String keyword);
 
     Page<NotificationDTO> getRecentNotifications(int page, int size);
+
+    void notifyNewChapterPublished(Integer novelId, Integer chapterId);
 }
