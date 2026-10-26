@@ -48,6 +48,14 @@ INSERT INTO system_settings (setting_key, setting_value, description) VALUES
 ON CONFLICT (setting_key) DO UPDATE 
 SET setting_value = EXCLUDED.setting_value, description = EXCLUDED.description;
 
+-- 5.1 Seed web_settings (Chủ đề và giao diện website - UC-07 / UC-52)
+INSERT INTO web_settings (name, folder_path, thumbnail_url, is_active) VALUES
+('Trạm Truyện Chuẩn (Mặc định)', 'theme-default', 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=600&q=80', TRUE),
+('Xuân Cổ Truyền (Tết & Lễ Hội)', 'theme-tet', 'https://images.unsplash.com/photo-1576085898323-218337e3e43c?auto=format&fit=crop&w=600&q=80', FALSE),
+('Dạ Khúc Đêm (Midnight Dark)', 'theme-dark', 'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=600&q=80', FALSE),
+('Thanh Trúc Tiên Giới (Kiếm Hiệp & Tu Tiên)', 'theme-bamboo', 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=600&q=80', FALSE)
+ON CONFLICT (folder_path) DO NOTHING;
+
 -- 6. Seed coin_packages (6 gói nạp Coin chuẩn thiết kế Figma)
 INSERT INTO coin_packages (name, price, coin_amount, status) VALUES
 ('Gói Khởi Điểm', 20000, 200, 'ACTIVE'),
