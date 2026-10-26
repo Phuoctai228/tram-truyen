@@ -116,113 +116,101 @@
                     </div>
 
                     <!-- Slide Carousel Container -->
-                    <div id="heroSliderContainer" class="relative z-10 w-full min-h-[380px] lg:min-h-[420px]">
-                        <div th:each="heroNovel, iterStat : ${heroNovels}"
-                            th:class="${iterStat.first ? 'hero-slide w-full p-8 lg:p-10 flex flex-col md:flex-row items-center gap-8 lg:gap-12 transition-all duration-700 opacity-100 relative pointer-events-auto' : 'hero-slide w-full p-8 lg:p-10 flex flex-col md:flex-row items-center gap-8 lg:gap-12 transition-all duration-700 opacity-0 absolute inset-0 pointer-events-none'}"
-                            th:data-slide-index="${iterStat.index}">
-                            <!-- Novel Cover Artwork -->
-                            <div class="shrink-0 relative group">
-                                <div
-                                    class="w-48 lg:w-56 aspect-[3/4] rounded-xl overflow-hidden shadow-[0_12px_28px_rgba(43,23,0,0.18)] transition-transform duration-300 group-hover:scale-[1.02]">
-                                    <img class="w-full h-full object-cover"
-                                        th:src="${heroNovel.coverUrl != null ? heroNovel.coverUrl : '/images/default-cover.jpg'}"
-                                        onerror="this.onerror=null;this.src='/images/default-cover.jpg';" alt="Cover">
+                    <div id="heroSliderContainer" class="relative z-10 w-full overflow-hidden">
+                        <div id="heroTrack" class="flex w-full items-stretch transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] will-change-transform">
+                            <div th:each="heroNovel, iterStat : ${heroNovels}"
+                                class="hero-slide w-full shrink-0 p-8 lg:p-10 flex flex-col md:flex-row items-center gap-8 lg:gap-12"
+                                th:data-slide-index="${iterStat.index}">
+                                <!-- Novel Cover Artwork -->
+                                <div class="shrink-0 relative group">
+                                    <div
+                                        class="w-48 lg:w-56 aspect-[3/4] rounded-xl overflow-hidden shadow-[0_12px_28px_rgba(43,23,0,0.18)] transition-transform duration-300 group-hover:scale-[1.02]">
+                                        <img class="w-full h-full object-cover"
+                                            th:src="${heroNovel.coverUrl != null ? heroNovel.coverUrl : '/images/default-cover.jpg'}"
+                                            onerror="this.onerror=null;this.src='/images/default-cover.jpg';" alt="Cover">
+                                    </div>
+                                    <span
+                                        class="absolute top-3 left-3 bg-secondary text-on-secondary px-2.5 py-1 rounded-md font-label-sm text-label-sm shadow-sm font-bold flex items-center gap-1"
+                                        th:text="${'Top #' + iterStat.count + ' Tuần'}">
+                                        Top #1 Tuần
+                                    </span>
                                 </div>
-                                <span
-                                    class="absolute top-3 left-3 bg-secondary text-on-secondary px-2.5 py-1 rounded-md font-label-sm text-label-sm shadow-sm font-bold flex items-center gap-1"
-                                    th:text="${'Top #' + iterStat.count + ' Tuần'}">
-                                    Top #1 Tuần
-                                </span>
-                            </div>
-                            <!-- Banner Content Details -->
-                            <div class="flex-1 min-w-0 flex flex-col justify-between">
-                                <div>
-                                    <!-- Badges Bar -->
-                                    <div class="flex flex-wrap items-center gap-2 mb-3">
-                                        <span
-                                            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary font-label-sm text-label-sm tracking-wide uppercase font-semibold">
+                                <!-- Banner Content Details -->
+                                <div class="flex-1 min-w-0 flex flex-col justify-between">
+                                    <div>
+                                        <!-- Badges Bar -->
+                                        <div class="flex flex-wrap items-center gap-2 mb-3">
                                             <span
-                                                class="material-symbols-outlined text-[15px] icon-fill">auto_awesome</span>
-                                            Truyện Nổi Bật
-                                        </span>
-                                        <span
-                                            class="inline-flex items-center px-2.5 py-1 rounded-full bg-surface-variant text-on-surface-variant font-label-sm text-label-sm"
-                                            th:text="${heroNovel.status == 'COMPLETED' ? 'Đã hoàn thành' : 'Đang ra'}">
-                                            Đã hoàn thành
-                                        </span>
-                                    </div>
-                                    <!-- Title & Author -->
-                                    <h1 class="font-headline-xl text-headline-xl text-on-surface font-bold tracking-tight mb-2 line-clamp-1"
-                                        th:text="${heroNovel.title}">
-                                        Title
-                                    </h1>
-                                    <p class="font-label-lg text-label-lg text-secondary mb-4 flex items-center gap-2">
-                                        <span class="material-symbols-outlined text-[18px]">edit_note</span>
-                                        Tác giả: <span class="font-bold" th:text="${heroNovel.author}">Author</span>
-                                    </p>
-                                    <!-- Metrics -->
-                                    <div class="flex flex-wrap items-center gap-3.5 mb-3 text-on-surface-variant font-label-md text-label-md">
-                                        <!-- Rating -->
-                                        <div class="flex items-center gap-1 text-primary">
-                                            <span class="material-symbols-outlined text-[18px] icon-fill">star</span>
-                                            <span class="font-bold"
-                                                th:text="${heroNovel.averageRating != null ? heroNovel.averageRating : '0.0'}"></span>
+                                                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary font-label-sm text-label-sm tracking-wide uppercase font-semibold">
+                                                <span
+                                                    class="material-symbols-outlined text-[15px] icon-fill">auto_awesome</span>
+                                                Truyện Nổi Bật
+                                            </span>
+                                            <span
+                                                class="inline-flex items-center px-2.5 py-1 rounded-full bg-surface-variant text-on-surface-variant font-label-sm text-label-sm"
+                                                th:text="${heroNovel.status == 'COMPLETED' ? 'Đã hoàn thành' : 'Đang ra'}">
+                                                Đã hoàn thành
+                                            </span>
                                         </div>
-                                        <span class="text-outline-variant">•</span>
-                                        <!-- Chapter Count -->
-                                        <div class="flex items-center gap-1.5 font-body-md text-body-md">
-                                            <span class="material-symbols-outlined text-[18px]">menu_book</span>
-                                            <span th:text="${(heroNovel.chapterCount != null ? heroNovel.chapterCount : 0) + ' chương'}"></span>
+                                        <!-- Title & Author -->
+                                        <h1 class="font-headline-xl text-headline-xl text-on-surface font-bold tracking-tight mb-2 line-clamp-1"
+                                            th:text="${heroNovel.title}">
+                                            Title
+                                        </h1>
+                                        <p class="font-label-lg text-label-lg text-secondary mb-4 flex items-center gap-2">
+                                            <span class="material-symbols-outlined text-[18px]">edit_note</span>
+                                            Tác giả: <span class="font-bold" th:text="${heroNovel.author}">Author</span>
+                                        </p>
+                                        <!-- Metrics -->
+                                        <div class="flex flex-wrap items-center gap-3.5 mb-3 text-on-surface-variant font-label-md text-label-md">
+                                            <!-- Rating -->
+                                            <div class="flex items-center gap-1 text-primary">
+                                                <span class="material-symbols-outlined text-[18px] icon-fill">star</span>
+                                                <span class="font-bold"
+                                                    th:text="${heroNovel.averageRating != null ? heroNovel.averageRating : '0.0'}"></span>
+                                            </div>
+                                            <span class="text-outline-variant">•</span>
+                                            <!-- Chapter Count -->
+                                            <div class="flex items-center gap-1.5 font-body-md text-body-md">
+                                                <span class="material-symbols-outlined text-[18px]">menu_book</span>
+                                                <span th:text="${(heroNovel.chapterCount != null ? heroNovel.chapterCount : 0) + ' chương'}"></span>
+                                            </div>
+                                            <span class="text-outline-variant">•</span>
+                                            <!-- Views -->
+                                            <div class="flex items-center gap-1.5 font-body-md text-body-md">
+                                                <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                                <span th:text="${(heroNovel.views != null ? #numbers.formatInteger(heroNovel.views, 1, 'POINT') : '0') + ' lượt đọc'}"></span>
+                                            </div>
+                                            <span class="text-outline-variant">•</span>
+                                            <!-- Favorites / Bookshelf -->
+                                            <div class="flex items-center gap-1.5 font-body-md text-body-md">
+                                                <span class="material-symbols-outlined text-[18px] text-primary">bookmark</span>
+                                                <span th:text="${(heroNovel.favoriteCount != null ? #numbers.formatInteger(heroNovel.favoriteCount, 1, 'POINT') : '0') + ' lưu tủ'}"></span>
+                                            </div>
                                         </div>
-                                        <span class="text-outline-variant">•</span>
-                                        <!-- Views -->
-                                        <div class="flex items-center gap-1.5 font-body-md text-body-md">
-                                            <span class="material-symbols-outlined text-[18px]">visibility</span>
-                                            <span th:text="${(heroNovel.views != null ? #numbers.formatInteger(heroNovel.views, 1, 'POINT') : '0') + ' lượt đọc'}"></span>
-                                        </div>
-                                        <span class="text-outline-variant">•</span>
-                                        <!-- Favorites / Bookshelf -->
-                                        <div class="flex items-center gap-1.5 font-body-md text-body-md">
-                                            <span class="material-symbols-outlined text-[18px] text-primary">bookmark</span>
-                                            <span th:text="${(heroNovel.favoriteCount != null ? #numbers.formatInteger(heroNovel.favoriteCount, 1, 'POINT') : '0') + ' lưu tủ'}"></span>
-                                        </div>
-                                    </div>
 
-                                    <!-- Genre Tags (Categories) -->
-                                    <div class="flex flex-wrap items-center gap-2 mb-4"
-                                        th:if="${heroNovel.categories != null and !#lists.isEmpty(heroNovel.categories)}">
-                                        <a th:each="category : ${heroNovel.categories}"
-                                            th:href="@{'/the-loai/' + ${category.slug}}"
-                                            class="px-2.5 py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-[12px] hover:bg-primary-container hover:text-on-primary transition-colors border border-outline-variant/30 shadow-2xs"
-                                            th:text="${category.name}"></a>
+                                        <!-- Genre Tags (Categories) -->
+                                        <div class="flex flex-wrap items-center gap-2 mb-4"
+                                            th:if="${heroNovel.categories != null and !#lists.isEmpty(heroNovel.categories)}">
+                                            <a th:each="category : ${heroNovel.categories}"
+                                                th:href="@{'/the-loai/' + ${category.slug}}"
+                                                class="px-2.5 py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-[12px] hover:bg-primary-container hover:text-on-primary transition-colors border border-outline-variant/30 shadow-2xs"
+                                                th:text="${category.name}"></a>
+                                        </div>
+                                        <!-- Synopsis -->
+                                        <p class="font-body-reading text-body-md text-on-surface-variant line-clamp-3 mb-6 max-w-3xl italic"
+                                            th:text="${heroNovel.summary}">
+                                            Summary text
+                                        </p>
                                     </div>
-                                    <!-- Synopsis -->
-                                    <p class="font-body-reading text-body-md text-on-surface-variant line-clamp-3 mb-6 max-w-3xl italic"
-                                        th:text="${heroNovel.summary}">
-                                        Summary text
-                                    </p>
-                                </div>
-                                <!-- CTA Buttons -->
-                                <div class="flex flex-wrap items-center gap-4">
-                                    <a class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-primary-container text-on-primary font-label-lg text-label-lg shadow-[0_2px_10px_rgba(208,138,46,0.3)] hover:bg-primary transition-all"
-                                        th:href="@{'/truyen/' + ${heroNovel.slug}}">
-                                        <span class="">Đọc ngay</span>
-                                        <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-                                    </a>
-                                    <div sec:authorize="isAuthenticated()" class="inline-block">
-                                        <button type="button" th:data-novel-id="${heroNovel.id}"
-                                            onclick="toggleHeroBookshelf(this)"
-                                            class="hero-bookshelf-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-lg text-label-lg hover:bg-surface-container transition-all shadow-sm">
-                                            <span class="material-symbols-outlined text-[18px]">bookmark_add</span>
-                                            <span>+ Thêm vào Tủ sách</span>
-                                        </button>
+                                    <!-- CTA Buttons -->
+                                    <div class="flex flex-wrap items-center gap-4">
+                                        <a class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-primary-container text-on-primary font-label-lg text-label-lg shadow-[0_2px_10px_rgba(208,138,46,0.3)] hover:bg-primary transition-all hover:scale-[1.02] active:scale-[0.98]"
+                                            th:href="@{'/truyen/' + ${heroNovel.slug}}">
+                                            <span>Đọc ngay</span>
+                                            <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                                        </a>
                                     </div>
-                                    <button type="button" sec:authorize="!isAuthenticated()"
-                                        onclick="openLoginRequiredModal('Vui lòng đăng nhập để thêm truyện vào Tủ sách cá nhân của bạn.')"
-                                        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-lg text-label-lg hover:bg-surface-container transition-colors shadow-sm">
-                                        <span class="material-symbols-outlined text-[18px]">bookmark_add</span>
-                                        <span>+ Thêm vào Tủ sách</span>
-                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -291,6 +279,14 @@
                                         <span
                                             th:text="${novel.favoriteCount != null ? #numbers.formatInteger(novel.favoriteCount, 1, 'POINT') : '0'}">0</span>
                                     </span>
+                                </div>
+                                <div th:if="${novel.status == 'COMPLETED'}"
+                                    class="absolute top-2 left-2 px-2 py-0.5 rounded-md text-[10px] font-bold bg-[#43a047] text-white select-none shadow-sm">
+                                    HOÀN THÀNH
+                                </div>
+                                <div th:if="${novel.status == 'ONGOING'}"
+                                    class="absolute top-2 left-2 px-2 py-0.5 rounded-md text-[10px] font-bold bg-[#0284c7] text-white select-none shadow-sm">
+                                    ĐANG RA
                                 </div>
                             </a>
 
@@ -389,6 +385,10 @@
                                 <div th:if="${novel.status == 'COMPLETED'}"
                                     class="absolute top-2 left-2 px-2 py-0.5 rounded-md text-[10px] font-bold bg-[#43a047] text-white select-none shadow-sm">
                                     HOÀN THÀNH
+                                </div>
+                                <div th:if="${novel.status == 'ONGOING'}"
+                                    class="absolute top-2 left-2 px-2 py-0.5 rounded-md text-[10px] font-bold bg-[#0284c7] text-white select-none shadow-sm">
+                                    ĐANG RA
                                 </div>
                             </a>
 
@@ -674,6 +674,7 @@
         // Hero Carousel State & Logic
         let currentSlideIndex = 0;
         let heroAutoplayTimer = null;
+        const heroTrack = document.getElementById('heroTrack');
         const heroSlides = document.querySelectorAll('.hero-slide');
         const heroDots = document.querySelectorAll('.hero-dot');
         const totalSlides = heroSlides.length;
@@ -682,15 +683,9 @@
             if (totalSlides <= 1) return;
             currentSlideIndex = (index + totalSlides) % totalSlides;
             
-            heroSlides.forEach((slide, i) => {
-                if (i === currentSlideIndex) {
-                    slide.classList.remove('opacity-0', 'pointer-events-none', 'absolute', 'inset-0');
-                    slide.classList.add('opacity-100', 'pointer-events-auto', 'relative');
-                } else {
-                    slide.classList.remove('opacity-100', 'pointer-events-auto', 'relative');
-                    slide.classList.add('opacity-0', 'pointer-events-none', 'absolute', 'inset-0');
-                }
-            });
+            if (heroTrack) {
+                heroTrack.style.transform = `translate3d(-${currentSlideIndex * 100}%, 0, 0)`;
+            }
 
             heroDots.forEach((dot, i) => {
                 if (i === currentSlideIndex) {

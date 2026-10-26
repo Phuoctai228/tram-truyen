@@ -73,4 +73,50 @@ public class CoinPackageServiceImpl implements CoinPackageService {
         }
         return dtos;
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CoinPackageDTO> suggestForShortfall(int shortfall, int limit) {
+        List<CoinPackageDTO> all = getActivePackages();
+        if (all.isEmpty()) {
+            return List.of();
+        }
+
+        int maxResults = Math.max(1, limit);
+        int bestIdx = -1;
+        for (int i = 0; i < all.size(); i++) {
+            if (all.get(i).getCoinAmount() >= shortfall) {
+                bestIdx = i;
+                break;
+            }
+        }
+
+        // If shortfall exceeds all packages, pick the highest available package
+        if (bestIdx == -1) {
+            bestIdx = all.size() - 1;
+        }
+
+        List<CoinPackageDTO> results = new ArrayList<>();
+        // Select up to limit packages starting around bestIdx
+        int start = bestIdx;
+        if (start + maxResults > all.size()) {
+            start = Math.max(0, all.size() - maxResults);
+        }
+
+        for (int i = start; i < Math.min(all.size(), start + maxResults); i++) {
+            CoinPackageDTO item = all.get(i);
+            boolean isBest = (i == bestIdx);
+            results.add(CoinPackageDTO.builder()
+                    .id(item.getId())
+                    .name(item.getName())
+                    .price(item.getPrice())
+                    .coinAmount(item.getCoinAmount())
+                    .baseCoin(item.getBaseCoin())
+                    .bonusCoin(item.getBonusCoin())
+                    .badgeText(isBest ? "PHÙ HỢP" : item.getBadgeText())
+                    .bestFit(isBest)
+                    .build());
+        }
+        return results;
+    }
 }

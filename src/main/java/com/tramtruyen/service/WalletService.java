@@ -36,7 +36,7 @@ public interface WalletService {
      *
      * @param user user entity
      * @param amount number of coins to add (positive integer)
-     * @param type transaction type identifier (e.g. DAILY_CHECKIN, TOPUP_COIN)
+     * @param type transaction type identifier (e.g. GIFT_COIN, DEPOSIT)
      * @param referenceId associated entity ID
      * @param description transaction description note
      */

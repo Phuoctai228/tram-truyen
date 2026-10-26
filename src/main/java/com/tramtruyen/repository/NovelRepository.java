@@ -3,10 +3,13 @@ package com.tramtruyen.repository;
 import com.tramtruyen.entity.Novel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,6 +44,12 @@ public interface NovelRepository extends JpaRepository<Novel, Integer>, JpaSpeci
 
     // Lấy truyện cùng tác giả (loại trừ truyện hiện tại)
     List<Novel> findTop5ByAuthorIgnoreCaseAndIdNotAndIsDeletedFalseOrderByViewsDesc(String author, Integer id);
+
+    // Truyện đề cử tự động (chỉ lấy truyện có ít nhất 1 chương công khai, sắp xếp theo điểm đánh giá và lượt xem)
+    @Query("SELECT n FROM Novel n WHERE n.isDeleted = false AND n.status <> 'ARCHIVED' " +
+           "AND EXISTS (SELECT 1 FROM Chapter c WHERE c.novel = n AND c.isDeleted = false AND c.status IN :publicStatuses) " +
+           "ORDER BY n.averageRating DESC, n.views DESC")
+    List<Novel> findTopRecommendedNovels(@Param("publicStatuses") Collection<String> publicStatuses, Pageable pageable);
 
     // Truyện đề cử tự động (2 hàng x 6 cột trên trang chủ)
     List<Novel> findTop12ByIsDeletedFalseOrderByAverageRatingDesc();

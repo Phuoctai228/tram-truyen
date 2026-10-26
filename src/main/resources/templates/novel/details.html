@@ -89,18 +89,42 @@
                 <span class="text-sm text-tertiary" th:text="'/ 5 (' + ${novel.ratingCount != null ? novel.ratingCount : 0} + ' đánh giá)'">/ 5 (0 đánh giá)</span>
               </div>
               
-              <div class="flex flex-wrap gap-3 mt-auto">
-                <a th:if="${not #lists.isEmpty(chapters)}" 
-                   th:href="@{/truyen/{slug}/chuong-{chapterNumber}(slug=${novel.slug}, chapterNumber=${chapters[0].chapterNumber})}" 
-                   class="px-6 py-2.5 bg-[#e53935] hover:bg-[#d32f2f] text-white rounded-full font-bold flex items-center gap-2 shadow-md transition-colors">
-                  <span class="material-symbols-outlined text-[20px] icon-fill">menu_book</span>
-                  Đọc truyện
-                </a>
-                <button th:if="${#lists.isEmpty(chapters)}" type="button" disabled
-                   class="px-6 py-2.5 bg-[#e53935]/50 text-white rounded-full font-bold flex items-center gap-2 shadow-sm cursor-not-allowed">
-                  <span class="material-symbols-outlined text-[20px] icon-fill">menu_book</span>
-                  Chưa có chương
-                </button>
+              <div class="flex flex-wrap gap-3 mt-auto" id="novelCtaContainer" th:data-novel-slug="${novel.slug}">
+                <!-- If already read a chapter (SSR): Show "Đọc tiếp chương [x]" -->
+                <th:block th:if="${lastReadChapter != null}">
+                  <a th:href="@{/truyen/{slug}/chuong-{chapterNumber}(slug=${novel.slug}, chapterNumber=${lastReadChapter.chapterNumber})}" 
+                     id="primaryReadBtn"
+                     data-is-continue="true"
+                     class="px-6 py-2.5 bg-[#e53935] hover:bg-[#d32f2f] text-white rounded-full font-bold flex items-center gap-2 shadow-md hover:shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98]">
+                    <span class="material-symbols-outlined text-[20px] icon-fill">auto_stories</span>
+                    <span id="primaryReadBtnText" th:text="'Đọc tiếp chương ' + ${lastReadChapter.chapterNumber}">Đọc tiếp chương 1</span>
+                  </a>
+                  <!-- Secondary "Đọc từ đầu" button if last read chapter is not the first chapter -->
+                  <a th:if="${not #lists.isEmpty(chapters) and lastReadChapter.chapterNumber != chapters[0].chapterNumber}"
+                     id="readFromStartBtn"
+                     th:href="@{/truyen/{slug}/chuong-{chapterNumber}(slug=${novel.slug}, chapterNumber=${chapters[0].chapterNumber})}"
+                     class="px-5 py-2.5 border border-outline-variant/60 hover:border-primary text-on-surface hover:text-primary rounded-full font-semibold flex items-center gap-1.5 transition-colors shadow-2xs text-sm">
+                    <span class="material-symbols-outlined text-[18px]">first_page</span>
+                    <span>Đọc từ đầu</span>
+                  </a>
+                </th:block>
+
+                <!-- If not read yet (or guest): Show "Đọc truyện", with client-side localStorage fallback -->
+                <th:block th:if="${lastReadChapter == null}">
+                  <a th:if="${not #lists.isEmpty(chapters)}" 
+                     id="primaryReadBtn"
+                     data-is-continue="false"
+                     th:href="@{/truyen/{slug}/chuong-{chapterNumber}(slug=${novel.slug}, chapterNumber=${chapters[0].chapterNumber})}" 
+                     class="px-6 py-2.5 bg-[#e53935] hover:bg-[#d32f2f] text-white rounded-full font-bold flex items-center gap-2 shadow-md hover:shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98]">
+                    <span class="material-symbols-outlined text-[20px] icon-fill" id="primaryReadBtnIcon">menu_book</span>
+                    <span id="primaryReadBtnText">Đọc truyện</span>
+                  </a>
+                  <button th:if="${#lists.isEmpty(chapters)}" type="button" disabled
+                     class="px-6 py-2.5 bg-[#e53935]/50 text-white rounded-full font-bold flex items-center gap-2 shadow-sm cursor-not-allowed">
+                    <span class="material-symbols-outlined text-[20px] icon-fill">menu_book</span>
+                    Chưa có chương
+                  </button>
+                </th:block>
                 <!-- Bookshelf Action -->
                 <div sec:authorize="isAuthenticated()" class="inline-block">
                   <form th:if="${inBookshelf}" th:action="@{/user/bookshelf/{id}/remove(id=${novel.id})}" method="POST" class="m-0">
@@ -1380,6 +1404,47 @@
           chapters.forEach(chap => container.appendChild(chap));
           if(emptyMsg) container.appendChild(emptyMsg);
         });
+      }
+    });
+
+    // Synchronize "Đọc tiếp" with localStorage for guests or when server has no record
+    document.addEventListener('DOMContentLoaded', () => {
+      const ctaContainer = document.getElementById('novelCtaContainer');
+      const readBtn = document.getElementById('primaryReadBtn');
+      const readBtnText = document.getElementById('primaryReadBtnText');
+      const readBtnIcon = document.getElementById('primaryReadBtnIcon');
+      if (!ctaContainer || !readBtn) return;
+
+      const slug = ctaContainer.getAttribute('data-novel-slug');
+      if (!slug) return;
+
+      const hasServerContinue = readBtn.getAttribute('data-is-continue') === 'true';
+      if (!hasServerContinue) {
+        try {
+          const raw = localStorage.getItem('tramtruyen_last_read_' + slug);
+          if (raw) {
+            const data = JSON.parse(raw);
+            if (data && (data.chapterNumber > 0 || data.readUrl)) {
+              readBtn.href = data.readUrl || ('/truyen/' + slug + '/chuong-' + data.chapterNumber);
+              if (readBtnText) {
+                readBtnText.textContent = 'Đọc tiếp chương ' + data.chapterNumber;
+              }
+              if (readBtnIcon) {
+                readBtnIcon.textContent = 'auto_stories';
+              }
+              if (!document.getElementById('readFromStartBtn') && data.chapterNumber > 1) {
+                const startBtn = document.createElement('a');
+                startBtn.id = 'readFromStartBtn';
+                startBtn.href = '/truyen/' + slug + '/chuong-1';
+                startBtn.className = 'px-5 py-2.5 border border-outline-variant/60 hover:border-primary text-on-surface hover:text-primary rounded-full font-semibold flex items-center gap-1.5 transition-colors shadow-2xs text-sm';
+                startBtn.innerHTML = '<span class="material-symbols-outlined text-[18px]">first_page</span><span>Đọc từ đầu</span>';
+                ctaContainer.insertBefore(startBtn, readBtn.nextSibling);
+              }
+            }
+          }
+        } catch (e) {
+          // Ignore localStorage parsing errors
+        }
       }
     });
   </script>

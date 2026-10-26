@@ -57,7 +57,7 @@ public interface NotificationRepository extends JpaRepository<Notification, Inte
                    "  AND n.is_deleted = false " +
                    "  AND n.status != 'ARCHIVED' " +
                    "  AND c.is_deleted = false " +
-                   "  AND c.status IN ('PUBLISHED', 'PUBLISHED_REGULAR', 'PUBLISHED_VIP') " +
+                   "  AND c.status IN ('PUBLISHED_REGULAR', 'PUBLISHED_VIP') " +
                    "  AND (:uploaderId IS NULL OR b.user_id != :uploaderId) " +
                    "  AND NOT EXISTS ( " +
                    "      SELECT 1 FROM notifications notif " +

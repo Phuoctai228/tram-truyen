@@ -9,6 +9,7 @@ import com.tramtruyen.entity.SystemAuditLog;
 import com.tramtruyen.entity.User;
 import com.tramtruyen.entity.Chapter;
 import com.tramtruyen.entity.Novel;
+import com.tramtruyen.entity.enums.ChapterStatus;
 import com.tramtruyen.repository.ChapterRepository;
 import com.tramtruyen.repository.NotificationRepository;
 import com.tramtruyen.repository.NovelRepository;
@@ -430,9 +431,8 @@ public class NotificationServiceImpl implements NotificationService {
                 }
 
                 String chapterStatus = chapter.getStatus();
-                if (!"PUBLISHED".equalsIgnoreCase(chapterStatus)
-                        && !"PUBLISHED_REGULAR".equalsIgnoreCase(chapterStatus)
-                        && !"PUBLISHED_VIP".equalsIgnoreCase(chapterStatus)) {
+                if (!ChapterStatus.PUBLISHED_REGULAR.name().equalsIgnoreCase(chapterStatus)
+                        && !ChapterStatus.PUBLISHED_VIP.name().equalsIgnoreCase(chapterStatus)) {
                     log.info("Chapter {} status is '{}', not published. Skipping notifications", chapterId, chapterStatus);
                     return;
                 }
