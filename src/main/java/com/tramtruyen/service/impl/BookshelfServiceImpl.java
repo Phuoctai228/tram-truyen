@@ -268,6 +268,21 @@ public class BookshelfServiceImpl implements BookshelfService {
 
     @Override
     @Transactional(readOnly = true)
+    public boolean hasReadAnyChapter(String email, Integer novelId) {
+        if (email == null || novelId == null) {
+            return false;
+        }
+        try {
+            User user = getUserByEmail(email);
+            Novel novel = getNovelById(novelId);
+            return userChapterActivityRepository.countByUserAndChapter_NovelAndIsReadTrue(user, novel) > 0;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public UserProfileDTO getUserProfile(String email) {
         User user = getUserByEmail(email);
         return UserProfileDTO.builder()
