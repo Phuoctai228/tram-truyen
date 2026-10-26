@@ -223,7 +223,7 @@ public class SystemSettingServiceImpl implements SystemSettingService {
                         WebSetting.builder()
                                 .name("Xuân Cổ Truyền (Tết & Lễ Hội)")
                                 .folderPath("theme-tet")
-                                .thumbnailUrl("https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&w=600&q=80")
+                                .thumbnailUrl("https://images.unsplash.com/photo-1576085898323-218337e3e43c?auto=format&fit=crop&w=600&q=80")
                                 .isActive(false)
                                 .build(),
                         WebSetting.builder()
@@ -233,9 +233,9 @@ public class SystemSettingServiceImpl implements SystemSettingService {
                                 .isActive(false)
                                 .build(),
                         WebSetting.builder()
-                                .name("Cổ Điển Giấy Cũ (Vintage Sepia)")
-                                .folderPath("theme-sepia")
-                                .thumbnailUrl("https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=600&q=80")
+                                .name("Thanh Trúc Tiên Giới (Kiếm Hiệp & Tu Tiên)")
+                                .folderPath("theme-bamboo")
+                                .thumbnailUrl("https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=600&q=80")
                                 .isActive(false)
                                 .build()
                 );

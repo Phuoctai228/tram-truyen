@@ -80,25 +80,25 @@
                     </div>
                 </div>
 
-                <!-- C. Theme Cổ Điển Giấy Cũ (Vintage Sepia) -->
-                <div th:if="${activeTheme != null && activeTheme.folderPath == 'theme-sepia'}"
-                     class="rounded-2xl bg-gradient-to-r from-[#92400e] via-[#d97706] to-[#92400e] p-[2px] shadow-lg shadow-amber-900/15">
-                    <div class="rounded-2xl bg-gradient-to-r from-[#f7f0e0] via-[#fcf6e8] to-[#f7f0e0] px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+                <!-- C. Theme Thanh Trúc Tiên Giới (Kiếm Hiệp & Tu Tiên - theme-bamboo) -->
+                <div th:if="${activeTheme != null && (activeTheme.folderPath == 'theme-bamboo' || activeTheme.folderPath == 'theme-sepia')}"
+                     class="rounded-2xl bg-gradient-to-r from-[#064e3b] via-[#10b981] to-[#064e3b] p-[2px] shadow-lg shadow-emerald-700/15">
+                    <div class="rounded-2xl bg-gradient-to-r from-[#f0fdf4] via-[#f7fef9] to-[#ecfdf5] px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
                         <div class="flex items-center gap-4 text-center md:text-left">
-                            <span class="text-3xl shrink-0">📜</span>
+                            <span class="text-3xl shrink-0">🎋</span>
                             <div>
-                                <div class="text-xs font-bold uppercase tracking-wider text-[#92400e] flex items-center justify-center md:justify-start gap-1.5">
-                                    <span>Cổ Điển Giấy Cũ • Vintage Sepia</span>
-                                    <span class="inline-block w-1.5 h-1.5 rounded-full bg-[#92400e]"></span>
-                                    <span class="text-[#b45309]">Hương Sách Cổ Phong</span>
+                                <div class="text-xs font-bold uppercase tracking-wider text-[#059669] flex items-center justify-center md:justify-start gap-1.5">
+                                    <span>Thanh Trúc Tiên Giới • Wuxia & Celestial</span>
+                                    <span class="inline-block w-1.5 h-1.5 rounded-full bg-[#10b981]"></span>
+                                    <span class="text-[#047857]">Tiên Đạo Phiêu Diêu</span>
                                 </div>
-                                <p class="text-base font-bold text-[#451a03] mt-0.5">
-                                    📖 Nâng Niu Từng Con Chữ Như Lần Giở Cuốn Sách Quý Xưa • Thư Thái & Trầm Mặc 🍂
+                                <p class="text-base font-bold text-[#064e3b] mt-0.5">
+                                    🗡️ Nhất Kiếm Định Giang Sơn • Tiêu Diêu Tự Tại Giữa Biển Truyện Bao La 🍃
                                 </p>
                             </div>
                         </div>
-                        <div class="flex items-center gap-2 text-xs font-bold text-[#78350f] bg-[#fef3c7] border border-[#fde68a] px-4 py-2 rounded-full shadow-sm shrink-0">
-                            <span>🖋️ Thư viện văn chương cổ điển</span>
+                        <div class="flex items-center gap-2 text-xs font-bold text-[#065f46] bg-[#d1fae5] border border-[#a7f3d0] px-4 py-2 rounded-full shadow-sm shrink-0">
+                            <span>✨ Không gian tu đạo tiêu diêu</span>
                         </div>
                     </div>
                 </div>

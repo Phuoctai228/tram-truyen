@@ -130,6 +130,7 @@
    =================================================== */
 .tet-side-banners,
 .dark-side-banners,
+.bamboo-side-banners,
 .sepia-side-banners {
     position: fixed;
     top: 92px;
@@ -145,6 +146,7 @@
 @media (max-width: 1399px) {
     .tet-side-banners,
     .dark-side-banners,
+    .bamboo-side-banners,
     .sepia-side-banners {
         display: none !important;
     }
@@ -153,6 +155,7 @@
 @media (min-width: 1400px) and (max-width: 1559px) {
     .tet-side-banner,
     .dark-side-banner,
+    .bamboo-side-banner,
     .sepia-side-banner {
         width: 94px;
         transform: scale(0.86);
@@ -160,11 +163,13 @@
     }
     .tet-side-banner-left,
     .dark-side-banner-left,
+    .bamboo-side-banner-left,
     .sepia-side-banner-left {
         left: calc(50% - 640px - 105px);
     }
     .tet-side-banner-right,
     .dark-side-banner-right,
+    .bamboo-side-banner-right,
     .sepia-side-banner-right {
         right: calc(50% - 640px - 105px);
     }
@@ -173,16 +178,19 @@
 @media (min-width: 1560px) {
     .tet-side-banner,
     .dark-side-banner,
+    .bamboo-side-banner,
     .sepia-side-banner {
         width: 112px;
     }
     .tet-side-banner-left,
     .dark-side-banner-left,
+    .bamboo-side-banner-left,
     .sepia-side-banner-left {
         left: calc(50% - 640px - 132px);
     }
     .tet-side-banner-right,
     .dark-side-banner-right,
+    .bamboo-side-banner-right,
     .sepia-side-banner-right {
         right: calc(50% - 640px - 132px);
     }
@@ -574,22 +582,24 @@
 }
 
 /* ---------------------------------------------------
-   3. VINTAGE SEPIA SIDE BANNERS (Cổ Điển Giấy Cũ)
+   3. THANH TRÚC TIÊN GIỚI SIDE BANNERS (Kiếm Hiệp & Tu Tiên)
    --------------------------------------------------- */
+.bamboo-side-banner,
 .sepia-side-banner {
     position: absolute;
     display: flex;
     flex-direction: column;
     align-items: center;
-    filter: drop-shadow(0 12px 24px rgba(120, 53, 15, 0.3));
-    animation: sepiaBannerFloat 4s ease-in-out infinite alternate;
+    filter: drop-shadow(0 12px 24px rgba(5, 150, 105, 0.35));
+    animation: bambooBannerFloat 4s ease-in-out infinite alternate;
 }
 
+.bamboo-side-banner-right,
 .sepia-side-banner-right {
     animation-delay: -2s;
 }
 
-@keyframes sepiaBannerFloat {
+@keyframes bambooBannerFloat {
     0% {
         transform: translateY(0px) rotate(0deg);
     }
@@ -601,6 +611,7 @@
     }
 }
 
+.bamboo-hanger,
 .sepia-hanger {
     display: flex;
     flex-direction: column;
@@ -608,30 +619,33 @@
     position: relative;
 }
 
+.bamboo-hanger-cord,
 .sepia-hanger-cord {
     width: 3px;
     height: 20px;
-    background: linear-gradient(180deg, #b45309 0%, #78350f 100%);
-    box-shadow: 0 0 6px rgba(180, 83, 9, 0.5);
+    background: linear-gradient(180deg, #34d399 0%, #064e3b 100%);
+    box-shadow: 0 0 6px rgba(52, 211, 153, 0.6);
 }
 
+.bamboo-ornament,
 .sepia-ornament {
     font-size: 38px;
     line-height: 1;
     margin-top: -4px;
-    filter: drop-shadow(0 3px 8px rgba(120, 53, 15, 0.4));
-    animation: sepiaOrnamentPulse 2.5s ease-in-out infinite alternate;
+    filter: drop-shadow(0 3px 8px rgba(5, 150, 105, 0.45));
+    animation: bambooOrnamentPulse 2.5s ease-in-out infinite alternate;
 }
 
-@keyframes sepiaOrnamentPulse {
+@keyframes bambooOrnamentPulse {
     0% {
         transform: scale(0.96);
     }
     100% {
-        transform: scale(1.05);
+        transform: scale(1.06);
     }
 }
 
+.bamboo-scroll,
 .sepia-scroll {
     width: 100%;
     margin-top: -4px;
@@ -640,16 +654,19 @@
     align-items: center;
 }
 
+.bamboo-rod,
 .sepia-rod {
     width: 124px;
     height: 12px;
-    background: linear-gradient(90deg, #451a03 0%, #fef08a 35%, #b45309 65%, #291002 100%);
+    background: linear-gradient(90deg, #064e3b 0%, #a7f3d0 35%, #059669 65%, #022c22 100%);
     border-radius: 6px;
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35);
     position: relative;
     z-index: 2;
 }
 
+.bamboo-rod::before,
+.bamboo-rod::after,
 .sepia-rod::before,
 .sepia-rod::after {
     content: '';
@@ -657,19 +674,20 @@
     top: -3px;
     width: 10px;
     height: 18px;
-    background: #fde68a;
+    background: #6ee7b7;
     border-radius: 4px;
-    box-shadow: 0 0 6px rgba(245, 158, 11, 0.7);
+    box-shadow: 0 0 6px rgba(110, 231, 183, 0.8);
 }
-.sepia-rod::before { left: 2px; }
-.sepia-rod::after { right: 2px; }
+.bamboo-rod::before, .sepia-rod::before { left: 2px; }
+.bamboo-rod::after, .sepia-rod::after { right: 2px; }
 
+.bamboo-body,
 .sepia-body {
     width: 102px;
-    background: linear-gradient(180deg, #e7ddc4 0%, #f1ead8 30%, #e8dec5 70%, #d8cdad 100%);
-    border-left: 3px solid #92400e;
-    border-right: 3px solid #92400e;
-    box-shadow: inset 0 0 14px rgba(120, 53, 15, 0.25);
+    background: linear-gradient(180deg, #064e3b 0%, #047857 25%, #059669 50%, #047857 75%, #022c22 100%);
+    border-left: 3px solid #6ee7b7;
+    border-right: 3px solid #6ee7b7;
+    box-shadow: inset 0 0 16px rgba(0, 0, 0, 0.35);
     padding: 12px 6px 14px 6px;
     display: flex;
     flex-direction: column;
@@ -678,13 +696,16 @@
     position: relative;
 }
 
+.bamboo-symbol-top,
+.bamboo-symbol-bottom,
 .sepia-symbol-top,
 .sepia-symbol-bottom {
     font-size: 18px;
     line-height: 1;
-    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.3));
 }
 
+.bamboo-text,
 .sepia-text {
     display: flex;
     flex-direction: column;
@@ -694,38 +715,41 @@
     font-weight: 700;
     font-size: 21px;
     letter-spacing: 2.5px;
-    color: #451a03;
-    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.6);
+    color: #ecfdf5;
+    text-shadow: 0 0 10px rgba(52, 211, 153, 0.7), 0 2px 4px rgba(0, 0, 0, 0.6);
     line-height: 1.15;
 }
 
+.bamboo-seal,
 .sepia-seal {
     margin-top: 6px;
     padding: 3px 8px;
-    background: #991b1b;
-    border: 1px solid #7f1d1d;
+    background: #064e3b;
+    border: 1px dashed #6ee7b7;
     border-radius: 4px;
     font-size: 11.5px;
     font-weight: 700;
-    color: #fef08a;
+    color: #a7f3d0;
     white-space: nowrap;
     letter-spacing: 0.5px;
 }
 
+.bamboo-tassel,
 .sepia-tassel {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-top: -2px;
     transform-origin: top center;
-    animation: sepiaTasselSway 3s ease-in-out infinite alternate;
+    animation: bambooTasselSway 3s ease-in-out infinite alternate;
 }
 
+.bamboo-side-banner-right .bamboo-tassel,
 .sepia-side-banner-right .sepia-tassel {
     animation-delay: -1.5s;
 }
 
-@keyframes sepiaTasselSway {
+@keyframes bambooTasselSway {
     0% {
         transform: rotate(-5deg);
     }
@@ -734,26 +758,29 @@
     }
 }
 
+.bamboo-tassel-knot,
 .sepia-tassel-knot {
     width: 18px;
     height: 18px;
-    background: radial-gradient(circle, #fde68a 30%, #b45309 70%, #451a03 100%);
+    background: radial-gradient(circle, #a7f3d0 30%, #059669 70%, #064e3b 100%);
     border-radius: 50%;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
     position: relative;
     z-index: 2;
 }
 
+.bamboo-tassel-threads,
 .sepia-tassel-threads {
     width: 14px;
     height: 46px;
-    background: linear-gradient(180deg, #78350f 0%, #451a03 60%, #291002 100%);
+    background: linear-gradient(180deg, #10b981 0%, #059669 60%, #064e3b 100%);
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
-    box-shadow: 0 4px 8px rgba(69, 26, 3, 0.4);
+    box-shadow: 0 4px 10px rgba(5, 150, 105, 0.45);
     position: relative;
 }
 
+.bamboo-tassel-threads::after,
 .sepia-tassel-threads::after {
     content: '';
     position: absolute;
@@ -761,7 +788,7 @@
     left: 0;
     right: 0;
     height: 2px;
-    background: #fde68a;
+    background: #a7f3d0;
 }
 
 /* ===================================================
@@ -875,98 +902,135 @@
 }
 
 /* ===================================================
-   3. THEME CỔ ĐIỂN GIẤY CŨ (Vintage Sepia - theme-sepia)
+   3. THEME THANH TRÚC TIÊN GIỚI (Kiếm Hiệp & Tu Tiên - theme-bamboo)
    =================================================== */
+[data-theme="theme-bamboo"] body,
+[data-theme="theme-bamboo"] html,
+[data-theme="theme-bamboo"] main,
+[data-theme="theme-bamboo"] .bg-background,
+[data-theme="theme-bamboo"] .bg-surface,
 [data-theme="theme-sepia"] body,
 [data-theme="theme-sepia"] html,
 [data-theme="theme-sepia"] main,
 [data-theme="theme-sepia"] .bg-background,
 [data-theme="theme-sepia"] .bg-surface {
-    background-color: #f4eedb !important;
-    background-image: radial-gradient(ellipse at 50% 0%, #faf3e0 0%, #f4eedb 65%, #ece3cb 100%) !important;
+    background-color: #f0fdf4 !important;
+    background-image: radial-gradient(ellipse at 50% 0%, #d1fae5 0%, #f0fdf4 65%, #e6fcf0 100%) !important;
     background-attachment: fixed !important;
-    color: #382c20 !important;
+    color: #064e3b !important;
 }
 
+[data-theme="theme-bamboo"] header,
 [data-theme="theme-sepia"] header {
-    background-color: rgba(244, 238, 219, 0.96) !important;
-    border-bottom: 2px solid #92400e !important;
-    box-shadow: 0 4px 18px rgba(120, 53, 15, 0.08) !important;
+    background-color: rgba(240, 253, 244, 0.96) !important;
+    border-bottom: 2px solid #059669 !important;
+    box-shadow: 0 4px 20px rgba(5, 150, 105, 0.08) !important;
 }
 
+[data-theme="theme-bamboo"] header .font-headline-md,
 [data-theme="theme-sepia"] header .font-headline-md {
-    color: #78350f !important;
+    color: #047857 !important;
+    text-shadow: 0 1px 2px rgba(5, 150, 105, 0.2);
 }
 
+[data-theme="theme-bamboo"] nav a:hover,
 [data-theme="theme-sepia"] nav a:hover {
-    color: #92400e !important;
+    color: #059669 !important;
 }
 
+[data-theme="theme-bamboo"] #searchInput,
 [data-theme="theme-sepia"] #searchInput {
-    background-color: #fdfaf3 !important;
-    border-color: #d6caa9 !important;
+    background-color: #ffffff !important;
+    border-color: #a7f3d0 !important;
 }
 
+[data-theme="theme-bamboo"] #searchInput:focus,
 [data-theme="theme-sepia"] #searchInput:focus {
-    border-color: #92400e !important;
-    box-shadow: 0 0 0 3px rgba(146, 64, 14, 0.15) !important;
+    border-color: #059669 !important;
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15) !important;
 }
 
+[data-theme="theme-bamboo"] #heroBannerSection,
 [data-theme="theme-sepia"] #heroBannerSection {
-    background: linear-gradient(135deg, #f7f1e1 0%, #fcf7eb 50%, #f3ebda 100%) !important;
-    border: 2px solid #b45309 !important;
-    box-shadow: 0 12px 35px rgba(180, 83, 9, 0.12), 0 0 0 1px rgba(217, 119, 6, 0.3) !important;
+    background: linear-gradient(135deg, #ecfdf5 0%, #f7fef9 50%, #d1fae5 100%) !important;
+    border: 2px solid #34d399 !important;
+    box-shadow: 0 12px 35px rgba(5, 150, 105, 0.12), 0 0 0 1px rgba(110, 231, 183, 0.4) !important;
 }
 
+[data-theme="theme-bamboo"] .bg-white,
+[data-theme="theme-bamboo"] .bg-surface-container,
+[data-theme="theme-bamboo"] .bg-surface-container-low,
+[data-theme="theme-bamboo"] .bg-surface-container-high,
+[data-theme="theme-bamboo"] .bg-surface-container-highest,
+[data-theme="theme-bamboo"] .bg-surface-container-lowest,
 [data-theme="theme-sepia"] .bg-white,
 [data-theme="theme-sepia"] .bg-surface-container,
 [data-theme="theme-sepia"] .bg-surface-container-low,
 [data-theme="theme-sepia"] .bg-surface-container-high,
 [data-theme="theme-sepia"] .bg-surface-container-highest,
 [data-theme="theme-sepia"] .bg-surface-container-lowest {
-    background-color: #ece3cb !important;
-    border-color: #d6caa9 !important;
-    box-shadow: 0 4px 16px rgba(120, 53, 15, 0.05) !important;
+    background-color: #ffffff !important;
+    border-color: #d1fae5 !important;
+    box-shadow: 0 4px 18px rgba(5, 150, 105, 0.04) !important;
 }
 
+[data-theme="theme-bamboo"] .group:hover,
 [data-theme="theme-sepia"] .group:hover {
-    border-color: #b45309 !important;
+    border-color: #34d399 !important;
 }
 
+[data-theme="theme-bamboo"] h1,
+[data-theme="theme-bamboo"] h2,
+[data-theme="theme-bamboo"] h3,
+[data-theme="theme-bamboo"] h4,
+[data-theme="theme-bamboo"] .text-on-surface,
 [data-theme="theme-sepia"] h1,
 [data-theme="theme-sepia"] h2,
 [data-theme="theme-sepia"] h3,
 [data-theme="theme-sepia"] h4,
 [data-theme="theme-sepia"] .text-on-surface {
-    color: #2e2216 !important;
+    color: #064e3b !important;
 }
 
+[data-theme="theme-bamboo"] p,
+[data-theme="theme-bamboo"] .text-on-surface-variant,
 [data-theme="theme-sepia"] p,
 [data-theme="theme-sepia"] .text-on-surface-variant {
-    color: #634f3c !important;
+    color: #047857 !important;
 }
 
+[data-theme="theme-bamboo"] footer,
 [data-theme="theme-sepia"] footer {
-    background: linear-gradient(180deg, #f4eedb 0%, #ebe2c9 100%) !important;
-    border-top: 2px solid #b45309 !important;
+    background: linear-gradient(180deg, #f0fdf4 0%, #d1fae5 100%) !important;
+    border-top: 2px solid #34d399 !important;
 }
 
+[data-theme="theme-bamboo"] .bg-primary,
+[data-theme="theme-bamboo"] .bg-primary-container,
+[data-theme="theme-bamboo"] a.bg-primary,
+[data-theme="theme-bamboo"] a.bg-primary-container,
+[data-theme="theme-bamboo"] button.bg-primary,
 [data-theme="theme-sepia"] .bg-primary,
 [data-theme="theme-sepia"] .bg-primary-container,
 [data-theme="theme-sepia"] a.bg-primary,
 [data-theme="theme-sepia"] a.bg-primary-container,
 [data-theme="theme-sepia"] button.bg-primary {
-    background: linear-gradient(135deg, #854d0e 0%, #713f12 100%) !important;
-    color: #fdfaf3 !important;
-    box-shadow: 0 4px 14px rgba(113, 63, 18, 0.3) !important;
+    background: linear-gradient(135deg, #059669 0%, #047857 55%, #065f46 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid #6ee7b7 !important;
+    box-shadow: 0 4px 16px rgba(5, 150, 105, 0.35) !important;
 }
 
+[data-theme="theme-bamboo"] .text-primary,
+[data-theme="theme-bamboo"] a.text-primary,
 [data-theme="theme-sepia"] .text-primary,
 [data-theme="theme-sepia"] a.text-primary {
-    color: #92400e !important;
+    color: #059669 !important;
 }
 
+[data-theme="theme-bamboo"] .text-amber-500,
+[data-theme="theme-bamboo"] .text-yellow-500,
 [data-theme="theme-sepia"] .text-amber-500,
 [data-theme="theme-sepia"] .text-yellow-500 {
-    color: #b45309 !important;
+    color: #059669 !important;
 }
