@@ -28,13 +28,13 @@
             <div>
                 <div class="flex items-center gap-1.5 text-xs font-bold tracking-wider text-[#875200] uppercase mb-1">
                     <span class="material-symbols-outlined text-[16px]">tune</span>
-                    <span>HỆ THỐNG • THIẾT LẬP TRUNG TÂM</span>
+                    <span>HỆ THỐNG • THIẾT LẬP TRUNG TÂM & CHỦ ĐỀ</span>
                 </div>
                 <h1 class="font-serif-title text-3xl font-bold text-[#231a11] tracking-tight">
                     Cấu hình hệ thống & chính sách
                 </h1>
                 <p class="text-sm text-[#75695d] mt-0.5">
-                    Điều chỉnh tỷ lệ doanh thu tác giả, định mức tiền tệ số, thông tin pháp lý công bố và trạng thái vận hành nền tảng Trạm Truyện.
+                    Điều chỉnh tỷ giá tiền tệ số, thông tin pháp lý công bố, chính sách vận hành và kích hoạt chủ đề giao diện nền tảng Trạm Truyện (UC-07 / UC-52).
                 </p>
             </div>
 
@@ -49,8 +49,7 @@
             </div>
         </div>
 
-
-        <!-- Configuration Form -->
+        <!-- Configuration Form (Settings) -->
         <form th:action="@{/admin/settings}" th:object="${settings}" method="post" id="settingsForm" class="space-y-8">
 
             <!-- 1. Thiết lập tiền tệ & Coin -->
@@ -66,7 +65,7 @@
                 <div class="space-y-4 max-w-2xl">
                     <div class="flex items-center justify-between">
                         <label class="text-sm font-bold text-[#2b2118]">
-                            Tỷ giá quy đổi tiền mặt VNĐ → Coin <span class="required-star">*</span>
+                            Tỷ giá quy đổi tiền mặt VNĐ → Coin <span class="required-star text-red-500">*</span>
                         </label>
                         <span class="text-xs text-[#8a7664] bg-[#faf7f2] px-2 py-0.5 rounded-md border border-[#eae2d5]">Hiển thị tham chiếu</span>
                     </div>
@@ -84,13 +83,21 @@
                         </div>
                         <div class="flex-1">
                             <label class="text-[11px] font-semibold text-[#8a7664] block mb-1">Quy đổi nhận được (Coin)</label>
-                            <input type="number" th:field="*{vndToCoinRate}" min="1" max="1000" required
-                                   class="w-full px-4 py-2.5 bg-white rounded-xl border border-[#eae2d5] font-bold text-sm text-[#bc7d39] focus:outline-none focus:ring-2 focus:ring-[#bc7d39]">
+                            <input type="number" id="vndToCoinRateInput" th:field="*{vndToCoinRate}" min="1" max="1000" required
+                                   class="w-full px-4 py-2.5 bg-white rounded-xl border font-bold text-sm text-[#bc7d39] focus:outline-none focus:ring-2 focus:ring-[#bc7d39]"
+                                   th:classappend="${#fields.hasErrors('vndToCoinRate') ? 'border-red-500 ring-1 ring-red-500' : 'border-[#eae2d5]'}">
                         </div>
                     </div>
-                    <p class="text-[11px] text-[#8a7664] italic">
-                        ⓘ Số Coin nhận được khi nạp mỗi 1.000 VNĐ (ví dụ 10 nghĩa là 1.000 VNĐ = 10 Coin).
-                    </p>
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="text-[#8a7664] italic">
+                            ⓘ 1.000 VNĐ quy đổi ra số Coin nhận được tương ứng.
+                        </span>
+                        <span id="ratePreviewBadge" class="font-bold text-[#875200] bg-[#f8ede3] px-2.5 py-1 rounded-lg"
+                              th:text="'Tương đương: 1 Coin = ' + (${settings.vndToCoinRate != null && settings.vndToCoinRate > 0 ? 1000 / settings.vndToCoinRate : 100}) + 'đ'">
+                            Tương đương: 1 Coin = 100đ
+                        </span>
+                    </div>
+                    <p th:if="${#fields.hasErrors('vndToCoinRate')}" th:errors="*{vndToCoinRate}" class="text-xs font-medium text-red-500 mt-1"></p>
                 </div>
             </div>
 
@@ -103,27 +110,31 @@
                     </div>
                     <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#f4ece1] text-[#875200]">CSKH & Khiếu nại</span>
                 </div>
-                <p class="text-xs text-[#8a7664]">Hiển thị công khai ở chân trang (Footer), hòm thư và hỗ trợ người dùng.</p>
+                <p class="text-xs text-[#8a7664]">Hiển thị công khai ở chân trang (Footer), hòm thư và kênh hỗ trợ độc giả toàn trang web.</p>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="text-xs font-bold text-[#2b2118] block mb-1.5">Hotline hỗ trợ độc giả (contact_phone) <span class="required-star">*</span></label>
+                        <label class="text-xs font-bold text-[#2b2118] block mb-1.5">Hotline hỗ trợ độc giả (contact_phone) <span class="required-star text-red-500">*</span></label>
                         <div class="relative">
                             <span class="material-symbols-outlined absolute left-3.5 top-3 text-[#8a7664] text-[18px]">call</span>
-                            <input type="text" th:field="*{contactPhone}" required maxlength="20"
-                                   class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#eae2d5] bg-white text-sm font-medium text-[#2b2118] focus:outline-none focus:ring-2 focus:ring-[#bc7d39]">
+                            <input type="text" id="contactPhoneInput" th:field="*{contactPhone}" required maxlength="20"
+                                   class="w-full pl-10 pr-4 py-2.5 rounded-xl border bg-white text-sm font-medium text-[#2b2118] focus:outline-none focus:ring-2 focus:ring-[#bc7d39]"
+                                   th:classappend="${#fields.hasErrors('contactPhone') ? 'border-red-500 ring-1 ring-red-500' : 'border-[#eae2d5]'}">
                         </div>
-                        <span class="text-[11px] text-[#8a7664] mt-1 block">Hotline kỹ thuật và chăm sóc khách hàng</span>
+                        <span class="text-[11px] text-[#8a7664] mt-1 block">Hotline kỹ thuật và chăm sóc khách hàng 24/7</span>
+                        <p th:if="${#fields.hasErrors('contactPhone')}" th:errors="*{contactPhone}" class="text-xs font-medium text-red-500 mt-1"></p>
                     </div>
 
                     <div>
-                        <label class="text-xs font-bold text-[#2b2118] block mb-1.5">Email hỗ trợ kỹ thuật & bản quyền (support_email) <span class="required-star">*</span></label>
+                        <label class="text-xs font-bold text-[#2b2118] block mb-1.5">Email tiếp nhận hỗ trợ & bản quyền (support_email) <span class="required-star text-red-500">*</span></label>
                         <div class="relative">
                             <span class="material-symbols-outlined absolute left-3.5 top-3 text-[#8a7664] text-[18px]">mail</span>
-                            <input type="email" th:field="*{supportEmail}" required maxlength="100"
-                                   class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#eae2d5] bg-white text-sm font-medium text-[#2b2118] focus:outline-none focus:ring-2 focus:ring-[#bc7d39]">
+                            <input type="email" id="supportEmailInput" th:field="*{supportEmail}" required maxlength="100"
+                                   class="w-full pl-10 pr-4 py-2.5 rounded-xl border bg-white text-sm font-medium text-[#2b2118] focus:outline-none focus:ring-2 focus:ring-[#bc7d39]"
+                                   th:classappend="${#fields.hasErrors('supportEmail') ? 'border-red-500 ring-1 ring-red-500' : 'border-[#eae2d5]'}">
                         </div>
-                        <span class="text-[11px] text-[#8a7664] mt-1 block">Tiếp nhận khiếu nại bản quyền và hỗ trợ độc giả</span>
+                        <span class="text-[11px] text-[#8a7664] mt-1 block">Tiếp nhận thông báo gỡ bỏ nội dung vi phạm và trợ giúp tài khoản</span>
+                        <p th:if="${#fields.hasErrors('supportEmail')}" th:errors="*{supportEmail}" class="text-xs font-medium text-red-500 mt-1"></p>
                     </div>
                 </div>
             </div>
@@ -137,53 +148,193 @@
                     </div>
                     <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#f4ece1] text-[#875200]">Pháp lý & Quy định</span>
                 </div>
-                <p class="text-xs text-[#8a7664]">Nội dung văn bản quy chuẩn bảo mật và điều khoản áp dụng toàn hệ thống.</p>
+                <p class="text-xs text-[#8a7664]">Nội dung văn bản quy chuẩn bảo mật và điều khoản áp dụng cho toàn bộ độc giả, tác giả và người đóng góp nội dung.</p>
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div>
                         <div class="flex items-center justify-between mb-2">
-                            <label class="text-xs font-bold text-[#2b2118]">Điều khoản sử dụng nền tảng (terms_of_service) <span class="required-star">*</span></label>
-                            <span class="text-[11px] text-[#8a7664]">Văn bản có hiệu lực</span>
+                            <label class="text-xs font-bold text-[#2b2118]">Điều khoản sử dụng nền tảng (terms_of_service) <span class="required-star text-red-500">*</span></label>
+                            <span class="text-[11px] text-[#8a7664]">Tối đa 20.000 ký tự</span>
                         </div>
-                        <textarea th:field="*{termsOfService}" rows="8" maxlength="20000" required
-                                  class="w-full p-4 rounded-xl border border-[#eae2d5] bg-white text-xs text-[#2b2118] leading-relaxed focus:outline-none focus:ring-2 focus:ring-[#bc7d39]"></textarea>
+                        <textarea id="tosTextarea" th:field="*{termsOfService}" rows="8" maxlength="20000" required
+                                  class="w-full p-4 rounded-xl border bg-white text-xs text-[#2b2118] leading-relaxed focus:outline-none focus:ring-2 focus:ring-[#bc7d39]"
+                                  th:classappend="${#fields.hasErrors('termsOfService') ? 'border-red-500 ring-1 ring-red-500' : 'border-[#eae2d5]'}"></textarea>
+                        <p th:if="${#fields.hasErrors('termsOfService')}" th:errors="*{termsOfService}" class="text-xs font-medium text-red-500 mt-1"></p>
                     </div>
 
                     <div>
                         <div class="flex items-center justify-between mb-2">
-                            <label class="text-xs font-bold text-[#2b2118]">Chính sách bảo mật (privacy_policy) <span class="required-star">*</span></label>
-                            <span class="text-[11px] text-[#bc7d39] font-semibold">Bảo mật thông tin</span>
+                            <label class="text-xs font-bold text-[#2b2118]">Chính sách bảo mật (privacy_policy) <span class="required-star text-red-500">*</span></label>
+                            <span class="text-[11px] text-[#8a7664]">Tối đa 20.000 ký tự</span>
                         </div>
-                        <textarea th:field="*{privacyPolicy}" rows="8" maxlength="20000" required
-                                  class="w-full p-4 rounded-xl border border-[#eae2d5] bg-white text-xs text-[#2b2118] leading-relaxed focus:outline-none focus:ring-2 focus:ring-[#bc7d39]"></textarea>
+                        <textarea id="ppTextarea" th:field="*{privacyPolicy}" rows="8" maxlength="20000" required
+                                  class="w-full p-4 rounded-xl border bg-white text-xs text-[#2b2118] leading-relaxed focus:outline-none focus:ring-2 focus:ring-[#bc7d39]"
+                                  th:classappend="${#fields.hasErrors('privacyPolicy') ? 'border-red-500 ring-1 ring-red-500' : 'border-[#eae2d5]'}"></textarea>
+                        <p th:if="${#fields.hasErrors('privacyPolicy')}" th:errors="*{privacyPolicy}" class="text-xs font-medium text-red-500 mt-1"></p>
                     </div>
                 </div>
             </div>
 
-            <!-- Bottom Sticky / Action Bar -->
-            <div class="p-4 bg-white rounded-2xl border border-[#eae2d5] shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div class="flex items-center gap-2 text-xs text-[#8a7664]">
-                    <span class="material-symbols-outlined text-[#bc7d39] text-[18px]">schedule</span>
-                    <span>Những thay đổi đối với cấu hình hệ thống sẽ có hiệu lực ngay lập tức.</span>
+        </form>
+
+        <!-- 4. CHỦ ĐỀ & GIAO DIỆN WEBSITE (WEB THEMES - UC-07 / UC-52) -->
+        <div id="themes-section" class="bg-white rounded-2xl border border-[#eae2d5] shadow-sm p-6 sm:p-8 space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-[#eae2d5] gap-3">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[#bc7d39] text-[24px]">palette</span>
+                    <div>
+                        <h2 class="font-bold text-lg text-[#2b2118]">4. Chủ đề & Giao diện website (Web Themes)</h2>
+                        <p class="text-xs text-[#8a7664] mt-0.5">Kích hoạt phong cách giao diện đồng bộ cho toàn bộ nền tảng Trạm Truyện (Theo quy định Use Case UC-07 / UC-52 Luồng A.6).</p>
+                    </div>
                 </div>
-                <div class="flex items-center gap-3">
-                    <button type="reset" class="px-5 py-2.5 rounded-xl bg-[#faf7f2] border border-[#eae2d5] text-[#6b5849] hover:bg-[#f4ece1] text-xs font-bold transition-colors">
-                        Khôi phục ban đầu
-                    </button>
-                    <button type="submit" class="px-6 py-2.5 rounded-xl bg-[#875200] hover:bg-[#6c4100] text-white text-xs font-bold shadow-md flex items-center gap-2 transition-colors">
-                        <span class="material-symbols-outlined text-[18px]">save</span>
-                        <span>Lưu cấu hình hệ thống</span>
-                    </button>
+                <div class="flex items-center gap-2 self-start sm:self-auto">
+                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-[#875200] text-white shadow-sm flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-[#ffddba] animate-ping"></span>
+                        <span th:text="'Đang chạy: ' + (${activeTheme != null ? activeTheme.name : 'Mặc định'})">Đang chạy: Mặc định</span>
+                    </span>
                 </div>
             </div>
 
-        </form>
+            <!-- Themes Grid Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div th:each="theme : ${themes}"
+                     class="group relative rounded-2xl border transition-all duration-300 overflow-hidden flex flex-col justify-between"
+                     th:classappend="${theme.isActive ? 'border-2 border-[#875200] bg-[#fffaf4] shadow-md ring-4 ring-[#875200]/10' : 'border-[#eae2d5] bg-white hover:border-[#bc7d39] hover:shadow-lg'}">
+
+                    <!-- Theme Header / Preview Image -->
+                    <div class="relative h-44 w-full overflow-hidden bg-[#faf7f2]">
+                        <img th:src="${theme.thumbnailUrl}" th:alt="${theme.name}"
+                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                             onerror="this.src='https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=600&q=80'">
+
+                        <!-- Overlay Gradient -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+
+                        <!-- Active / Ready Status Badge -->
+                        <div class="absolute top-3 right-3">
+                            <span th:if="${theme.isActive}"
+                                  class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-[#875200] text-white shadow flex items-center gap-1.5">
+                                <span class="w-1.5 h-1.5 rounded-full bg-[#ffddba]"></span>
+                                Đang kích hoạt
+                            </span>
+                            <span th:if="${!theme.isActive}"
+                                  class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-black/60 text-white backdrop-blur-sm shadow-sm">
+                                Khả dụng
+                            </span>
+                        </div>
+
+                        <!-- Folder Path Badge on Preview -->
+                        <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between">
+                            <span class="font-mono text-[11px] text-white/90 bg-black/40 backdrop-blur-md px-2 py-0.5 rounded border border-white/20"
+                                  th:text="${theme.folderPath}">theme-default</span>
+                            <span class="text-[11px] text-[#ffddba] font-medium"
+                                  th:text="'ID: #' + ${theme.id}">ID: #1</span>
+                        </div>
+                    </div>
+
+                    <!-- Theme Information Body -->
+                    <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+                        <div>
+                            <h3 class="font-bold text-sm text-[#2b2118] group-hover:text-[#875200] transition-colors leading-snug"
+                                th:text="${theme.name}">Tên chủ đề giao diện</h3>
+                            <p class="text-xs text-[#8a7664] mt-1.5 leading-relaxed line-clamp-2">
+                                <span th:if="${theme.folderPath == 'theme-default'}">Tông màu nâu vàng trang nhã, ấm áp, tối ưu hóa cho trải nghiệm đọc văn học lâu dài.</span>
+                                <span th:if="${theme.folderPath == 'theme-tet'}">Sắc xuân rực rỡ, họa tiết lễ hội cổ truyền đón năm mới ấm cúng, tưng bừng.</span>
+                                <span th:if="${theme.folderPath == 'theme-dark'}">Giao diện bóng đêm huyền bí, độ tương phản dịu nhẹ, hạn chế mỏi mắt khi đọc truyện ban đêm.</span>
+                                <span th:if="${theme.folderPath == 'theme-sepia'}">Tông màu ngà giấy cũ cổ điển, cảm giác thư thái như đang lật từng trang sách giấy cổ điển.</span>
+                            </p>
+                        </div>
+
+                        <!-- Action Button / Form -->
+                        <div class="pt-2 border-t border-[#f4ece1]">
+                            <!-- If Already Active -->
+                            <div th:if="${theme.isActive}">
+                                <button type="button" disabled
+                                        class="w-full py-2.5 px-4 rounded-xl bg-[#f4ece1] text-[#875200] font-bold text-xs flex items-center justify-center gap-1.5 cursor-default shadow-inner">
+                                    <span class="material-symbols-outlined text-[18px]">verified</span>
+                                    <span>Giao diện đang áp dụng</span>
+                                </button>
+                            </div>
+
+                            <!-- If Inactive -> Form to Activate -->
+                            <div th:if="${!theme.isActive}">
+                                <form th:action="@{/admin/settings/themes/{id}/activate(id=${theme.id})}" method="post">
+                                    <button type="submit"
+                                            class="w-full py-2.5 px-4 rounded-xl bg-white hover:bg-[#875200] border border-[#bc7d39] text-[#875200] hover:text-white font-bold text-xs transition-all duration-200 shadow-sm flex items-center justify-center gap-1.5 group/btn">
+                                        <span class="material-symbols-outlined text-[18px] group-hover/btn:scale-110 transition-transform">check</span>
+                                        <span>Kích hoạt giao diện này</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Theme Note -->
+            <div class="p-4 rounded-xl bg-[#faf7f2] border border-[#eae2d5] flex items-start gap-3 text-xs text-[#8a7664]">
+                <span class="material-symbols-outlined text-[#bc7d39] text-[20px] shrink-0 mt-0.5">info</span>
+                <div class="space-y-1">
+                    <p><span class="font-bold text-[#2b2118]">Lưu ý khi đổi chủ đề:</span> Giao diện được chọn sẽ có hiệu lực tức thì trên toàn bộ hệ thống cho tất cả độc giả và tác giả.</p>
+                    <p>Mọi thao tác thay đổi giao diện đều được tự động lưu vết tại <a th:href="@{/admin/audit-logs}" class="text-[#875200] font-semibold underline hover:text-[#6c4100]">Nhật ký kiểm toán</a> với hành động <code class="bg-[#f4ece1] px-1.5 py-0.5 rounded text-[#875200] font-mono font-semibold">ACTIVATE_WEB_THEME</code>, giúp ban quản trị theo dõi minh bạch mọi thay đổi cấu hình.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Sticky / Action Bar for Settings -->
+        <div class="p-4 bg-white rounded-2xl border border-[#eae2d5] shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-2 text-xs text-[#8a7664]">
+                <span class="material-symbols-outlined text-[#bc7d39] text-[18px]">schedule</span>
+                <span>Những thay đổi đối với cấu hình hệ thống sẽ được lưu vết kiểm toán và có hiệu lực ngay lập tức.</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <button type="button" onclick="restoreDefaultSystemSettings()"
+                        class="px-5 py-2.5 rounded-xl bg-[#faf7f2] border border-[#eae2d5] text-[#6b5849] hover:bg-[#f4ece1] text-xs font-bold transition-colors flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[16px]">restart_alt</span>
+                    <span>Khôi phục mặc định</span>
+                </button>
+                <button type="submit" form="settingsForm"
+                        class="px-6 py-2.5 rounded-xl bg-[#875200] hover:bg-[#6c4100] text-white text-xs font-bold shadow-md flex items-center gap-2 transition-colors">
+                    <span class="material-symbols-outlined text-[18px]">save</span>
+                    <span>Lưu cấu hình hệ thống</span>
+                </button>
+            </div>
+        </div>
 
     </section>
 </main>
 
 <!-- Admin Flash Toast Notification (UC-52) -->
 <div th:replace="~{admin/fragments/layout :: flash-toast}"></div>
+
+<script>
+    // Khôi phục các giá trị cấu hình tiêu chuẩn ban đầu của Trạm Truyện
+    function restoreDefaultSystemSettings() {
+        if (!confirm("Bạn có chắc chắn muốn khôi phục toàn bộ biểu mẫu về cấu hình tiêu chuẩn ban đầu của Trạm Truyện (10 Coin / 1.000 VNĐ, Hotline 1900-1234, support@tramtruyen.com)?")) {
+            return;
+        }
+
+        const rateInput = document.getElementById('vndToCoinRateInput');
+        if (rateInput) rateInput.value = 10;
+
+        const phoneInput = document.getElementById('contactPhoneInput');
+        if (phoneInput) phoneInput.value = "1900-1234";
+
+        const emailInput = document.getElementById('supportEmailInput');
+        if (emailInput) emailInput.value = "support@tramtruyen.com";
+
+        const tos = document.getElementById('tosTextarea');
+        if (tos) {
+            tos.value = "Chào mừng bạn đến với Trạm Truyện. Bằng việc truy cập hoặc sử dụng trang web, bạn đồng ý tuân thủ các quy định về bản quyền tác phẩm văn học, ứng xử văn minh trong bình luận, không sao chép hoặc phân phối lại nội dung chương VIP khi chưa có sự đồng ý bằng văn bản của Ban Quản Trị.";
+        }
+
+        const pp = document.getElementById('ppTextarea');
+        if (pp) {
+            pp.value = "Trạm Truyện cam kết bảo mật tuyệt đối thông tin cá nhân của người dùng bao gồm địa chỉ email, lịch sử đọc truyện và thông tin giao dịch nạp Coin. Chúng tôi không chia sẻ hoặc cung cấp thông tin người dùng cho bất kỳ bên thứ ba nào ngoại trừ các trường hợp theo yêu cầu của cơ quan pháp luật có thẩm quyền.";
+        }
+    }
+</script>
 
 </body>
 </html>

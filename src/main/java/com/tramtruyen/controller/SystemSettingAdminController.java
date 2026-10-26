@@ -2,6 +2,7 @@ package com.tramtruyen.controller;
 
 import com.tramtruyen.dto.SystemSettingsDTO;
 import com.tramtruyen.entity.User;
+import com.tramtruyen.entity.WebSetting;
 import com.tramtruyen.repository.UserRepository;
 import com.tramtruyen.security.CustomUserDetails;
 import com.tramtruyen.service.SystemSettingService;
@@ -13,10 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -34,6 +32,8 @@ public class SystemSettingAdminController {
             SystemSettingsDTO currentSettings = systemSettingService.getSettings();
             model.addAttribute("settings", currentSettings);
         }
+        model.addAttribute("themes", systemSettingService.getAllThemes());
+        model.addAttribute("activeTheme", systemSettingService.getActiveTheme());
         model.addAttribute("pageTitle", "Cấu hình hệ thống & chính sách | Trạm Truyện Admin");
         return "admin/settings/config";
     }
@@ -69,6 +69,23 @@ public class SystemSettingAdminController {
         }
 
         return "redirect:/admin/settings";
+    }
+
+    @PostMapping("/themes/{id}/activate")
+    public String activateTheme(@PathVariable("id") Integer themeId,
+                                Authentication authentication,
+                                HttpServletRequest httpRequest,
+                                RedirectAttributes redirectAttributes) {
+        try {
+            Integer adminId = getAdminId(authentication);
+            String clientIp = getClientIp(httpRequest);
+            WebSetting activated = systemSettingService.activateTheme(themeId, adminId, clientIp);
+            redirectAttributes.addFlashAttribute("successMessage", "Kích hoạt chủ đề giao diện \"" + activated.getName() + "\" thành công!");
+        } catch (Exception e) {
+            log.error("Lỗi khi kích hoạt chủ đề giao diện ID: {}", themeId, e);
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
+        return "redirect:/admin/settings#themes-section";
     }
 
     private Integer getAdminId(Authentication authentication) {

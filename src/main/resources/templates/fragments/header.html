@@ -4,7 +4,206 @@
 <body>
     <!-- Header Fragment -->
     <header th:fragment="main-header"
+        th:attr="data-theme=${activeTheme != null ? activeTheme.folderPath : 'theme-default'}"
         class="fixed top-0 left-0 right-0 z-50 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(107,91,75,0.06)]">
+
+        <!-- Top Accent Ribbons for Custom Themes -->
+        <div th:if="${activeTheme != null && activeTheme.folderPath == 'theme-tet'}"
+             class="h-1 w-full bg-gradient-to-r from-[#b91c1c] via-[#f59e0b] to-[#b91c1c] absolute top-0 left-0 right-0"></div>
+        <div th:if="${activeTheme != null && activeTheme.folderPath == 'theme-dark'}"
+             class="h-1 w-full bg-gradient-to-r from-[#1e1b4b] via-[#38bdf8] to-[#1e1b4b] absolute top-0 left-0 right-0"></div>
+        <div th:if="${activeTheme != null && activeTheme.folderPath == 'theme-sepia'}"
+             class="h-1 w-full bg-gradient-to-r from-[#78350f] via-[#d97706] to-[#78350f] absolute top-0 left-0 right-0"></div>
+
+        <!-- External Web Themes Stylesheet (UC-07 / UC-52) -->
+        <link rel="stylesheet" th:href="@{/css/web-themes.css}">
+
+        <!-- 1. Side Banners for Tet Theme (Tết & Lễ Hội - Reusable Dynamic Lunar Year) -->
+        <div th:if="${activeTheme != null && activeTheme.folderPath == 'theme-tet'}"
+             class="tet-side-banners pointer-events-none select-none">
+            <!-- Left Banner: Cung Chúc Tân Xuân -->
+            <div class="tet-side-banner tet-side-banner-left">
+                <div class="tet-hanger">
+                    <span class="tet-hanger-knot"></span>
+                    <span class="tet-lantern">🏮</span>
+                </div>
+                <div class="tet-scroll">
+                    <div class="tet-rod tet-rod-top"></div>
+                    <div class="tet-body">
+                        <div class="tet-flower-top">🌸</div>
+                        <div class="tet-text">
+                            <span>CUNG</span>
+                            <span>CHÚC</span>
+                            <span>TÂN</span>
+                            <span>XUÂN</span>
+                        </div>
+                        <div class="tet-flower-bottom">🌸</div>
+                        <div class="tet-seal">
+                            <span th:text="'🧧 ' + ${lunarYearName != null ? lunarYearName : 'Bính Ngọ'}">🧧 Bính Ngọ</span>
+                        </div>
+                    </div>
+                    <div class="tet-rod tet-rod-bottom"></div>
+                </div>
+                <div class="tet-tassel">
+                    <div class="tet-tassel-knot"></div>
+                    <div class="tet-tassel-threads"></div>
+                </div>
+            </div>
+
+            <!-- Right Banner: Vạn Sự Như Ý -->
+            <div class="tet-side-banner tet-side-banner-right">
+                <div class="tet-hanger">
+                    <span class="tet-hanger-knot"></span>
+                    <span class="tet-lantern">🏮</span>
+                </div>
+                <div class="tet-scroll">
+                    <div class="tet-rod tet-rod-top"></div>
+                    <div class="tet-body">
+                        <div class="tet-flower-top">🌺</div>
+                        <div class="tet-text">
+                            <span>VẠN</span>
+                            <span>SỰ</span>
+                            <span>NHƯ</span>
+                            <span>Ý</span>
+                        </div>
+                        <div class="tet-flower-bottom">🌺</div>
+                        <div class="tet-seal">
+                            <span>💰 PHÁT TÀI</span>
+                        </div>
+                    </div>
+                    <div class="tet-rod tet-rod-bottom"></div>
+                </div>
+                <div class="tet-tassel">
+                    <div class="tet-tassel-knot"></div>
+                    <div class="tet-tassel-threads"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Side Banners for Midnight Dark Theme (Dạ Khúc Đêm) -->
+        <div th:if="${activeTheme != null && activeTheme.folderPath == 'theme-dark'}"
+             class="dark-side-banners pointer-events-none select-none">
+            <!-- Left Banner: Dạ Khúc Huyền Bí -->
+            <div class="dark-side-banner dark-side-banner-left">
+                <div class="dark-hanger">
+                    <span class="dark-hanger-cord"></span>
+                    <span class="dark-moon">🌙</span>
+                </div>
+                <div class="dark-scroll">
+                    <div class="dark-rod dark-rod-top"></div>
+                    <div class="dark-body">
+                        <div class="dark-star-top">✨</div>
+                        <div class="dark-text">
+                            <span>DẠ</span>
+                            <span>KHÚC</span>
+                            <span>HUYỀN</span>
+                            <span>BÍ</span>
+                        </div>
+                        <div class="dark-star-bottom">✨</div>
+                        <div class="dark-seal">
+                            <span>🌌 MINH NGUYỆT</span>
+                        </div>
+                    </div>
+                    <div class="dark-rod dark-rod-bottom"></div>
+                </div>
+                <div class="dark-tassel">
+                    <div class="dark-tassel-knot"></div>
+                    <div class="dark-tassel-threads"></div>
+                </div>
+            </div>
+
+            <!-- Right Banner: Tinh Hoa Kỳ Ngộ -->
+            <div class="dark-side-banner dark-side-banner-right">
+                <div class="dark-hanger">
+                    <span class="dark-hanger-cord"></span>
+                    <span class="dark-star">🌟</span>
+                </div>
+                <div class="dark-scroll">
+                    <div class="dark-rod dark-rod-top"></div>
+                    <div class="dark-body">
+                        <div class="dark-star-top">🌠</div>
+                        <div class="dark-text">
+                            <span>TINH</span>
+                            <span>HOA</span>
+                            <span>KỲ</span>
+                            <span>NGỘ</span>
+                        </div>
+                        <div class="dark-star-bottom">🌠</div>
+                        <div class="dark-seal">
+                            <span>🔮 VẠN SAO</span>
+                        </div>
+                    </div>
+                    <div class="dark-rod dark-rod-bottom"></div>
+                </div>
+                <div class="dark-tassel">
+                    <div class="dark-tassel-knot"></div>
+                    <div class="dark-tassel-threads"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Side Banners for Vintage Sepia Theme (Cổ Điển Giấy Cũ) -->
+        <div th:if="${activeTheme != null && activeTheme.folderPath == 'theme-sepia'}"
+             class="sepia-side-banners pointer-events-none select-none">
+            <!-- Left Banner: Cổ Kim Văn Tự -->
+            <div class="sepia-side-banner sepia-side-banner-left">
+                <div class="sepia-hanger">
+                    <span class="sepia-hanger-cord"></span>
+                    <span class="sepia-ornament">📜</span>
+                </div>
+                <div class="sepia-scroll">
+                    <div class="sepia-rod sepia-rod-top"></div>
+                    <div class="sepia-body">
+                        <div class="sepia-symbol-top">🖋️</div>
+                        <div class="sepia-text">
+                            <span>CỔ</span>
+                            <span>KIM</span>
+                            <span>VĂN</span>
+                            <span>TỰ</span>
+                        </div>
+                        <div class="sepia-symbol-bottom">🖋️</div>
+                        <div class="sepia-seal">
+                            <span>🏮 MỰC TÀU</span>
+                        </div>
+                    </div>
+                    <div class="sepia-rod sepia-rod-bottom"></div>
+                </div>
+                <div class="sepia-tassel">
+                    <div class="sepia-tassel-knot"></div>
+                    <div class="sepia-tassel-threads"></div>
+                </div>
+            </div>
+
+            <!-- Right Banner: Tri Kỷ Thư Phòng -->
+            <div class="sepia-side-banner sepia-side-banner-right">
+                <div class="sepia-hanger">
+                    <span class="sepia-hanger-cord"></span>
+                    <span class="sepia-ornament">📖</span>
+                </div>
+                <div class="sepia-scroll">
+                    <div class="sepia-rod sepia-rod-top"></div>
+                    <div class="sepia-body">
+                        <div class="sepia-symbol-top">🍂</div>
+                        <div class="sepia-text">
+                            <span>TRI</span>
+                            <span>KỶ</span>
+                            <span>THƯ</span>
+                            <span>PHÒNG</span>
+                        </div>
+                        <div class="sepia-symbol-bottom">🍂</div>
+                        <div class="sepia-seal">
+                            <span>🏷️ SÁCH XƯA</span>
+                        </div>
+                    </div>
+                    <div class="sepia-rod sepia-rod-bottom"></div>
+                </div>
+                <div class="sepia-tassel">
+                    <div class="sepia-tassel-knot"></div>
+                    <div class="sepia-tassel-threads"></div>
+                </div>
+            </div>
+        </div>
+
         <div class="h-20 max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between gap-6">
             <div class="flex items-center gap-8 lg:gap-10 shrink-0">
                 <a class="flex items-center gap-3 group" th:href="@{/}">
@@ -251,127 +450,8 @@
                 </button>
             </div>
         </div>
-        <script>
-            // Auto-hide toast after 5 seconds
-            document.addEventListener('DOMContentLoaded', function () {
-                setTimeout(function () {
-                    const toast = document.getElementById('global-toast');
-                    if (toast) {
-                        toast.style.opacity = '0';
-                        toast.style.transition = 'opacity 0.5s ease';
-                        setTimeout(() => toast.remove(), 500);
-                    }
-                }, 5000);
-            });
-        </script>
-
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                // Update Login & Register buttons to preserve current page return URL
-                const loginBtn = document.getElementById('navLoginBtn');
-                const regBtn = document.getElementById('navRegisterBtn');
-                const currentPath = window.location.pathname;
-                if (currentPath && currentPath !== '/' && !currentPath.startsWith('/login') && !currentPath.startsWith('/register')) {
-                    const redirectTarget = encodeURIComponent(currentPath + window.location.search);
-                    if (loginBtn) loginBtn.href = '/login?redirect=' + redirectTarget;
-                    if (regBtn) regBtn.href = '/register?redirect=' + redirectTarget;
-                }
-
-                // Dropdown menu logic
-                const btn = document.getElementById('userMenuBtn');
-                const dropdown = document.getElementById('userDropdown');
-                if (btn && dropdown) {
-                    btn.addEventListener('click', function (e) {
-                        e.stopPropagation();
-                        dropdown.classList.toggle('hidden');
-                    });
-                    document.addEventListener('click', function (e) {
-                        if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
-                            dropdown.classList.add('hidden');
-                        }
-                    });
-                    document.addEventListener('keydown', function (e) {
-                        if (e.key === 'Escape') {
-                            dropdown.classList.add('hidden');
-                        }
-                    });
-                }
-
-                // Live search suggestions
-                const searchInput = document.getElementById('searchInput');
-                const searchPopup = document.getElementById('searchSuggestions');
-                const suggestKeyword = document.getElementById('suggestKeyword');
-                const suggestCount = document.getElementById('suggestCount');
-                const suggestList = document.getElementById('suggestList');
-                const suggestSeeAll = document.getElementById('suggestSeeAll');
-
-                let debounceTimer;
-
-                if (searchInput && searchPopup) {
-                    searchInput.addEventListener('input', function () {
-                        clearTimeout(debounceTimer);
-                        const query = this.value.trim();
-
-                        if (query.length === 0) {
-                            searchPopup.classList.add('hidden');
-                            return;
-                        }
-
-                        debounceTimer = setTimeout(() => {
-                            fetch(`/api/search/suggestions?q=${encodeURIComponent(query)}`)
-                                .then(response => response.json())
-                                .then(data => {
-                                    suggestKeyword.textContent = query;
-                                    suggestCount.textContent = `${data.results.length} kết quả nổi bật`;
-
-                                    suggestList.innerHTML = '';
-                                    if (data.results.length === 0) {
-                                        suggestList.innerHTML = `<div class="p-4 text-center text-[#8c7a68] text-sm">Không tìm thấy kết quả nào</div>`;
-                                    } else {
-                                        data.results.forEach(novel => {
-                                            const a = document.createElement('a');
-                                            a.href = `/truyen/${novel.slug}`;
-                                            a.className = "flex items-center gap-4 p-3 hover:bg-[#faf8f5] rounded-xl transition-colors group";
-                                            a.innerHTML = `
-                                                <div class="w-12 h-16 shrink-0 rounded-md overflow-hidden bg-gray-100 border border-outline-variant/30">
-                                                    <img src="${novel.coverUrl || '/images/default-cover.jpg'}" alt="Cover" class="w-full h-full object-cover">
-                                                </div>
-                                                <div class="flex-1 min-w-0">
-                                                    <h4 class="font-bold text-[#231A11] text-[15px] mb-0.5 truncate group-hover:text-[#c08d41] transition-colors">${novel.title}</h4>
-                                                    <p class="text-[#8c7a68] text-[13px] truncate">${novel.author}</p>
-                                                </div>
-                                                <div class="shrink-0 bg-[#f5eae0] text-[#c08d41] text-[11px] font-bold px-2 py-1 rounded-full uppercase tracking-wider flex items-center gap-1">
-                                                    ${novel.category} <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
-                                                </div>
-                                            `;
-                                            suggestList.appendChild(a);
-                                        });
-                                    }
-
-                                    searchPopup.classList.remove('hidden');
-                                });
-                        }, 300);
-                    });
-
-                    suggestSeeAll.addEventListener('click', function (e) {
-                        e.preventDefault();
-                        document.getElementById('searchForm').submit();
-                    });
-
-                    document.addEventListener('click', function (e) {
-                        if (!searchInput.contains(e.target) && !searchPopup.contains(e.target)) {
-                            searchPopup.classList.add('hidden');
-                        }
-                    });
-
-                    searchInput.addEventListener('focus', function () {
-                        if (this.value.trim().length > 0 && suggestList.innerHTML !== '') {
-                            searchPopup.classList.remove('hidden');
-                        }
-                    });
-                }
-            });
-        </script>
+        <!-- External Header & Theme Interactions Script -->
+        <script th:src="@{/js/header.js}" defer></script>
     </header>
 </body>
 

@@ -5,9 +5,11 @@ import com.tramtruyen.dto.SystemSettingsDTO;
 import com.tramtruyen.entity.SystemAuditLog;
 import com.tramtruyen.entity.SystemSetting;
 import com.tramtruyen.entity.User;
+import com.tramtruyen.entity.WebSetting;
 import com.tramtruyen.repository.SystemAuditLogRepository;
 import com.tramtruyen.repository.SystemSettingRepository;
 import com.tramtruyen.repository.UserRepository;
+import com.tramtruyen.repository.WebSettingRepository;
 import com.tramtruyen.service.SystemSettingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +36,7 @@ public class SystemSettingServiceImpl implements SystemSettingService {
     public static final String KEY_PRIVACY_POLICY = "privacy_policy";
 
     private final SystemSettingRepository systemSettingRepository;
+    private final WebSettingRepository webSettingRepository;
     private final UserRepository userRepository;
     private final SystemAuditLogRepository systemAuditLogRepository;
     private final ObjectMapper objectMapper;
@@ -194,5 +197,131 @@ public class SystemSettingServiceImpl implements SystemSettingService {
             log.warn("Lỗi tính chuỗi vndPerCoinFormatted: {}", e.getMessage());
             return "100đ / 1 Coin";
         }
+    }
+
+    @Override
+    @Transactional
+    public List<WebSetting> getAllThemes() {
+        List<WebSetting> list = webSettingRepository.findAllByOrderByIdAsc();
+        if (list.isEmpty()) {
+            initDefaultThemes();
+            list = webSettingRepository.findAllByOrderByIdAsc();
+        }
+        return list;
+    }
+
+    private void initDefaultThemes() {
+        try {
+            if (webSettingRepository.count() == 0) {
+                List<WebSetting> defaults = List.of(
+                        WebSetting.builder()
+                                .name("Trạm Truyện Chuẩn (Mặc định)")
+                                .folderPath("theme-default")
+                                .thumbnailUrl("https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=600&q=80")
+                                .isActive(true)
+                                .build(),
+                        WebSetting.builder()
+                                .name("Xuân Cổ Truyền (Tết & Lễ Hội)")
+                                .folderPath("theme-tet")
+                                .thumbnailUrl("https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&w=600&q=80")
+                                .isActive(false)
+                                .build(),
+                        WebSetting.builder()
+                                .name("Dạ Khúc Đêm (Midnight Dark)")
+                                .folderPath("theme-dark")
+                                .thumbnailUrl("https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=600&q=80")
+                                .isActive(false)
+                                .build(),
+                        WebSetting.builder()
+                                .name("Cổ Điển Giấy Cũ (Vintage Sepia)")
+                                .folderPath("theme-sepia")
+                                .thumbnailUrl("https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=600&q=80")
+                                .isActive(false)
+                                .build()
+                );
+                webSettingRepository.saveAll(defaults);
+                log.info("Đã tự động khởi tạo thành công 4 chủ đề giao diện web mẫu.");
+            }
+        } catch (Exception e) {
+            log.warn("Không thể tự động khởi tạo danh sách theme mặc định: {}", e.getMessage());
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public WebSetting getActiveTheme() {
+        return webSettingRepository.findByIsActiveTrue()
+                .orElseGet(() -> {
+                    List<WebSetting> all = webSettingRepository.findAllByOrderByIdAsc();
+                    if (!all.isEmpty()) {
+                        return all.get(0);
+                    }
+                    return WebSetting.builder()
+                            .id(1)
+                            .name("Trạm Truyện Chuẩn (Mặc định)")
+                            .folderPath("theme-default")
+                            .isActive(true)
+                            .build();
+                });
+    }
+
+    @Override
+    @Transactional
+    public WebSetting activateTheme(Integer themeId, Integer adminId, String clientIp) {
+        if (themeId == null) {
+            throw new IllegalArgumentException("ID chủ đề giao diện không hợp lệ.");
+        }
+
+        WebSetting target = webSettingRepository.findById(themeId)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy chủ đề giao diện với ID: " + themeId));
+
+        if (Boolean.TRUE.equals(target.getIsActive())) {
+            return target; // Đã đang kích hoạt
+        }
+
+        List<WebSetting> allThemes = webSettingRepository.findAll();
+        String previousActiveName = "Chưa kích hoạt";
+        Integer previousActiveId = null;
+
+        for (WebSetting ws : allThemes) {
+            if (Boolean.TRUE.equals(ws.getIsActive())) {
+                previousActiveName = ws.getName();
+                previousActiveId = ws.getId();
+                ws.setIsActive(false);
+                ws.setUpdatedAt(LocalDateTime.now());
+                webSettingRepository.save(ws);
+            }
+        }
+
+        target.setIsActive(true);
+        target.setUploadedBy(adminId);
+        target.setUpdatedAt(LocalDateTime.now());
+        WebSetting saved = webSettingRepository.save(target);
+
+        // System Audit Log ghi vết thao tác kích hoạt theme
+        try {
+            Map<String, Object> oldVal = new HashMap<>();
+            oldVal.put("previous_active_theme_id", previousActiveId);
+            oldVal.put("previous_active_theme_name", previousActiveName);
+
+            Map<String, Object> newVal = new HashMap<>();
+            newVal.put("new_active_theme_id", saved.getId());
+            newVal.put("new_active_theme_name", saved.getName());
+            newVal.put("folder_path", saved.getFolderPath());
+
+            systemAuditLogRepository.save(SystemAuditLog.builder()
+                    .adminId(adminId != null ? adminId : 1)
+                    .actionType("ACTIVATE_WEB_THEME")
+                    .targetEntity("WEB_SETTINGS")
+                    .targetId(saved.getId())
+                    .oldValue(objectMapper.writeValueAsString(oldVal))
+                    .newValue(objectMapper.writeValueAsString(newVal))
+                    .ipAddress(clientIp)
+                    .build());
+        } catch (Exception e) {
+            log.error("Lỗi khi ghi audit log kích hoạt theme", e);
+        }
+
+        return saved;
     }
 }

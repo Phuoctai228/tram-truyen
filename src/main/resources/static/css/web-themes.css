@@ -1,0 +1,972 @@
+/**
+ * ========================================================
+ * TRẠM TRUYỆN - HỆ THỐNG CHỦ ĐỀ GIAO DIỆN (WEB THEMES)
+ * Use Case: UC-07 / UC-52 (Luồng A.6)
+ * ========================================================
+ */
+
+/* ===================================================
+   1. THEME XUÂN CỔ TRUYỀN (Tết & Lễ Hội - theme-tet)
+   =================================================== */
+[data-theme="theme-tet"] body,
+[data-theme="theme-tet"] html,
+[data-theme="theme-tet"] main,
+[data-theme="theme-tet"] .bg-background,
+[data-theme="theme-tet"] .bg-surface {
+    background-color: #fff9f7 !important;
+    background-image: radial-gradient(ellipse at 50% 0%, #ffede8 0%, #fff9f7 65%, #fff3ef 100%) !important;
+    background-attachment: fixed !important;
+    color: #2b1b17 !important;
+}
+
+[data-theme="theme-tet"] header {
+    border-bottom: 2px solid #dc2626 !important;
+    background-color: rgba(255, 248, 245, 0.96) !important;
+    box-shadow: 0 4px 20px rgba(220, 38, 38, 0.08) !important;
+}
+
+[data-theme="theme-tet"] header .font-headline-md {
+    color: #991b1b !important;
+    text-shadow: 0 1px 2px rgba(185, 28, 28, 0.15);
+}
+
+[data-theme="theme-tet"] nav a:hover {
+    color: #b91c1c !important;
+}
+
+[data-theme="theme-tet"] #searchInput {
+    background-color: #ffffff !important;
+    border-color: #fca5a5 !important;
+    box-shadow: 0 2px 8px rgba(185, 28, 28, 0.04) !important;
+}
+
+[data-theme="theme-tet"] #searchInput:focus {
+    border-color: #dc2626 !important;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15) !important;
+}
+
+[data-theme="theme-tet"] header a[href*="wallet"] {
+    background-color: #fff1f2 !important;
+    border: 1px solid #fecaca !important;
+    color: #991b1b !important;
+}
+
+[data-theme="theme-tet"] .bg-primary,
+[data-theme="theme-tet"] .bg-primary-container,
+[data-theme="theme-tet"] a.bg-primary,
+[data-theme="theme-tet"] a.bg-primary-container,
+[data-theme="theme-tet"] button.bg-primary {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 55%, #991b1b 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 16px rgba(185, 28, 28, 0.32) !important;
+    border: 1px solid #fca5a5 !important;
+}
+
+[data-theme="theme-tet"] .bg-primary:hover,
+[data-theme="theme-tet"] .bg-primary-container:hover,
+[data-theme="theme-tet"] a.bg-primary:hover,
+[data-theme="theme-tet"] a.bg-primary-container:hover,
+[data-theme="theme-tet"] button.bg-primary:hover {
+    background: linear-gradient(135deg, #b91c1c 0%, #991b1b 55%, #7f1d1d 100%) !important;
+    box-shadow: 0 6px 20px rgba(185, 28, 28, 0.42) !important;
+}
+
+[data-theme="theme-tet"] .text-primary,
+[data-theme="theme-tet"] a.text-primary,
+[data-theme="theme-tet"] a:hover {
+    color: #b91c1c !important;
+}
+
+[data-theme="theme-tet"] .border-primary {
+    border-color: #dc2626 !important;
+}
+
+[data-theme="theme-tet"] #heroBannerSection {
+    background: linear-gradient(135deg, #fff7f4 0%, #fff9f7 50%, #ffefe9 100%) !important;
+    border: 2px solid #f87171 !important;
+    box-shadow: 0 12px 35px rgba(185, 28, 28, 0.12), 0 0 0 1px rgba(254, 202, 202, 0.6) !important;
+}
+
+[data-theme="theme-tet"] .bg-white,
+[data-theme="theme-tet"] .bg-surface-container,
+[data-theme="theme-tet"] .bg-surface-container-low,
+[data-theme="theme-tet"] .bg-surface-container-high,
+[data-theme="theme-tet"] .bg-surface-container-highest,
+[data-theme="theme-tet"] .bg-surface-container-lowest {
+    background-color: #ffffff !important;
+    border-color: #fee2e2 !important;
+    box-shadow: 0 4px 18px rgba(185, 28, 28, 0.04) !important;
+}
+
+[data-theme="theme-tet"] .group:hover {
+    border-color: #fca5a5 !important;
+}
+
+[data-theme="theme-tet"] h1,
+[data-theme="theme-tet"] h2,
+[data-theme="theme-tet"] h3,
+[data-theme="theme-tet"] h4,
+[data-theme="theme-tet"] .text-on-surface {
+    color: #7f1d1d !important;
+}
+
+[data-theme="theme-tet"] .text-on-surface-variant {
+    color: #881337 !important;
+}
+
+[data-theme="theme-tet"] .text-amber-500,
+[data-theme="theme-tet"] .text-yellow-500 {
+    color: #d97706 !important;
+}
+
+[data-theme="theme-tet"] footer {
+    background: linear-gradient(180deg, #fff5f2 0%, #feece7 100%) !important;
+    border-top: 2px solid #fca5a5 !important;
+}
+
+/* ===================================================
+   COMMON THEME SIDE BANNERS (Băng rôn sườn 2 bên)
+   Kích thước to đẹp, nổi bật và responsive tự động
+   =================================================== */
+.tet-side-banners,
+.dark-side-banners,
+.sepia-side-banners {
+    position: fixed;
+    top: 92px;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 0;
+    overflow: visible;
+    z-index: 40;
+    pointer-events: none;
+}
+
+@media (max-width: 1399px) {
+    .tet-side-banners,
+    .dark-side-banners,
+    .sepia-side-banners {
+        display: none !important;
+    }
+}
+
+@media (min-width: 1400px) and (max-width: 1559px) {
+    .tet-side-banner,
+    .dark-side-banner,
+    .sepia-side-banner {
+        width: 94px;
+        transform: scale(0.86);
+        transform-origin: top center;
+    }
+    .tet-side-banner-left,
+    .dark-side-banner-left,
+    .sepia-side-banner-left {
+        left: calc(50% - 640px - 105px);
+    }
+    .tet-side-banner-right,
+    .dark-side-banner-right,
+    .sepia-side-banner-right {
+        right: calc(50% - 640px - 105px);
+    }
+}
+
+@media (min-width: 1560px) {
+    .tet-side-banner,
+    .dark-side-banner,
+    .sepia-side-banner {
+        width: 112px;
+    }
+    .tet-side-banner-left,
+    .dark-side-banner-left,
+    .sepia-side-banner-left {
+        left: calc(50% - 640px - 132px);
+    }
+    .tet-side-banner-right,
+    .dark-side-banner-right,
+    .sepia-side-banner-right {
+        right: calc(50% - 640px - 132px);
+    }
+}
+
+/* ---------------------------------------------------
+   1. TẾT SIDE BANNERS STYLING (Xuân Cổ Truyền)
+   --------------------------------------------------- */
+.tet-side-banner {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    filter: drop-shadow(0 12px 24px rgba(185, 28, 28, 0.35));
+    animation: tetBannerFloat 3.8s ease-in-out infinite alternate;
+}
+
+.tet-side-banner-right {
+    animation-delay: -1.9s;
+}
+
+@keyframes tetBannerFloat {
+    0% {
+        transform: translateY(0px) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-8px) rotate(0.8deg);
+    }
+    100% {
+        transform: translateY(2px) rotate(-0.8deg);
+    }
+}
+
+.tet-hanger {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.tet-hanger-knot {
+    width: 3px;
+    height: 20px;
+    background: linear-gradient(180deg, #d97706 0%, #b91c1c 100%);
+    box-shadow: 0 0 6px rgba(245, 158, 11, 0.6);
+}
+
+.tet-lantern {
+    font-size: 40px;
+    line-height: 1;
+    margin-top: -4px;
+    filter: drop-shadow(0 4px 12px rgba(220, 38, 38, 0.5));
+    animation: tetLanternPulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes tetLanternPulse {
+    0% {
+        transform: scale(0.96);
+    }
+    100% {
+        transform: scale(1.06);
+    }
+}
+
+.tet-scroll {
+    width: 100%;
+    margin-top: -4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.tet-rod {
+    width: 124px;
+    height: 12px;
+    background: linear-gradient(90deg, #92400e 0%, #fef08a 35%, #f59e0b 65%, #78350f 100%);
+    border-radius: 6px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35);
+    position: relative;
+    z-index: 2;
+}
+
+.tet-rod::before,
+.tet-rod::after {
+    content: '';
+    position: absolute;
+    top: -3px;
+    width: 10px;
+    height: 18px;
+    background: #fef08a;
+    border-radius: 4px;
+    box-shadow: 0 0 8px rgba(245, 158, 11, 0.9);
+}
+.tet-rod::before { left: 2px; }
+.tet-rod::after { right: 2px; }
+
+.tet-body {
+    width: 102px;
+    background: linear-gradient(180deg, #991b1b 0%, #b91c1c 25%, #dc2626 50%, #b91c1c 75%, #7f1d1d 100%);
+    border-left: 3px solid #fbbf24;
+    border-right: 3px solid #fbbf24;
+    box-shadow: inset 0 0 16px rgba(0, 0, 0, 0.4);
+    padding: 12px 6px 14px 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+}
+
+.tet-flower-top,
+.tet-flower-bottom {
+    font-size: 20px;
+    line-height: 1;
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.3));
+}
+
+.tet-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    font-family: 'Lora', Georgia, 'Times New Roman', serif;
+    font-weight: 700;
+    font-size: 21px;
+    letter-spacing: 2.5px;
+    color: #fef08a;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.7), 0 0 12px rgba(251, 191, 36, 0.6);
+    line-height: 1.15;
+}
+
+.tet-seal {
+    margin-top: 6px;
+    padding: 3px 8px;
+    background: rgba(127, 29, 29, 0.85);
+    border: 1px dashed #fef08a;
+    border-radius: 4px;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #fef08a;
+    white-space: nowrap;
+    letter-spacing: 0.5px;
+}
+
+.tet-tassel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: -2px;
+    transform-origin: top center;
+    animation: tetTasselSway 2.8s ease-in-out infinite alternate;
+}
+
+.tet-side-banner-right .tet-tassel {
+    animation-delay: -1.4s;
+}
+
+@keyframes tetTasselSway {
+    0% {
+        transform: rotate(-5deg);
+    }
+    100% {
+        transform: rotate(5deg);
+    }
+}
+
+.tet-tassel-knot {
+    width: 18px;
+    height: 18px;
+    background: radial-gradient(circle, #fef08a 30%, #d97706 70%, #b91c1c 100%);
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
+    position: relative;
+    z-index: 2;
+}
+
+.tet-tassel-threads {
+    width: 14px;
+    height: 46px;
+    background: linear-gradient(180deg, #dc2626 0%, #b91c1c 60%, #7f1d1d 100%);
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    box-shadow: 0 4px 10px rgba(185, 28, 28, 0.45);
+    position: relative;
+}
+
+.tet-tassel-threads::after {
+    content: '';
+    position: absolute;
+    top: 7px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #fef08a;
+}
+
+/* ---------------------------------------------------
+   2. MIDNIGHT DARK SIDE BANNERS (Dạ Khúc Đêm)
+   --------------------------------------------------- */
+.dark-side-banner {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    filter: drop-shadow(0 12px 24px rgba(99, 102, 241, 0.35));
+    animation: darkBannerFloat 4.2s ease-in-out infinite alternate;
+}
+
+.dark-side-banner-right {
+    animation-delay: -2.1s;
+}
+
+@keyframes darkBannerFloat {
+    0% {
+        transform: translateY(0px) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-7px) rotate(-0.7deg);
+    }
+    100% {
+        transform: translateY(3px) rotate(0.7deg);
+    }
+}
+
+.dark-hanger {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.dark-hanger-cord {
+    width: 3px;
+    height: 20px;
+    background: linear-gradient(180deg, #38bdf8 0%, #6366f1 100%);
+    box-shadow: 0 0 8px rgba(56, 189, 248, 0.8);
+}
+
+.dark-moon,
+.dark-star {
+    font-size: 40px;
+    line-height: 1;
+    margin-top: -4px;
+    filter: drop-shadow(0 0 12px rgba(99, 102, 241, 0.8));
+    animation: darkOrbPulse 2.4s ease-in-out infinite alternate;
+}
+
+@keyframes darkOrbPulse {
+    0% {
+        transform: scale(0.95);
+        filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.6));
+    }
+    100% {
+        transform: scale(1.08);
+        filter: drop-shadow(0 0 16px rgba(129, 140, 248, 0.9));
+    }
+}
+
+.dark-scroll {
+    width: 100%;
+    margin-top: -4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.dark-rod {
+    width: 124px;
+    height: 12px;
+    background: linear-gradient(90deg, #1e1b4b 0%, #cbd5e1 35%, #818cf8 65%, #0f172a 100%);
+    border-radius: 6px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.6);
+    position: relative;
+    z-index: 2;
+}
+
+.dark-rod::before,
+.dark-rod::after {
+    content: '';
+    position: absolute;
+    top: -3px;
+    width: 10px;
+    height: 18px;
+    background: #a5b4fc;
+    border-radius: 4px;
+    box-shadow: 0 0 8px rgba(165, 180, 252, 0.9);
+}
+.dark-rod::before { left: 2px; }
+.dark-rod::after { right: 2px; }
+
+.dark-body {
+    width: 102px;
+    background: linear-gradient(180deg, #090d16 0%, #1e1b4b 30%, #312e81 60%, #0f172a 100%);
+    border-left: 3px solid #818cf8;
+    border-right: 3px solid #818cf8;
+    box-shadow: inset 0 0 16px rgba(99, 102, 241, 0.4), 0 0 10px rgba(99, 102, 241, 0.2);
+    padding: 12px 6px 14px 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+}
+
+.dark-star-top,
+.dark-star-bottom {
+    font-size: 20px;
+    line-height: 1;
+    filter: drop-shadow(0 0 6px rgba(129, 140, 248, 0.7));
+}
+
+.dark-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    font-family: 'Lora', Georgia, 'Times New Roman', serif;
+    font-weight: 700;
+    font-size: 21px;
+    letter-spacing: 2.5px;
+    color: #e0e7ff;
+    text-shadow: 0 0 10px rgba(129, 140, 248, 0.8), 0 2px 4px rgba(0, 0, 0, 0.8);
+    line-height: 1.15;
+}
+
+.dark-seal {
+    margin-top: 6px;
+    padding: 3px 8px;
+    background: rgba(30, 27, 75, 0.9);
+    border: 1px dashed #a5b4fc;
+    border-radius: 4px;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #c7d2fe;
+    white-space: nowrap;
+    letter-spacing: 0.5px;
+}
+
+.dark-tassel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: -2px;
+    transform-origin: top center;
+    animation: darkTasselSway 3s ease-in-out infinite alternate;
+}
+
+.dark-side-banner-right .dark-tassel {
+    animation-delay: -1.5s;
+}
+
+@keyframes darkTasselSway {
+    0% {
+        transform: rotate(-5deg);
+    }
+    100% {
+        transform: rotate(5deg);
+    }
+}
+
+.dark-tassel-knot {
+    width: 18px;
+    height: 18px;
+    background: radial-gradient(circle, #e0e7ff 30%, #818cf8 70%, #312e81 100%);
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    position: relative;
+    z-index: 2;
+}
+
+.dark-tassel-threads {
+    width: 14px;
+    height: 46px;
+    background: linear-gradient(180deg, #6366f1 0%, #4338ca 60%, #1e1b4b 100%);
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    box-shadow: 0 4px 10px rgba(99, 102, 241, 0.5);
+    position: relative;
+}
+
+.dark-tassel-threads::after {
+    content: '';
+    position: absolute;
+    top: 7px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #a5b4fc;
+}
+
+/* ---------------------------------------------------
+   3. VINTAGE SEPIA SIDE BANNERS (Cổ Điển Giấy Cũ)
+   --------------------------------------------------- */
+.sepia-side-banner {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    filter: drop-shadow(0 12px 24px rgba(120, 53, 15, 0.3));
+    animation: sepiaBannerFloat 4s ease-in-out infinite alternate;
+}
+
+.sepia-side-banner-right {
+    animation-delay: -2s;
+}
+
+@keyframes sepiaBannerFloat {
+    0% {
+        transform: translateY(0px) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-7px) rotate(0.6deg);
+    }
+    100% {
+        transform: translateY(3px) rotate(-0.6deg);
+    }
+}
+
+.sepia-hanger {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.sepia-hanger-cord {
+    width: 3px;
+    height: 20px;
+    background: linear-gradient(180deg, #b45309 0%, #78350f 100%);
+    box-shadow: 0 0 6px rgba(180, 83, 9, 0.5);
+}
+
+.sepia-ornament {
+    font-size: 38px;
+    line-height: 1;
+    margin-top: -4px;
+    filter: drop-shadow(0 3px 8px rgba(120, 53, 15, 0.4));
+    animation: sepiaOrnamentPulse 2.5s ease-in-out infinite alternate;
+}
+
+@keyframes sepiaOrnamentPulse {
+    0% {
+        transform: scale(0.96);
+    }
+    100% {
+        transform: scale(1.05);
+    }
+}
+
+.sepia-scroll {
+    width: 100%;
+    margin-top: -4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sepia-rod {
+    width: 124px;
+    height: 12px;
+    background: linear-gradient(90deg, #451a03 0%, #fef08a 35%, #b45309 65%, #291002 100%);
+    border-radius: 6px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35);
+    position: relative;
+    z-index: 2;
+}
+
+.sepia-rod::before,
+.sepia-rod::after {
+    content: '';
+    position: absolute;
+    top: -3px;
+    width: 10px;
+    height: 18px;
+    background: #fde68a;
+    border-radius: 4px;
+    box-shadow: 0 0 6px rgba(245, 158, 11, 0.7);
+}
+.sepia-rod::before { left: 2px; }
+.sepia-rod::after { right: 2px; }
+
+.sepia-body {
+    width: 102px;
+    background: linear-gradient(180deg, #e7ddc4 0%, #f1ead8 30%, #e8dec5 70%, #d8cdad 100%);
+    border-left: 3px solid #92400e;
+    border-right: 3px solid #92400e;
+    box-shadow: inset 0 0 14px rgba(120, 53, 15, 0.25);
+    padding: 12px 6px 14px 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+}
+
+.sepia-symbol-top,
+.sepia-symbol-bottom {
+    font-size: 18px;
+    line-height: 1;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+}
+
+.sepia-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    font-family: 'Lora', Georgia, 'Times New Roman', serif;
+    font-weight: 700;
+    font-size: 21px;
+    letter-spacing: 2.5px;
+    color: #451a03;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.6);
+    line-height: 1.15;
+}
+
+.sepia-seal {
+    margin-top: 6px;
+    padding: 3px 8px;
+    background: #991b1b;
+    border: 1px solid #7f1d1d;
+    border-radius: 4px;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #fef08a;
+    white-space: nowrap;
+    letter-spacing: 0.5px;
+}
+
+.sepia-tassel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: -2px;
+    transform-origin: top center;
+    animation: sepiaTasselSway 3s ease-in-out infinite alternate;
+}
+
+.sepia-side-banner-right .sepia-tassel {
+    animation-delay: -1.5s;
+}
+
+@keyframes sepiaTasselSway {
+    0% {
+        transform: rotate(-5deg);
+    }
+    100% {
+        transform: rotate(5deg);
+    }
+}
+
+.sepia-tassel-knot {
+    width: 18px;
+    height: 18px;
+    background: radial-gradient(circle, #fde68a 30%, #b45309 70%, #451a03 100%);
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    position: relative;
+    z-index: 2;
+}
+
+.sepia-tassel-threads {
+    width: 14px;
+    height: 46px;
+    background: linear-gradient(180deg, #78350f 0%, #451a03 60%, #291002 100%);
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    box-shadow: 0 4px 8px rgba(69, 26, 3, 0.4);
+    position: relative;
+}
+
+.sepia-tassel-threads::after {
+    content: '';
+    position: absolute;
+    top: 7px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #fde68a;
+}
+
+/* ===================================================
+   2. THEME DẠ KHÚC ĐÊM (Midnight Dark - theme-dark)
+   =================================================== */
+[data-theme="theme-dark"] body,
+[data-theme="theme-dark"] html,
+[data-theme="theme-dark"] main,
+[data-theme="theme-dark"] .bg-background,
+[data-theme="theme-dark"] .bg-surface {
+    background-color: #0b0e14 !important;
+    background-image: radial-gradient(ellipse at 50% 0%, #151928 0%, #0d1117 70%, #080a0f 100%) !important;
+    background-attachment: fixed !important;
+    color: #e6edf3 !important;
+}
+
+[data-theme="theme-dark"] header {
+    background-color: rgba(11, 14, 20, 0.95) !important;
+    border-bottom: 2px solid #3b82f6 !important;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.6) !important;
+}
+
+[data-theme="theme-dark"] header .font-headline-md {
+    color: #38bdf8 !important;
+    text-shadow: 0 0 12px rgba(56, 189, 248, 0.35);
+}
+
+[data-theme="theme-dark"] nav a:hover {
+    color: #38bdf8 !important;
+}
+
+[data-theme="theme-dark"] #searchInput {
+    background-color: #161b22 !important;
+    border-color: #30363d !important;
+    color: #f0f6fc !important;
+}
+
+[data-theme="theme-dark"] #searchInput:focus {
+    border-color: #38bdf8 !important;
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2) !important;
+}
+
+[data-theme="theme-dark"] #heroBannerSection {
+    background: linear-gradient(135deg, #111827 0%, #161f38 50%, #0f172a 100%) !important;
+    border: 2px solid #6366f1 !important;
+    box-shadow: 0 12px 35px rgba(99, 102, 241, 0.2), 0 0 0 1px rgba(129, 140, 248, 0.3) !important;
+}
+
+[data-theme="theme-dark"] .bg-white,
+[data-theme="theme-dark"] .bg-surface-container,
+[data-theme="theme-dark"] .bg-surface-container-low,
+[data-theme="theme-dark"] .bg-surface-container-high,
+[data-theme="theme-dark"] .bg-surface-container-highest,
+[data-theme="theme-dark"] .bg-surface-container-lowest {
+    background-color: #131924 !important;
+    border-color: #263042 !important;
+    color: #e6edf3 !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-theme="theme-dark"] .group:hover {
+    border-color: #818cf8 !important;
+}
+
+[data-theme="theme-dark"] h1,
+[data-theme="theme-dark"] h2,
+[data-theme="theme-dark"] h3,
+[data-theme="theme-dark"] h4,
+[data-theme="theme-dark"] .text-on-surface {
+    color: #f0f6fc !important;
+}
+
+[data-theme="theme-dark"] p,
+[data-theme="theme-dark"] .text-on-surface-variant {
+    color: #94a3b8 !important;
+}
+
+[data-theme="theme-dark"] input,
+[data-theme="theme-dark"] textarea,
+[data-theme="theme-dark"] select {
+    background-color: #1e2638 !important;
+    color: #f0f6fc !important;
+    border-color: #334155 !important;
+}
+
+[data-theme="theme-dark"] footer {
+    background: linear-gradient(180deg, #0d1117 0%, #080a0f 100%) !important;
+    border-top: 2px solid #3b82f6 !important;
+}
+
+[data-theme="theme-dark"] .bg-primary,
+[data-theme="theme-dark"] .bg-primary-container,
+[data-theme="theme-dark"] a.bg-primary,
+[data-theme="theme-dark"] a.bg-primary-container,
+[data-theme="theme-dark"] button.bg-primary {
+    background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%) !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    box-shadow: 0 4px 18px rgba(99, 102, 241, 0.4) !important;
+    border: 1px solid #818cf8 !important;
+}
+
+[data-theme="theme-dark"] .text-primary,
+[data-theme="theme-dark"] a.text-primary {
+    color: #38bdf8 !important;
+}
+
+[data-theme="theme-dark"] .text-amber-500,
+[data-theme="theme-dark"] .text-yellow-500 {
+    color: #38bdf8 !important;
+}
+
+/* ===================================================
+   3. THEME CỔ ĐIỂN GIẤY CŨ (Vintage Sepia - theme-sepia)
+   =================================================== */
+[data-theme="theme-sepia"] body,
+[data-theme="theme-sepia"] html,
+[data-theme="theme-sepia"] main,
+[data-theme="theme-sepia"] .bg-background,
+[data-theme="theme-sepia"] .bg-surface {
+    background-color: #f4eedb !important;
+    background-image: radial-gradient(ellipse at 50% 0%, #faf3e0 0%, #f4eedb 65%, #ece3cb 100%) !important;
+    background-attachment: fixed !important;
+    color: #382c20 !important;
+}
+
+[data-theme="theme-sepia"] header {
+    background-color: rgba(244, 238, 219, 0.96) !important;
+    border-bottom: 2px solid #92400e !important;
+    box-shadow: 0 4px 18px rgba(120, 53, 15, 0.08) !important;
+}
+
+[data-theme="theme-sepia"] header .font-headline-md {
+    color: #78350f !important;
+}
+
+[data-theme="theme-sepia"] nav a:hover {
+    color: #92400e !important;
+}
+
+[data-theme="theme-sepia"] #searchInput {
+    background-color: #fdfaf3 !important;
+    border-color: #d6caa9 !important;
+}
+
+[data-theme="theme-sepia"] #searchInput:focus {
+    border-color: #92400e !important;
+    box-shadow: 0 0 0 3px rgba(146, 64, 14, 0.15) !important;
+}
+
+[data-theme="theme-sepia"] #heroBannerSection {
+    background: linear-gradient(135deg, #f7f1e1 0%, #fcf7eb 50%, #f3ebda 100%) !important;
+    border: 2px solid #b45309 !important;
+    box-shadow: 0 12px 35px rgba(180, 83, 9, 0.12), 0 0 0 1px rgba(217, 119, 6, 0.3) !important;
+}
+
+[data-theme="theme-sepia"] .bg-white,
+[data-theme="theme-sepia"] .bg-surface-container,
+[data-theme="theme-sepia"] .bg-surface-container-low,
+[data-theme="theme-sepia"] .bg-surface-container-high,
+[data-theme="theme-sepia"] .bg-surface-container-highest,
+[data-theme="theme-sepia"] .bg-surface-container-lowest {
+    background-color: #ece3cb !important;
+    border-color: #d6caa9 !important;
+    box-shadow: 0 4px 16px rgba(120, 53, 15, 0.05) !important;
+}
+
+[data-theme="theme-sepia"] .group:hover {
+    border-color: #b45309 !important;
+}
+
+[data-theme="theme-sepia"] h1,
+[data-theme="theme-sepia"] h2,
+[data-theme="theme-sepia"] h3,
+[data-theme="theme-sepia"] h4,
+[data-theme="theme-sepia"] .text-on-surface {
+    color: #2e2216 !important;
+}
+
+[data-theme="theme-sepia"] p,
+[data-theme="theme-sepia"] .text-on-surface-variant {
+    color: #634f3c !important;
+}
+
+[data-theme="theme-sepia"] footer {
+    background: linear-gradient(180deg, #f4eedb 0%, #ebe2c9 100%) !important;
+    border-top: 2px solid #b45309 !important;
+}
+
+[data-theme="theme-sepia"] .bg-primary,
+[data-theme="theme-sepia"] .bg-primary-container,
+[data-theme="theme-sepia"] a.bg-primary,
+[data-theme="theme-sepia"] a.bg-primary-container,
+[data-theme="theme-sepia"] button.bg-primary {
+    background: linear-gradient(135deg, #854d0e 0%, #713f12 100%) !important;
+    color: #fdfaf3 !important;
+    box-shadow: 0 4px 14px rgba(113, 63, 18, 0.3) !important;
+}
+
+[data-theme="theme-sepia"] .text-primary,
+[data-theme="theme-sepia"] a.text-primary {
+    color: #92400e !important;
+}
+
+[data-theme="theme-sepia"] .text-amber-500,
+[data-theme="theme-sepia"] .text-yellow-500 {
+    color: #b45309 !important;
+}

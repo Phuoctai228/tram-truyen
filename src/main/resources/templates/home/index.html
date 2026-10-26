@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="vi"
-    class="h-full">
+    class="h-full" th:attr="data-theme=${activeTheme != null ? activeTheme.folderPath : 'theme-default'}">
 
 <head>
     <meta charset="utf-8">
@@ -32,6 +32,76 @@
     <main class="w-full pt-20 flex-1 bg-surface">
         <div class="flex flex-col w-full">
             <div class="w-full max-w-7xl mx-auto px-6 lg:px-12 py-8 space-y-12">
+
+                <!-- 0. THEMATIC GREETING ANNOUNCEMENT STRIPS (UC-07 / UC-52) -->
+                <!-- A. Theme Tết & Lễ Hội (Dynamic Recycled Lunar Year) -->
+                <div th:if="${activeTheme != null && activeTheme.folderPath == 'theme-tet'}"
+                     class="rounded-2xl bg-gradient-to-r from-red-600 via-amber-500 to-red-600 p-[2px] shadow-lg shadow-red-500/15">
+                    <div class="rounded-2xl bg-gradient-to-r from-[#fff5f2] via-[#fffbf9] to-[#fff5f2] px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+                        <div class="flex items-center gap-4 text-center md:text-left">
+                            <span class="text-3xl shrink-0">🏮</span>
+                            <div>
+                                <div class="text-xs font-bold uppercase tracking-wider text-red-600 flex items-center justify-center md:justify-start gap-1.5">
+                                    <span th:text="${tetSpringTitle != null ? tetSpringTitle : 'Xuân Bính Ngọ 2026'}">Xuân Bính Ngọ 2026</span>
+                                    <span class="inline-block w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                                    <span class="text-amber-700">Trạm Truyện Kính Chúc Quý Độc Giả</span>
+                                </div>
+                                <p class="text-base font-bold text-red-950 mt-0.5">
+                                    🌸 Cung Chúc Tân Xuân • Vạn Sự Như Ý • An Khang Thịnh Vượng • Khai Xuân Đắc Lộc 🧧
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs font-bold text-amber-800 bg-amber-100/90 border border-amber-300/80 px-4 py-2 rounded-full shadow-sm shrink-0">
+                            <span>✨ Khai bút đầu xuân • Đọc vạn chương hay</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- B. Theme Dạ Khúc Đêm (Midnight Dark) -->
+                <div th:if="${activeTheme != null && activeTheme.folderPath == 'theme-dark'}"
+                     class="rounded-2xl bg-gradient-to-r from-indigo-700 via-sky-500 to-indigo-700 p-[2px] shadow-lg shadow-indigo-500/15">
+                    <div class="rounded-2xl bg-gradient-to-r from-[#111827] via-[#161f38] to-[#111827] px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+                        <div class="flex items-center gap-4 text-center md:text-left">
+                            <span class="text-3xl shrink-0">🌌</span>
+                            <div>
+                                <div class="text-xs font-bold uppercase tracking-wider text-sky-400 flex items-center justify-center md:justify-start gap-1.5">
+                                    <span>Dạ Khúc Đêm • Midnight Starlight</span>
+                                    <span class="inline-block w-1.5 h-1.5 rounded-full bg-sky-400"></span>
+                                    <span class="text-indigo-300">Không Gian Huyền Bí</span>
+                                </div>
+                                <p class="text-base font-bold text-sky-100 mt-0.5">
+                                    🌙 Đắm Chìm Trong Từng Trang Sách Dưới Ánh Sao • Đọc Truyện Êm Dịu Cho Mắt ✨
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs font-bold text-sky-300 bg-sky-950/80 border border-sky-500/30 px-4 py-2 rounded-full shadow-sm shrink-0">
+                            <span>🔮 Trải nghiệm Dark Mode huyền ảo</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- C. Theme Cổ Điển Giấy Cũ (Vintage Sepia) -->
+                <div th:if="${activeTheme != null && activeTheme.folderPath == 'theme-sepia'}"
+                     class="rounded-2xl bg-gradient-to-r from-[#92400e] via-[#d97706] to-[#92400e] p-[2px] shadow-lg shadow-amber-900/15">
+                    <div class="rounded-2xl bg-gradient-to-r from-[#f7f0e0] via-[#fcf6e8] to-[#f7f0e0] px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+                        <div class="flex items-center gap-4 text-center md:text-left">
+                            <span class="text-3xl shrink-0">📜</span>
+                            <div>
+                                <div class="text-xs font-bold uppercase tracking-wider text-[#92400e] flex items-center justify-center md:justify-start gap-1.5">
+                                    <span>Cổ Điển Giấy Cũ • Vintage Sepia</span>
+                                    <span class="inline-block w-1.5 h-1.5 rounded-full bg-[#92400e]"></span>
+                                    <span class="text-[#b45309]">Hương Sách Cổ Phong</span>
+                                </div>
+                                <p class="text-base font-bold text-[#451a03] mt-0.5">
+                                    📖 Nâng Niu Từng Con Chữ Như Lần Giở Cuốn Sách Quý Xưa • Thư Thái & Trầm Mặc 🍂
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs font-bold text-[#78350f] bg-[#fef3c7] border border-[#fde68a] px-4 py-2 rounded-full shadow-sm shrink-0">
+                            <span>🖋️ Thư viện văn chương cổ điển</span>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- 1. HERO BANNER STRIP (AUTO-SLIDING CAROUSEL) -->
                 <section id="heroBannerSection"
