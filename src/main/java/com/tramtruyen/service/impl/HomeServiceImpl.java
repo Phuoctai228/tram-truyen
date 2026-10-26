@@ -12,6 +12,7 @@ import com.tramtruyen.repository.NovelRepository;
 import com.tramtruyen.service.HomeService;
 import com.tramtruyen.util.DateTimeUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,7 +51,9 @@ public class HomeServiceImpl implements HomeService {
                 .collect(Collectors.toList());
 
         List<NovelSummaryDTO> recommendedNovels = publicNovels(
-                novelRepository.findTop12ByIsDeletedFalseOrderByAverageRatingDesc())
+                novelRepository.findTopRecommendedNovels(
+                        ChapterServiceImpl.PUBLIC_STATUSES,
+                        PageRequest.of(0, 12)))
                 .stream()
                 .map(novel -> mapToSummaryDTO(novel, true))
                 .collect(Collectors.toList());
@@ -77,7 +80,8 @@ public class HomeServiceImpl implements HomeService {
         List<LatestChapterDTO> latestChapters = null;
         if (includeChapters) {
             latestChapters = chapterRepository
-                    .findTop3ByNovelIdAndIsDeletedFalseAndStatusOrderByChapterNumberDesc(novel.getId(), "PUBLISHED")
+                    .findTop3ByNovelIdAndIsDeletedFalseAndStatusInOrderByChapterNumberDesc(
+                            novel.getId(), ChapterServiceImpl.PUBLIC_STATUSES)
                     .stream()
                     .map(ch -> LatestChapterDTO.builder()
                             .id(ch.getId())

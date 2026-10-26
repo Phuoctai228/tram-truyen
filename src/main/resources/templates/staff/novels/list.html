@@ -65,7 +65,7 @@
                             <tr th:each="novel : ${novels}">
                                 <td class="novel-cell">
                                     <div class="novel-cell-content">
-                                        <img th:src="${novel.coverUrl != null ? novel.coverUrl : '/images/default-cover.jpg'}"
+                                        <img th:src="${novel.coverUrl != null and !#strings.isEmpty(#strings.trim(novel.coverUrl)) ? novel.coverUrl : '/images/default-cover.jpg'}"
                                             th:alt="${novel.title}">
                                         <div class="novel-details">
                                             <strong th:text="${novel.title}"></strong>

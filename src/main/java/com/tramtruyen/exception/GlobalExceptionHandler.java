@@ -73,6 +73,31 @@ public class GlobalExceptionHandler {
         return "redirect:/";
     }
 
+    // ─── ChapterNotPurchasableException → 400 ───────────────────────────
+
+    @ExceptionHandler(ChapterNotPurchasableException.class)
+    public Object handleChapterNotPurchasable(ChapterNotPurchasableException ex,
+                                              HttpServletRequest request,
+                                              RedirectAttributes redirectAttributes) {
+        log.warn("Chapter not purchasable: {} [URI={}]", ex.getMessage(), request.getRequestURI());
+
+        if (isAjaxOrApiRequest(request)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(Map.of("success", false, "message", ex.getMessage()));
+        }
+
+        String referer = request.getHeader("Referer");
+        if (referer != null && !referer.isBlank()) {
+            redirectAttributes.addFlashAttribute("errorMsg", ex.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+            return "redirect:" + extractPath(referer);
+        }
+        redirectAttributes.addFlashAttribute("errorMsg", ex.getMessage());
+        redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+        return "redirect:/";
+    }
+
     // ─── InsufficientBalanceException → 400 ──────────────────────────────
 
     @ExceptionHandler(InsufficientBalanceException.class)
@@ -82,9 +107,18 @@ public class GlobalExceptionHandler {
         log.warn("Insufficient balance: {} [URI={}]", ex.getMessage(), request.getRequestURI());
 
         if (isAjaxOrApiRequest(request)) {
+            java.util.Map<String, Object> body = new java.util.HashMap<>();
+            body.put("success", false);
+            body.put("insufficientBalance", true);
+            body.put("message", ex.getMessage());
+            if (ex.getShortfall() != null) {
+                body.put("shortfall", ex.getShortfall());
+                body.put("requiredCoins", ex.getRequiredCoins());
+                body.put("currentCoins", ex.getCurrentCoins());
+            }
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(Map.of("success", false, "insufficientBalance", true, "message", ex.getMessage()));
+                    .body(body);
         }
 
         String referer = request.getHeader("Referer");
@@ -92,6 +126,9 @@ public class GlobalExceptionHandler {
             redirectAttributes.addFlashAttribute("errorMsg", ex.getMessage());
             redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
             redirectAttributes.addFlashAttribute("insufficientBalance", true);
+            if (ex.getShortfall() != null) {
+                redirectAttributes.addFlashAttribute("shortfall", ex.getShortfall());
+            }
             return "redirect:" + extractPath(referer);
         }
         redirectAttributes.addFlashAttribute("errorMsg", ex.getMessage());

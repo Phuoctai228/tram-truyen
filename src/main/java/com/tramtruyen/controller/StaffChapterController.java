@@ -58,8 +58,9 @@ public class StaffChapterController {
 
     @PostMapping
     public String createChapter(@PathVariable Integer novelId, @Valid ChapterForm form,
+                                BindingResult bindingResult,
                                 @RequestParam(defaultValue = "DRAFT") ChapterSaveAction saveAction,
-                                BindingResult bindingResult, Model model,
+                                Model model,
                                 RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             return renderFormWithErrors(novelId, form, model, redirectAttributes,

@@ -11,6 +11,7 @@ import com.tramtruyen.service.NovelService;
 import com.tramtruyen.service.RatingService;
 import com.tramtruyen.service.WalletService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -26,8 +27,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Controller
 @RequiredArgsConstructor
@@ -41,6 +44,7 @@ public class NovelController {
     private final ChapterUnlockService chapterUnlockService;
     private final WalletService walletService;
     private final com.tramtruyen.service.CommentService commentService;
+    private final com.tramtruyen.service.ChapterAccessService chapterAccessService;
 
     @GetMapping("/search")
     public String searchNovels(
@@ -133,10 +137,12 @@ public class NovelController {
         List<Chapter> chapters = chapterService.getPublicChapters(novel.getId());
         boolean inBookshelf = false;
         com.tramtruyen.entity.NovelRating userRating = null;
+        Chapter lastReadChapter = null;
         if (authentication != null && authentication.isAuthenticated()
                 && !(authentication instanceof org.springframework.security.authentication.AnonymousAuthenticationToken)) {
             inBookshelf = bookshelfService.isNovelInBookshelf(authentication.getName(), novel.getId());
             userRating = ratingService.getUserRating(authentication.getName(), novel.getId());
+            lastReadChapter = bookshelfService.getLastReadChapter(authentication.getName(), novel.getId()).orElse(null);
         }
 
         long favoriteCount = bookshelfService.countNovelFavorites(novel.getId());
@@ -147,6 +153,7 @@ public class NovelController {
         model.addAttribute("novel", novel);
         model.addAttribute("chapters", chapters);
         model.addAttribute("inBookshelf", inBookshelf);
+        model.addAttribute("lastReadChapter", lastReadChapter);
         model.addAttribute("favoriteCount", favoriteCount);
         model.addAttribute("sameAuthorNovels", sameAuthorNovels);
         model.addAttribute("userRating", userRating);
@@ -314,27 +321,25 @@ public class NovelController {
             @PathVariable String slug,
             @PathVariable Integer chapterNumber,
             Authentication authentication,
+            HttpServletRequest request,
             Model model) {
         Novel novel = novelService.getPublicNovelBySlug(slug);
         Chapter chapter = chapterService.getPublicChapter(novel.getId(), chapterNumber);
 
+        // Deduplicate view increment per session (prevents double counting from prefetch, double-click, F5 reload)
+        HttpSession session = request.getSession(true);
+        @SuppressWarnings("unchecked")
+        Set<Integer> viewedChapters = (Set<Integer>) session.getAttribute("VIEWED_CHAPTER_IDS");
+        if (viewedChapters == null) {
+            viewedChapters = new HashSet<>();
+            session.setAttribute("VIEWED_CHAPTER_IDS", viewedChapters);
+        }
+        if (viewedChapters.add(chapter.getId())) {
+            chapterService.recordView(novel.getId(), chapter.getId());
+        }
+
         boolean isLoggedIn = (authentication != null && authentication.isAuthenticated()
                 && !(authentication instanceof AnonymousAuthenticationToken));
-
-        boolean isVip = chapter.getPrice() != null && chapter.getPrice() > 0;
-        boolean isChapterUnlocked = !isVip;
-        int walletBalance = 0;
-        int remainingBalance = 0;
-        boolean canAfford = false;
-
-        if (isLoggedIn) {
-            walletBalance = walletService.getBalance(authentication.getName());
-            if (isVip) {
-                isChapterUnlocked = chapterUnlockService.isChapterUnlocked(authentication.getName(), chapter.getId());
-                remainingBalance = walletBalance - chapter.getPrice();
-                canAfford = walletBalance >= chapter.getPrice();
-            }
-        }
 
         // Reading activity tracking
         boolean isChapterRead = false;
@@ -344,19 +349,9 @@ public class NovelController {
             isChapterRead = bookshelfService.isChapterRead(authentication.getName(), chapter.getId());
         }
 
-        // Server-side content security: If locked, extract first 2 paragraphs as preview only
-        List<String> paragraphs;
-        if (isChapterUnlocked) {
-            paragraphs = Arrays.stream(chapter.getContent().replace("\r", "").split("\n"))
-                    .filter(p -> p != null && !p.trim().isEmpty())
-                    .toList();
-        } else {
-            // Masked preview
-            paragraphs = Arrays.stream(chapter.getContent().replace("\r", "").split("\n"))
-                    .filter(p -> p != null && !p.trim().isEmpty())
-                    .limit(2)
-                    .toList();
-        }
+        // Delegate content security, access resolution and top-up recommendations to service
+        com.tramtruyen.dto.ChapterAccessDTO access =
+                chapterAccessService.checkAccess(novel, chapter, authentication);
 
         List<Chapter> chapters = chapterService.getPublicChapters(novel.getId());
         Integer prevChapterNumber = null;
@@ -383,23 +378,28 @@ public class NovelController {
         model.addAttribute("inBookshelf", inBookshelf);
         model.addAttribute("isChapterRead", isChapterRead);
 
-        // VIP Unlock attributes for UI Paywall and Modal (image10.png)
-        model.addAttribute("isVip", isVip);
-        model.addAttribute("isChapterUnlocked", isChapterUnlocked);
-        model.addAttribute("paragraphs", paragraphs);
-        model.addAttribute("userWalletBalance", walletBalance);
-        model.addAttribute("remainingBalanceAfter", remainingBalance);
-        model.addAttribute("canAfford", canAfford);
-        model.addAttribute("isLoggedIn", isLoggedIn);
+        // VIP Unlock & Access attributes for reading view and modals
+        model.addAttribute("chapterAccess", access);
+        model.addAttribute("accessStatus", access.getStatus().name());
+        model.addAttribute("isVip", access.isPaid());
+        model.addAttribute("isChapterUnlocked", access.isReadable());
+        model.addAttribute("paragraphs", access.getParagraphs());
+        model.addAttribute("userWalletBalance", access.getWalletBalance());
+        model.addAttribute("remainingBalanceAfter", access.getRemainingBalanceAfter());
+        model.addAttribute("canAfford", access.isCanAfford());
+        model.addAttribute("shortfall", access.getShortfall());
+        model.addAttribute("isLoggedIn", access.isLoggedIn());
+        model.addAttribute("suggestedPackages", access.getSuggestedPackages());
+        model.addAttribute("watermarkText", access.getWatermarkText());
+        model.addAttribute("userFingerprint", access.getUserFingerprint());
 
         return "novel/reading";
     }
 
-    @PostMapping({"/truyen/{slug}/chuong-{chapterNumber}/unlock", "/api/chapters/{chapterId}/unlock"})
+    @PostMapping("/truyen/{slug}/chuong-{chapterNumber}/unlock")
     public Object unlockChapter(
-            @PathVariable(required = false) String slug,
-            @PathVariable(required = false) Integer chapterNumber,
-            @PathVariable(required = false) Integer chapterId,
+            @PathVariable String slug,
+            @PathVariable Integer chapterNumber,
             @RequestParam(defaultValue = "false") Boolean autoUnlockNext,
             Authentication authentication,
             HttpServletRequest request,
@@ -413,32 +413,21 @@ public class NovelController {
             if (isAjax) {
                 return ResponseEntity.status(401).body(Map.of("success", false, "message", "Vui lòng đăng nhập để mở khóa chương"));
             }
-            return "redirect:/login?redirect=" + (slug != null ? "/truyen/" + slug + "/chuong-" + chapterNumber : "/");
+            return "redirect:/login?redirect=/truyen/" + slug + "/chuong-" + chapterNumber;
         }
 
-        Integer targetChapterId = chapterId;
-        if (targetChapterId == null && slug != null && chapterNumber != null) {
-            Novel novel = novelService.getPublicNovelBySlug(slug);
-            Chapter chapter = chapterService.getPublicChapter(novel.getId(), chapterNumber);
-            targetChapterId = chapter.getId();
+        Novel novel = novelService.getPublicNovelBySlug(slug);
+        Chapter chapter = chapterService.getPublicChapter(novel.getId(), chapterNumber);
+
+        UnlockResultDTO result = chapterUnlockService.unlockChapter(
+                authentication.getName(), chapter.getId(), autoUnlockNext);
+
+        if (isAjax) {
+            return ResponseEntity.ok(result);
         }
 
-        try {
-            UnlockResultDTO result = chapterUnlockService.unlockChapter(authentication.getName(), targetChapterId, autoUnlockNext);
-
-            if (isAjax) {
-                return ResponseEntity.ok(result);
-            }
-
-            redirectAttributes.addFlashAttribute("successMessage", result.getMessage());
-            return "redirect:/truyen/" + slug + "/chuong-" + chapterNumber;
-        } catch (Exception e) {
-            if (isAjax) {
-                return ResponseEntity.badRequest().body(Map.of("success", false, "message", e.getMessage()));
-            }
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/truyen/" + slug + "/chuong-" + chapterNumber;
-        }
+        redirectAttributes.addFlashAttribute("successMessage", result.getMessage());
+        return "redirect:/truyen/" + slug + "/chuong-" + chapterNumber;
     }
 
     @GetMapping("/novel/{id}/read/{chapterNumber}")

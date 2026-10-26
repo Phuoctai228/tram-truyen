@@ -54,7 +54,7 @@ public class TransactionAuditServiceImpl implements TransactionAuditService {
         String sqlTopupVnd = "SELECT COALESCE(SUM(amount_vnd), 0) FROM topup_orders WHERE status = 'SUCCESS'";
         String sqlCoinIssued = "SELECT COALESCE(SUM(coin_received), 0) FROM topup_orders WHERE status = 'SUCCESS'";
         String sqlCoinSpent = "SELECT COALESCE(SUM(ABS(amount)), 0) FROM transactions WHERE amount < 0";
-        String sqlTotalTx = "SELECT (SELECT COUNT(*) FROM topup_orders) + (SELECT COUNT(*) FROM transactions WHERE type NOT IN ('DEPOSIT', 'TOPUP_COIN'))";
+        String sqlTotalTx = "SELECT (SELECT COUNT(*) FROM topup_orders) + (SELECT COUNT(*) FROM transactions WHERE type != 'DEPOSIT')";
         String sqlSuccessOrders = "SELECT COUNT(*) FROM topup_orders WHERE status = 'SUCCESS'";
 
         Long totalTopupVnd = jdbcTemplate.getJdbcTemplate().queryForObject(sqlTopupVnd, Long.class);
@@ -185,7 +185,7 @@ public class TransactionAuditServiceImpl implements TransactionAuditService {
                     t.created_at AS tx_time
                 FROM transactions t
                 JOIN users u ON t.user_id = u.id
-                WHERE t.type NOT IN ('DEPOSIT', 'TOPUP_COIN')
+                WHERE t.type != 'DEPOSIT'
             )
             """;
 

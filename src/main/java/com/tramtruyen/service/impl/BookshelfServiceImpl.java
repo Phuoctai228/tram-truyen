@@ -372,6 +372,24 @@ public class BookshelfServiceImpl implements BookshelfService {
                 .build();
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<Chapter> getLastReadChapter(String email, Integer novelId) {
+        if (email == null || novelId == null) {
+            return Optional.empty();
+        }
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        Optional<Novel> novelOpt = novelRepository.findByIdAndIsDeletedFalse(novelId);
+        if (userOpt.isEmpty() || novelOpt.isEmpty()) {
+            return Optional.empty();
+        }
+        return userChapterActivityRepository
+                .findFirstByUserAndChapter_NovelAndIsReadTrueOrderByReadAtDescChapter_ChapterNumberDesc(
+                        userOpt.get(), novelOpt.get())
+                .map(UserChapterActivity::getChapter)
+                .filter(ch -> ch != null && !Boolean.TRUE.equals(ch.getIsDeleted()));
+    }
+
     private User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy người dùng"));
