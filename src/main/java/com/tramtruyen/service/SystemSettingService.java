@@ -1,6 +1,9 @@
 package com.tramtruyen.service;
 
 import com.tramtruyen.dto.SystemSettingsDTO;
+import com.tramtruyen.entity.WebSetting;
+
+import java.util.List;
 
 public interface SystemSettingService {
 
@@ -11,4 +14,10 @@ public interface SystemSettingService {
     int getVndToCoinRate();
 
     String getVndPerCoinFormatted();
+
+    List<WebSetting> getAllThemes();
+
+    WebSetting getActiveTheme();
+
+    WebSetting activateTheme(Integer themeId, Integer adminId, String clientIp);
 }

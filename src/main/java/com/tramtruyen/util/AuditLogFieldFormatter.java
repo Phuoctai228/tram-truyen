@@ -50,7 +50,12 @@ public final class AuditLogFieldFormatter {
             Map.entry("recipientId", "ID người nhận"),
             Map.entry("title", "Tiêu đề thông báo"),
             Map.entry("affectedReplyCount", "Số trả lời bị ảnh hưởng"),
-            Map.entry("affectedReplyIds", "Danh sách ID trả lời bị ảnh hưởng")
+            Map.entry("affectedReplyIds", "Danh sách ID trả lời bị ảnh hưởng"),
+            Map.entry("active_theme_id", "ID chủ đề giao diện"),
+            Map.entry("active_theme_name", "Tên chủ đề giao diện"),
+            Map.entry("previous_active_theme_name", "Giao diện trước đó"),
+            Map.entry("new_active_theme_name", "Giao diện mới kích hoạt"),
+            Map.entry("folder_path", "Mã giao diện")
     );
 
     // 2. Giá trị thời hạn khóa thực tế (UserManagementServiceImpl)

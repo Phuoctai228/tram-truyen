@@ -22,6 +22,7 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final NovelRepository novelRepository;
     private final UserRepository userRepository;
+    private final com.tramtruyen.repository.UserChapterActivityRepository userChapterActivityRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -42,6 +43,11 @@ public class CommentServiceImpl implements CommentService {
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy thông tin tài khoản"));
         Novel novel = novelRepository.findByIdAndIsDeletedFalse(novelId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy truyện"));
+
+        long readCount = userChapterActivityRepository.countByUserAndChapter_NovelAndIsReadTrue(user, novel);
+        if (readCount <= 0) {
+            throw new IllegalArgumentException("Bạn cần đọc ít nhất 1 chương của bộ truyện này trước khi tham gia bình luận thảo luận!");
+        }
 
         Comment parent = null;
         if (parentId != null) {

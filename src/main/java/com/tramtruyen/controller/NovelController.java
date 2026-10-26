@@ -136,11 +136,13 @@ public class NovelController {
         Novel novel = novelService.getPublicNovelBySlug(slug);
         List<Chapter> chapters = chapterService.getPublicChapters(novel.getId());
         boolean inBookshelf = false;
+        boolean hasReadAnyChapter = false;
         com.tramtruyen.entity.NovelRating userRating = null;
         Chapter lastReadChapter = null;
         if (authentication != null && authentication.isAuthenticated()
                 && !(authentication instanceof org.springframework.security.authentication.AnonymousAuthenticationToken)) {
             inBookshelf = bookshelfService.isNovelInBookshelf(authentication.getName(), novel.getId());
+            hasReadAnyChapter = bookshelfService.hasReadAnyChapter(authentication.getName(), novel.getId());
             userRating = ratingService.getUserRating(authentication.getName(), novel.getId());
             lastReadChapter = bookshelfService.getLastReadChapter(authentication.getName(), novel.getId()).orElse(null);
         }
@@ -154,6 +156,7 @@ public class NovelController {
         model.addAttribute("chapters", chapters);
         model.addAttribute("inBookshelf", inBookshelf);
         model.addAttribute("lastReadChapter", lastReadChapter);
+        model.addAttribute("hasReadAnyChapter", hasReadAnyChapter);
         model.addAttribute("favoriteCount", favoriteCount);
         model.addAttribute("sameAuthorNovels", sameAuthorNovels);
         model.addAttribute("userRating", userRating);
