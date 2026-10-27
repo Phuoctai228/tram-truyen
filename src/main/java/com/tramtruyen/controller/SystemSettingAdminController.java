@@ -9,7 +9,6 @@ import com.tramtruyen.exception.ThemeAlreadyActiveException;
 import com.tramtruyen.repository.UserRepository;
 import com.tramtruyen.security.CustomUserDetails;
 import com.tramtruyen.service.SystemSettingService;
-import com.tramtruyen.util.DateTimeUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -67,7 +66,6 @@ public class SystemSettingAdminController {
                     .id(t.getId())
                     .name(t.getName())
                     .folderPath(t.getFolderPath())
-                    .thumbnailUrl(t.getThumbnailUrl())
                     .isActive(Boolean.TRUE.equals(t.getIsActive()))
                     .uploadedBy(t.getUploadedBy())
                     .uploaderName(uploaderName)
@@ -143,7 +141,6 @@ public class SystemSettingAdminController {
     @PostMapping("/themes")
     public String createTheme(@RequestParam("name") String name,
                               @RequestParam("folderPath") String folderPath,
-                              @RequestParam(value = "thumbnailUrl", required = false) String thumbnailUrl,
                               @RequestParam(value = "tokensJson", required = false) String tokensJson,
                               @RequestParam(value = "backgroundImage", required = false) MultipartFile backgroundImage,
                               @RequestParam(value = "bgOpacity", required = false, defaultValue = "12") Integer bgOpacity,
@@ -154,7 +151,7 @@ public class SystemSettingAdminController {
         try {
             Integer adminId = getAdminId(authentication);
             String clientIp = getClientIp(httpRequest);
-            WebSetting created = systemSettingService.createTheme(name, folderPath, thumbnailUrl, tokensJson,
+            WebSetting created = systemSettingService.createTheme(name, folderPath, tokensJson,
                     backgroundImage, bgOpacity, bgBlur, adminId, clientIp);
             redirectAttributes.addFlashAttribute("successMessage", "Thêm giao diện \"" + created.getName() + "\" thành công!");
         } catch (IllegalArgumentException e) {
@@ -164,7 +161,6 @@ public class SystemSettingAdminController {
             redirectAttributes.addFlashAttribute("reopenBgNote", "Vui lòng chọn lại ảnh nền nếu có (trình duyệt không tự lưu lại file sau khi gửi biểu mẫu).");
             redirectAttributes.addFlashAttribute("failedName", name);
             redirectAttributes.addFlashAttribute("failedFolderPath", folderPath);
-            redirectAttributes.addFlashAttribute("failedThumbnailUrl", thumbnailUrl);
             redirectAttributes.addFlashAttribute("failedTokensJson", tokensJson);
             redirectAttributes.addFlashAttribute("failedBgOpacity", bgOpacity);
             redirectAttributes.addFlashAttribute("failedBgBlur", bgBlur);
@@ -176,7 +172,6 @@ public class SystemSettingAdminController {
             redirectAttributes.addFlashAttribute("reopenBgNote", "Vui lòng chọn lại ảnh nền nếu có (trình duyệt không tự lưu lại file sau khi gửi biểu mẫu).");
             redirectAttributes.addFlashAttribute("failedName", name);
             redirectAttributes.addFlashAttribute("failedFolderPath", folderPath);
-            redirectAttributes.addFlashAttribute("failedThumbnailUrl", thumbnailUrl);
             redirectAttributes.addFlashAttribute("failedTokensJson", tokensJson);
             redirectAttributes.addFlashAttribute("failedBgOpacity", bgOpacity);
             redirectAttributes.addFlashAttribute("failedBgBlur", bgBlur);
@@ -188,7 +183,6 @@ public class SystemSettingAdminController {
     public String editTheme(@PathVariable("id") Integer id,
                             @RequestParam("name") String name,
                             @RequestParam(value = "folderPath", required = false) String folderPath,
-                            @RequestParam(value = "thumbnailUrl", required = false) String thumbnailUrl,
                             @RequestParam(value = "tokensJson", required = false) String tokensJson,
                             @RequestParam(value = "backgroundImage", required = false) MultipartFile backgroundImage,
                             @RequestParam(value = "bgOpacity", required = false, defaultValue = "12") Integer bgOpacity,
@@ -200,7 +194,7 @@ public class SystemSettingAdminController {
         try {
             Integer adminId = getAdminId(authentication);
             String clientIp = getClientIp(httpRequest);
-            WebSetting updated = systemSettingService.updateTheme(id, name, folderPath, thumbnailUrl, tokensJson,
+            WebSetting updated = systemSettingService.updateTheme(id, name, folderPath, tokensJson,
                     backgroundImage, bgOpacity, bgBlur, removeBg, adminId, clientIp);
             if (Boolean.TRUE.equals(updated.getIsActive())) {
                 redirectAttributes.addFlashAttribute("successMessage", "Cập nhật giao diện \"" + updated.getName() + "\" thành công!");
@@ -214,7 +208,6 @@ public class SystemSettingAdminController {
             redirectAttributes.addFlashAttribute("reopenBgNote", "Vui lòng chọn lại ảnh nền nếu có (trình duyệt không tự lưu lại file sau khi gửi biểu mẫu).");
             redirectAttributes.addFlashAttribute("failedThemeId", id);
             redirectAttributes.addFlashAttribute("failedName", name);
-            redirectAttributes.addFlashAttribute("failedThumbnailUrl", thumbnailUrl);
             redirectAttributes.addFlashAttribute("failedTokensJson", tokensJson);
             redirectAttributes.addFlashAttribute("failedBgOpacity", bgOpacity);
             redirectAttributes.addFlashAttribute("failedBgBlur", bgBlur);
@@ -226,7 +219,6 @@ public class SystemSettingAdminController {
             redirectAttributes.addFlashAttribute("reopenBgNote", "Vui lòng chọn lại ảnh nền nếu có (trình duyệt không tự lưu lại file sau khi gửi biểu mẫu).");
             redirectAttributes.addFlashAttribute("failedThemeId", id);
             redirectAttributes.addFlashAttribute("failedName", name);
-            redirectAttributes.addFlashAttribute("failedThumbnailUrl", thumbnailUrl);
             redirectAttributes.addFlashAttribute("failedTokensJson", tokensJson);
             redirectAttributes.addFlashAttribute("failedBgOpacity", bgOpacity);
             redirectAttributes.addFlashAttribute("failedBgBlur", bgBlur);

@@ -31,19 +31,11 @@ public interface SystemSettingService {
 
     WebSetting activateTheme(Integer themeId, Integer adminId, String clientIp);
 
-    WebSetting createTheme(String name, String folderPath, String thumbnailUrl, String tokensJson, Integer adminId, String clientIp);
-
-    WebSetting createTheme(String name, String folderPath, String thumbnailUrl, String tokensJson,
+    WebSetting createTheme(String name, String folderPath, String tokensJson,
                            MultipartFile backgroundImage, Integer bgOpacity, Integer bgBlur,
                            Integer adminId, String clientIp);
 
-    WebSetting updateTheme(Integer id, String name, String thumbnailUrl, String tokensJson, Integer adminId, String clientIp);
-
-    WebSetting updateTheme(Integer id, String name, String thumbnailUrl, String tokensJson,
-                           MultipartFile backgroundImage, Integer bgOpacity, Integer bgBlur, Boolean removeBg,
-                           Integer adminId, String clientIp);
-
-    WebSetting updateTheme(Integer id, String name, String folderPath, String thumbnailUrl, String tokensJson,
+    WebSetting updateTheme(Integer id, String name, String folderPath, String tokensJson,
                            MultipartFile backgroundImage, Integer bgOpacity, Integer bgBlur, Boolean removeBg,
                            Integer adminId, String clientIp);
 

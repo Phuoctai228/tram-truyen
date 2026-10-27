@@ -11,9 +11,6 @@
     <script th:src="@{/js/authentication/tailwind-config.js}"></script>
     <link rel="stylesheet" th:href="@{/css/novel-admin.css}">
     <link rel="stylesheet" th:href="@{/css/admin-common.css}">
-    <style>
-        .font-serif-title { font-family: 'Lora', serif; }
-    </style>
 </head>
 <body class="bg-[#fff8f5] text-[#231a11] font-sans antialiased min-h-screen">
 
@@ -279,26 +276,7 @@
     </section>
 </main>
 
-<script>
-    function handleTimeRangeChange(val) {
-        const customBox = document.getElementById('customDateContainer');
-        if (val === 'custom') {
-            customBox.classList.remove('hidden');
-        } else {
-            customBox.classList.add('hidden');
-            document.getElementById('logStartDate').value = '';
-            document.getElementById('logEndDate').value = '';
-            document.getElementById('auditFilterForm').submit();
-        }
-    }
-
-    function clearKeyword() {
-        const form = document.getElementById('auditFilterForm');
-        const input = form.querySelector('input[name="keyword"]');
-        if (input) input.value = '';
-        form.submit();
-    }
-</script>
+<script th:src="@{/js/admin/audit-logs.js(v='1.0')}" defer></script>
 
 </body>
 </html>
