@@ -18,17 +18,18 @@ public class WebSetting {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "name", length = 100, nullable = false)
+    @Column(name = "name", nullable = false, length = 100)
     private String name;
 
-    @Column(name = "folder_path", length = 255, nullable = false, unique = true)
+    @Column(name = "folder_path", nullable = false, unique = true, length = 255)
     private String folderPath;
 
     @Column(name = "thumbnail_url", length = 255)
     private String thumbnailUrl;
 
-    @Column(name = "is_active", nullable = false)
-    private Boolean isActive;
+    @Column(name = "is_active")
+    @Builder.Default
+    private Boolean isActive = false;
 
     @Column(name = "uploaded_by")
     private Integer uploadedBy;
