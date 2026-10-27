@@ -89,6 +89,14 @@
                     </div>
                 </div>
 
+                <!-- Return to Chapter Button if available -->
+                <a th:if="${returnUrl != null and !#strings.isEmpty(returnUrl)}"
+                   th:href="${returnUrl}"
+                   class="w-full inline-flex items-center justify-center gap-2 py-3.5 rounded-xl bg-[#874b02] hover:bg-[#723e00] active:scale-[0.98] text-white font-semibold text-sm shadow-[0_4px_14px_rgba(135,75,2,0.35)] transition-all mb-3">
+                    <span class="material-symbols-outlined text-base">auto_stories</span>
+                    <span>Quay lại chương đang đọc</span>
+                </a>
+
                 <!-- Main Action Button -->
                 <a th:href="@{/wallet}"
                    class="w-full inline-flex items-center justify-center gap-2 py-3.5 rounded-xl bg-[#B45309] hover:bg-[#92400E] active:scale-[0.98] text-white font-semibold text-sm shadow-[0_4px_14px_rgba(180,83,9,0.35)] transition-all mb-4">

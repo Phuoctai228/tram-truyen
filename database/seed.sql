@@ -1,4 +1,4 @@
--- ================================================================================
+﻿-- ================================================================================
 -- DATABASE SEED DATA: TRẠM TRUYỆN (SWP391)
 -- ================================================================================
 
@@ -158,7 +158,7 @@ Chiếc ngọc bội cổ xưa ấy vốn dĩ u tối như đá cuội, nhưng k
 
 Cổ vật thần bí này đã nằm im lìm dưới đáy vực Tử Phong suốt vạn năm qua, trải qua muôn vàn phong ba bão táp mà không một sinh linh nào phát hiện. Nó là chí bảo trấn tông của một thế lực đan đạo viễn cổ đã phi thăng tiên giới, chờ đợi một người có tâm tính kiên cường tột bậc và ý chí bất khuất đến để kế thừa y bát.
 
-Một thanh âm trầm hùng, vang vọng như tiếng chuông đồng từ cửu thiên vọng xuống thức hải của thiếu niên đang hấp hối: "Chín mạch bế tắc, ý chí bất diệt, huyết mạch tương hợp... Kẻ có duyên, nhận lấy truyền thừa Cửu Tinh Diễn Thiên Quyết của Bản tôn!" Dứt lời, chiếc ngọc bội hóa thành một luồng ánh sáng chói lòa, bắn thẳng vào giữa trán của Lâm Phong, bắt đầu một quá trình tái sinh thần kỳ sẽ làm đảo lộn cả càn khôn đại lục.', 0, 'PUBLISHED', 45, false),
+Một thanh âm trầm hùng, vang vọng như tiếng chuông đồng từ cửu thiên vọng xuống thức hải của thiếu niên đang hấp hối: "Chín mạch bế tắc, ý chí bất diệt, huyết mạch tương hợp... Kẻ có duyên, nhận lấy truyền thừa Cửu Tinh Diễn Thiên Quyết của Bản tôn!" Dứt lời, chiếc ngọc bội hóa thành một luồng ánh sáng chói lòa, bắn thẳng vào giữa trán của Lâm Phong, bắt đầu một quá trình tái sinh thần kỳ sẽ làm đảo lộn cả càn khôn đại lục.', 0, 'PUBLISHED_REGULAR', 45, false),
 (2, 'Thức Tỉnh Cửu Tinh Quyết', 'Luồng ánh sáng màu lam nhạt từ ngọc bội cổ xưa sau khi tiến vào thức hải của Lâm Phong liền hóa thành một biển năng lượng mênh mông vô tận. Từng đợt sóng linh khí thuần khiết cuồn cuộn chảy tràn, bao bọc lấy linh hồn đang mờ nhạt của thiếu niên. Lâm Phong cảm thấy toàn bộ ý thức của mình như bị kéo vào một khoảng không gian tinh không bao la, nơi có chín ngôi sao khổng lồ rực rỡ xoay vần theo những quỹ đạo huyền ảo khó lường. Ở trung tâm của chín ngôi sao ấy, một chiếc đan đỉnh bằng đồng cổ kính tỏa ra hào quang bảy màu, uy áp bức người khiến vạn vật phải quỳ gối phủ phục.
 
 Dưới đáy vực sâu lạnh lẽo, thân xác của Lâm Phong bắt đầu xảy ra những biến đổi kinh thiên động địa. Năng lượng của Cửu Tinh ngọc bội tràn vào tứ chi bách hài, tựa như hàng ngàn dòng suối ấm áp len lỏi vào từng thớ thịt, tế bào và kinh mạch bị tổn thương. Xương cốt gãy vụn nơi lồng ngực bắt đầu kêu lên răng rắc, tự động gắn kết và hồi phục với tốc độ mắt thường cũng có thể nhìn thấy. Làn da bầm tím bong tróc từng mảng, nhường chỗ cho một lớp da mới mịn màng và dẻo dai như ngọc thạch.
@@ -199,7 +199,7 @@ Tiếng gầm thét như rồng ngâm hổ khiếu làm chấn động cả chim
 
 Tiếng thét mang theo sự giải thoát, mang theo sự tự tin kiêu hãnh của một con rồng vừa thức tỉnh khỏi vực sâu lầy lội. Thu dọn lại y phục rách nát, Lâm Phong nhìn về phía vách đá cheo leo. Giờ đây với thể lực phi thường và linh lực dồi dào, vách đá dựng đứng từng suýt cướp đi mạng sống của hắn chẳng còn là trở ngại. Hắn tung người nhảy lên, nhẹ nhàng như một cánh chim ưng lướt qua các mỏm đá, nhanh chóng leo lên đỉnh vực.
 
-Phía chân trời đằng đông, ánh rạng đông màu hồng ngọc bắt đầu xua tan màn đêm lạnh giá, chiếu rọi những tia nắng ấm áp đầu tiên xuống thành Vân Sơn cổ kính. Lâm Phong đứng trên đỉnh núi cao lộng gió, áo choàng bay phần phật, ánh mắt sắc lạnh như kiếm quang hướng về phía phủ đệ Lâm gia xa xăm. "Lâm gia, Triệu gia, những kẻ đã từng coi ta là cỏ rác... Hãy đợi đấy! Lâm Phong ta đã trở về, và thời đại của các ngươi sắp kết thúc rồi!"', 0, 'PUBLISHED', 32, false)
+Phía chân trời đằng đông, ánh rạng đông màu hồng ngọc bắt đầu xua tan màn đêm lạnh giá, chiếu rọi những tia nắng ấm áp đầu tiên xuống thành Vân Sơn cổ kính. Lâm Phong đứng trên đỉnh núi cao lộng gió, áo choàng bay phần phật, ánh mắt sắc lạnh như kiếm quang hướng về phía phủ đệ Lâm gia xa xăm. "Lâm gia, Triệu gia, những kẻ đã từng coi ta là cỏ rác... Hãy đợi đấy! Lâm Phong ta đã trở về, và thời đại của các ngươi sắp kết thúc rồi!"', 0, 'PUBLISHED_REGULAR', 32, false)
 ) AS c(chapter_number, title, content, price, status, views, is_deleted)
 ON CONFLICT (novel_id, chapter_number) DO UPDATE
 SET title = EXCLUDED.title, content = EXCLUDED.content, price = EXCLUDED.price, status = EXCLUDED.status;
@@ -288,7 +288,7 @@ Càng nghĩ, ngọn lửa uất hận trong lòng Tiêu Viêm càng bốc cháy 
 
 Luồng ánh sáng ấy ban đầu chỉ le lói như đốm lân tinh trong đêm tối, nhưng chỉ vài giây sau đã bùng lên rực rỡ, chiếu sáng bừng từng góc ngách của căn phòng tối tăm. Một luồng dao động linh hồn kỳ dị lan tỏa, mở màn cho biến cố lớn nhất cuộc đời thiếu niên.
 
-Tiêu Viêm kinh ngạc đứng sững lại giữa phòng, bàn tay bất giác siết chặt chuôi dao găm. Hắn nín thở theo dõi từng tia sáng u lam đang nhảy múa trên bề mặt kim loại cũ kỹ, cảm nhận một luồng sinh mệnh thức tỉnh sau giấc ngủ vùi ngàn năm. Trực giác mách bảo cho hắn biết rằng cuộc đời u tối của hắn sắp sửa lật sang một trang hoàn toàn mới.', 0, 'PUBLISHED', 1500, false),
+Tiêu Viêm kinh ngạc đứng sững lại giữa phòng, bàn tay bất giác siết chặt chuôi dao găm. Hắn nín thở theo dõi từng tia sáng u lam đang nhảy múa trên bề mặt kim loại cũ kỹ, cảm nhận một luồng sinh mệnh thức tỉnh sau giấc ngủ vùi ngàn năm. Trực giác mách bảo cho hắn biết rằng cuộc đời u tối của hắn sắp sửa lật sang một trang hoàn toàn mới.', 0, 'PUBLISHED_REGULAR', 1500, false),
 (2, 'Dược Lão Thức Tỉnh', 'Ánh sáng lân tinh màu u lam từ chiếc nhẫn cổ bằng đồng thau màu đen xám bỗng nhiên tỏa ra chói mắt, tạo thành một quầng sáng mờ ảo bao phủ lấy toàn bộ gian phòng ngủ của Tiêu Viêm. Cùng lúc đó, nhiệt độ trong phòng đột ngột hạ xuống thấp đến mức khiến từng hơi thở của thiếu niên ngưng tụ thành những làn khói trắng xóa phả vào không trung. Một luồng uy áp linh hồn vô hình nhưng thâm sâu tựa biển cả bao trùm lấy không gian, đè ép khiến lồng ngực Tiêu Viêm nghẹn lại, hô hấp trở nên cực kỳ khó khăn.
 
 "Ai?! Kẻ nào ở đó?!" Tiêu Viêm giật mình bật dậy khỏi giường, theo bản năng sinh tồn rút thanh chủy thủ sắc bén giấu dưới gối ra thủ thế trước ngực. Đôi mắt đen láy của hắn tràn đầy cảnh giác cao độ, ánh mắt khóa chặt vào quầng sáng đang lập lòe trên ngón tay mình. Hắn chưa từng thấy chiếc nhẫn của mẫu thân có bất kỳ biểu hiện kỳ lạ nào như thế này suốt mười lăm năm qua.
@@ -337,7 +337,7 @@ Tiêu Viêm ngẩng đầu lên, ánh mắt bốc cháy ngọn lửa kiên đị
 
 Tiêu Viêm nắm chặt bàn tay, cảm nhận được một luồng nhiệt lưu ấm áp đang dần lan tỏa từ đan điền, báo hiệu sự hồi sinh thần kỳ của dòng đấu khí đã ngủ quên suốt ba năm dài.
 
-Dược Trần vuốt râu cười vang đầy mãn nguyện: "Tốt! Rất tốt! Kể từ hôm nay, con đường của ngươi sẽ bắt đầu lại từ con số không, nhưng đích đến sẽ là bầu trời vô tận!"', 0, 'PUBLISHED', 1450, false)
+Dược Trần vuốt râu cười vang đầy mãn nguyện: "Tốt! Rất tốt! Kể từ hôm nay, con đường của ngươi sẽ bắt đầu lại từ con số không, nhưng đích đến sẽ là bầu trời vô tận!"', 0, 'PUBLISHED_REGULAR', 1450, false)
 ) AS c(chapter_number, title, content, price, status, views, is_deleted)
 ON CONFLICT (novel_id, chapter_number) DO UPDATE
 SET title = EXCLUDED.title, content = EXCLUDED.content, price = EXCLUDED.price, status = EXCLUDED.status;
@@ -438,7 +438,7 @@ Tôi nhìn quanh, những người bạn đồng nghiệp, những gương mặt
 
 Tôi nắm chặt lấy chiếc điện thoại đang chứa toàn bộ dữ liệu của cuốn tiểu thuyết, từng ngón tay run rẩy nhưng ánh mắt dần trở nên sắc lạnh. Tôi nhận ra một sự thật chấn động đang đè nặng lên vai mình: Tôi, Kim Dokja, chính là người duy nhất nắm giữ toàn bộ kịch bản của thế giới này! Tôi biết ai sẽ sống, ai sẽ chết, quái vật nào sắp xuất hiện và đâu là con đường duy nhất để đi đến hồi kết cuối cùng của vũ trụ!
 
-Một nụ cười nhạt thoáng hiện trên khóe môi tôi giữa bóng tối bao trùm toa tàu. Nếu thế giới này đã biến thành một cuốn tiểu thuyết, vậy thì tôi sẽ trở thành độc giả duy nhất chứng kiến nó đến trang cuối cùng.', 0, 'PUBLISHED', 4500, false),
+Một nụ cười nhạt thoáng hiện trên khóe môi tôi giữa bóng tối bao trùm toa tàu. Nếu thế giới này đã biến thành một cuốn tiểu thuyết, vậy thì tôi sẽ trở thành độc giả duy nhất chứng kiến nó đến trang cuối cùng.', 0, 'PUBLISHED_REGULAR', 4500, false),
 (2, 'Kịch Bản Sinh Tồn', 'Ánh mắt của Dokkaebi Bihyung lấp lánh sự tàn bạo lạnh lùng khi nhìn xuống đám đông hành khách đang co cụm lại vì sợ hãi trong bóng tối của toa tàu số 3807. Nó khẽ búng tay một cái, phát ra một tiếng tách giòn giã giữa không gian im ắng nghẹt thở. Ngay lập tức, giữa không trung toa tàu hiện lên một màn hình ảo màu xanh lam khổng lồ, trên đó những dòng chữ đỏ rực như máu tươi từ từ chảy xuống:
 
 [Kịch Bản Chính Thức Số 1 – Chứng Minh Giá Trị Sinh Tồn]
@@ -515,7 +515,7 @@ Cánh cửa toa tàu rung chuyển dữ dội khi lớp màng bảo hộ màu xa
 
 Tôi đứng thẳng dậy, phủi nhẹ vạt áo sơ mi dính vài giọt bụi bẩn, ánh mắt kiên định hướng về phía cánh cửa sắt méo mó dẫn ra thế giới bên ngoài. Một kỷ nguyên mới đã bắt đầu, một kỷ nguyên mà những kẻ yếu sẽ bị nghiền nát và chỉ có những kẻ thấu hiểu luật chơi mới có quyền định đoạt số phận.
 
-Con đường sinh tồn chỉ vừa mới mở ra chương đầu tiên, và tôi sẽ không để bất kỳ ai cản bước mình.', 0, 'PUBLISHED', 4400, false)
+Con đường sinh tồn chỉ vừa mới mở ra chương đầu tiên, và tôi sẽ không để bất kỳ ai cản bước mình.', 0, 'PUBLISHED_REGULAR', 4400, false)
 ) AS c(chapter_number, title, content, price, status, views, is_deleted)
 ON CONFLICT (novel_id, chapter_number) DO UPDATE
 SET title = EXCLUDED.title, content = EXCLUDED.content, price = EXCLUDED.price, status = EXCLUDED.status;
@@ -606,7 +606,7 @@ Trương Thiết – thiếu niên cùng vào cốc với hắn – là một ng
 
 Những đêm nằm nghe tiếng côn trùng rả rích nơi núi rừng hoang vắng, Hàn Lập thường nhìn lên bầu trời đầy sao lấp lánh, tự hỏi liệu con đường phía trước sẽ dẫn mình về đâu. Thiếu niên nhỏ bé không hề nuôi mộng tưởng trở thành đại hiệp cái thế lừng lẫy thiên hạ, ước nguyện lớn nhất của hắn lúc này chỉ đơn giản là học thành tài nghệ để có thể bảo bọc gia đình thoát khỏi cảnh bần hàn đói rách.
 
-Số phận của thiếu niên bình phàm từ giây phút ấy chính thức rẽ sang một con đường hoàn toàn mới, một con đường dẫn hắn bước chân vào thế giới tu tiên đầy hiểm hóc và huyền bí mà phàm nhân ngàn năm khó lòng tưởng tượng.', 0, 'PUBLISHED', 3800, false),
+Số phận của thiếu niên bình phàm từ giây phút ấy chính thức rẽ sang một con đường hoàn toàn mới, một con đường dẫn hắn bước chân vào thế giới tu tiên đầy hiểm hóc và huyền bí mà phàm nhân ngàn năm khó lòng tưởng tượng.', 0, 'PUBLISHED_REGULAR', 3800, false),
 (2, 'Mặc Đại Phu Cùng Thần Bí Bình Nhỏ', 'Sau khi bái Mặc Đại Phu làm sư phụ, Hàn Lập cùng một thiếu niên khác tên là Trương Thiết được đưa về Thần Thủ Cốc. Nơi đây là một thung lũng biệt lập nằm sâu trong lòng dãy núi Thái Nhạc, bốn bề vách đá dựng đứng ngăn cách với sự ồn ào náo nhiệt của Thất Huyền Môn. Trong thung lũng trồng bạt ngàn các loại thảo dược quý hiếm, không khí quanh năm thoang thoảng mùi hương thuốc nồng nàn dễ chịu.
 
 Mặc Đại Phu là một người cực kỳ nghiêm khắc và ít nói. Sau nửa năm dạy cho hai thiếu niên nhận biết chữ nghĩa và hàng trăm loại thảo dược cơ bản, lão truyền thụ cho Trương Thiết một môn ngoại công ngạnh khí công mang tên Tượng Giáp Công, còn đối với Hàn Lập, lão truyền thụ một bộ khẩu quyết vô danh kỳ dị, yêu cầu hắn phải dốc lòng tu luyện ngày đêm. Bộ khẩu quyết này chỉ có vỏn vẹn năm tầng, phương thức vận chuyển khí tức hoàn toàn khác biệt với các loại nội công tâm pháp giang hồ thông thường, chú trọng vào việc hấp thu thiên địa linh khí vào đan điền.
@@ -651,7 +651,7 @@ Mỗi lần chứng kiến Mặc Đại Phu ho khù khụ trong bóng tối và 
 
 Hắn thầm hứa với lòng mình, dù con đường trường sinh phía trước có muôn trùng chông gai và máu chảy thành sông, hắn cũng sẽ từng bước tiến lên, không bao giờ cúi đầu khuất phục trước số phận.
 
-Chính giọt linh dịch thần bí này, và chiếc Chưởng Thiên Bình nghịch thiên này, sẽ trở thành bảo vật quan trọng nhất đưa Hàn Lập từ một phàm nhân tư chất kém cỏi bước lên đỉnh cao của Tiên Giới, mở ra truyền kỳ Phàm Nhân Tu Tiên bất hủ muôn đời.', 0, 'PUBLISHED', 3600, false)
+Chính giọt linh dịch thần bí này, và chiếc Chưởng Thiên Bình nghịch thiên này, sẽ trở thành bảo vật quan trọng nhất đưa Hàn Lập từ một phàm nhân tư chất kém cỏi bước lên đỉnh cao của Tiên Giới, mở ra truyền kỳ Phàm Nhân Tu Tiên bất hủ muôn đời.', 0, 'PUBLISHED_REGULAR', 3600, false)
 ) AS c(chapter_number, title, content, price, status, views, is_deleted)
 ON CONFLICT (novel_id, chapter_number) DO UPDATE
 SET title = EXCLUDED.title, content = EXCLUDED.content, price = EXCLUDED.price, status = EXCLUDED.status;
@@ -748,7 +748,7 @@ Vừa dứt câu xướng tụng cuối cùng, toàn bộ không gian xung quanh
 
 Một màn sương mù xám mênh mông, cổ xưa và vĩnh hằng bất ngờ hiện ra trước tâm trí hắn, cuốn phăng linh hồn hắn bay thẳng vào cõi hư vô vô tận vượt ngoài tầm hiểu biết của phàm nhân. Linh hồn hắn lơ lửng giữa biển sương mù mênh mông không thấy bờ bến, nơi thời gian dường như ngưng đọng từ thuở hồng hoang khai thiên lập địa.
 
-Giữa làn sương mù xám vô tận ấy, những ngôi sao đỏ thẫm lấp lánh như mắt thần, và sừng sững trên đỉnh cao nhất là một tòa cung điện nguy nga tráng lệ vượt qua mọi sự tưởng tượng của nhân loại. Vận mệnh của Chu Minh Thụy – nay là Klein Moretti – đã chính thức gắn chặt với thế giới của những Bí Mật Vực Thẳm và Trật Tự Thần Thánh.', 0, 'PUBLISHED', 4200, false),
+Giữa làn sương mù xám vô tận ấy, những ngôi sao đỏ thẫm lấp lánh như mắt thần, và sừng sững trên đỉnh cao nhất là một tòa cung điện nguy nga tráng lệ vượt qua mọi sự tưởng tượng của nhân loại. Vận mệnh của Chu Minh Thụy – nay là Klein Moretti – đã chính thức gắn chặt với thế giới của những Bí Mật Vực Thẳm và Trật Tự Thần Thánh.', 0, 'PUBLISHED_REGULAR', 4200, false),
 (2, 'Bói Toán Và Năng Lực Giả', 'Màn sương mù màu xám tro dày đặc bao trùm lấy toàn bộ nhận thức của Klein Moretti. Trong không gian vô tận không có trọng lực và không có khái niệm phương hướng này, hắn cảm thấy linh hồn mình nhẹ bẫng như một làn khói lơ lửng giữa hư không. Từng đợt sóng năng lượng vô hình nhưng uy nghiêm tột bực cuộn trào quanh thân thể hắn, mang theo hơi thở của những kỷ nguyên xa xưa đã bị dòng sông thời gian vùi lấp.
 
 Trước mặt Klein, sừng sững giữa biển sương mù là một tòa cung điện bằng đá cẩm thạch khổng lồ tựa như nơi trú ngụ của những vị thần viễn cổ. Tòa cung điện được chống đỡ bởi hàng chục cột đá hoa cương to lớn khắc họa những phù điêu thần bí mô tả các vì tinh tú và các biểu tượng huyền học cổ xưa. Ở chính giữa cung điện là một chiếc bàn dài bằng đồng xanh bóng loáng với hai mươi hai chiếc ghế dựa có lưng ghế cao chạm khắc hoa văn tinh xảo.
@@ -799,7 +799,7 @@ Trong cõi nhân gian bao la vạn dặm, con đường nhân sinh và tu đạo
 
 Thế nhưng, chính trong những nghịch cảnh tăm tối nhất của cuộc đời, ý chí bất khuất của con người mới bộc lộ sức mạnh phi thường tiềm ẩn. Dù thể xác có phải chịu đựng đòn roi tra tấn, dù kinh mạch bế tắc hay bị toàn bộ thế giới quay lưng ruồng bỏ, một khi ngọn lửa niềm tin vào chính bản thân mình chưa từng tắt lụi, thì vẫn còn cơ hội để lội ngược dòng nước, nghịch chuyển càn khôn.
 
-Bầu trời đêm sâu thẳm lấp lánh muôn ngàn vì tinh tú xa xôi, mỗi một đốm sáng tượng trưng cho một số phận, một linh hồn đang tranh đấu không ngừng nghỉ để tìm kiếm vị trí của mình trong vũ trụ vô tận. Gió đêm thổi qua những tán cây cổ thụ phát ra âm thanh rì rào như tiếng thở dài của thời gian. Những kỷ nguyên huy hoàng rồi cũng sẽ lụi tàn thành tro bụi, các bậc đế vương bá chủ rồi cũng phải quy về cát bụi thời gian, duy chỉ có những tâm hồn kiên định dũng cảm dám bước đi trên con đường của riêng mình mới có thể lưu danh vĩnh cửu.', 0, 'PUBLISHED', 4100, false)
+Bầu trời đêm sâu thẳm lấp lánh muôn ngàn vì tinh tú xa xôi, mỗi một đốm sáng tượng trưng cho một số phận, một linh hồn đang tranh đấu không ngừng nghỉ để tìm kiếm vị trí của mình trong vũ trụ vô tận. Gió đêm thổi qua những tán cây cổ thụ phát ra âm thanh rì rào như tiếng thở dài của thời gian. Những kỷ nguyên huy hoàng rồi cũng sẽ lụi tàn thành tro bụi, các bậc đế vương bá chủ rồi cũng phải quy về cát bụi thời gian, duy chỉ có những tâm hồn kiên định dũng cảm dám bước đi trên con đường của riêng mình mới có thể lưu danh vĩnh cửu.', 0, 'PUBLISHED_REGULAR', 4100, false)
 ) AS c(chapter_number, title, content, price, status, views, is_deleted)
 ON CONFLICT (novel_id, chapter_number) DO UPDATE
 SET title = EXCLUDED.title, content = EXCLUDED.content, price = EXCLUDED.price, status = EXCLUDED.status;
@@ -892,7 +892,7 @@ Thế nhưng, chính trong những nghịch cảnh tăm tối nhất của cuộ
 
 Bầu trời đêm sâu thẳm lấp lánh muôn ngàn vì tinh tú xa xôi, mỗi một đốm sáng tượng trưng cho một số phận, một linh hồn đang tranh đấu không ngừng nghỉ để tìm kiếm vị trí của mình trong vũ trụ vô tận. Gió đêm thổi qua những tán cây cổ thụ phát ra âm thanh rì rào như tiếng thở dài của thời gian. Những kỷ nguyên huy hoàng rồi cũng sẽ lụi tàn thành tro bụi, các bậc đế vương bá chủ rồi cũng phải quy về cát bụi thời gian, duy chỉ có những tâm hồn kiên định dũng cảm dám bước đi trên con đường của riêng mình mới có thể lưu danh vĩnh cửu.
 
-Từng dòng suy nghĩ lắng đọng lại trong tâm trí, tựa như dòng suối trong vắt gột rửa đi mọi nỗi hoang mang sợ hãi. Hít một hơi thật sâu để lồng ngực tràn ngập sinh khí của đất trời, ánh mắt hướng về phía chân trời xa xăm nơi ánh bình minh sắp sửa ló rạng xua tan màn đêm tăm tối. Con đường phía trước còn muôn trùng chông gai thử thách, nhưng mỗi một bước chân kiên định được đặt xuống hôm nay sẽ là nền móng vững chắc cho sự quật khởi huy hoàng trong ngày mai.', 0, 'PUBLISHED', 4100, false),
+Từng dòng suy nghĩ lắng đọng lại trong tâm trí, tựa như dòng suối trong vắt gột rửa đi mọi nỗi hoang mang sợ hãi. Hít một hơi thật sâu để lồng ngực tràn ngập sinh khí của đất trời, ánh mắt hướng về phía chân trời xa xăm nơi ánh bình minh sắp sửa ló rạng xua tan màn đêm tăm tối. Con đường phía trước còn muôn trùng chông gai thử thách, nhưng mỗi một bước chân kiên định được đặt xuống hôm nay sẽ là nền móng vững chắc cho sự quật khởi huy hoàng trong ngày mai.', 0, 'PUBLISHED_REGULAR', 4100, false),
 (2, 'Thiên Nghịch Châu', 'Cơn đau nhức kịch liệt khắp toàn thân kéo Vương Lâm tỉnh lại từ cơn hôn mê sâu. Hắn thấy mình đang nằm trên một bãi sỏi ẩm ướt dưới đáy hẻm núi tối tăm, bốn bề vách đá thẳng đứng vươn cao chọc trời ngăn cách hoàn toàn với ánh sáng mặt trời bên ngoài. Tiếng nước nhỏ giọt tong tong từ nhũ đá trên cao vọng lại đều đặn giữa không gian tĩnh mịch lạnh lẽo.
 
 Vương Lâm khó nhọc cử động thân thể, may mắn thay nhờ những bụi cây rậm rạp cản bớt lực rơi nên xương cốt của hắn không bị gãy đoạn nào nghiêm trọng, chỉ có da thịt trầy xước rướm máu khắp nơi. Hắn lết thân mình đến bên bờ một dòng suối ngầm trong vắt để rửa sạch những vết thương trên mặt và tay chân.
@@ -941,7 +941,7 @@ Vạn vật trong càn khôn đều vận hành theo quy luật tuần hoàn sin
 
 Sức mạnh chân chính không chỉ nằm ở nắm đấm hay vũ lực hủy thiên diệt địa, mà trước hết bắt nguồn từ một trái tim kiên định không gì lay chuyển nổi. Trước nghịch cảnh không bao giờ khuất phục, trước cám dỗ không đánh mất lương tri bản ngã, đó mới chính là bản lĩnh đích thực của bậc kiêu hùng giữa đất trời.
 
-Những gian khổ hôm nay trải qua rồi cũng sẽ hóa thành ngọn đèn soi sáng cho tương lai mịt mùng phía trước. Con đường tu luyện trường sinh vốn dĩ cô độc, ít người thấu hiểu, đòi hỏi một sự nhẫn nại phi thường và khả năng chịu đựng nỗi cô đơn tột cùng. Nhưng khi đã vượt qua được muôn ngàn hiểm hách, đứng trên đỉnh cao ngắm nhìn thiên hạ thái bình, mọi hy sinh mất mát đều sẽ trở nên vô cùng xứng đáng.', 0, 'PUBLISHED', 4000, false)
+Những gian khổ hôm nay trải qua rồi cũng sẽ hóa thành ngọn đèn soi sáng cho tương lai mịt mùng phía trước. Con đường tu luyện trường sinh vốn dĩ cô độc, ít người thấu hiểu, đòi hỏi một sự nhẫn nại phi thường và khả năng chịu đựng nỗi cô đơn tột cùng. Nhưng khi đã vượt qua được muôn ngàn hiểm hách, đứng trên đỉnh cao ngắm nhìn thiên hạ thái bình, mọi hy sinh mất mát đều sẽ trở nên vô cùng xứng đáng.', 0, 'PUBLISHED_REGULAR', 4000, false)
 ) AS c(chapter_number, title, content, price, status, views, is_deleted)
 ON CONFLICT (novel_id, chapter_number) DO UPDATE
 SET title = EXCLUDED.title, content = EXCLUDED.content, price = EXCLUDED.price, status = EXCLUDED.status;
@@ -1042,7 +1042,7 @@ Từng giọt mồ hôi rơi xuống thấm sâu vào lòng đất mẹ cằn c�
 
 Thời gian là dòng chảy vô tình cuốn trôi tất cả, nhưng cũng là thước đo chuẩn xác nhất thử thách phẩm chất và nghị lực của con người. Những kẻ yếu đuối sẽ bị sóng gió cuộc đời vùi dập và đào thải không thương tiếc, chỉ có những bậc kiên cường mới có thể sừng sững đứng vững tựa như ngọn núi Thái Sơn trước phong ba bão táp.
 
-Trời đất bao la, đạo pháp vô biên, mỗi một sinh mệnh sinh ra đều mang trong mình một sứ mệnh và một ý nghĩa thiêng liêng nhất định. Đừng bao giờ tự ti trước sự nhỏ bé của bản thân, bởi vì một đốm lửa nhỏ cũng đủ sức thiêu rụi cả thảo nguyên bao la khi gió đông nổi lên.', 0, 'PUBLISHED', 4300, false),
+Trời đất bao la, đạo pháp vô biên, mỗi một sinh mệnh sinh ra đều mang trong mình một sứ mệnh và một ý nghĩa thiêng liêng nhất định. Đừng bao giờ tự ti trước sự nhỏ bé của bản thân, bởi vì một đốm lửa nhỏ cũng đủ sức thiêu rụi cả thảo nguyên bao la khi gió đông nổi lên.', 0, 'PUBLISHED_REGULAR', 4300, false),
 (2, 'Hoang Cổ Cấm Địa', 'Bên trong cỗ quan tài bằng đồng xanh cổ kính là một không gian tối tăm như hũ nút và lạnh buốt đến thấu xương. Tiếng khóc lóc, tiếng cầu nguyện và tiếng rên xiết hoảng loạn của các bạn học vang lên hỗn loạn không ngớt. Mọi người dùng ánh sáng yếu ớt từ màn hình điện thoại di động để quan sát xung quanh, kinh hãi nhận thấy bên trong cỗ quan tài đồng khổng lồ này còn chứa một chiếc tiểu quan tài bằng đồng khác nhỏ hơn, trên vách quan tài chạm khắc vô số bức tranh miêu tả các vị thần cổ đại và các loài hung thú hồng hoang.
 
 Diệp Phàm cố gắng trấn an tinh thần của mọi người, cùng một người bạn thân tên là Bàng Bác – một thanh niên to lớn vạm vỡ, trượng nghĩa và dũng cảm – đứng ra tổ chức lại nhóm để cùng nhau tìm cách sinh tồn. Trong cỗ quan tài đồng, Diệp Phàm tìm thấy một chiếc Đèn Đồng Cổ thời Thượng Cổ đang phát ra một tia sáng yếu ớt ấm áp, xua tan cái lạnh giá của vũ trụ.
@@ -1097,7 +1097,7 @@ Trời đất bao la, đạo pháp vô biên, mỗi một sinh mệnh sinh ra đ
 
 Bước chân vững chãi tiến về phía trước, không quay đầu lại, không hối tiếc những gì đã qua. Phía trước là chân trời rộng mở, là biển rộng trời cao đang vẫy gọi những cánh chim dũng cảm dám vỗ cánh bay ngược chiều bão táp.
 
-Thiên địa này vốn dĩ là một ván cờ lớn vô biên vô tận, nơi chư thần cùng ma quỷ mượn chúng sinh làm quân cờ mua vui. Nhưng ta sinh ra ở đời, há chịu cam tâm làm một con tốt thí ngoan ngoãn bị kẻ khác giật dây? Dù là phàm nhân thân phận thấp hèn, ta cũng quyết chí cầm cờ, tự tay khắc ghi vận mệnh của chính mình lên vách đá thời gian.', 0, 'PUBLISHED', 4200, false)
+Thiên địa này vốn dĩ là một ván cờ lớn vô biên vô tận, nơi chư thần cùng ma quỷ mượn chúng sinh làm quân cờ mua vui. Nhưng ta sinh ra ở đời, há chịu cam tâm làm một con tốt thí ngoan ngoãn bị kẻ khác giật dây? Dù là phàm nhân thân phận thấp hèn, ta cũng quyết chí cầm cờ, tự tay khắc ghi vận mệnh của chính mình lên vách đá thời gian.', 0, 'PUBLISHED_REGULAR', 4200, false)
 ) AS c(chapter_number, title, content, price, status, views, is_deleted)
 ON CONFLICT (novel_id, chapter_number) DO UPDATE
 SET title = EXCLUDED.title, content = EXCLUDED.content, price = EXCLUDED.price, status = EXCLUDED.status;
@@ -1196,7 +1196,7 @@ Trời đất bao la, đạo pháp vô biên, mỗi một sinh mệnh sinh ra đ
 
 Bước chân vững chãi tiến về phía trước, không quay đầu lại, không hối tiếc những gì đã qua. Phía trước là chân trời rộng mở, là biển rộng trời cao đang vẫy gọi những cánh chim dũng cảm dám vỗ cánh bay ngược chiều bão táp.
 
-Thiên địa này vốn dĩ là một ván cờ lớn vô biên vô tận, nơi chư thần cùng ma quỷ mượn chúng sinh làm quân cờ mua vui. Nhưng ta sinh ra ở đời, há chịu cam tâm làm một con tốt thí ngoan ngoãn bị kẻ khác giật dây? Dù là phàm nhân thân phận thấp hèn, ta cũng quyết chí cầm cờ, tự tay khắc ghi vận mệnh của chính mình lên vách đá thời gian.', 0, 'PUBLISHED', 3900, false),
+Thiên địa này vốn dĩ là một ván cờ lớn vô biên vô tận, nơi chư thần cùng ma quỷ mượn chúng sinh làm quân cờ mua vui. Nhưng ta sinh ra ở đời, há chịu cam tâm làm một con tốt thí ngoan ngoãn bị kẻ khác giật dây? Dù là phàm nhân thân phận thấp hèn, ta cũng quyết chí cầm cờ, tự tay khắc ghi vận mệnh của chính mình lên vách đá thời gian.', 0, 'PUBLISHED_REGULAR', 3900, false),
 (2, 'Bá Thể Tam Đan Công', 'Bên trong Tàn Lão Thôn, ngọn lửa trại bập bùng xua tan cái lạnh giá của màn đêm Đại Khư. Những bức tượng thần bốn góc làng phát ra luồng sáng màu vàng nhạt ấm áp, tạo thành một lồng bảo hộ ngăn cách hoàn toàn với những tiếng gầm rú ghê rợn của đám ma quái đang vây quanh bên ngoài ranh giới bóng tối.
 
 Tối nay là một đêm trọng đại đối với Tần Mục: Thôn Trưởng và Dược Sư sẽ tiến hành lễ giác tỉnh Linh Thai cho hắn. Ở thế giới bên ngoài, bất kỳ phàm nhân nào muốn bước lên con đường tu luyện thần thông đều phải giác tỉnh được một trong bốn đại Linh Thai tự nhiên: Thanh Long, Bạch Hổ, Chu Tước hoặc Huyền Vũ. Người không giác tỉnh được Linh Thai thì suốt đời chỉ là một phàm nhân phế vật, không thể nào ngưng tụ thần thức tu luyện nguyên khí.
@@ -1257,7 +1257,7 @@ Máu trong huyết quản sôi trào mãnh liệt như dòng nham thạch ngầm
 
 Một trang sử mới đã chính thức mở ra, và tên tuổi của người thiếu niên ấy sẽ đời đời được vạn thế ca tụng như một huyền thoại bất tử giữa cõi hồng trần.
 
-Khúc ca bi tráng của thời đại diệt thế và quật khởi bắt đầu vang vọng khắp muôn trùng núi sông vĩ đại.', 0, 'PUBLISHED', 4100, false)
+Khúc ca bi tráng của thời đại diệt thế và quật khởi bắt đầu vang vọng khắp muôn trùng núi sông vĩ đại.', 0, 'PUBLISHED_REGULAR', 4100, false)
 ) AS c(chapter_number, title, content, price, status, views, is_deleted)
 ON CONFLICT (novel_id, chapter_number) DO UPDATE
 SET title = EXCLUDED.title, content = EXCLUDED.content, price = EXCLUDED.price, status = EXCLUDED.status;
@@ -1290,3 +1290,4 @@ BEGIN
         );
     END LOOP;
 END $$;
+

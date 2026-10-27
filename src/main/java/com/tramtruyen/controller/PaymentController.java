@@ -37,10 +37,21 @@ public class PaymentController {
     /**
      * Hiển thị giao diện Chọn gói nạp Coin vào tài khoản.
      */
+    /**
+     * Hiển thị giao diện Chọn gói nạp Coin vào tài khoản.
+     */
     @GetMapping("/wallet/topup")
-    public String showTopupPage(Authentication authentication, Model model) {
+    public String showTopupPage(Authentication authentication,
+                                @RequestParam(required = false) String returnUrl,
+                                HttpServletRequest request,
+                                Model model) {
         if (authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
-            return "redirect:/login?redirect=/wallet/topup";
+            String redirectParam = returnUrl != null && !returnUrl.isBlank() ? "?redirect=" + returnUrl : "?redirect=/wallet/topup";
+            return "redirect:/login" + redirectParam;
+        }
+
+        if (returnUrl != null && !returnUrl.isBlank()) {
+            request.getSession().setAttribute("returnUrl", returnUrl);
         }
 
         String email = authentication.getName();
@@ -54,6 +65,7 @@ public class PaymentController {
         model.addAttribute("packages", packages);
         model.addAttribute("vndToCoinRate", systemSettingService.getVndToCoinRate());
         model.addAttribute("vndPerCoinFormatted", systemSettingService.getVndPerCoinFormatted());
+        model.addAttribute("returnUrl", returnUrl);
 
         return "wallet/topup";
     }
@@ -64,9 +76,14 @@ public class PaymentController {
     @PostMapping("/wallet/topup/process")
     public String processTopup(Authentication authentication,
                                @RequestParam("packageId") Integer packageId,
+                               @RequestParam(required = false) String returnUrl,
                                HttpServletRequest request) {
         if (authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
             return "redirect:/login?redirect=/wallet/topup";
+        }
+
+        if (returnUrl != null && !returnUrl.isBlank()) {
+            request.getSession().setAttribute("returnUrl", returnUrl);
         }
 
         String email = authentication.getName();
@@ -83,9 +100,17 @@ public class PaymentController {
      * Tiếp nhận chuyển hướng từ VNPay về sau khi người dùng thực hiện thanh toán trên cổng.
      */
     @GetMapping("/payment/vnpay-return")
-    public String handlePaymentReturn(@RequestParam Map<String, String> allParams, Model model) {
+    public String handlePaymentReturn(@RequestParam Map<String, String> allParams,
+                                      HttpServletRequest request,
+                                      Model model) {
         PaymentResultDTO result = vnPayService.processReturn(allParams);
         model.addAttribute("result", result);
+
+        String returnUrl = (String) request.getSession().getAttribute("returnUrl");
+        if (returnUrl != null && !returnUrl.isBlank()) {
+            model.addAttribute("returnUrl", returnUrl);
+            request.getSession().removeAttribute("returnUrl");
+        }
 
         if (result.isSuccess()) {
             return "wallet/payment-success";

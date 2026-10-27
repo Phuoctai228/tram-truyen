@@ -3,8 +3,10 @@ package com.tramtruyen.service;
 import com.tramtruyen.dto.BookshelfPageDTO;
 import com.tramtruyen.dto.UserProfileDTO;
 import com.tramtruyen.entity.Bookshelf;
+import com.tramtruyen.entity.Chapter;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Service interface for personal bookshelf operations (M2-F07, M2-F08, M2-F06).
@@ -27,7 +29,11 @@ public interface BookshelfService {
 
     boolean isChapterRead(String email, Integer chapterId);
 
+    boolean hasReadAnyChapter(String email, Integer novelId);
+
     UserProfileDTO getUserProfile(String email);
 
     long countNovelFavorites(Integer novelId);
+
+    Optional<Chapter> getLastReadChapter(String email, Integer novelId);
 }

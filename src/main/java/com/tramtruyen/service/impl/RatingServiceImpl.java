@@ -25,6 +25,7 @@ public class RatingServiceImpl implements RatingService {
     private final NovelRatingRepository novelRatingRepository;
     private final NovelRepository novelRepository;
     private final UserRepository userRepository;
+    private final com.tramtruyen.repository.UserChapterActivityRepository userChapterActivityRepository;
 
     @Override
     @Transactional
@@ -38,6 +39,11 @@ public class RatingServiceImpl implements RatingService {
 
         Novel novel = novelRepository.findByIdAndIsDeletedFalse(novelId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy truyện"));
+
+        long readCount = userChapterActivityRepository.countByUserAndChapter_NovelAndIsReadTrue(user, novel);
+        if (readCount <= 0) {
+            throw new IllegalArgumentException("Bạn cần đọc ít nhất 1 chương của bộ truyện này trước khi gửi đánh giá!");
+        }
 
         // BR-17: Chỉ cho người dùng đánh giá truyện 1 lần. Nếu đã đánh giá, phải xóa mới được đánh giá lại.
         NovelRating existingRating = novelRatingRepository.findByNovelIdAndUserId(novel.getId(), user.getId())

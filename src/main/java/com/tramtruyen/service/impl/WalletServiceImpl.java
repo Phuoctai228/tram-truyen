@@ -69,9 +69,7 @@ public class WalletServiceImpl implements WalletService {
 
         int currentBalance = lockedUser.getWalletBalance() != null ? lockedUser.getWalletBalance() : 0;
         if (currentBalance < amount) {
-            throw new InsufficientBalanceException(
-                    "Số dư Coin không đủ (Hiện có: " + currentBalance + " Coin, Cần: " + amount + " Coin)"
-            );
+            throw new InsufficientBalanceException(amount, currentBalance);
         }
 
         int newBalance = currentBalance - amount;

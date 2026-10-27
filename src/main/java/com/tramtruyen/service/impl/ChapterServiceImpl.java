@@ -12,6 +12,8 @@ import com.tramtruyen.service.ChapterService;
 import com.tramtruyen.service.NotificationService;
 import com.tramtruyen.util.RichTextSanitizer;
 import lombok.RequiredArgsConstructor;
+import com.tramtruyen.entity.enums.ChapterStatus;
+import com.tramtruyen.entity.enums.NovelStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,12 +25,13 @@ import java.util.List;
 @Service
 public class ChapterServiceImpl implements ChapterService {
 
-    private static final String ARCHIVED_STATUS = "ARCHIVED";
-    private static final String DEFAULT_STATUS = "DRAFT";
-    private static final String PUBLISHED_STATUS = "PUBLISHED";
-    private static final String LOCKED_STATUS = "LOCKED";
+    private static final String ARCHIVED_STATUS = NovelStatus.ARCHIVED.name();
     private static final int DEFAULT_PRICE = 0;
-    private static final List<String> PUBLIC_STATUSES = Arrays.asList(PUBLISHED_STATUS, LOCKED_STATUS);
+    public static final List<String> PUBLIC_STATUSES = Arrays.asList(
+            ChapterStatus.PUBLISHED_REGULAR.name(),
+            ChapterStatus.PUBLISHED_VIP.name(),
+            "PUBLISHED"
+    );
 
     private final ChapterRepository chapterRepository;
     private final NovelRepository novelRepository;
@@ -120,7 +123,8 @@ public class ChapterServiceImpl implements ChapterService {
         chapter.setStatus(resolveStatus(action, price));
         chapter.setPrice(price);
         Chapter savedChapter = chapterRepository.save(chapter);
-        if ("DRAFT".equalsIgnoreCase(oldStatus) && ChapterSaveAction.PUBLISHED == action && notificationService != null) {
+        boolean wasDraft = ChapterStatus.DRAFT.name().equalsIgnoreCase(oldStatus);
+        if (wasDraft && ChapterSaveAction.PUBLISHED == action && notificationService != null) {
             notificationService.notifyNewChapterPublished(novelId, savedChapter.getId());
         }
         return savedChapter;
@@ -136,22 +140,27 @@ public class ChapterServiceImpl implements ChapterService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public Chapter getPublicChapter(Integer novelId, Integer chapterNumber) {
-        Novel novel = findPublicNovel(novelId);
+        findPublicNovel(novelId);
         Chapter chapter = chapterRepository.findByNovelIdAndChapterNumberAndIsDeletedFalseAndStatusIn(
                         novelId, chapterNumber, PUBLIC_STATUSES)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy chương"));
         sanitizeChapter(chapter);
-
-        // Lượt đọc chỉ tăng khi truy cập vào đọc từng chương
-        chapter.setViews((chapter.getViews() != null ? chapter.getViews() : 0) + 1);
-        chapterRepository.save(chapter);
-
-        novel.setViews((novel.getViews() != null ? novel.getViews() : 0) + 1);
-        novelRepository.save(novel);
-
         return chapter;
+    }
+
+    @Override
+    @Transactional
+    public void recordView(Integer novelId, Integer chapterId) {
+        chapterRepository.findById(chapterId).ifPresent(chapter -> {
+            chapter.setViews((chapter.getViews() != null ? chapter.getViews() : 0) + 1);
+            chapterRepository.save(chapter);
+        });
+        novelRepository.findById(novelId).ifPresent(novel -> {
+            novel.setViews((novel.getViews() != null ? novel.getViews() : 0) + 1);
+            novelRepository.save(novel);
+        });
     }
 
     @Override
@@ -184,9 +193,9 @@ public class ChapterServiceImpl implements ChapterService {
 
     private String resolveStatus(ChapterSaveAction action, int price) {
         if (action != ChapterSaveAction.PUBLISHED) {
-            return DEFAULT_STATUS;
+            return ChapterStatus.DRAFT.name();
         }
-        return price > DEFAULT_PRICE ? LOCKED_STATUS : PUBLISHED_STATUS;
+        return price > DEFAULT_PRICE ? ChapterStatus.PUBLISHED_VIP.name() : ChapterStatus.PUBLISHED_REGULAR.name();
     }
 
     private int resolvePrice(ChapterForm form) {

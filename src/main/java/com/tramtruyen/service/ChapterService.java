@@ -26,4 +26,6 @@ public interface ChapterService {
     Chapter getPublicChapter(Integer novelId, Integer chapterNumber);
 
     List<Chapter> getPublicChapters(Integer novelId);
+
+    void recordView(Integer novelId, Integer chapterId);
 }

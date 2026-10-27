@@ -56,7 +56,7 @@
                                 </td>
                                 <td>
                                     <span class="status"
-                                        th:text="${chapter.status == 'DRAFT' ? 'Bản nháp' : (chapter.status == 'PUBLISHED' ? 'Xuất bản' : (chapter.status == 'LOCKED' ? 'Đã khóa' : chapter.status))}"></span>
+                                        th:text="${chapter.status == 'DRAFT' ? 'Bản nháp' : (chapter.status == 'PUBLISHED_REGULAR' ? 'Miễn phí' : (chapter.status == 'PUBLISHED_VIP' ? 'Chương VIP' : (chapter.status == 'LOCKED' ? 'Đã khóa' : chapter.status)))}"></span>
                                 </td>
                                 <td th:text="${chapter.price == 0 ? 'Miễn phí' : chapter.price + ' Coin'}"></td>
                                 <td class="actions">

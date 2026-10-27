@@ -32,4 +32,7 @@ public interface ChapterRepository extends JpaRepository<Chapter, Integer> {
     java.util.Optional<Chapter> findFirstByNovelIdAndIsDeletedFalseOrderByChapterNumberDesc(Integer novelId);
 
     List<Chapter> findTop3ByNovelIdAndIsDeletedFalseAndStatusOrderByChapterNumberDesc(Integer novelId, String status);
+
+    List<Chapter> findTop3ByNovelIdAndIsDeletedFalseAndStatusInOrderByChapterNumberDesc(
+            Integer novelId, List<String> statuses);
 }
