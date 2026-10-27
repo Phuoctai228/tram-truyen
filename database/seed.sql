@@ -50,11 +50,19 @@ SET setting_value = EXCLUDED.setting_value, description = EXCLUDED.description;
 
 -- 5.1 Seed web_settings (Chủ đề và giao diện website - UC-07 / UC-52)
 INSERT INTO web_settings (name, folder_path, thumbnail_url, is_active) VALUES
-('Trạm Truyện Chuẩn (Mặc định)', 'theme-default', 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=600&q=80', TRUE),
-('Xuân Cổ Truyền (Tết & Lễ Hội)', 'theme-tet', 'https://images.unsplash.com/photo-1576085898323-218337e3e43c?auto=format&fit=crop&w=600&q=80', FALSE),
-('Dạ Khúc Đêm (Midnight Dark)', 'theme-dark', 'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=600&q=80', FALSE),
-('Thanh Trúc Tiên Giới (Kiếm Hiệp & Tu Tiên)', 'theme-bamboo', 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=600&q=80', FALSE)
+('Trạm Truyện Chuẩn (Mặc định)', 'theme-default', NULL, TRUE),
+('Xuân Cổ Truyền (Tết & Lễ Hội)', 'theme-tet', NULL, FALSE),
+('Dạ Khúc Đêm (Midnight Dark)', 'theme-dark', NULL, FALSE),
+('Thanh Trúc Tiên Giới (Kiếm Hiệp & Tu Tiên)', 'theme-bamboo', NULL, FALSE)
 ON CONFLICT (folder_path) DO NOTHING;
+
+-- 5.2 Seed theme tokens hex JSON (UC-52)
+INSERT INTO system_settings (setting_key, setting_value, description) VALUES
+('web_theme_tokens:theme-tet', '{"background":"#FFF0D4","on_background":"#3B1F14","surface":"#FFF8E8","on_surface":"#3B1F14","on_surface_variant":"#704838","surface_container_lowest":"#FFFFFF","surface_container_low":"#F9EED4","surface_container":"#F3E6C8","surface_container_high":"#EFE1C3","surface_container_highest":"#E7D6B0","primary":"#B91C1C","primary_container":"#C62828","on_primary":"#FFFFFF","on_primary_container":"#FFFFFF","secondary":"#8A5A00","on_secondary":"#FFFFFF","outline":"#C2A675","outline_variant":"#E7C98A"}', 'Bộ mã màu hex cho giao diện Xuân Cổ Truyền (Tết & Lễ Hội)'),
+('web_theme_tokens:theme-dark', '{"background":"#0E1013","on_background":"#E8EAED","surface":"#151921","on_surface":"#E8EAED","on_surface_variant":"#A9B0BC","surface_container_lowest":"#1C222B","surface_container_low":"#171C25","surface_container":"#1F2631","surface_container_high":"#28303C","surface_container_highest":"#323B49","primary":"#F59E0B","primary_container":"#B45309","on_primary":"#1A1200","on_primary_container":"#FFFFFF","secondary":"#7DD3FC","on_secondary":"#082F49","outline":"#3D4756","outline_variant":"#2A313C"}', 'Bộ mã màu hex cho giao diện Dạ Khúc Đêm (Midnight Dark)'),
+('web_theme_tokens:theme-bamboo', '{"background":"#DDEEE3","on_background":"#0F291E","surface":"#EAF5EE","on_surface":"#0F291E","on_surface_variant":"#2D5240","surface_container_lowest":"#F6FBF8","surface_container_low":"#E2F0E7","surface_container":"#DAEAE0","surface_container_high":"#D1E3D8","surface_container_highest":"#C8DCD0","primary":"#0A6B4E","primary_container":"#127354","on_primary":"#FFFFFF","on_primary_container":"#FFFFFF","secondary":"#336340","on_secondary":"#FFFFFF","outline":"#8CAE99","outline_variant":"#B8D5C4"}', 'Bộ mã màu hex cho giao diện Thanh Trúc Tiên Giới (Kiếm Hiệp & Tu Tiên)')
+ON CONFLICT (setting_key) DO UPDATE 
+SET setting_value = EXCLUDED.setting_value, description = EXCLUDED.description;
 
 -- 6. Seed coin_packages (6 gói nạp Coin chuẩn thiết kế Figma)
 INSERT INTO coin_packages (name, price, coin_amount, status) VALUES

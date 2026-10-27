@@ -2,35 +2,13 @@
  * ========================================================
  * TRẠM TRUYỆN - HEADER & GLOBAL INTERACTION SCRIPTS
  * Bao gồm:
- * 1. Khởi tạo & đồng bộ chủ đề giao diện (Web Themes UC-07 / UC-52)
- * 2. Tự động ẩn thông báo Toast hệ thống (Toast Auto-hide)
- * 3. Bảo lưu đường dẫn quay lại khi bấm Đăng nhập / Đăng ký
- * 4. Trình đơn người dùng (User Dropdown Menu)
- * 5. Gợi ý tìm kiếm thời gian thực (Live Search Suggestions)
+ * 1. Tự động ẩn thông báo Toast hệ thống (Toast Auto-hide)
+ * 2. Bảo lưu đường dẫn quay lại khi bấm Đăng nhập / Đăng ký
+ * 3. Trình đơn người dùng (User Dropdown Menu)
+ * 4. Gợi ý tìm kiếm thời gian thực (Live Search Suggestions)
  * ========================================================
  */
 
-// 1. Khởi tạo & đồng bộ Theme ngay lập tức
-(function initWebTheme() {
-    function applyTheme() {
-        const header = document.querySelector('header[data-theme]');
-        const currentTheme = (header && header.getAttribute('data-theme'))
-            || document.documentElement.getAttribute('data-theme')
-            || 'theme-default';
-
-        document.documentElement.setAttribute('data-theme', currentTheme);
-        if (document.body) {
-            document.body.classList.remove('theme-default', 'theme-tet', 'theme-dark', 'theme-sepia');
-            document.body.classList.add(currentTheme);
-        }
-    }
-
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', applyTheme);
-    } else {
-        applyTheme();
-    }
-})();
 
 document.addEventListener('DOMContentLoaded', function () {
     // 2. Tự động ẩn thông báo Toast sau 5 giây
