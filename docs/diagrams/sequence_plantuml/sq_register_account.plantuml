@@ -1,0 +1,125 @@
+@startuml sq_register_account
+<style>
+    sequenceDiagram{
+        FontSize 16
+
+        arrow {
+            ' Set the maximum width of the text on arrows
+            MaximumWidth 300
+        }
+        actor{
+            BackgroundColor white
+            LineThickness 1.0
+        }
+        participant{
+            BackgroundColor white
+            RoundCorner 0
+        }
+        database{
+            BackgroundColor white
+        }
+        groupHeader{
+            BackgroundColor white
+        }
+        referenceHeader{
+            BackgroundColor white
+        }
+        reference{
+            BackgroundColor white
+        }
+    }
+</style>
+
+hide footbox
+mainframe Register Account
+
+actor Guest as act
+participant "RegisterPage" as view
+participant "VerifyOtpPage" as r_view
+participant "AuthController" as ctrl <<controller>>
+participant ":AuthService" as svc
+participant ":PasswordEncoder" as encoder
+participant ":EmailService" as email_svc
+participant ":User" as ett
+participant ":EmailVerificationToken" as token
+participant ":UserRepository" as user_repo
+participant ":RoleRepository" as role_repo
+participant ":EmailVerificationTokenRepository" as token_repo
+database Database as db
+
+act ++
+
+act -> view++: Submit registration form
+view -> ctrl++: POST /register
+
+ctrl -> ctrl++: Validate BindingResult
+ctrl--
+opt BindingResult has errors
+    ctrl -->> view: Return "authentication/register"
+    view -->> act: Display validation error message
+end
+
+ctrl -> svc++: registerUser(requestDTO)
+
+svc -> user_repo++: existsByEmail(email)
+user_repo -> db++: Execute query
+db -->> user_repo: Return boolean result
+db--
+user_repo -->> svc: Return exists
+user_repo--
+
+svc -> svc++: Validate registration details
+svc--
+alt Email already exists
+    svc -->> ctrl: throw IllegalArgumentException
+    ctrl -->> view: Return "authentication/register"
+    view -->> act: Display error message
+else Passwords do not match
+    svc -->> ctrl: throw IllegalArgumentException
+    ctrl -->> view: Return "authentication/register"
+    view -->> act--: Display error message
+else Valid registration details
+    svc -> encoder++: encode(password)
+    encoder -->> svc--: Return encodedPassword
+
+    svc -> ett++: Call User(requestDTO, encodedPassword)
+    ett -->> svc--: Return User entity
+
+    svc -> role_repo++: findByName("ROLE_MEMBER")
+    role_repo -> db++: Execute query
+    db -->> role_repo: Return Role entity
+    db--
+    role_repo -->> svc: Return Role entity
+    role_repo--
+
+    svc -> user_repo++: save(user)
+    user_repo -> db++: Save changes to database
+    db -->> user_repo: Return saved user
+    db--
+    user_repo -->> svc: Return saved user
+    user_repo--
+
+    svc -> svc++: Generate 6-digit OTP code
+    svc--
+
+    svc -> token++: Call EmailVerificationToken(user, otp)
+    token -->> svc--: Return token entity
+
+    svc -> token_repo++: save(token)
+    token_repo -> db++: Save changes to database
+    db -->> token_repo: Return saved token
+    db--
+    token_repo -->> svc: Return saved token
+    token_repo--
+
+    svc -> email_svc++: sendOtpEmail(email, otp)
+    email_svc -->> svc--: Return result
+
+    svc -->> ctrl--: Return result
+
+    ctrl -->> r_view--: Redirect to /verify-otp
+    activate r_view
+    r_view -->> act--: Display OTP verification page
+end
+
+@enduml

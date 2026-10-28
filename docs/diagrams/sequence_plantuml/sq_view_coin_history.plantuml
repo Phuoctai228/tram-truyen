@@ -1,0 +1,115 @@
+@startuml sq_view_coin_history
+<style>
+    sequenceDiagram{
+        FontSize 16
+
+        arrow {
+            ' Set the maximum width of the text on arrows
+            MaximumWidth 300
+        }
+        actor{
+            BackgroundColor white
+            LineThickness 1.0
+        }
+        participant{
+            BackgroundColor white
+            RoundCorner 0
+        }
+        database{
+            BackgroundColor white
+        }
+        groupHeader{
+            BackgroundColor white
+        }
+        referenceHeader{
+            BackgroundColor white
+        }
+        reference{
+            BackgroundColor white
+        }
+    }
+</style>
+
+hide footbox
+mainframe View Coin History
+
+actor Member as act
+participant "WalletPage" as view
+participant "LoginPage" as r_view
+participant "WalletController" as ctrl <<controller>>
+participant ":WalletService" as svc
+participant ":SystemSettingService" as setting_svc
+participant ":WalletOverviewDTO" as dto
+participant ":UserRepository" as user_repo
+participant ":TransactionRepository" as tx_repo
+participant ":TopupOrderRepository" as order_repo
+database Database as db
+
+act ++
+
+act -> view++: Access wallet page
+view -> ctrl--: GET /wallet
+activate ctrl
+
+ctrl -> ctrl++: Check authentication status
+ctrl--
+alt User is not authenticated
+    ctrl -->> r_view: Redirect to /login?redirect=/wallet
+    activate r_view
+    r_view -->> act: Display login page
+    deactivate r_view
+else User is authenticated
+    ctrl -> user_repo++: findByEmail(email)
+    user_repo -> db++: Execute query
+    db -->> user_repo: Return user data
+    db--
+    user_repo -->> ctrl: Return user entity
+    user_repo--
+
+    ctrl -> svc++: getWalletOverview(user)
+
+    svc -> tx_repo++: findFirstByUserIdOrderByCreatedAtDesc(userId)
+    tx_repo -> db++: Execute query
+    db -->> tx_repo: Return latest transaction
+    db--
+    tx_repo -->> svc: Return latest transaction
+    tx_repo--
+
+    svc -> order_repo++: findByUserIdAndStatusOrderByCreatedAtDesc(userId, "FAILED")
+    order_repo -> db++: Execute query
+    db -->> order_repo: Return failed topup orders
+    db--
+    order_repo -->> svc: Return failed topup orders
+    order_repo--
+
+    svc -> tx_repo++: countByUserId(userId)
+    tx_repo -> db++: Execute query
+    db -->> tx_repo: Return transaction count
+    db--
+    tx_repo -->> svc: Return transaction count
+    tx_repo--
+
+    svc -> tx_repo++: findByUserIdOrderByCreatedAtDesc(userId)
+    tx_repo -> db++: Execute query
+    db -->> tx_repo: Return transaction list
+    db--
+    tx_repo -->> svc: Return transaction list
+    tx_repo--
+
+    svc -> dto++: Call WalletOverviewDTO.builder()
+    dto -->> svc--: Return walletOverviewDTO
+
+    svc -->> ctrl--: Return walletOverviewDTO
+
+    ctrl -> setting_svc++: getVndToCoinRate()
+    setting_svc -->> ctrl--: Return rate
+
+    ctrl -> setting_svc++: getVndPerCoinFormatted()
+    setting_svc -->> ctrl--: Return formattedRate
+
+    ctrl -->> view--: Return "wallet/index"
+    activate view
+    view -->> act--: Display wallet balance and transaction history
+end
+
+@enduml

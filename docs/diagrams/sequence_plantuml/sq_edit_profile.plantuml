@@ -1,0 +1,102 @@
+@startuml sq_edit_profile
+<style>
+    sequenceDiagram{
+        FontSize 16
+
+        arrow {
+            ' Set the maximum width of the text on arrows
+            MaximumWidth 300
+        }
+        actor{
+            BackgroundColor white
+            LineThickness 1.0
+        }
+        participant{
+            BackgroundColor white
+            RoundCorner 0
+        }
+        database{
+            BackgroundColor white
+        }
+        groupHeader{
+            BackgroundColor white
+        }
+        referenceHeader{
+            BackgroundColor white
+        }
+        reference{
+            BackgroundColor white
+        }
+    }
+</style>
+
+hide footbox
+mainframe Edit Profile
+
+actor Member as act
+participant "EditProfilePage" as view
+participant "ProfilePage" as r_view
+participant "LoginPage" as login_view
+participant "UserController" as ctrl <<controller>>
+participant ":UserService" as svc
+participant ":MediaStorageService" as media_svc
+participant "Cloudinary" as cloud
+participant ":UserRepository" as user_repo
+database Database as db
+
+act ++
+
+act -> view++: Submit edit profile form
+view -> ctrl++: POST /user/edit-profile
+
+ctrl -> ctrl++: Check authentication status
+ctrl--
+opt User is not authenticated
+    ctrl -->> login_view: Redirect to /login?redirect=/user/edit-profile
+    activate login_view
+    login_view -->> act: Display login page
+    deactivate login_view
+end
+
+ctrl -> svc++: updateProfile(email, fullName, avatar)
+
+svc -> user_repo++: findByEmail(email)
+user_repo -> db++: Execute query
+db -->> user_repo: Return user data
+db--
+user_repo -->> svc: Return user entity
+user_repo--
+
+svc -> svc++: Check if new avatar provided
+svc--
+opt Avatar file is present
+    svc -> media_svc++: uploadImage(avatar)
+    media_svc -> cloud++: Upload image file
+    cloud -->> media_svc: Return secure_url
+    cloud--
+    media_svc -->> svc: Return avatarUrl
+    media_svc--
+end
+
+svc -> svc++: Validate profile data
+svc--
+alt Invalid input or upload failure
+    svc -->> ctrl: throw Exception
+    ctrl -->> view: Redirect to /user/edit-profile
+    view -->> act: Display error message
+    deactivate view
+else Valid profile data
+    svc -> user_repo++: save(user)
+    user_repo -> db++: Save changes to database
+    db -->> user_repo: Return saved user
+    db--
+    user_repo -->> svc: Return saved user
+    user_repo--
+
+    svc -->> ctrl--: Return result
+    ctrl -->> r_view--: Redirect to /user/profile
+    activate r_view
+    r_view -->> act--: Display profile with success message
+end
+
+@enduml

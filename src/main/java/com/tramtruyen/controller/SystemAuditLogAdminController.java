@@ -32,13 +32,9 @@ public class SystemAuditLogAdminController {
                                    @RequestParam(required = false, defaultValue = "all") String timeRange,
                                    @RequestParam(required = false) String startDate,
                                    @RequestParam(required = false) String endDate,
-                                   // Tham số cũ: bỏ qua an toàn, không lỗi 500
-                                   @RequestParam(required = false) String severity,
+                                   // Tham so tuong thich nguoc neu gui tu form/query cu
                                    @RequestParam(required = false) Boolean onlyAdmin,
-                                   @RequestParam(required = false) String actionType,
                                    @RequestParam(required = false) String performer,
-                                   @RequestParam(required = false) String targetEntity,
-                                   @RequestParam(required = false) Integer targetId,
                                    @RequestParam(required = false) String page,
                                    @RequestParam(required = false) String size,
                                    Model model) {

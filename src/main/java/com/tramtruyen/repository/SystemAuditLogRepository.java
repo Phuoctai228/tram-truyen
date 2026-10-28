@@ -15,7 +15,4 @@ public interface SystemAuditLogRepository extends JpaRepository<SystemAuditLog, 
 
     List<SystemAuditLog> findByTargetEntityAndActionTypeAndTargetIdInOrderByCreatedAtDesc(
             String targetEntity, String actionType, List<Integer> targetIds);
-
-    List<SystemAuditLog> findByTargetEntityAndTargetIdOrderByCreatedAtDesc(
-            String targetEntity, Integer targetId);
 }

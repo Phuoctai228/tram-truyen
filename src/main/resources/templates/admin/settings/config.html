@@ -184,13 +184,13 @@
                             lý & Quy định</span>
                     </div>
                     <p class="text-xs text-[#8a7664]">Nội dung văn bản quy chuẩn bảo mật và điều khoản áp dụng cho toàn
-                        bộ độc giả, tác giả và người đóng góp nội dung.</p>
+                        bộ độc giả và người đóng góp nội dung.</p>
 
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div>
                             <div class="flex items-center justify-between mb-2">
                                 <label class="text-xs font-bold text-[#2b2118]">Điều khoản sử dụng nền tảng
-                                    (terms_of_service) <span class="required-star text-red-500">*</span></label>
+                                    <span class="required-star text-red-500">*</span></label>
                                 <span class="text-[11px] text-[#8a7664]">Tối đa 20.000 ký tự</span>
                             </div>
                             <textarea id="tosTextarea" th:field="*{termsOfService}" rows="8" maxlength="20000" required
@@ -202,7 +202,7 @@
 
                         <div>
                             <div class="flex items-center justify-between mb-2">
-                                <label class="text-xs font-bold text-[#2b2118]">Chính sách bảo mật (privacy_policy)
+                                <label class="text-xs font-bold text-[#2b2118]">Chính sách bảo mật
                                     <span class="required-star text-red-500">*</span></label>
                                 <span class="text-[11px] text-[#8a7664]">Tối đa 20.000 ký tự</span>
                             </div>
@@ -216,129 +216,6 @@
                 </div>
 
             </form>
-
-            <!-- 4. CHỦ ĐỀ & GIAO DIỆN WEBSITE (WEB THEMES - UC-07 / UC-52) -->
-            <div id="themes-section"
-                class="bg-white rounded-2xl border border-[#eae2d5] shadow-sm p-6 sm:p-8 space-y-6">
-                <div
-                    class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-[#eae2d5] gap-3">
-                    <div class="flex items-center gap-2">
-                        <span class="material-symbols-outlined text-[#bc7d39] text-[24px]">palette</span>
-                        <div>
-                            <h2 class="font-bold text-lg text-[#2b2118]">4. Chủ đề & Giao diện website (Web Themes)</h2>
-                            <p class="text-xs text-[#8a7664] mt-0.5">Kích hoạt phong cách giao diện đồng bộ cho toàn bộ
-                                nền tảng Trạm Truyện.</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-2 self-start sm:self-auto">
-                        <span
-                            class="px-3 py-1 rounded-full text-xs font-bold bg-[#875200] text-white shadow-sm flex items-center gap-1.5">
-                            <span class="w-2 h-2 rounded-full bg-[#ffddba] animate-ping"></span>
-                            <span
-                                th:text="'Đang chạy: ' + (${activeTheme != null ? activeTheme.name : 'Mặc định'})">Đang
-                                chạy: Mặc định</span>
-                        </span>
-                    </div>
-                </div>
-
-                <!-- Themes Grid Cards -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div th:each="theme : ${themes}"
-                        class="group relative rounded-2xl border transition-all duration-300 overflow-hidden flex flex-col justify-between"
-                        th:classappend="${theme.isActive ? 'border-2 border-[#875200] bg-[#fffaf4] shadow-md ring-4 ring-[#875200]/10' : 'border-[#eae2d5] bg-white hover:border-[#bc7d39] hover:shadow-lg'}">
-
-                        <!-- Theme Header / Preview Image -->
-                        <div class="relative h-44 w-full overflow-hidden bg-[#faf7f2]">
-                            <img th:src="${theme.thumbnailUrl}" th:alt="${theme.name}"
-                                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                onerror="this.src='https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=600&q=80'">
-
-                            <!-- Overlay Gradient -->
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent">
-                            </div>
-
-                            <!-- Active / Ready Status Badge -->
-                            <div class="absolute top-3 right-3">
-                                <span th:if="${theme.isActive}"
-                                    class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-[#875200] text-white shadow flex items-center gap-1.5">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-[#ffddba]"></span>
-                                    Đang kích hoạt
-                                </span>
-                                <span th:if="${!theme.isActive}"
-                                    class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-black/60 text-white backdrop-blur-sm shadow-sm">
-                                    Khả dụng
-                                </span>
-                            </div>
-
-                            <!-- Folder Path Badge on Preview -->
-                            <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between">
-                                <span
-                                    class="font-mono text-[11px] text-white/90 bg-black/40 backdrop-blur-md px-2 py-0.5 rounded border border-white/20"
-                                    th:text="${theme.folderPath}">theme-default</span>
-                                <span class="text-[11px] text-[#ffddba] font-medium" th:text="'ID: #' + ${theme.id}">ID:
-                                    #1</span>
-                            </div>
-                        </div>
-
-                        <!-- Theme Information Body -->
-                        <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
-                            <div>
-                                <h3 class="font-bold text-sm text-[#2b2118] group-hover:text-[#875200] transition-colors leading-snug"
-                                    th:text="${theme.name}">Tên chủ đề giao diện</h3>
-                                <p class="text-xs text-[#8a7664] mt-1.5 leading-relaxed line-clamp-2">
-                                    <span th:if="${theme.folderPath == 'theme-default'}">Tông màu nâu vàng trang nhã, ấm
-                                        áp, tối ưu hóa cho trải nghiệm đọc văn học lâu dài.</span>
-                                    <span th:if="${theme.folderPath == 'theme-tet'}">Sắc xuân rực rỡ, họa tiết lễ hội cổ
-                                        truyền đón năm mới ấm cúng, tưng bừng.</span>
-                                    <span th:if="${theme.folderPath == 'theme-dark'}">Giao diện bóng đêm huyền bí, độ
-                                        tương phản dịu nhẹ, hạn chế mỏi mắt khi đọc truyện ban đêm.</span>
-                                    <span th:if="${theme.folderPath == 'theme-bamboo' || theme.folderPath == 'theme-sepia'}">Sắc xanh ngọc bích thanh nhã, trúc biếc phiêu diêu, đậm chất Tiên hiệp & Kiếm hiệp cổ phong.</span>
-                                </p>
-                            </div>
-
-                            <!-- Action Button / Form -->
-                            <div class="pt-2 border-t border-[#f4ece1]">
-                                <!-- If Already Active -->
-                                <div th:if="${theme.isActive}">
-                                    <button type="button" disabled
-                                        class="w-full py-2.5 px-4 rounded-xl bg-[#f4ece1] text-[#875200] font-bold text-xs flex items-center justify-center gap-1.5 cursor-default shadow-inner">
-                                        <span class="material-symbols-outlined text-[18px]">verified</span>
-                                        <span>Giao diện đang áp dụng</span>
-                                    </button>
-                                </div>
-
-                                <!-- If Inactive -> Form to Activate -->
-                                <div th:if="${!theme.isActive}">
-                                    <form th:action="@{/admin/settings/themes/{id}/activate(id=${theme.id})}"
-                                        method="post">
-                                        <button type="submit"
-                                            class="w-full py-2.5 px-4 rounded-xl bg-white hover:bg-[#875200] border border-[#bc7d39] text-[#875200] hover:text-white font-bold text-xs transition-all duration-200 shadow-sm flex items-center justify-center gap-1.5 group/btn">
-                                            <span
-                                                class="material-symbols-outlined text-[18px] group-hover/btn:scale-110 transition-transform">check</span>
-                                            <span>Kích hoạt giao diện này</span>
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- Theme Note -->
-                <div
-                    class="p-4 rounded-xl bg-[#faf7f2] border border-[#eae2d5] flex items-start gap-3 text-xs text-[#8a7664]">
-                    <span class="material-symbols-outlined text-[#bc7d39] text-[20px] shrink-0 mt-0.5">info</span>
-                    <div class="space-y-1">
-                        <p><span class="font-bold text-[#2b2118]">Lưu ý khi đổi chủ đề:</span> Giao diện được chọn sẽ có
-                            hiệu lực tức thì trên toàn bộ hệ thống cho tất cả độc giả và tác giả.</p>
-                        <p>Mọi thao tác thay đổi giao diện đều được tự động lưu vết tại <a
-                                th:href="@{/admin/audit-logs}"
-                                class="text-[#875200] font-semibold underline hover:text-[#6c4100]">Nhật ký kiểm
-                                toán</a>, giúp ban quản trị theo dõi minh bạch mọi lịch sử thay đổi cấu hình.</p>
-                    </div>
-                </div>
-            </div>
 
             <!-- Bottom Sticky / Action Bar for Settings -->
             <div
@@ -362,39 +239,1120 @@
                 </div>
             </div>
 
+            <!-- ========================================== -->
+            <!-- SECTION 4: GIAO DIỆN HỆ THỐNG (WEB THEME) (UC-52 / M5-F07) -->
+            <!-- Nằm hoàn toàn NGOÀI settingsForm để tránh vỡ form cấu hình -->
+            <!-- ========================================== -->
+            <div class="bg-white rounded-2xl border border-[#eae2d5] shadow-sm overflow-hidden">
+                <div
+                    class="p-6 border-b border-[#eae2d5] bg-[#faf7f2]/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[#875200] text-[22px]">palette</span>
+                            <h2 class="text-sm font-bold text-[#2b2118] uppercase tracking-wider">Giao diện Website</h2>
+                        </div>
+                        <p class="text-xs text-[#8a7664] mt-1">Quản lý và kích hoạt chủ đề hiển thị toàn hệ thống. Giao
+                            diện đang áp dụng sẽ hiển thị với toàn bộ độc giả và thành viên.</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-[#f4ece1] text-[#6b5849] shrink-0">
+                            <span class="material-symbols-outlined text-[16px]">verified</span>
+                            <span>Luôn có 1 giao diện hoạt động</span>
+                        </div>
+                        <button type="button" onclick="openAddThemeModal()"
+                            class="px-3.5 py-1.5 rounded-lg bg-[#875200] hover:bg-[#6c4100] text-white text-xs font-bold transition-all shadow-sm flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-[16px]">add</span>
+                            <span>Thêm giao diện</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div th:each="theme : ${themes}"
+                            class="rounded-xl border transition-all duration-200 overflow-hidden flex flex-col justify-between"
+                            th:classappend="${theme.isActive} ? 'border-[#875200] ring-2 ring-[#875200]/20 bg-[#faf7f2]/30 shadow-md' : 'border-[#eae2d5] bg-white hover:border-[#bc7d39]/50 hover:shadow-sm'">
+
+                            <!-- Khung xem trước màu sắc tự sinh từ tokens (VIỆC 1) -->
+                            <div class="relative h-36 p-3 flex flex-col justify-between overflow-hidden select-none border-b border-[#eae2d5]/60 transition-transform duration-300"
+                                th:style="'background-color: ' + ${theme.getToken('background', '#FFF8F5')}">
+
+                                <!-- Thanh header mini (surface) -->
+                                <div class="h-6 px-2.5 rounded-lg flex items-center justify-between shadow-2xs border"
+                                    th:style="'background-color: ' + ${theme.getToken('surface', '#FFF8F5')} + '; border-color: ' + ${theme.getToken('outline_variant', '#D7C3B1')}">
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="w-2.5 h-2.5 rounded-full"
+                                            th:style="'background-color: ' + ${theme.getToken('primary', '#875200')}"></span>
+                                        <span class="w-12 h-1.5 rounded-full"
+                                            th:style="'background-color: ' + ${theme.getToken('on_surface', '#231A11')} + '; opacity: 0.6'"></span>
+                                    </div>
+                                    <div class="flex items-center gap-1">
+                                        <span class="w-2 h-2 rounded-full"
+                                            th:style="'background-color: ' + ${theme.getToken('secondary', '#9E422C')}"></span>
+                                        <span class="w-4 h-1.5 rounded-full"
+                                            th:style="'background-color: ' + ${theme.getToken('outline_variant', '#D7C3B1')}"></span>
+                                    </div>
+                                </div>
+
+                                <!-- Khung thẻ mini (surface_container_lowest + outline_variant) -->
+                                <div class="p-2.5 rounded-lg border shadow-xs flex items-center justify-between gap-2"
+                                    th:style="'background-color: ' + ${theme.getToken('surface_container_lowest', '#FFFFFF')} + '; border-color: ' + ${theme.getToken('outline_variant', '#D7C3B1')}">
+                                    <div class="space-y-1 flex-1 min-w-0">
+                                        <!-- Dòng chữ mẫu (on_surface) -->
+                                        <div class="h-2 w-3/4 rounded-full"
+                                            th:style="'background-color: ' + ${theme.getToken('on_surface', '#231A11')}">
+                                        </div>
+                                        <div class="h-1.5 w-1/2 rounded-full"
+                                            th:style="'background-color: ' + ${theme.getToken('on_surface_variant', '#524437')} + '; opacity: 0.7'">
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-1.5 shrink-0">
+                                        <!-- Chấm huy hiệu (secondary) -->
+                                        <span class="w-2.5 h-2.5 rounded-full shadow-2xs"
+                                            th:style="'background-color: ' + ${theme.getToken('secondary', '#9E422C')}"
+                                            title="Huy hiệu"></span>
+                                        <!-- Nút đọc mini (primary) -->
+                                        <div class="px-2 py-0.5 rounded text-[9px] font-bold shadow-2xs"
+                                            th:style="'background-color: ' + ${theme.getToken('primary', '#875200')} + '; color: ' + ${theme.getToken('on_primary', '#FFFFFF')}">
+                                            Đọc
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Active badge on preview -->
+                                <div th:if="${theme.isActive}"
+                                    class="absolute top-2.5 right-2.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-[#875200] text-white shadow-sm flex items-center gap-1 z-10">
+                                    <span class="material-symbols-outlined text-[14px]">check_circle</span>
+                                    <span>Đang áp dụng</span>
+                                </div>
+                                <div th:unless="${theme.isActive}"
+                                    class="absolute top-2.5 right-2.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-black/60 text-white backdrop-blur-xs z-10">
+                                    <span>Sẵn sàng</span>
+                                </div>
+                            </div>
+
+                            <!-- Card Body -->
+                            <div class="p-4 flex-1 flex flex-col justify-between gap-3">
+                                <div class="space-y-1.5">
+                                    <h3 class="text-xs font-bold text-[#2b2118] leading-tight line-clamp-1"
+                                        th:text="${theme.name}">Tên giao diện</h3>
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <span
+                                            class="inline-block px-2 py-0.5 rounded text-[10px] font-mono bg-[#f4ece1] text-[#6b5849]"
+                                            th:text="${theme.folderPath}"
+                                            th:data-folder-path="${theme.folderPath}">theme-default</span>
+                                        <span th:if="${theme.folderPath == 'theme-default'}"
+                                            class="text-[10px] text-[#8a7664] italic">(Mặc định)</span>
+                                        <span th:if="${theme.hasBackground()}"
+                                            class="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded bg-[#875200]/10 text-[#875200] border border-[#875200]/20"
+                                            title="Giao diện có ảnh nền trang">
+                                            <span class="material-symbols-outlined text-[12px]">image</span>
+                                            <span>Có ảnh nền</span>
+                                        </span>
+                                    </div>
+                                    <div
+                                        class="text-[11px] text-[#8a7664] space-y-0.5 pt-1 border-t border-[#eae2d5]/40">
+                                        <div class="flex items-center justify-between">
+                                            <span>Người tải:</span>
+                                            <span class="font-medium text-[#2b2118]"
+                                                th:text="${theme.uploaderName}">Admin</span>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <span>Cập nhật:</span>
+                                            <span class="font-medium text-[#2b2118]"
+                                                th:text="${theme.formattedUpdatedAt}">14:20 26/10</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Action Buttons -->
+                                <div class="pt-2 border-t border-[#eae2d5]/60 flex flex-col gap-2">
+                                    <div th:if="${theme.isActive}"
+                                        class="w-full py-2 px-3 rounded-lg bg-[#875200]/10 text-[#875200] text-xs font-bold flex items-center justify-center gap-1.5">
+                                        <span class="material-symbols-outlined text-[16px]">done</span>
+                                        <span>Đang kích hoạt</span>
+                                    </div>
+
+                                    <div th:unless="${theme.isActive}" class="w-full">
+                                        <button type="button" th:data-theme-id="${theme.id}"
+                                            th:data-theme-name="${theme.name}"
+                                            onclick="openActivateModal(this.getAttribute('data-theme-id'), this.getAttribute('data-theme-name'))"
+                                            class="w-full py-2 px-3 rounded-lg bg-[#faf7f2] hover:bg-[#875200] text-[#6b5849] hover:text-white border border-[#eae2d5] hover:border-[#875200] text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-sm">
+                                            <span class="material-symbols-outlined text-[16px]">palette</span>
+                                            <span>Kích hoạt giao diện</span>
+                                        </button>
+                                    </div>
+
+                                    <!-- Edit & Delete Buttons for Custom Themes -->
+                                    <div th:if="${theme.folderPath != 'theme-default'}"
+                                        class="flex items-center gap-2 pt-1">
+                                        <button type="button" th:data-theme-id="${theme.id}"
+                                            th:data-theme-name="${theme.name}"
+                                            th:data-theme-folder="${theme.folderPath}"
+                                            th:attr="data-theme-tokens=${theme.tokensJson}"
+                                            th:data-theme-bg-url="${theme.bgUrl != null ? theme.bgUrl : ''}"
+                                            th:data-theme-bg-opacity="${theme.bgOpacity != null ? theme.bgOpacity : 12}"
+                                            th:data-theme-bg-blur="${theme.bgBlur != null ? theme.bgBlur : 4}"
+                                            onclick="openEditModal(this)"
+                                            class="flex-1 py-1.5 px-2 rounded-lg bg-white hover:bg-[#f4ece1] border border-[#eae2d5] text-[#6b5849] text-[11px] font-semibold transition-colors flex items-center justify-center gap-1">
+                                            <span class="material-symbols-outlined text-[14px]">edit</span>
+                                            <span>Sửa</span>
+                                        </button>
+                                        <button th:if="${!theme.isActive}" type="button" th:data-theme-id="${theme.id}"
+                                            th:data-theme-name="${theme.name}"
+                                            onclick="openDeleteModal(this.getAttribute('data-theme-id'), this.getAttribute('data-theme-name'))"
+                                            class="flex-1 py-1.5 px-2 rounded-lg bg-white hover:bg-red-50 border border-[#eae2d5] hover:border-red-200 text-red-600 text-[11px] font-semibold transition-colors flex items-center justify-center gap-1">
+                                            <span class="material-symbols-outlined text-[14px]">delete</span>
+                                            <span>Xóa</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </section>
     </main>
+
+    <!-- ======================================================== -->
+    <!-- WEB CONFIRMATION MODALS (Thay thế confirm() của trình duyệt) -->
+    <!-- ======================================================== -->
+
+    <!-- 1. Modal Xác Nhận Kích Hoạt Theme -->
+    <div id="activateThemeModal"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm hidden">
+        <div
+            class="bg-white rounded-2xl border border-[#eae2d5] shadow-xl p-6 max-w-md w-full mx-4 space-y-4 animate-fade-in">
+            <div class="flex items-center gap-3">
+                <div
+                    class="w-10 h-10 rounded-full bg-[#faf7f2] flex items-center justify-center text-[#875200] shrink-0 border border-[#eae2d5]">
+                    <span class="material-symbols-outlined text-[22px]">palette</span>
+                </div>
+                <div>
+                    <h3 class="font-bold text-base text-[#2b2118]">Kích hoạt giao diện web</h3>
+                    <p class="text-xs text-[#8a7664]">Thay đổi sẽ có hiệu lực ngay trên toàn bộ hệ thống</p>
+                </div>
+            </div>
+            <p class="text-xs text-[#524437] leading-relaxed">
+                Bạn có chắc chắn muốn chuyển sang giao diện <strong id="activateThemeName"
+                    class="text-[#875200]">...</strong>? Toàn bộ độc giả và thành viên sẽ nhìn thấy giao diện mới ngay
+                lập tức.
+            </p>
+            <form id="activateThemeForm" method="POST" action="">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <div class="flex items-center justify-end gap-3 pt-2">
+                    <button type="button" onclick="closeActivateModal()"
+                        class="px-4 py-2 rounded-xl border border-[#eae2d5] bg-[#faf7f2] hover:bg-[#f4ece1] text-[#6b5849] text-xs font-bold transition-colors">
+                        Hủy
+                    </button>
+                    <button type="submit"
+                        class="px-5 py-2 rounded-xl bg-[#875200] hover:bg-[#6c4100] text-white text-xs font-bold shadow-md transition-colors flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[16px]">check</span>
+                        <span>Xác nhận kích hoạt</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 2. Modal Xác Nhận Xóa Theme -->
+    <div id="deleteThemeModal"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm hidden">
+        <div
+            class="bg-white rounded-2xl border border-[#eae2d5] shadow-xl p-6 max-w-md w-full mx-4 space-y-4 animate-fade-in">
+            <div class="flex items-center gap-3">
+                <div
+                    class="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center text-red-600 shrink-0 border border-red-200">
+                    <span class="material-symbols-outlined text-[22px]">delete</span>
+                </div>
+                <div>
+                    <h3 class="font-bold text-base text-[#2b2118]">Xác nhận xóa giao diện</h3>
+                    <p class="text-xs text-[#8a7664]">Thao tác xóa vĩnh viễn không thể hoàn tác</p>
+                </div>
+            </div>
+            <p class="text-xs text-[#524437] leading-relaxed">
+                Bạn có chắc chắn muốn xóa giao diện <strong id="deleteThemeName" class="text-red-600">...</strong>? Bộ
+                mã màu tương ứng trong cấu hình hệ thống cũng sẽ bị xóa bỏ.
+            </p>
+            <form id="deleteThemeForm" method="POST" action="">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <div class="flex items-center justify-end gap-3 pt-2">
+                    <button type="button" onclick="closeDeleteModal()"
+                        class="px-4 py-2 rounded-xl border border-[#eae2d5] bg-[#faf7f2] hover:bg-[#f4ece1] text-[#6b5849] text-xs font-bold transition-colors">
+                        Hủy
+                    </button>
+                    <button type="submit"
+                        class="px-5 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-md transition-colors flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[16px]">delete_forever</span>
+                        <span>Xóa vĩnh viễn</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- 3. Modal Thêm Giao Diện Mới (Bố cục 3 bước thân thiện, 6 mẫu có sẵn, 4 màu chính) -->
+    <!-- ======================================================== -->
+    <div id="addThemeModal"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm hidden p-2 sm:p-4">
+        <div
+            class="bg-white rounded-2xl border border-[#eae2d5] shadow-2xl max-w-6xl w-full max-h-[92vh] flex flex-col overflow-hidden animate-fade-in">
+            <!-- Modal Header -->
+            <div
+                class="p-4 sm:p-5 border-b border-[#eae2d5] flex items-center justify-between bg-[#faf7f2]/60 shrink-0">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-[#875200] text-white flex items-center justify-center shadow-sm">
+                        <span class="material-symbols-outlined text-[20px]">palette</span>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-base text-[#2b2118]">Thêm giao diện mới</h3>
+                        <p class="text-xs text-[#8a7664]">Tùy biến màu sắc dễ dàng chỉ với 4 màu cơ bản hoặc chọn mẫu có
+                            sẵn</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeAddThemeModal()"
+                    class="text-[#8a7664] hover:text-[#2b2118] p-1.5 rounded-lg hover:bg-[#f4ece1] transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">close</span>
+                </button>
+            </div>
+
+            <!-- Modal Form -->
+            <form id="addThemeForm" th:action="@{/admin/settings/themes}" method="POST" enctype="multipart/form-data"
+                class="flex flex-col flex-1 overflow-hidden">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <input type="hidden" name="tokensJson" id="addThemeTokensJson" />
+
+                <!-- Modal Body: 2 Columns (Scrollable Left, Fixed Preview Right) -->
+                <div class="overflow-hidden flex-1 grid grid-cols-1 lg:grid-cols-12 min-h-0">
+
+                    <!-- Cột Trái: Bố Cục 3 Bước (Cuộn khi dài) -->
+                    <div class="lg:col-span-7 p-5 sm:p-6 overflow-y-auto max-h-[calc(92vh-130px)] space-y-6">
+
+                        <!-- BƯỚC 1: CHỌN MẪU CÓ SẴN -->
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span
+                                        class="w-5 h-5 rounded-full bg-[#875200] text-white text-[11px] font-bold flex items-center justify-center">1</span>
+                                    <h4 class="text-xs font-bold uppercase tracking-wider text-[#2b2118]">Chọn mẫu có
+                                        sẵn</h4>
+                                </div>
+                                <span class="text-[11px] text-[#8a7664]">Bấm mẫu để điền nhanh màu chuẩn</span>
+                            </div>
+
+                            <!-- 6 Thẻ Mẫu Màu -->
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5" id="add_presets_container">
+                                <!-- Rendered dynamically by JS -->
+                            </div>
+                        </div>
+
+                        <!-- BƯỚC 2: TUỲ CHỈNH 4 MÀU CHÍNH -->
+                        <div class="space-y-3 pt-4 border-t border-[#eae2d5]">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span
+                                        class="w-5 h-5 rounded-full bg-[#875200] text-white text-[11px] font-bold flex items-center justify-center">2</span>
+                                    <h4 class="text-xs font-bold uppercase tracking-wider text-[#2b2118]">Tuỳ chỉnh 4
+                                        màu chính</h4>
+                                </div>
+                                <span class="text-[11px] text-[#8a7664]">14 màu còn lại sẽ tự động tính toán</span>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <!-- 1. Màu chủ đạo (primary) -->
+                                <div class="p-3 rounded-xl border border-[#eae2d5] bg-[#faf7f2]/40 space-y-1.5">
+                                    <div class="flex items-center justify-between">
+                                        <label class="text-xs font-bold text-[#2b2118]">Màu chủ đạo</label>
+                                        <div class="flex items-center gap-1.5">
+                                            <input type="color" id="add_main_primary" value="#B91C1C"
+                                                oninput="onMainColorPickerChange('add', 'primary', this.value)"
+                                                class="w-7 h-7 rounded-lg cursor-pointer border border-[#eae2d5] p-0.5 bg-white shrink-0 shadow-sm">
+                                            <input type="text" id="add_hex_primary" value="#B91C1C" maxlength="7"
+                                                oninput="onMainHexInputChange('add', 'primary', this.value)"
+                                                class="w-20 px-2 py-1 text-xs font-mono uppercase rounded-lg border border-[#eae2d5] bg-white text-[#2b2118] focus:outline-none focus:ring-1 focus:ring-[#875200]">
+                                        </div>
+                                    </div>
+                                    <p class="text-[11px] text-[#8a7664]">Nút bấm chính, liên kết, sao đánh giá</p>
+                                </div>
+
+                                <!-- 2. Màu nhấn phụ (secondary) -->
+                                <div class="p-3 rounded-xl border border-[#eae2d5] bg-[#faf7f2]/40 space-y-1.5">
+                                    <div class="flex items-center justify-between">
+                                        <label class="text-xs font-bold text-[#2b2118]">Màu nhấn phụ</label>
+                                        <div class="flex items-center gap-1.5">
+                                            <input type="color" id="add_main_secondary" value="#993B00"
+                                                oninput="onMainColorPickerChange('add', 'secondary', this.value)"
+                                                class="w-7 h-7 rounded-lg cursor-pointer border border-[#eae2d5] p-0.5 bg-white shrink-0 shadow-sm">
+                                            <input type="text" id="add_hex_secondary" value="#993B00" maxlength="7"
+                                                oninput="onMainHexInputChange('add', 'secondary', this.value)"
+                                                class="w-20 px-2 py-1 text-xs font-mono uppercase rounded-lg border border-[#eae2d5] bg-white text-[#2b2118] focus:outline-none focus:ring-1 focus:ring-[#875200]">
+                                        </div>
+                                    </div>
+                                    <p class="text-[11px] text-[#8a7664]">Huy hiệu thể loại, tên tác giả</p>
+                                </div>
+
+                                <!-- 3. Màu nền trang (background) -->
+                                <div class="p-3 rounded-xl border border-[#eae2d5] bg-[#faf7f2]/40 space-y-1.5">
+                                    <div class="flex items-center justify-between">
+                                        <label class="text-xs font-bold text-[#2b2118]">Màu nền trang</label>
+                                        <div class="flex items-center gap-1.5">
+                                            <input type="color" id="add_main_bg" value="#FFF6E5"
+                                                oninput="onMainColorPickerChange('add', 'background', this.value)"
+                                                class="w-7 h-7 rounded-lg cursor-pointer border border-[#eae2d5] p-0.5 bg-white shrink-0 shadow-sm">
+                                            <input type="text" id="add_hex_bg" value="#FFF6E5" maxlength="7"
+                                                oninput="onMainHexInputChange('add', 'background', this.value)"
+                                                class="w-20 px-2 py-1 text-xs font-mono uppercase rounded-lg border border-[#eae2d5] bg-white text-[#2b2118] focus:outline-none focus:ring-1 focus:ring-[#875200]">
+                                        </div>
+                                    </div>
+                                    <p class="text-[11px] text-[#8a7664]">Nền toàn bộ trang web và khu vực đọc</p>
+                                </div>
+
+                                <!-- 4. Màu chữ chính (on_background) -->
+                                <div class="p-3 rounded-xl border border-[#eae2d5] bg-[#faf7f2]/40 space-y-1.5">
+                                    <div class="flex items-center justify-between">
+                                        <label class="text-xs font-bold text-[#2b2118]">Màu chữ chính</label>
+                                        <div class="flex items-center gap-1.5">
+                                            <input type="color" id="add_main_text" value="#2D150B"
+                                                oninput="onMainColorPickerChange('add', 'on_background', this.value)"
+                                                class="w-7 h-7 rounded-lg cursor-pointer border border-[#eae2d5] p-0.5 bg-white shrink-0 shadow-sm">
+                                            <input type="text" id="add_hex_text" value="#2D150B" maxlength="7"
+                                                oninput="onMainHexInputChange('add', 'on_background', this.value)"
+                                                class="w-20 px-2 py-1 text-xs font-mono uppercase rounded-lg border border-[#eae2d5] bg-white text-[#2b2118] focus:outline-none focus:ring-1 focus:ring-[#875200]">
+                                        </div>
+                                    </div>
+                                    <p class="text-[11px] text-[#8a7664]">Tiêu đề, nội dung truyện và văn bản đọc</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- BƯỚC 3: ĐẶT TÊN GIAO DIỆN -->
+                        <div class="space-y-3.5 pt-4 border-t border-[#eae2d5]">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span
+                                        class="w-5 h-5 rounded-full bg-[#875200] text-white text-[11px] font-bold flex items-center justify-center">3</span>
+                                    <h4 class="text-xs font-bold uppercase tracking-wider text-[#2b2118]">Đặt tên giao
+                                        diện</h4>
+                                </div>
+                            </div>
+
+                            <!-- Cảnh báo đỏ gọn khi có cặp tương phản không đạt (mặc định ẩn) -->
+                            <div id="add_contrast_warning"
+                                class="hidden p-3 rounded-xl bg-red-50 border border-red-200 flex items-center justify-between gap-3 text-xs text-red-700">
+                                <div class="flex items-center gap-2 min-w-0">
+                                    <span
+                                        class="material-symbols-outlined text-red-600 text-[18px] shrink-0">error</span>
+                                    <span id="add_contrast_warning_text" class="font-medium truncate">Chữ khó đọc ở:
+                                        ...</span>
+                                </div>
+                                <button type="button" id="add_autofix_btn" onclick="autoFixContrast('add')"
+                                    class="shrink-0 px-2.5 py-1 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[15px]">auto_fix_high</span>
+                                    <span>Tự chỉnh cho dễ đọc</span>
+                                </button>
+                            </div>
+
+                            <!-- Ô Tên giao diện -->
+                            <div>
+                                <label class="text-xs font-bold text-[#2b2118] block mb-1">Tên giao diện <span
+                                        class="text-red-500">*</span></label>
+                                <input type="text" id="addThemeName" name="name" required maxlength="100"
+                                    placeholder="VD: Xuân Cổ Truyền" oninput="onThemeNameInput('add', this.value)"
+                                    class="w-full px-3.5 py-2 rounded-xl border border-[#eae2d5] bg-white text-xs text-[#2b2118] focus:outline-none focus:ring-2 focus:ring-[#875200]">
+                            </div>
+
+                            <!-- Mục tùy chọn: Ảnh nền trang (UC-52) -->
+                            <div class="space-y-3 pt-3 border-t border-[#eae2d5]/60">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="material-symbols-outlined text-[16px] text-[#875200]">image</span>
+                                        <label class="text-xs font-bold text-[#2b2118]">Ảnh nền trang</label>
+                                        <span
+                                            class="text-[10px] px-1.5 py-0.5 rounded bg-[#f4ece1] text-[#8a7664] font-medium">Tùy
+                                            chọn</span>
+                                    </div>
+                                    <button type="button" id="add_remove_bg_btn" onclick="removeBackground('add')"
+                                        class="hidden text-[11px] text-red-600 hover:text-red-700 font-semibold flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-[14px]">delete</span>
+                                        <span>Xóa ảnh nền</span>
+                                    </button>
+                                </div>
+                                <p class="text-[11px] text-[#8a7664]">Hiển thị ảnh mờ nhẹ cố định phía sau toàn bộ nội
+                                    dung website. <span class="text-[#875200] font-medium italic">Ảnh nền chỉ hiện khi
+                                        giao diện này được kích hoạt.</span></p>
+
+                                <!-- Thông báo lỗi chọn lại ảnh nếu mở lại form lỗi (Requirement 9) -->
+                                <div th:if="${reopenBgNote != null}"
+                                    class="p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-[11px] flex items-center gap-2">
+                                    <span
+                                        class="material-symbols-outlined text-[16px] text-amber-600 shrink-0">info</span>
+                                    <span th:text="${reopenBgNote}">Vui lòng chọn lại ảnh nền nếu có.</span>
+                                </div>
+
+                                <!-- Input file ẩn -->
+                                <input type="file" id="add_bg_file" name="backgroundImage"
+                                    accept=".jpg,.jpeg,.png,.webp" class="hidden"
+                                    onchange="onBgFileSelected('add', event)">
+
+                                <!-- Vùng 1: Chưa chọn ảnh -> Bấm để chọn -->
+                                <div id="add_bg_empty_zone" onclick="document.getElementById('add_bg_file').click()"
+                                    class="p-4 rounded-xl border-2 border-dashed border-[#eae2d5] hover:border-[#875200] bg-white hover:bg-[#faf7f2]/50 cursor-pointer transition-all flex flex-col items-center justify-center gap-1.5 text-center group">
+                                    <span
+                                        class="material-symbols-outlined text-[24px] text-[#8a7664] group-hover:text-[#875200]">add_photo_alternate</span>
+                                    <div class="text-xs font-semibold text-[#2b2118] group-hover:text-[#875200]">Chọn
+                                        file ảnh nền từ thiết bị</div>
+                                    <div class="text-[10px] text-[#8a7664]">Định dạng JPG, PNG hoặc WEBP (tối đa 3MB)
+                                    </div>
+                                </div>
+
+                                <!-- Vùng 2: Đã có ảnh -> Xem trước & 2 thanh trượt -->
+                                <div id="add_bg_preview_zone"
+                                    class="hidden space-y-3 p-3.5 rounded-xl border border-[#eae2d5] bg-[#faf7f2]/40">
+                                    <div class="flex items-center gap-3">
+                                        <div
+                                            class="w-16 h-14 rounded-lg overflow-hidden border border-[#eae2d5] bg-white shrink-0 relative shadow-xs">
+                                            <img id="add_bg_preview_img" src="" alt="Xem trước ảnh nền"
+                                                class="w-full h-full object-cover">
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <div id="add_bg_file_name"
+                                                class="text-xs font-bold text-[#2b2118] truncate">image.jpg</div>
+                                            <div id="add_bg_file_size" class="text-[10px] text-[#8a7664]">Ảnh vừa chọn
+                                            </div>
+                                            <button type="button"
+                                                onclick="document.getElementById('add_bg_file').click()"
+                                                class="mt-1 text-[11px] text-[#875200] hover:underline font-medium inline-block">
+                                                Đổi ảnh khác
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- 2 Thanh trượt: Độ đậm (5-30%) và Độ nhòe (0-10px) -->
+                                    <div class="space-y-2.5 pt-2 border-t border-[#eae2d5]/60">
+                                        <!-- Slider 1: Độ đậm của ảnh -->
+                                        <div>
+                                            <div class="flex items-center justify-between mb-1">
+                                                <label class="text-[11px] font-bold text-[#2b2118]">Độ đậm của
+                                                    ảnh</label>
+                                                <span id="add_bg_opacity_val"
+                                                    class="text-[11px] font-mono font-bold text-[#875200] px-1.5 py-0.5 rounded bg-white border border-[#eae2d5]">12%</span>
+                                            </div>
+                                            <input type="range" id="add_bg_opacity" name="bgOpacity" min="5" max="30"
+                                                value="12" step="1" oninput="onBgOpacityChange('add', this.value)"
+                                                class="w-full h-1.5 bg-[#eae2d5] rounded-lg appearance-none cursor-pointer accent-[#875200]">
+                                            <div class="flex justify-between text-[9px] text-[#8a7664] mt-0.5">
+                                                <span>Nhạt (5%)</span>
+                                                <span>Mặc định (12%)</span>
+                                                <span>Rõ (30%)</span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Slider 2: Độ nhòe -->
+                                        <div>
+                                            <div class="flex items-center justify-between mb-1">
+                                                <label class="text-[11px] font-bold text-[#2b2118]">Độ nhòe</label>
+                                                <span id="add_bg_blur_val"
+                                                    class="text-[11px] font-mono font-bold text-[#875200] px-1.5 py-0.5 rounded bg-white border border-[#eae2d5]">4px</span>
+                                            </div>
+                                            <input type="range" id="add_bg_blur" name="bgBlur" min="0" max="10"
+                                                value="4" step="1" oninput="onBgBlurChange('add', this.value)"
+                                                class="w-full h-1.5 bg-[#eae2d5] rounded-lg appearance-none cursor-pointer accent-[#875200]">
+                                            <div class="flex justify-between text-[9px] text-[#8a7664] mt-0.5">
+                                                <span>Sắc nét (0px)</span>
+                                                <span>Mặc định (4px)</span>
+                                                <span>Mờ mịn (10px)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Mã thư mục tự sinh ẩn (Admin không cần nhập) -->
+                            <input type="hidden" id="addThemeFolder" name="folderPath" />
+                        </div>
+
+                    </div>
+
+                    <!-- Cột Phải: Xem Trước Lớn Hơn (Cố định khi cuộn) -->
+                    <div
+                        class="lg:col-span-5 p-5 sm:p-6 bg-[#faf7f2]/40 border-t lg:border-t-0 lg:border-l border-[#eae2d5] overflow-y-auto max-h-[calc(92vh-130px)] sticky top-0 flex flex-col gap-3">
+                        <div class="flex items-center justify-between pb-1">
+                            <span
+                                class="text-xs font-bold text-[#2b2118] uppercase tracking-wider flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[16px] text-[#875200]">preview</span>
+                                <span>Xem trước thực tế</span>
+                            </span>
+                            <span class="text-[10px] font-medium text-[#8a7664]">Cập nhật tức thì</span>
+                        </div>
+
+                        <!-- Khung Xem Trước Giao Diện Mẫu (Lớn, sắc nét, style inline) -->
+                        <div id="add_preview_box"
+                            class="rounded-2xl overflow-hidden border border-[#eae2d5] text-left shadow-md transition-all relative">
+                            <!-- Lớp ảnh nền mờ mẫu xem trước -->
+                            <div id="add_prev_bg_layer" class="absolute inset-0 pointer-events-none transition-all z-0"
+                                style="background-size: cover; background-position: center; opacity: 0; filter: blur(0px); display: none;">
+                            </div>
+
+                            <!-- Mini Header -->
+                            <div id="add_prev_header"
+                                style="padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #ddd; gap: 8px; position: relative; z-index: 1;">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div id="add_prev_logo"
+                                        style="width: 22px; height: 22px; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 11px;">
+                                        T
+                                    </div>
+                                    <span id="add_prev_brand"
+                                        style="font-size: 13px; font-weight: 700; letter-spacing: -0.2px;">Trạm
+                                        Truyện</span>
+                                </div>
+                                <div
+                                    style="display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 500;">
+                                    <span id="add_prev_menu1">Khám phá</span>
+                                    <span id="add_prev_menu2">BXH</span>
+                                </div>
+                                <div id="add_prev_search"
+                                    style="padding: 4px 8px; border-radius: 6px; font-size: 10px; display: flex; align-items: center; gap: 4px; border: 1px solid #ddd;">
+                                    <span>🔍</span>
+                                    <span id="add_prev_search_text" style="opacity: 0.7;">Tìm truyện...</span>
+                                </div>
+                                <div id="add_prev_coin"
+                                    style="padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; display: flex; align-items: center; gap: 3px;">
+                                    <span>🪙</span>
+                                    <span id="add_prev_coin_text">1.250 Coin</span>
+                                </div>
+                            </div>
+
+                            <!-- Mini Body Area -->
+                            <div id="add_prev_body"
+                                style="padding: 14px; display: flex; flex-direction: column; gap: 12px; position: relative; z-index: 1;">
+                                <div style="display: flex; align-items: center; justify-content: space-between;">
+                                    <span id="add_prev_title" style="font-size: 13px; font-weight: 700;">Đọc nhiều nhất
+                                        tuần</span>
+                                    <span id="add_prev_link_more"
+                                        style="font-size: 11px; font-weight: 600; cursor: pointer;">Xem bảng xếp hạng
+                                        →</span>
+                                </div>
+
+                                <!-- Novel Card -->
+                                <div id="add_prev_card"
+                                    style="padding: 12px; border-radius: 10px; border: 1px solid #ddd; display: flex; gap: 12px; align-items: center;">
+                                    <div id="add_prev_cover"
+                                        style="width: 52px; height: 68px; border-radius: 6px; border: 1px solid #ddd; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0;">
+                                        BÌA
+                                    </div>
+                                    <div
+                                        style="flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0;">
+                                        <span id="add_prev_novel_title"
+                                            style="font-size: 12px; font-weight: 700; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Võ
+                                            Đạo Đan Thần</span>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <span id="add_prev_novel_author"
+                                                style="font-size: 10px; font-weight: 600;">Tác giả: Tiêu Dao Du</span>
+                                            <span id="add_prev_rating" style="font-size: 10px; font-weight: 700;">★
+                                                5.0</span>
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: 6px; margin-top: 2px;">
+                                            <span id="add_prev_badge_vip"
+                                                style="font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 4px;">VIP</span>
+                                            <span id="add_prev_badge_status"
+                                                style="font-size: 9px; font-weight: 600; padding: 2px 6px; border-radius: 4px;">Đang
+                                                ra • 150 chương</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Excerpt with link -->
+                                <div id="add_prev_excerpt_box"
+                                    style="font-size: 11px; line-height: 1.5; padding: 8px 10px; border-radius: 6px;">
+                                    <span id="add_prev_excerpt_text">Thiếu niên Lâm Phong bước lên võ đài, nắm trong tay
+                                        truyền thừa đan đạo cổ xưa... </span>
+                                    <span id="add_prev_excerpt_link"
+                                        style="font-weight: 600; text-decoration: underline; cursor: pointer;">Đọc tiếp
+                                        chương 150</span>
+                                </div>
+
+                                <!-- Divider -->
+                                <div id="add_prev_divider" style="height: 1px; width: 100%;"></div>
+
+                                <!-- Action buttons -->
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <button type="button" id="add_prev_btn_primary"
+                                        style="flex: 1; padding: 8px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; border: none; cursor: default; display: flex; align-items: center; justify-content: center; gap: 4px;">
+                                        <span>📖</span> Đọc ngay
+                                    </button>
+                                    <button type="button" id="add_prev_btn_sec"
+                                        style="flex: 1; padding: 8px 12px; border-radius: 8px; font-size: 11px; font-weight: 600; border: 1px solid #ddd; cursor: default; display: flex; align-items: center; justify-content: center; gap: 4px;">
+                                        <span>🔖</span> Lưu tủ
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="p-4 border-t border-[#eae2d5] flex items-center justify-end gap-3 bg-[#faf7f2]/50 shrink-0">
+                    <button type="button" onclick="closeAddThemeModal()"
+                        class="px-4 py-2 rounded-xl border border-[#eae2d5] bg-white hover:bg-[#f4ece1] text-[#6b5849] text-xs font-bold transition-colors">
+                        Hủy
+                    </button>
+                    <button type="submit" id="add_submit_btn"
+                        class="px-6 py-2 rounded-xl bg-[#875200] hover:bg-[#6c4100] text-white text-xs font-bold shadow-md transition-colors flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[16px]">save</span>
+                        <span>Lưu giao diện</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- 4. Modal Sửa Giao Diện (Bố cục 3 bước, nạp chuẩn, giữ nguyên khi mở) -->
+    <!-- ======================================================== -->
+    <div id="editThemeModal"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm hidden p-2 sm:p-4">
+        <div
+            class="bg-white rounded-2xl border border-[#eae2d5] shadow-2xl max-w-6xl w-full max-h-[92vh] flex flex-col overflow-hidden animate-fade-in">
+            <!-- Modal Header -->
+            <div
+                class="p-4 sm:p-5 border-b border-[#eae2d5] flex items-center justify-between bg-[#faf7f2]/60 shrink-0">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-[#875200] text-white flex items-center justify-center shadow-sm">
+                        <span class="material-symbols-outlined text-[20px]">edit</span>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-base text-[#2b2118]">Chỉnh sửa giao diện</h3>
+                        <p class="text-xs text-[#8a7664]">Cập nhật màu sắc và các tùy biến giao diện đã lưu</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeEditModal()"
+                    class="text-[#8a7664] hover:text-[#2b2118] p-1.5 rounded-lg hover:bg-[#f4ece1] transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">close</span>
+                </button>
+            </div>
+
+            <!-- Modal Form -->
+            <form id="editThemeForm" method="POST" action="" enctype="multipart/form-data"
+                class="flex flex-col flex-1 overflow-hidden">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <input type="hidden" name="tokensJson" id="editThemeTokensJson" />
+                <input type="hidden" name="folderPath" id="editThemeFolder" />
+
+                <!-- Modal Body: 2 Columns -->
+                <div class="overflow-hidden flex-1 grid grid-cols-1 lg:grid-cols-12 min-h-0">
+
+                    <!-- Cột Trái: Bố Cục 3 Bước (Cuộn khi dài) -->
+                    <div class="lg:col-span-7 p-5 sm:p-6 overflow-y-auto max-h-[calc(92vh-130px)] space-y-6">
+
+                        <!-- Thông báo nếu Theme không có tokens trong DB -->
+                        <div id="edit_token_error_notice"
+                            class="hidden p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs flex items-start gap-2.5">
+                            <span class="material-symbols-outlined text-[20px] text-amber-600 shrink-0">warning</span>
+                            <div class="space-y-1">
+                                <div class="font-bold">Giao diện này chưa có bộ màu, hãy chọn một mẫu bên trên</div>
+                                <div class="text-[#524437]">Vui lòng chọn một mẫu giao diện bên trên để thiết lập bộ màu
+                                    trước khi cập nhật.</div>
+                            </div>
+                        </div>
+
+                        <!-- BƯỚC 1: CHỌN MẪU CÓ SẴN (Nếu muốn đổi tông nhanh) -->
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span
+                                        class="w-5 h-5 rounded-full bg-[#875200] text-white text-[11px] font-bold flex items-center justify-center">1</span>
+                                    <h4 class="text-xs font-bold uppercase tracking-wider text-[#2b2118]">Chọn mẫu đổi
+                                        nhanh</h4>
+                                </div>
+                                <span class="text-[11px] text-[#8a7664]">Đổi sang bộ màu hài hòa khác</span>
+                            </div>
+
+                            <!-- 6 Thẻ Mẫu Màu -->
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5" id="edit_presets_container">
+                                <!-- Rendered dynamically by JS -->
+                            </div>
+                        </div>
+
+                        <!-- BƯỚC 2: TUỲ CHỈNH 4 MÀU CHÍNH -->
+                        <div class="space-y-3 pt-4 border-t border-[#eae2d5]">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span
+                                        class="w-5 h-5 rounded-full bg-[#875200] text-white text-[11px] font-bold flex items-center justify-center">2</span>
+                                    <h4 class="text-xs font-bold uppercase tracking-wider text-[#2b2118]">Tuỳ chỉnh 4
+                                        màu chính</h4>
+                                </div>
+                                <span class="text-[11px] text-[#8a7664]">Điền từ cấu hình đã lưu của theme</span>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <!-- 1. Màu chủ đạo (primary) -->
+                                <div class="p-3 rounded-xl border border-[#eae2d5] bg-[#faf7f2]/40 space-y-1.5">
+                                    <div class="flex items-center justify-between">
+                                        <label class="text-xs font-bold text-[#2b2118]">Màu chủ đạo</label>
+                                        <div class="flex items-center gap-1.5">
+                                            <input type="color" id="edit_main_primary" value="#B91C1C"
+                                                oninput="onMainColorPickerChange('edit', 'primary', this.value)"
+                                                class="w-7 h-7 rounded-lg cursor-pointer border border-[#eae2d5] p-0.5 bg-white shrink-0 shadow-sm">
+                                            <input type="text" id="edit_hex_primary" value="#B91C1C" maxlength="7"
+                                                oninput="onMainHexInputChange('edit', 'primary', this.value)"
+                                                class="w-20 px-2 py-1 text-xs font-mono uppercase rounded-lg border border-[#eae2d5] bg-white text-[#2b2118] focus:outline-none focus:ring-1 focus:ring-[#875200]">
+                                        </div>
+                                    </div>
+                                    <p class="text-[11px] text-[#8a7664]">Nút bấm chính, liên kết, sao đánh giá</p>
+                                </div>
+
+                                <!-- 2. Màu nhấn phụ (secondary) -->
+                                <div class="p-3 rounded-xl border border-[#eae2d5] bg-[#faf7f2]/40 space-y-1.5">
+                                    <div class="flex items-center justify-between">
+                                        <label class="text-xs font-bold text-[#2b2118]">Màu nhấn phụ</label>
+                                        <div class="flex items-center gap-1.5">
+                                            <input type="color" id="edit_main_secondary" value="#993B00"
+                                                oninput="onMainColorPickerChange('edit', 'secondary', this.value)"
+                                                class="w-7 h-7 rounded-lg cursor-pointer border border-[#eae2d5] p-0.5 bg-white shrink-0 shadow-sm">
+                                            <input type="text" id="edit_hex_secondary" value="#993B00" maxlength="7"
+                                                oninput="onMainHexInputChange('edit', 'secondary', this.value)"
+                                                class="w-20 px-2 py-1 text-xs font-mono uppercase rounded-lg border border-[#eae2d5] bg-white text-[#2b2118] focus:outline-none focus:ring-1 focus:ring-[#875200]">
+                                        </div>
+                                    </div>
+                                    <p class="text-[11px] text-[#8a7664]">Huy hiệu thể loại, tên tác giả</p>
+                                </div>
+
+                                <!-- 3. Màu nền trang (background) -->
+                                <div class="p-3 rounded-xl border border-[#eae2d5] bg-[#faf7f2]/40 space-y-1.5">
+                                    <div class="flex items-center justify-between">
+                                        <label class="text-xs font-bold text-[#2b2118]">Màu nền trang</label>
+                                        <div class="flex items-center gap-1.5">
+                                            <input type="color" id="edit_main_bg" value="#FFF6E5"
+                                                oninput="onMainColorPickerChange('edit', 'background', this.value)"
+                                                class="w-7 h-7 rounded-lg cursor-pointer border border-[#eae2d5] p-0.5 bg-white shrink-0 shadow-sm">
+                                            <input type="text" id="edit_hex_bg" value="#FFF6E5" maxlength="7"
+                                                oninput="onMainHexInputChange('edit', 'background', this.value)"
+                                                class="w-20 px-2 py-1 text-xs font-mono uppercase rounded-lg border border-[#eae2d5] bg-white text-[#2b2118] focus:outline-none focus:ring-1 focus:ring-[#875200]">
+                                        </div>
+                                    </div>
+                                    <p class="text-[11px] text-[#8a7664]">Nền toàn bộ trang web và khu vực đọc</p>
+                                </div>
+
+                                <!-- 4. Màu chữ chính (on_background) -->
+                                <div class="p-3 rounded-xl border border-[#eae2d5] bg-[#faf7f2]/40 space-y-1.5">
+                                    <div class="flex items-center justify-between">
+                                        <label class="text-xs font-bold text-[#2b2118]">Màu chữ chính</label>
+                                        <div class="flex items-center gap-1.5">
+                                            <input type="color" id="edit_main_text" value="#2D150B"
+                                                oninput="onMainColorPickerChange('edit', 'on_background', this.value)"
+                                                class="w-7 h-7 rounded-lg cursor-pointer border border-[#eae2d5] p-0.5 bg-white shrink-0 shadow-sm">
+                                            <input type="text" id="edit_hex_text" value="#2D150B" maxlength="7"
+                                                oninput="onMainHexInputChange('edit', 'on_background', this.value)"
+                                                class="w-20 px-2 py-1 text-xs font-mono uppercase rounded-lg border border-[#eae2d5] bg-white text-[#2b2118] focus:outline-none focus:ring-1 focus:ring-[#875200]">
+                                        </div>
+                                    </div>
+                                    <p class="text-[11px] text-[#8a7664]">Tiêu đề, nội dung truyện và văn bản đọc</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- BƯỚC 3: ĐẶT TÊN GIAO DIỆN -->
+                        <div class="space-y-3.5 pt-4 border-t border-[#eae2d5]">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span
+                                        class="w-5 h-5 rounded-full bg-[#875200] text-white text-[11px] font-bold flex items-center justify-center">3</span>
+                                    <h4 class="text-xs font-bold uppercase tracking-wider text-[#2b2118]">Đặt tên giao
+                                        diện</h4>
+                                </div>
+                            </div>
+
+                            <!-- Cảnh báo đỏ gọn khi có cặp tương phản không đạt (mặc định ẩn) -->
+                            <div id="edit_contrast_warning"
+                                class="hidden p-3 rounded-xl bg-red-50 border border-red-200 flex items-center justify-between gap-3 text-xs text-red-700">
+                                <div class="flex items-center gap-2 min-w-0">
+                                    <span
+                                        class="material-symbols-outlined text-red-600 text-[18px] shrink-0">error</span>
+                                    <span id="edit_contrast_warning_text" class="font-medium truncate">Chữ khó đọc ở:
+                                        ...</span>
+                                </div>
+                                <button type="button" id="edit_autofix_btn" onclick="autoFixContrast('edit')"
+                                    class="shrink-0 px-2.5 py-1 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[15px]">auto_fix_high</span>
+                                    <span>Tự chỉnh cho dễ đọc</span>
+                                </button>
+                            </div>
+
+                            <!-- Ô Tên giao diện -->
+                            <div>
+                                <label class="text-xs font-bold text-[#2b2118] block mb-1">Tên giao diện <span
+                                        class="text-red-500">*</span></label>
+                                <input type="text" id="editThemeName" name="name" required maxlength="100"
+                                    class="w-full px-3.5 py-2 rounded-xl border border-[#eae2d5] bg-white text-xs text-[#2b2118] focus:outline-none focus:ring-2 focus:ring-[#875200]">
+                            </div>
+
+                            <!-- Mục tùy chọn: Ảnh nền trang (UC-52) -->
+                            <div class="space-y-3 pt-3 border-t border-[#eae2d5]/60">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="material-symbols-outlined text-[16px] text-[#875200]">image</span>
+                                        <label class="text-xs font-bold text-[#2b2118]">Ảnh nền trang</label>
+                                        <span
+                                            class="text-[10px] px-1.5 py-0.5 rounded bg-[#f4ece1] text-[#8a7664] font-medium">Tùy
+                                            chọn</span>
+                                    </div>
+                                    <button type="button" id="edit_remove_bg_btn" onclick="removeBackground('edit')"
+                                        class="hidden text-[11px] text-red-600 hover:text-red-700 font-semibold flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-[14px]">delete</span>
+                                        <span>Xóa ảnh nền</span>
+                                    </button>
+                                </div>
+                                <p class="text-[11px] text-[#8a7664]">Hiển thị ảnh mờ nhẹ cố định phía sau toàn bộ nội
+                                    dung website. <span class="text-[#875200] font-medium italic">Ảnh nền chỉ hiện khi
+                                        giao diện này được kích hoạt.</span></p>
+
+                                <!-- Thông báo lỗi chọn lại ảnh nếu mở lại form lỗi (Requirement 9) -->
+                                <div th:if="${reopenBgNote != null}"
+                                    class="p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-[11px] flex items-center gap-2">
+                                    <span
+                                        class="material-symbols-outlined text-[16px] text-amber-600 shrink-0">info</span>
+                                    <span th:text="${reopenBgNote}">Vui lòng chọn lại ảnh nền nếu có.</span>
+                                </div>
+
+                                <!-- Input file ẩn & cờ xóa -->
+                                <input type="file" id="edit_bg_file" name="backgroundImage"
+                                    accept=".jpg,.jpeg,.png,.webp" class="hidden"
+                                    onchange="onBgFileSelected('edit', event)">
+                                <input type="hidden" id="edit_remove_bg" name="removeBg" value="false">
+
+                                <!-- Vùng 1: Chưa chọn ảnh -> Bấm để chọn -->
+                                <div id="edit_bg_empty_zone" onclick="document.getElementById('edit_bg_file').click()"
+                                    class="p-4 rounded-xl border-2 border-dashed border-[#eae2d5] hover:border-[#875200] bg-white hover:bg-[#faf7f2]/50 cursor-pointer transition-all flex flex-col items-center justify-center gap-1.5 text-center group">
+                                    <span
+                                        class="material-symbols-outlined text-[24px] text-[#8a7664] group-hover:text-[#875200]">add_photo_alternate</span>
+                                    <div class="text-xs font-semibold text-[#2b2118] group-hover:text-[#875200]">Chọn
+                                        file ảnh nền từ thiết bị</div>
+                                    <div class="text-[10px] text-[#8a7664]">Định dạng JPG, PNG hoặc WEBP (tối đa 3MB)
+                                    </div>
+                                </div>
+
+                                <!-- Vùng 2: Đã có ảnh -> Xem trước & 2 thanh trượt -->
+                                <div id="edit_bg_preview_zone"
+                                    class="hidden space-y-3 p-3.5 rounded-xl border border-[#eae2d5] bg-[#faf7f2]/40">
+                                    <div class="flex items-center gap-3">
+                                        <div
+                                            class="w-16 h-14 rounded-lg overflow-hidden border border-[#eae2d5] bg-white shrink-0 relative shadow-xs">
+                                            <img id="edit_bg_preview_img" src="" alt="Xem trước ảnh nền"
+                                                class="w-full h-full object-cover">
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <div id="edit_bg_file_name"
+                                                class="text-xs font-bold text-[#2b2118] truncate">image.jpg</div>
+                                            <div id="edit_bg_file_size" class="text-[10px] text-[#8a7664]">Ảnh nền đang
+                                                áp dụng</div>
+                                            <button type="button"
+                                                onclick="document.getElementById('edit_bg_file').click()"
+                                                class="mt-1 text-[11px] text-[#875200] hover:underline font-medium inline-block">
+                                                Đổi ảnh khác
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- 2 Thanh trượt: Độ đậm (5-30%) và Độ nhòe (0-10px) -->
+                                    <div class="space-y-2.5 pt-2 border-t border-[#eae2d5]/60">
+                                        <!-- Slider 1: Độ đậm của ảnh -->
+                                        <div>
+                                            <div class="flex items-center justify-between mb-1">
+                                                <label class="text-[11px] font-bold text-[#2b2118]">Độ đậm của
+                                                    ảnh</label>
+                                                <span id="edit_bg_opacity_val"
+                                                    class="text-[11px] font-mono font-bold text-[#875200] px-1.5 py-0.5 rounded bg-white border border-[#eae2d5]">12%</span>
+                                            </div>
+                                            <input type="range" id="edit_bg_opacity" name="bgOpacity" min="5" max="30"
+                                                value="12" step="1" oninput="onBgOpacityChange('edit', this.value)"
+                                                class="w-full h-1.5 bg-[#eae2d5] rounded-lg appearance-none cursor-pointer accent-[#875200]">
+                                            <div class="flex justify-between text-[9px] text-[#8a7664] mt-0.5">
+                                                <span>Nhạt (5%)</span>
+                                                <span>Mặc định (12%)</span>
+                                                <span>Rõ (30%)</span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Slider 2: Độ nhòe -->
+                                        <div>
+                                            <div class="flex items-center justify-between mb-1">
+                                                <label class="text-[11px] font-bold text-[#2b2118]">Độ nhòe</label>
+                                                <span id="edit_bg_blur_val"
+                                                    class="text-[11px] font-mono font-bold text-[#875200] px-1.5 py-0.5 rounded bg-white border border-[#eae2d5]">4px</span>
+                                            </div>
+                                            <input type="range" id="edit_bg_blur" name="bgBlur" min="0" max="10"
+                                                value="4" step="1" oninput="onBgBlurChange('edit', this.value)"
+                                                class="w-full h-1.5 bg-[#eae2d5] rounded-lg appearance-none cursor-pointer accent-[#875200]">
+                                            <div class="flex justify-between text-[9px] text-[#8a7664] mt-0.5">
+                                                <span>Sắc nét (0px)</span>
+                                                <span>Mặc định (4px)</span>
+                                                <span>Mờ mịn (10px)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Cột Phải: Xem Trước Lớn Hơn (Cố định khi cuộn) -->
+                    <div
+                        class="lg:col-span-5 p-5 sm:p-6 bg-[#faf7f2]/40 border-t lg:border-t-0 lg:border-l border-[#eae2d5] overflow-y-auto max-h-[calc(92vh-130px)] sticky top-0 flex flex-col gap-3">
+                        <div class="flex items-center justify-between pb-1">
+                            <span
+                                class="text-xs font-bold text-[#2b2118] uppercase tracking-wider flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[16px] text-[#875200]">preview</span>
+                                <span>Xem trước thực tế</span>
+                            </span>
+                            <span class="text-[10px] font-medium text-[#8a7664]">Cập nhật tức thì</span>
+                        </div>
+
+                        <!-- Khung Xem Trước Giao Diện Mẫu (Lớn, sắc nét, style inline) -->
+                        <div id="edit_preview_box"
+                            class="rounded-2xl overflow-hidden border border-[#eae2d5] text-left shadow-md transition-all relative">
+                            <!-- Lớp ảnh nền mờ mẫu xem trước -->
+                            <div id="edit_prev_bg_layer" class="absolute inset-0 pointer-events-none transition-all z-0"
+                                style="background-size: cover; background-position: center; opacity: 0; filter: blur(0px); display: none;">
+                            </div>
+
+                            <!-- Mini Header -->
+                            <div id="edit_prev_header"
+                                style="padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #ddd; gap: 8px; position: relative; z-index: 1;">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div id="edit_prev_logo"
+                                        style="width: 22px; height: 22px; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 11px;">
+                                        T
+                                    </div>
+                                    <span id="edit_prev_brand"
+                                        style="font-size: 13px; font-weight: 700; letter-spacing: -0.2px;">Trạm
+                                        Truyện</span>
+                                </div>
+                                <div
+                                    style="display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 500;">
+                                    <span id="edit_prev_menu1">Khám phá</span>
+                                    <span id="edit_prev_menu2">BXH</span>
+                                </div>
+                                <div id="edit_prev_search"
+                                    style="padding: 4px 8px; border-radius: 6px; font-size: 10px; display: flex; align-items: center; gap: 4px; border: 1px solid #ddd;">
+                                    <span>🔍</span>
+                                    <span id="edit_prev_search_text" style="opacity: 0.7;">Tìm truyện...</span>
+                                </div>
+                                <div id="edit_prev_coin"
+                                    style="padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; display: flex; align-items: center; gap: 3px;">
+                                    <span>🪙</span>
+                                    <span id="edit_prev_coin_text">1.250 Coin</span>
+                                </div>
+                            </div>
+
+                            <!-- Mini Body Area -->
+                            <div id="edit_prev_body"
+                                style="padding: 14px; display: flex; flex-direction: column; gap: 12px; position: relative; z-index: 1;">
+                                <div style="display: flex; align-items: center; justify-content: space-between;">
+                                    <span id="edit_prev_title" style="font-size: 13px; font-weight: 700;">Đọc nhiều nhất
+                                        tuần</span>
+                                    <span id="edit_prev_link_more"
+                                        style="font-size: 11px; font-weight: 600; cursor: pointer;">Xem bảng xếp hạng
+                                        →</span>
+                                </div>
+
+                                <!-- Novel Card -->
+                                <div id="edit_prev_card"
+                                    style="padding: 12px; border-radius: 10px; border: 1px solid #ddd; display: flex; gap: 12px; align-items: center;">
+                                    <div id="edit_prev_cover"
+                                        style="width: 52px; height: 68px; border-radius: 6px; border: 1px solid #ddd; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0;">
+                                        BÌA
+                                    </div>
+                                    <div
+                                        style="flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0;">
+                                        <span id="edit_prev_novel_title"
+                                            style="font-size: 12px; font-weight: 700; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Võ
+                                            Đạo Đan Thần</span>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <span id="edit_prev_novel_author"
+                                                style="font-size: 10px; font-weight: 600;">Tác giả: Tiêu Dao Du</span>
+                                            <span id="edit_prev_rating" style="font-size: 10px; font-weight: 700;">★
+                                                5.0</span>
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: 6px; margin-top: 2px;">
+                                            <span id="edit_prev_badge_vip"
+                                                style="font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 4px;">VIP</span>
+                                            <span id="edit_prev_badge_status"
+                                                style="font-size: 9px; font-weight: 600; padding: 2px 6px; border-radius: 4px;">Đang
+                                                ra • 150 chương</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Excerpt with link -->
+                                <div id="edit_prev_excerpt_box"
+                                    style="font-size: 11px; line-height: 1.5; padding: 8px 10px; border-radius: 6px;">
+                                    <span id="edit_prev_excerpt_text">Thiếu niên Lâm Phong bước lên võ đài, nắm trong
+                                        tay truyền thừa đan đạo cổ xưa... </span>
+                                    <span id="edit_prev_excerpt_link"
+                                        style="font-weight: 600; text-decoration: underline; cursor: pointer;">Đọc tiếp
+                                        chương 150</span>
+                                </div>
+
+                                <!-- Divider -->
+                                <div id="edit_prev_divider" style="height: 1px; width: 100%;"></div>
+
+                                <!-- Action buttons -->
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <button type="button" id="edit_prev_btn_primary"
+                                        style="flex: 1; padding: 8px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; border: none; cursor: default; display: flex; align-items: center; justify-content: center; gap: 4px;">
+                                        <span>📖</span> Đọc ngay
+                                    </button>
+                                    <button type="button" id="edit_prev_btn_sec"
+                                        style="flex: 1; padding: 8px 12px; border-radius: 8px; font-size: 11px; font-weight: 600; border: 1px solid #ddd; cursor: default; display: flex; align-items: center; justify-content: center; gap: 4px;">
+                                        <span>🔖</span> Lưu tủ
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="p-4 border-t border-[#eae2d5] flex items-center justify-end gap-3 bg-[#faf7f2]/50 shrink-0">
+                    <button type="button" onclick="closeEditModal()"
+                        class="px-4 py-2 rounded-xl border border-[#eae2d5] bg-white hover:bg-[#f4ece1] text-[#6b5849] text-xs font-bold transition-colors">
+                        Hủy
+                    </button>
+                    <button type="submit" id="edit_submit_btn"
+                        class="px-6 py-2 rounded-xl bg-[#875200] hover:bg-[#6c4100] text-white text-xs font-bold shadow-md transition-colors flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[16px]">save</span>
+                        <span>Cập nhật</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <!-- Admin Flash Toast Notification (UC-52) -->
     <div th:replace="~{admin/fragments/layout :: flash-toast}"></div>
 
-    <script>
-        // Khôi phục các giá trị cấu hình tiêu chuẩn ban đầu của Trạm Truyện
-        function restoreDefaultSystemSettings() {
-            if (!confirm("Bạn có chắc chắn muốn khôi phục toàn bộ biểu mẫu về cấu hình tiêu chuẩn ban đầu của Trạm Truyện (10 Coin / 1.000 VNĐ, Hotline 1900-1234, support@tramtruyen.com)?")) {
-                return;
-            }
+    <!-- Thymeleaf Error Bridge for Themes (UC-52) -->
+    <div id="themeFormErrorBridge" class="hidden"
+         th:if="${themeFormError}"
+         th:data-reopen="${reopenModal}"
+         th:data-failed-id="${failedThemeId}"
+         th:data-failed-name="${failedName}"
+         th:data-failed-folder="${failedFolderPath}"
+         th:data-failed-tokens="${failedTokensJson}"
+         th:data-failed-opacity="${failedBgOpacity}"
+         th:data-failed-blur="${failedBgBlur}"></div>
 
-            const rateInput = document.getElementById('vndToCoinRateInput');
-            if (rateInput) rateInput.value = 10;
-
-            const phoneInput = document.getElementById('contactPhoneInput');
-            if (phoneInput) phoneInput.value = "1900-1234";
-
-            const emailInput = document.getElementById('supportEmailInput');
-            if (emailInput) emailInput.value = "support@tramtruyen.com";
-
-            const tos = document.getElementById('tosTextarea');
-            if (tos) {
-                tos.value = "Chào mừng bạn đến với Trạm Truyện. Bằng việc truy cập hoặc sử dụng trang web, bạn đồng ý tuân thủ các quy định về bản quyền tác phẩm văn học, ứng xử văn minh trong bình luận, không sao chép hoặc phân phối lại nội dung chương VIP khi chưa có sự đồng ý bằng văn bản của Ban Quản Trị.";
-            }
-
-            const pp = document.getElementById('ppTextarea');
-            if (pp) {
-                pp.value = "Trạm Truyện cam kết bảo mật tuyệt đối thông tin cá nhân của người dùng bao gồm địa chỉ email, lịch sử đọc truyện và thông tin giao dịch nạp Coin. Chúng tôi không chia sẻ hoặc cung cấp thông tin người dùng cho bất kỳ bên thứ ba nào ngoại trừ các trường hợp theo yêu cầu của cơ quan pháp luật có thẩm quyền.";
-            }
-        }
-    </script>
+    <script th:src="@{/js/admin/theme-color.js(v='1.0')}" defer></script>
+    <script th:src="@{/js/admin/theme-modal.js(v='1.0')}" defer></script>
+    <script th:src="@{/js/admin/system-settings.js(v='1.0')}" defer></script>
 
 </body>
 

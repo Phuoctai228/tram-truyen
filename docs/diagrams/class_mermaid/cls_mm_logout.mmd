@@ -1,0 +1,83 @@
+classDiagram
+    direction LR
+
+    class SecurityConfig["<<configuration>> SecurityConfig"] {
+        - userRepository : UserRepository
+        - accountLockService : AccountLockService
+        + filterChain(http: HttpSecurity) SecurityFilterChain
+    }
+
+    class UserStatusCheckFilter["<<service>> UserStatusCheckFilter"] {
+        - userRepository : UserRepository
+        - accountLockService : AccountLockService
+        + UserStatusCheckFilter(userRepository: UserRepository, accountLockService: AccountLockService)
+        # shouldNotFilter(request: HttpServletRequest) boolean
+        # doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) void
+    }
+
+    class HomeController["<<controller>> HomeController"] {
+        - homeService : HomeService
+        - bookshelfService : BookshelfService
+        + home(authentication: Authentication, model: Model) String
+    }
+
+    class CustomUserDetails["<<dto>> CustomUserDetails"] {
+        - user : User
+        + CustomUserDetails(user: User)
+        + getAuthorities() Collection~GrantedAuthority~
+        + getPassword() String
+        + getUsername() String
+        + getUser() User
+    }
+
+    class AccountLockService["<<service>> AccountLockService"] {
+        - userRepository : UserRepository
+        + checkAndAutoUnban(user: User) boolean
+        + buildAccountLockedInfo(email: String) AccountLockedInfoDTO
+    }
+
+    class UserRepository["<<repository>> UserRepository"] {
+        + findByEmail(email: String)* Optional~User~
+    }
+
+    class User["<<entity>> User"] {
+        - id : Integer
+        - email : String
+        - fullName : String
+        - status : String
+        - roles : Set~Role~
+        + getId() Integer
+        + setId(id: Integer) void
+        + getEmail() String
+        + setEmail(email: String) void
+        + getFullName() String
+        + setFullName(fullName: String) void
+        + getStatus() String
+        + setStatus(status: String) void
+        + getRoles() Set~Role~
+        + setRoles(roles: Set~Role~) void
+    }
+
+    class Role["<<entity>> Role"] {
+        - id : Integer
+        - name : String
+        + getId() Integer
+        + setId(id: Integer) void
+        + getName() String
+        + setName(name: String) void
+    }
+
+    SecurityConfig ..> UserStatusCheckFilter
+    SecurityConfig ..> HomeController
+    SecurityConfig --> UserRepository
+    SecurityConfig --> AccountLockService
+    UserStatusCheckFilter --> UserRepository
+    UserStatusCheckFilter --> AccountLockService
+    UserStatusCheckFilter ..> CustomUserDetails
+    AccountLockService --> UserRepository
+    AccountLockService ..> User
+    UserRepository ..> User
+    CustomUserDetails --> User
+    User o-- Role
+
+    classDef default fill:#FFFFFF,stroke:#000000,stroke-width:1px,color:#000000

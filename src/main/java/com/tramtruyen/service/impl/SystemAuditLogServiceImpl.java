@@ -54,7 +54,10 @@ public class SystemAuditLogServiceImpl implements SystemAuditLogService {
         ACTION_REGISTRY.put("AUTO_UNBAN", new ActionMeta("Tự động mở khóa", "bg-[#e8f7ee] text-[#1b7a42] border-[#b8e8cb]"));
         ACTION_REGISTRY.put("CHANGE_USER_ROLE", new ActionMeta("Phân quyền thành viên", "bg-[#fef4e8] text-[#c07c2a] border-[#f5d9b8]"));
         ACTION_REGISTRY.put("UPDATE_SYSTEM_SETTINGS", new ActionMeta("Cập nhật cấu hình", "bg-[#fef4e8] text-[#c07c2a] border-[#f5d9b8]"));
-        ACTION_REGISTRY.put("ACTIVATE_WEB_THEME", new ActionMeta("Kích hoạt chủ đề web", "bg-[#faf5ff] text-[#7e22ce] border-[#e9d5ff]"));
+        ACTION_REGISTRY.put("ACTIVATE_WEB_THEME", new ActionMeta("Kích hoạt giao diện web", "bg-[#faf5ff] text-[#7e22ce] border-[#e9d5ff]"));
+        ACTION_REGISTRY.put("CREATE_WEB_THEME", new ActionMeta("Thêm giao diện web", "bg-[#e8f7ee] text-[#1b7a42] border-[#b8e8cb]"));
+        ACTION_REGISTRY.put("UPDATE_WEB_THEME", new ActionMeta("Cập nhật giao diện web", "bg-[#fef4e8] text-[#c07c2a] border-[#f5d9b8]"));
+        ACTION_REGISTRY.put("DELETE_WEB_THEME", new ActionMeta("Xóa giao diện web", "bg-[#feebe8] text-[#c53d26] border-[#f7c8c0]"));
         ACTION_REGISTRY.put("RESOLVE_COMMENT_REPORT", new ActionMeta("Duyệt báo cáo bình luận", "bg-[#e8f7ee] text-[#1b7a42] border-[#b8e8cb]"));
         ACTION_REGISTRY.put("REJECT_COMMENT_REPORT", new ActionMeta("Từ chối báo cáo bình luận", "bg-[#feebe8] text-[#c53d26] border-[#f7c8c0]"));
         ACTION_REGISTRY.put("RESOLVE_CONTENT_REPORT", new ActionMeta("Duyệt báo cáo nội dung", "bg-[#e8f7ee] text-[#1b7a42] border-[#b8e8cb]"));
@@ -78,7 +81,7 @@ public class SystemAuditLogServiceImpl implements SystemAuditLogService {
                     "SEND_NOTIFICATION"
             )),
             new ActionGroupDef("SYSTEM_SETTING", "Cấu hình hệ thống", List.of(
-                    "UPDATE_SYSTEM_SETTINGS", "ACTIVATE_WEB_THEME"
+                    "UPDATE_SYSTEM_SETTINGS", "ACTIVATE_WEB_THEME", "CREATE_WEB_THEME", "UPDATE_WEB_THEME", "DELETE_WEB_THEME"
             )),
             // Khai báo sẵn sàng mở rộng khi có action_type mới (tự động ẩn khi rỗng):
             new ActionGroupDef("NOVEL_CONTENT", "Nội dung truyện & chương", List.of())

@@ -1,0 +1,148 @@
+classDiagram
+    direction LR
+
+    class AuthController["<<controller>> AuthController"] {
+        - authService : AuthService
+        + AuthController(authService: AuthService)
+        + showRegistrationForm(redirect: String, request: HttpServletRequest, authentication: Authentication, model: Model) String
+        + processRegistration(userDto: RegisterRequestDTO, bindingResult: BindingResult, model: Model, redirectAttributes: RedirectAttributes) String
+    }
+
+    class AuthService["<<service interface>> AuthService"] {
+        + registerUser(requestDTO: RegisterRequestDTO)* void
+    }
+
+    class AuthServiceImpl["<<service>> AuthServiceImpl"] {
+        - userRepository : UserRepository
+        - roleRepository : RoleRepository
+        - tokenRepository : EmailVerificationTokenRepository
+        - passwordEncoder : PasswordEncoder
+        - emailService : EmailService
+        + AuthServiceImpl(userRepository: UserRepository, roleRepository: RoleRepository, tokenRepository: EmailVerificationTokenRepository, passwordEncoder: PasswordEncoder, emailService: EmailService)
+        + registerUser(requestDTO: RegisterRequestDTO) void
+    }
+
+    class EmailService["<<service interface>> EmailService"] {
+        + sendOtpEmail(toEmail: String, otpCode: String)* void
+    }
+
+    class EmailServiceImpl["<<service>> EmailServiceImpl"] {
+        - mailSender : JavaMailSender
+        + EmailServiceImpl(mailSender: JavaMailSender)
+        + sendOtpEmail(toEmail: String, otpCode: String) void
+    }
+
+    class RegisterRequestDTO["<<dto>> RegisterRequestDTO"] {
+        - fullName : String
+        - email : String
+        - password : String
+        - confirmPassword : String
+        + getFullName() String
+        + setFullName(fullName: String) void
+        + getEmail() String
+        + setEmail(email: String) void
+        + getPassword() String
+        + setPassword(password: String) void
+        + getConfirmPassword() String
+        + setConfirmPassword(confirmPassword: String) void
+    }
+
+    class UserRepository["<<repository>> UserRepository"] {
+        + existsByEmail(email: String)* boolean
+        + save(user: User)* User
+    }
+
+    class RoleRepository["<<repository>> RoleRepository"] {
+        + findByName(name: String)* Optional~Role~
+        + save(role: Role)* Role
+    }
+
+    class EmailVerificationTokenRepository["<<repository>> EmailVerificationTokenRepository"] {
+        + save(token: EmailVerificationToken)* EmailVerificationToken
+        + findByOtpCodeAndUser(otpCode: String, user: User)* Optional~EmailVerificationToken~
+        + deleteByUser(user: User)* void
+    }
+
+    class User["<<entity>> User"] {
+        - id : Integer
+        - email : String
+        - password : String
+        - fullName : String
+        - avatarUrl : String
+        - walletBalance : Integer
+        - authProvider : String
+        - status : String
+        - createdAt : LocalDateTime
+        - updatedAt : LocalDateTime
+        - roles : Set~Role~
+        + getId() Integer
+        + setId(id: Integer) void
+        + getEmail() String
+        + setEmail(email: String) void
+        + getPassword() String
+        + setPassword(password: String) void
+        + getFullName() String
+        + setFullName(fullName: String) void
+        + getAvatarUrl() String
+        + setAvatarUrl(avatarUrl: String) void
+        + getWalletBalance() Integer
+        + setWalletBalance(walletBalance: Integer) void
+        + getAuthProvider() String
+        + setAuthProvider(authProvider: String) void
+        + getStatus() String
+        + setStatus(status: String) void
+        + getCreatedAt() LocalDateTime
+        + setCreatedAt(createdAt: LocalDateTime) void
+        + getUpdatedAt() LocalDateTime
+        + setUpdatedAt(updatedAt: LocalDateTime) void
+        + getRoles() Set~Role~
+        + setRoles(roles: Set~Role~) void
+    }
+
+    class Role["<<entity>> Role"] {
+        - id : Integer
+        - name : String
+        + getId() Integer
+        + setId(id: Integer) void
+        + getName() String
+        + setName(name: String) void
+    }
+
+    class EmailVerificationToken["<<entity>> EmailVerificationToken"] {
+        - id : Integer
+        - user : User
+        - otpCode : String
+        - expiryDate : LocalDateTime
+        - createdAt : LocalDateTime
+        + getId() Integer
+        + setId(id: Integer) void
+        + getUser() User
+        + setUser(user: User) void
+        + getOtpCode() String
+        + setOtpCode(otpCode: String) void
+        + getExpiryDate() LocalDateTime
+        + setExpiryDate(expiryDate: LocalDateTime) void
+        + getCreatedAt() LocalDateTime
+        + setCreatedAt(createdAt: LocalDateTime) void
+    }
+
+    AuthController --> AuthService
+    AuthController ..> RegisterRequestDTO
+    AuthServiceImpl ..|> AuthService
+    EmailServiceImpl ..|> EmailService
+    AuthServiceImpl --> UserRepository
+    AuthServiceImpl --> RoleRepository
+    AuthServiceImpl --> EmailVerificationTokenRepository
+    AuthServiceImpl --> EmailService
+    AuthServiceImpl ..> RegisterRequestDTO
+    AuthServiceImpl ..> User
+    AuthServiceImpl ..> Role
+    AuthServiceImpl ..> EmailVerificationToken
+    UserRepository ..> User
+    RoleRepository ..> Role
+    EmailVerificationTokenRepository ..> EmailVerificationToken
+    EmailVerificationTokenRepository ..> User
+    EmailVerificationToken --> User
+    User o-- Role
+
+    classDef default fill:#FFFFFF,stroke:#000000,stroke-width:1px,color:#000000
