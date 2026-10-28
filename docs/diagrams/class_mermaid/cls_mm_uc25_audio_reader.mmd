@@ -1,0 +1,74 @@
+classDiagram
+direction LR
+
+class NovelController {
+    <<controller>>
+    - chapterService : ChapterService
+    - chapterAccessService : ChapterAccessService
+    + readChapterBySlug(slug: String, chapterNumber: Integer, authentication: Authentication, request: HttpServletRequest, model: Model) String
+}
+
+class ChapterService {
+    <<service interface>>
+    + getPublicChapter(novelId: Integer, chapterNumber: Integer) Chapter*
+}
+
+class ChapterServiceImpl {
+    <<service>>
+    - chapterRepository : ChapterRepository
+    - novelRepository : NovelRepository
+    + getPublicChapter(novelId: Integer, chapterNumber: Integer) Chapter
+}
+
+class ChapterAccessService {
+    <<service interface>>
+    + checkAccess(novel: Novel, chapter: Chapter, authentication: Authentication) ChapterAccessDTO*
+}
+
+class ChapterAccessServiceImpl {
+    <<service>>
+    - chapterPreviewBuilder : ChapterPreviewBuilder
+    - chapterAccessPolicy : ChapterAccessPolicy
+    + checkAccess(novel: Novel, chapter: Chapter, authentication: Authentication) ChapterAccessDTO
+}
+
+class ChapterRepository {
+    <<repository>>
+    + findByNovelIdAndChapterNumberAndIsDeletedFalseAndStatusIn(novelId: Integer, chapterNumber: Integer, statuses: List~String~) Optional~Chapter~*
+}
+
+class ChapterAccessDTO {
+    <<dto>>
+    - readable : boolean
+    - paragraphs : List~String~
+}
+
+class Novel {
+    <<entity>>
+    - id : Integer
+    - title : String
+    - slug : String
+}
+
+class Chapter {
+    <<entity>>
+    - id : Integer
+    - chapterNumber : Integer
+    - title : String
+    - content : String
+    - price : Integer
+    - status : String
+}
+
+NovelController --> ChapterService
+NovelController --> ChapterAccessService
+ChapterServiceImpl ..|> ChapterService
+ChapterAccessServiceImpl ..|> ChapterAccessService
+
+ChapterServiceImpl --> ChapterRepository
+NovelController ..> ChapterAccessDTO
+ChapterAccessService ..> ChapterAccessDTO
+
+Novel *-- Chapter
+
+classDef default fill:#FFFFFF,stroke:#000000,stroke-width:1px,color:#000000

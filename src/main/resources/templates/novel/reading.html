@@ -79,13 +79,8 @@
               th:text="${watermarkText != null ? watermarkText : (#authentication?.name != null ? #authentication.name + ' • Trạm Truyện' : 'Bản quyền Trạm Truyện')}">UID: 1 • User • 26/10/2026 • Trạm Truyện</span>
           </div>
 
-          <!-- Floating Drifting Watermark Badge (Continuously sweeps across screen to defeat screen recording) -->
-          <div class="reader-floating-watermark select-none pointer-events-none" aria-hidden="true" id="reader-floating-watermark">
-            <span th:text="${watermarkText != null ? watermarkText : 'Bản quyền Trạm Truyện'}">UID: 1 • User • 26/10/2026 • Trạm Truyện</span>
-          </div>
-
           <article
-            class="space-y-6 text-on-surface font-body-reading text-body-reading leading-[1.95] select-none reader-protected-content"
+            class="relative z-10 space-y-6 text-on-surface font-body-reading text-body-reading leading-[1.95] select-none reader-protected-content"
             id="reader-body">
             <!-- Khi chương đã mở khóa hoặc miễn phí -->
             <th:block th:if="${isChapterUnlocked}">
@@ -761,10 +756,12 @@
           <div class="flex-1 max-w-md mx-2 flex flex-col items-center gap-1.5">
             <div class="w-full flex items-center justify-between text-label-sm font-label-sm text-tertiary">
               <span th:text="'Chương ' + ${chapter.chapterNumber}">Chương</span>
-              <span class="font-semibold text-primary" id="progress-percent">0% hoàn thành</span>
+              <span class="font-semibold text-primary" id="progress-percent"
+                th:text="${isChapterRead ? '100% hoàn thành' : '0% hoàn thành'}">0% hoàn thành</span>
             </div>
             <div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden relative cursor-pointer group">
-              <div class="h-full bg-primary rounded-full transition-all duration-150 w-0" id="reading-bar"></div>
+              <div class="h-full bg-primary rounded-full transition-all duration-150"
+                th:style="${isChapterRead ? 'width: 100%' : 'width: 0%'}" id="reading-bar"></div>
             </div>
           </div>
 
@@ -859,8 +856,22 @@
       const chapterStorageKey = chapterId ? ('tramtruyen_scroll_ch_' + chapterId) : null;
       const novelStorageKey = novelSlug ? ('tramtruyen_last_read_' + novelSlug) : null;
 
+      // Check stored progress in localStorage synchronously
+      let storedChapterData = null;
+      if (chapterStorageKey) {
+        try {
+          const raw = localStorage.getItem(chapterStorageKey);
+          if (raw) storedChapterData = JSON.parse(raw);
+        } catch (e) {
+          console.warn('Cannot parse stored chapter progress', e);
+        }
+      }
+
+      // Check if chapter was permanently completed (from DB is_read or localStorage)
+      const isPermanentlyCompleted = isInitiallyRead || !!(storedChapterData && (storedChapterData.isFinished || storedChapterData.percent >= 95));
+
       let maxProgress = 0;
-      let hasSavedComplete = isInitiallyRead;
+      let hasSavedComplete = isPermanentlyCompleted;
 
       const progressBar = document.getElementById('reading-bar');
       const progressLabel = document.getElementById('progress-percent');
@@ -899,20 +910,27 @@
       }
 
       // Initial progress render
-      maxProgress = calculateCurrentScroll();
+      if (isPermanentlyCompleted) {
+        maxProgress = 100;
+      } else if (storedChapterData && typeof storedChapterData.percent === 'number' && storedChapterData.percent > 0) {
+        maxProgress = Math.max(storedChapterData.percent, calculateCurrentScroll());
+      } else {
+        maxProgress = calculateCurrentScroll();
+      }
       updateProgressBarUI(maxProgress);
 
       // LocalStorage Reading Progress Management
       function saveScrollProgressToLocalStorage() {
         if (!chapterId || !chapterStorageKey) return;
         const currentScrolled = calculateCurrentScroll();
-        const isFinished = currentScrolled >= 95 || maxProgress >= 95;
+        const isFinished = hasSavedComplete || isPermanentlyCompleted || currentScrolled >= 95 || maxProgress >= 95;
+        const effectivePercent = isFinished ? 100 : Math.min(94, Math.max(currentScrolled, maxProgress));
 
         try {
           const scrollData = {
             chapterId: parseInt(chapterId),
             chapterNumber: parseInt(chapterNumber || 0),
-            percent: currentScrolled,
+            percent: effectivePercent,
             isFinished: isFinished,
             updatedAt: Date.now()
           };
@@ -924,7 +942,7 @@
               chapterId: parseInt(chapterId),
               chapterNumber: parseInt(chapterNumber || 0),
               readUrl: window.location.pathname,
-              percent: currentScrolled,
+              percent: effectivePercent,
               isFinished: isFinished,
               updatedAt: Date.now()
             }));
@@ -939,7 +957,7 @@
         const currentScrolled = calculateCurrentScroll();
 
         // High-water mark: only increases, never regresses when scrolling back up!
-        if (currentScrolled > maxProgress) {
+        if (!isPermanentlyCompleted && currentScrolled > maxProgress) {
           maxProgress = currentScrolled;
         }
 
@@ -948,6 +966,7 @@
         // When reaching completion (>= 95% or 100%)
         if (maxProgress >= 95 && !hasSavedComplete) {
           maxProgress = 100;
+          hasSavedComplete = true;
           updateProgressBarUI(100);
           saveChapterCompletionToDatabase();
         }
@@ -965,13 +984,17 @@
         }
       });
 
-      // Expose globally so "Chương sau" or other navigation triggers save completion
+      // Navigation handler before leaving (e.g. clicking "Chương sau")
       window.saveReadingProgressBeforeLeave = function () {
-        if (!hasSavedComplete) {
+        const currentScrolled = calculateCurrentScroll();
+        // Only mark complete if the reader actually reached the end of the chapter (>= 95%)
+        if ((currentScrolled >= 95 || maxProgress >= 95) && !hasSavedComplete) {
           maxProgress = 100;
+          hasSavedComplete = true;
           updateProgressBarUI(100);
           saveChapterCompletionToDatabase();
         }
+        // Save actual high-water mark progress without artificially jumping to 100%
         saveScrollProgressToLocalStorage();
       };
 
@@ -1024,10 +1047,12 @@
       function restoreSavedScrollPosition() {
         if (!chapterId || !chapterStorageKey) return;
         try {
-          const raw = localStorage.getItem(chapterStorageKey);
-          if (!raw) return;
-          const data = JSON.parse(raw);
-          if (data && typeof data.percent === 'number' && data.percent >= 2 && data.percent < 95 && !data.isFinished) {
+          if (!storedChapterData) {
+            const raw = localStorage.getItem(chapterStorageKey);
+            if (raw) storedChapterData = JSON.parse(raw);
+          }
+          const data = storedChapterData;
+          if (data && typeof data.percent === 'number' && data.percent >= 2 && data.percent < 95 && !data.isFinished && !isPermanentlyCompleted) {
             const executeScroll = () => {
               const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
               if (height > 0) {
@@ -1669,28 +1694,67 @@
           }
         });
 
-        // 3. Screen capture protection: PrintScreen key & shortcut interception
+        // 3. Screen capture protection: PrintScreen, Win+Shift+S, Alt+PrtScn shortcut interception
         let captureTimer = null;
+        let isCapturingActive = false;
+
         function triggerCaptureProtection() {
+          isCapturingActive = true;
           if (readerBody) readerBody.classList.add('reader-blur-protected');
           if (captureOverlay) captureOverlay.classList.remove('hidden');
           if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText('Nội dung tác phẩm được bảo vệ bản quyền tại Trạm Truyện.');
+            try {
+              navigator.clipboard.writeText('Nội dung tác phẩm được bảo vệ bản quyền tại Trạm Truyện.');
+            } catch (_) {}
           }
           clearTimeout(captureTimer);
           captureTimer = setTimeout(() => {
+            isCapturingActive = false;
             if (document.hasFocus()) {
               if (readerBody) readerBody.classList.remove('reader-blur-protected');
               if (captureOverlay) captureOverlay.classList.add('hidden');
             }
-          }, 1200);
+          }, 3000);
         }
 
-        window.addEventListener('keyup', function (e) {
-          if (e.key === 'PrintScreen' || e.keyCode === 44) {
+        if (captureOverlay) {
+          captureOverlay.addEventListener('click', function () {
+            isCapturingActive = false;
+            if (document.hasFocus()) {
+              if (readerBody) readerBody.classList.remove('reader-blur-protected');
+              captureOverlay.classList.add('hidden');
+            }
+          });
+        }
+
+        function isCaptureKeyEvent(e) {
+          // PrintScreen key (any modifiers)
+          if (e.key === 'PrintScreen' || e.keyCode === 44 || e.code === 'PrintScreen') {
+            return true;
+          }
+          // Win + Shift + S or Ctrl + Shift + S (Snipping Tool shortcut)
+          if ((e.metaKey || e.ctrlKey) && e.shiftKey && (e.key === 's' || e.key === 'S' || e.code === 'KeyS')) {
+            return true;
+          }
+          // Alt + PrintScreen or Win + PrintScreen
+          if ((e.altKey || e.metaKey) && (e.key === 'PrintScreen' || e.keyCode === 44 || e.code === 'PrintScreen')) {
+            return true;
+          }
+          return false;
+        }
+
+        // Catch keydown & keyup at capture phase (before OS or child elements process it)
+        window.addEventListener('keydown', function (e) {
+          if (isCaptureKeyEvent(e)) {
             triggerCaptureProtection();
           }
-        });
+        }, { capture: true });
+
+        window.addEventListener('keyup', function (e) {
+          if (isCaptureKeyEvent(e)) {
+            triggerCaptureProtection();
+          }
+        }, { capture: true });
 
         // 4. Window blur protection (Snipping tool, Win+Shift+S, minimizing window, screen capture apps)
         window.addEventListener('blur', function () {
@@ -1699,15 +1763,17 @@
         });
 
         window.addEventListener('focus', function () {
-          if (readerBody) readerBody.classList.remove('reader-blur-protected');
-          if (captureOverlay) captureOverlay.classList.add('hidden');
+          if (!isCapturingActive) {
+            if (readerBody) readerBody.classList.remove('reader-blur-protected');
+            if (captureOverlay) captureOverlay.classList.add('hidden');
+          }
         });
 
         document.addEventListener('visibilitychange', function () {
           if (document.hidden) {
             if (readerBody) readerBody.classList.add('reader-blur-protected');
             if (captureOverlay) captureOverlay.classList.remove('hidden');
-          } else if (document.hasFocus()) {
+          } else if (document.hasFocus() && !isCapturingActive) {
             if (readerBody) readerBody.classList.remove('reader-blur-protected');
             if (captureOverlay) captureOverlay.classList.add('hidden');
           }
@@ -1715,7 +1781,7 @@
 
         // 5. Intercept key combinations: Ctrl+C, Ctrl+P, Ctrl+U, Ctrl+S, F12, DevTools
         document.addEventListener('keydown', function (e) {
-          if (e.key === 'PrintScreen' || e.keyCode === 44) {
+          if (isCaptureKeyEvent(e)) {
             triggerCaptureProtection();
           }
           if ((e.ctrlKey || e.metaKey) && (e.key === 'p' || e.key === 'P')) {
@@ -1793,10 +1859,9 @@
           }
         }
 
-        // 7. Anti-Tampering Guardian: Prevent removing or hiding watermarks via DevTools
+        // 7. Anti-Tampering Guardian: Prevent removing or hiding watermark grid via DevTools
         function initWatermarkGuardian() {
           const watermarkGrid = document.getElementById('reader-watermark-layer');
-          const floatingWatermark = document.getElementById('reader-floating-watermark');
 
           function triggerTamperLockdown(reason) {
             console.warn('[Security] Watermark integrity violation:', reason);
@@ -1811,23 +1876,18 @@
           }
 
           function verifyWatermarkVisibility() {
-            if (!watermarkGrid || !floatingWatermark) {
+            if (!watermarkGrid) {
               triggerTamperLockdown('Watermark element not found');
               return;
             }
-            if (!document.body.contains(watermarkGrid) || !document.body.contains(floatingWatermark)) {
+            if (!document.body.contains(watermarkGrid)) {
               triggerTamperLockdown('Watermark element detached from DOM');
               return;
             }
             const gridStyle = window.getComputedStyle(watermarkGrid);
-            const floatStyle = window.getComputedStyle(floatingWatermark);
 
             if (gridStyle.display === 'none' || gridStyle.visibility === 'hidden' || parseFloat(gridStyle.opacity) === 0) {
               triggerTamperLockdown('Watermark grid style concealed');
-              return;
-            }
-            if (floatStyle.display === 'none' || floatStyle.visibility === 'hidden' || parseFloat(floatStyle.opacity) === 0) {
-              triggerTamperLockdown('Floating watermark style concealed');
               return;
             }
           }
@@ -1843,14 +1903,14 @@
                 if (mutation.type === 'childList') {
                   for (let j = 0; j < mutation.removedNodes.length; j++) {
                     const node = mutation.removedNodes[j];
-                    if (node.id === 'reader-watermark-layer' || node.id === 'reader-floating-watermark') {
+                    if (node.id === 'reader-watermark-layer') {
                       triggerTamperLockdown('Watermark element removed');
                       return;
                     }
                   }
                 } else if (mutation.type === 'attributes') {
                   const target = mutation.target;
-                  if (target.id === 'reader-watermark-layer' || target.id === 'reader-floating-watermark') {
+                  if (target.id === 'reader-watermark-layer') {
                     verifyWatermarkVisibility();
                   }
                 }
@@ -1863,14 +1923,6 @@
               attributes: true,
               attributeFilter: ['style', 'class', 'hidden']
             });
-
-            if (floatingWatermark && floatingWatermark.parentElement) {
-              observer.observe(floatingWatermark.parentElement, {
-                childList: true,
-                attributes: true,
-                attributeFilter: ['style', 'class', 'hidden']
-              });
-            }
           }
         }
 

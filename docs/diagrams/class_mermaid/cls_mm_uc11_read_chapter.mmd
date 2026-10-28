@@ -1,0 +1,157 @@
+classDiagram
+direction LR
+
+class NovelController {
+    <<controller>>
+    - novelService : NovelService
+    - chapterService : ChapterService
+    - chapterAccessService : ChapterAccessService
+    - bookshelfService : BookshelfService
+    + readChapterBySlug(slug: String, chapterNumber: Integer, authentication: Authentication, request: HttpServletRequest, model: Model) String
+    + readChapterLegacy(id: Integer, chapterNumber: Integer) String
+}
+
+class ChapterService {
+    <<service interface>>
+    + getPublicChapter(novelId: Integer, chapterNumber: Integer) Chapter*
+    + getPublicChapters(novelId: Integer) List~Chapter~*
+    + recordView(novelId: Integer, chapterId: Integer) void*
+}
+
+class ChapterServiceImpl {
+    <<service>>
+    - chapterRepository : ChapterRepository
+    - novelRepository : NovelRepository
+    + getPublicChapter(novelId: Integer, chapterNumber: Integer) Chapter
+    + getPublicChapters(novelId: Integer) List~Chapter~
+    + recordView(novelId: Integer, chapterId: Integer) void
+}
+
+class ChapterAccessService {
+    <<service interface>>
+    + checkAccess(novel: Novel, chapter: Chapter, authentication: Authentication) ChapterAccessDTO*
+}
+
+class ChapterAccessServiceImpl {
+    <<service>>
+    - userRepository : UserRepository
+    - userChapterActivityRepository : UserChapterActivityRepository
+    - chapterAccessPolicy : ChapterAccessPolicy
+    - chapterPreviewBuilder : ChapterPreviewBuilder
+    - coinPackageService : CoinPackageService
+    + checkAccess(novel: Novel, chapter: Chapter, authentication: Authentication) ChapterAccessDTO
+}
+
+class ChapterAccessPolicy {
+    + isPaid(chapter: Chapter) boolean
+    + isPrivileged(roleNames: Set~String~) boolean
+    + resolveStatus(loggedIn: boolean, privileged: boolean, paid: boolean, alreadyUnlocked: boolean) ChapterAccessStatus
+}
+
+class ChapterPreviewBuilder {
+    + buildPreviewParagraphs(content: String, previewLimit: int) List~String~
+}
+
+class BookshelfService {
+    <<service interface>>
+    + isNovelInBookshelf(email: String, novelId: Integer) boolean*
+    + isChapterRead(email: String, chapterId: Integer) boolean*
+}
+
+class BookshelfServiceImpl {
+    <<service>>
+    - bookshelfRepository : BookshelfRepository
+    - userChapterActivityRepository : UserChapterActivityRepository
+    - userRepository : UserRepository
+    + isNovelInBookshelf(email: String, novelId: Integer) boolean
+    + isChapterRead(email: String, chapterId: Integer) boolean
+}
+
+class ChapterRepository {
+    <<repository>>
+    + findByNovelIdAndChapterNumberAndIsDeletedFalseAndStatusIn(novelId: Integer, chapterNumber: Integer, statuses: List~String~) Optional~Chapter~*
+    + findAllByNovelIdAndIsDeletedFalseAndStatusInOrderByChapterNumberAsc(novelId: Integer, statuses: List~String~) List~Chapter~*
+}
+
+class UserChapterActivityRepository {
+    <<repository>>
+    + findByUserAndChapter(user: User, chapter: Chapter) Optional~UserChapterActivity~*
+}
+
+class NovelRepository {
+    <<repository>>
+    + findById(id: Integer) Optional~Novel~*
+}
+
+class ChapterAccessDTO {
+    <<dto>>
+    - status : ChapterAccessStatus
+    - readable : boolean
+    - paid : boolean
+    - chapterPrice : int
+    - walletBalance : int
+    - remainingBalanceAfter : int
+    - shortfall : int
+    - canAfford : boolean
+    - loggedIn : boolean
+    - paragraphs : List~String~
+    - watermarkText : String
+    - userFingerprint : String
+}
+
+class ChapterAccessStatus {
+    <<enumeration>>
+    FREE
+    VIP_UNLOCKED
+    VIP_LOCKED
+    VIP_PRIVILEGED
+}
+
+class Novel {
+    <<entity>>
+    - id : Integer
+    - title : String
+    - slug : String
+    - views : Integer
+}
+
+class Chapter {
+    <<entity>>
+    - id : Integer
+    - chapterNumber : Integer
+    - title : String
+    - content : String
+    - price : Integer
+    - status : String
+    - views : Integer
+}
+
+class User {
+    <<entity>>
+    - id : Integer
+    - email : String
+    - walletBalance : Integer
+}
+
+NovelController --> ChapterService
+NovelController --> ChapterAccessService
+NovelController --> BookshelfService
+
+ChapterServiceImpl ..|> ChapterService
+ChapterAccessServiceImpl ..|> ChapterAccessService
+BookshelfServiceImpl ..|> BookshelfService
+
+ChapterServiceImpl --> ChapterRepository
+ChapterServiceImpl --> NovelRepository
+
+ChapterAccessServiceImpl --> ChapterAccessPolicy
+ChapterAccessServiceImpl --> ChapterPreviewBuilder
+ChapterAccessServiceImpl --> UserChapterActivityRepository
+
+NovelController ..> ChapterAccessDTO
+ChapterAccessService ..> ChapterAccessDTO
+ChapterAccessDTO --> ChapterAccessStatus
+
+Novel *-- Chapter
+
+classDef default fill:#FFFFFF,stroke:#000000,stroke-width:1px,color:#000000

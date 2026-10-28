@@ -1,0 +1,79 @@
+classDiagram
+direction LR
+
+class BookshelfController {
+    <<controller>>
+    - bookshelfService : BookshelfService
+    + addNovelToBookshelf(novelId: Integer, source: String, authentication: Authentication, redirectAttributes: RedirectAttributes) String
+    + toggleBookshelfAjax(novelId: Integer, authentication: Authentication) ResponseEntity~?~
+}
+
+class BookshelfService {
+    <<service interface>>
+    + addNovelToBookshelf(email: String, novelId: Integer) void*
+    + isNovelInBookshelf(email: String, novelId: Integer) boolean*
+}
+
+class BookshelfServiceImpl {
+    <<service>>
+    - bookshelfRepository : BookshelfRepository
+    - userRepository : UserRepository
+    - novelRepository : NovelRepository
+    + addNovelToBookshelf(email: String, novelId: Integer) void
+    + isNovelInBookshelf(email: String, novelId: Integer) boolean
+    - getUserByEmail(email: String) User
+    - getNovelById(id: Integer) Novel
+}
+
+class BookshelfRepository {
+    <<repository>>
+    + existsByUserAndNovel(user: User, novel: Novel) boolean*
+    + save(bookshelf: Bookshelf) Bookshelf*
+}
+
+class UserRepository {
+    <<repository>>
+    + findByEmail(email: String) Optional~User~*
+}
+
+class NovelRepository {
+    <<repository>>
+    + findByIdAndIsDeletedFalse(id: Integer) Optional~Novel~*
+}
+
+class Bookshelf {
+    <<entity>>
+    - id : Integer
+    - user : User
+    - novel : Novel
+    - addedAt : LocalDateTime
+}
+
+class User {
+    <<entity>>
+    - id : Integer
+    - email : String
+    - fullName : String
+}
+
+class Novel {
+    <<entity>>
+    - id : Integer
+    - title : String
+    - slug : String
+    - author : String
+    - isDeleted : Boolean
+}
+
+BookshelfController --> BookshelfService
+BookshelfServiceImpl ..|> BookshelfService
+
+BookshelfServiceImpl --> BookshelfRepository
+BookshelfServiceImpl --> UserRepository
+BookshelfServiceImpl --> NovelRepository
+
+BookshelfServiceImpl ..> Bookshelf
+Bookshelf --> User
+Bookshelf --> Novel
+
+classDef default fill:#FFFFFF,stroke:#000000,stroke-width:1px,color:#000000

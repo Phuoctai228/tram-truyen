@@ -56,3 +56,10 @@ input[type="radio"], input[type="checkbox"] {
     color: #ba1a1a !important;
     font-weight: bold;
 }
+
+/* 5. Nút bộ lọc phân loại dạng tab (Filter Tabs - UC-51 Transactions) */
+.tab-btn.active {
+    background-color: #875200;
+    color: #ffffff;
+    border-color: #875200;
+}

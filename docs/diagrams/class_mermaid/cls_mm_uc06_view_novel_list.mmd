@@ -1,0 +1,199 @@
+classDiagram
+direction LR
+
+class HomeController {
+    <<controller>>
+    - homeService : HomeService
+    - bookshelfService : BookshelfService
+    - systemSettingService : SystemSettingService
+    + home(authentication: Authentication, model: Model) String
+    + terms(model: Model) String
+    + privacy(model: Model) String
+    + contact(model: Model) String
+}
+
+class PublicCategoryController {
+    <<controller>>
+    - categoryService : CategoryService
+    - novelService : NovelService
+    + showCategories(query: String, model: Model) String
+    + showCategoryDetail(slug: String, page: int, model: Model) String
+}
+
+class HomeService {
+    <<service interface>>
+    + getHomePageData() HomePageDTO*
+}
+
+class HomeServiceImpl {
+    <<service>>
+    - novelRepository : NovelRepository
+    - categoryRepository : CategoryRepository
+    - chapterRepository : ChapterRepository
+    - bookshelfRepository : BookshelfRepository
+    + getHomePageData() HomePageDTO
+    - mapToSummaryDTO(novel: Novel, includeChapters: boolean) NovelSummaryDTO
+    - publicNovels(novels: List~Novel~) List~Novel~
+}
+
+class NovelService {
+    <<service interface>>
+    + getNovelSummariesByCategoryPage(categoryId: Integer, pageable: Pageable) Page~NovelSummaryDTO~*
+    + searchPublicNovels(query: String) List~Novel~*
+    + advancedSearch(query: String, categoryIds: List~Integer~, status: String, minChapters: Integer, maxChapters: Integer, minRating: Double, pageable: Pageable) Page~Novel~*
+}
+
+class NovelServiceImpl {
+    <<service>>
+    - novelRepository : NovelRepository
+    - categoryRepository : CategoryRepository
+    - chapterRepository : ChapterRepository
+    - bookshelfRepository : BookshelfRepository
+    + getNovelSummariesByCategoryPage(categoryId: Integer, pageable: Pageable) Page~NovelSummaryDTO~
+    + searchPublicNovels(query: String) List~Novel~
+    + advancedSearch(query: String, categoryIds: List~Integer~, status: String, minChapters: Integer, maxChapters: Integer, minRating: Double, pageable: Pageable) Page~Novel~
+    - toNovelSummaryDTO(novel: Novel) NovelSummaryDTO
+}
+
+class CategoryService {
+    <<service interface>>
+    + getAllCategories() List~Category~*
+    + getCategoryBySlug(slug: String) Category*
+    + searchCategories(query: String) List~Category~*
+}
+
+class CategoryServiceImpl {
+    <<service>>
+    - categoryRepository : CategoryRepository
+    + getAllCategories() List~Category~
+    + getCategoryBySlug(slug: String) Category
+    + searchCategories(query: String) List~Category~
+}
+
+class NovelRepository {
+    <<repository>>
+    + findTop12ByIsDeletedFalseOrderByUpdatedAtDesc() List~Novel~*
+    + findTop10ByIsDeletedFalseOrderByViewsDesc() List~Novel~*
+    + findTop12ByIsDeletedFalseAndStatusOrderByUpdatedAtDesc(status: String) List~Novel~*
+    + findTopRecommendedNovels(publicStatuses: Collection~String~, pageable: Pageable) List~Novel~*
+    + findTop12ByIsDeletedFalseOrderByCreatedAtDesc() List~Novel~*
+    + findByCategoriesIdAndIsDeletedFalseAndStatusNotOrderByUpdatedAtDesc(categoryId: Integer, status: String, pageable: Pageable) Page~Novel~*
+}
+
+class CategoryRepository {
+    <<repository>>
+    + findAll() List~Category~*
+    + findBySlug(slug: String) Optional~Category~*
+}
+
+class ChapterRepository {
+    <<repository>>
+    + findTop3ByNovelIdAndIsDeletedFalseAndStatusInOrderByChapterNumberDesc(novelId: Integer, statuses: List~String~) List~Chapter~*
+}
+
+class BookshelfRepository {
+    <<repository>>
+    + countByNovelId(novelId: Integer) long*
+}
+
+class HomePageDTO {
+    <<dto>>
+    - categories : List~Category~
+    - recentlyUpdatedNovels : List~NovelSummaryDTO~
+    - hotNovels : List~NovelSummaryDTO~
+    - completedNovels : List~NovelSummaryDTO~
+    - recommendedNovels : List~NovelSummaryDTO~
+    - newNovels : List~NovelSummaryDTO~
+}
+
+class NovelSummaryDTO {
+    <<dto>>
+    - id : Integer
+    - title : String
+    - slug : String
+    - author : String
+    - summary : String
+    - coverUrl : String
+    - status : String
+    - views : Integer
+    - favoriteCount : long
+    - averageRating : BigDecimal
+    - chapterCount : Integer
+    - categories : List~Category~
+    - latestChapters : List~LatestChapterDTO~
+}
+
+class LatestChapterDTO {
+    <<dto>>
+    - id : Integer
+    - chapterNumber : Integer
+    - title : String
+    - relativeTime : String
+}
+
+class Novel {
+    <<entity>>
+    - id : Integer
+    - title : String
+    - slug : String
+    - author : String
+    - summary : String
+    - coverUrl : String
+    - status : String
+    - isDeleted : Boolean
+    - views : Integer
+    - averageRating : BigDecimal
+    - ratingCount : Integer
+    - chapterCount : Integer
+}
+
+class Category {
+    <<entity>>
+    - id : Integer
+    - name : String
+    - slug : String
+    - description : String
+}
+
+class Chapter {
+    <<entity>>
+    - id : Integer
+    - chapterNumber : Integer
+    - title : String
+    - price : Integer
+    - status : String
+    - isDeleted : Boolean
+}
+
+HomeController --> HomeService
+PublicCategoryController --> CategoryService
+PublicCategoryController --> NovelService
+
+HomeServiceImpl ..|> HomeService
+NovelServiceImpl ..|> NovelService
+CategoryServiceImpl ..|> CategoryService
+
+HomeServiceImpl --> NovelRepository
+HomeServiceImpl --> CategoryRepository
+HomeServiceImpl --> ChapterRepository
+HomeServiceImpl --> BookshelfRepository
+
+NovelServiceImpl --> NovelRepository
+NovelServiceImpl --> CategoryRepository
+NovelServiceImpl --> ChapterRepository
+NovelServiceImpl --> BookshelfRepository
+
+CategoryServiceImpl --> CategoryRepository
+
+HomeController ..> HomePageDTO
+PublicCategoryController ..> NovelSummaryDTO
+HomeServiceImpl ..> HomePageDTO
+HomeServiceImpl ..> NovelSummaryDTO
+NovelServiceImpl ..> NovelSummaryDTO
+HomePageDTO *-- NovelSummaryDTO
+NovelSummaryDTO *-- LatestChapterDTO
+
+Novel *-- Chapter
+Novel o-- Category
+
+classDef default fill:#FFFFFF,stroke:#000000,stroke-width:1px,color:#000000
