@@ -1,0 +1,151 @@
+@startuml sq_report_content
+<style>
+    sequenceDiagram{
+        FontSize 16
+        LineColor black
+
+        arrow {
+            ' Set the maximum width of the text on arrows
+            MaximumWidth 300
+            LineColor black
+        }
+        actor{
+            BackgroundColor white
+            LineColor black
+            LineThickness 1.0
+        }
+        participant{
+            BackgroundColor white
+            LineColor black
+            RoundCorner 0
+        }
+        database{
+            BackgroundColor white
+            LineColor black
+        }
+        lifeLine{
+            LineColor black
+        }
+        group{
+            LineColor black
+        }
+        groupHeader{
+            BackgroundColor white
+            LineColor black
+        }
+        referenceHeader{
+            BackgroundColor white
+            LineColor black
+        }
+        reference{
+            BackgroundColor white
+            LineColor black
+        }
+    }
+</style>
+
+hide footbox
+mainframe Report Content (UC-21)
+
+actor Member as act
+participant "ReportContentModal" as view
+participant "LoginPage" as login_view
+participant "ReportController" as ctrl <<controller>>
+participant ":ReportService" as svc
+participant ":ContentReport" as rpt_ett
+participant ":UserRepository" as user_repo
+participant ":ChapterRepository" as chap_repo
+participant ":ContentReportRepository" as rpt_repo
+database Database as db
+
+act ++
+
+act -> view++: Select issue type, enter description and click "Gửi báo cáo"
+view -> ctrl--: POST /reports/content (ReportContentRequest)
+activate ctrl
+
+ctrl -> ctrl++: isAuthenticated(authentication)
+ctrl--
+
+opt User is not authenticated
+    ctrl -->> view: Return 401 UNAUTHORIZED (error message)
+    activate view
+    view -> login_view++: Redirect to /login
+    login_view -->> act: Display login page
+    deactivate login_view
+    deactivate view
+end
+
+opt Validation error (BindingResult has errors)
+    ctrl -->> view: Return 400 BAD REQUEST (validation error message)
+    activate view
+    view -->> act: Display error message on modal
+    deactivate view
+end
+
+ctrl -> ctrl++: getUserId(authentication)
+ctrl--
+
+ctrl -> svc++: reportContent(userId, request)
+
+svc -> user_repo++: findById(userId)
+user_repo -> db++: Execute query
+db -->> user_repo: Return user data
+db--
+user_repo -->> svc: Return user entity
+user_repo--
+
+svc -> chap_repo++: findById(chapterId)
+chap_repo -> db++: Execute query
+db -->> chap_repo: Return chapter data
+db--
+chap_repo -->> svc: Return chapter entity
+chap_repo--
+
+alt Chapter not found or not published/deleted
+    svc -->> ctrl: Throw IllegalArgumentException("Chương không còn khả dụng để báo cáo")
+    ctrl -->> view: Return 400 BAD REQUEST (error message)
+    activate view
+    view -->> act: Display error message on modal
+    deactivate view
+else Already reported (status "RECEIVED")
+    svc -> rpt_repo++: existsByUserIdAndChapterIdAndStatusIn(userId, chapterId, ["RECEIVED"])
+    rpt_repo -> db++: Execute query
+    db -->> rpt_repo: Return true
+    db--
+    rpt_repo -->> svc: Return true
+    rpt_repo--
+
+    svc -->> ctrl: Throw IllegalStateException("Vấn đề này đang được xem xét")
+    ctrl -->> view: Return 409 CONFLICT (error message)
+    activate view
+    view -->> act: Display duplicate report warning
+    deactivate view
+else Not yet reported
+    svc -> rpt_repo++: existsByUserIdAndChapterIdAndStatusIn(userId, chapterId, ["RECEIVED"])
+    rpt_repo -> db++: Execute query
+    db -->> rpt_repo: Return false
+    db--
+    rpt_repo -->> svc: Return false
+    rpt_repo--
+
+    svc -> rpt_ett++: Call ContentReport.builder()
+    rpt_ett -->> svc--: Return contentReport entity
+
+    svc -> rpt_repo++: save(report)
+    rpt_repo -> db++: Save content report to database
+    db -->> rpt_repo: Return saved report
+    db--
+    rpt_repo -->> svc: Return saved report
+    rpt_repo--
+
+    svc -->> ctrl--: Return void
+
+    ctrl -->> view--: Return 200 OK ({"success": true, "message": "Báo cáo nội dung chương của bạn đã được gửi..."})
+    deactivate ctrl
+    activate view
+    view -->> act--: Close modal and display success toast
+    deactivate view
+end
+
+@enduml

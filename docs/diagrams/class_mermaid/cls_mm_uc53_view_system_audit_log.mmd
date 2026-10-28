@@ -1,0 +1,131 @@
+classDiagram
+direction LR
+
+class SystemAuditLogAdminController["<<controller>> SystemAuditLogAdminController"] {
+    - systemAuditLogService : SystemAuditLogService
+    + showAuditLogPage(keyword: String, actionGroup: String, performerRole: String, timeRange: String, startDate: String, endDate: String, onlyAdmin: Boolean, performer: String, page: String, size: String, model: Model) String
+    + showAuditLogDetail(id: String, page: String, size: String, keyword: String, actionGroup: String, performerRole: String, timeRange: String, startDate: String, endDate: String, redirectAttributes: RedirectAttributes, model: Model) String
+}
+
+class SystemAuditLogService["<<service interface>> SystemAuditLogService"] {
+    + getStats() SystemAuditLogStatsDTO*
+    + getAuditLogsFiltered(keyword: String, actionGroup: String, performerRole: String, timeRange: String, startDate: String, endDate: String, page: int, size: int) Page~SystemAuditLogDTO~*
+    + getActiveActionGroups() List~ActionGroupItem~*
+    + getAuditLogDetail(logId: Integer) SystemAuditLogDetailDTO*
+}
+
+class SystemAuditLogServiceImpl["<<service>> SystemAuditLogServiceImpl"] {
+    - systemAuditLogRepository : SystemAuditLogRepository
+    - userRepository : UserRepository
+    - objectMapper : ObjectMapper
+    + getStats() SystemAuditLogStatsDTO
+    + getAuditLogsFiltered(keyword: String, actionGroup: String, performerRole: String, timeRange: String, startDate: String, endDate: String, page: int, size: int) Page~SystemAuditLogDTO~
+    + getActiveActionGroups() List~ActionGroupItem~
+    + getAuditLogDetail(logId: Integer) SystemAuditLogDetailDTO
+}
+
+class SystemAuditLogRepository["<<repository>> SystemAuditLogRepository"] {
+    + findById(id: Integer) Optional~SystemAuditLog~*
+}
+
+class UserRepository["<<repository>> UserRepository"] {
+    + findById(id: Integer) Optional~User~*
+}
+
+class AuditLogFieldFormatter["<<utility>> AuditLogFieldFormatter"] {
+    + computeFieldDiffs(rawOld: String, rawNew: String)$ List~AuditLogFieldDiffDTO~
+    + resolveTargetUrl(targetEntity: String)$ String
+}
+
+class SystemAuditLogDTO["<<dto>> SystemAuditLogDTO"] {
+    - id : Integer
+    - adminId : Integer
+    - adminName : String
+    - adminEmail : String
+    - adminRoleBadge : String
+    - actionType : String
+    - actionTypeDisplay : String
+    - actionChipClass : String
+    - targetEntity : String
+    - targetId : Integer
+    - targetDisplay : String
+    - ipAddress : String
+    - createdAt : LocalDateTime
+    - formattedCreatedAt : String
+}
+
+class SystemAuditLogDetailDTO["<<dto>> SystemAuditLogDetailDTO"] {
+    - id : Integer
+    - adminId : Integer
+    - adminName : String
+    - adminEmail : String
+    - adminRoleBadge : String
+    - actionType : String
+    - actionTypeDisplay : String
+    - actionChipClass : String
+    - targetEntity : String
+    - targetId : Integer
+    - targetDisplay : String
+    - targetUrl : String
+    - ipAddress : String
+    - createdAt : LocalDateTime
+    - formattedCreatedAt : String
+    - isJsonDiffAvailable : boolean
+    - plainFallbackNote : String
+}
+
+class AuditLogFieldDiffDTO["<<dto>> AuditLogFieldDiffDTO"] {
+    - fieldName : String
+    - fieldLabel : String
+    - oldValue : String
+    - newValue : String
+    - diffType : String
+    - diffTypeLabel : String
+    - longText : boolean
+}
+
+class SystemAuditLogStatsDTO["<<dto>> SystemAuditLogStatsDTO"] {
+    - totalRecords : Long
+    - todayRecords : Long
+    - activeAdminsLast24h : Long
+    - todayGrowthText : String
+}
+
+class SystemAuditLog["<<entity>> SystemAuditLog"] {
+    - id : Integer
+    - adminId : Integer
+    - actionType : String
+    - targetEntity : String
+    - targetId : Integer
+    - oldValue : String
+    - newValue : String
+    - ipAddress : String
+    - createdAt : LocalDateTime
+}
+
+class User["<<entity>> User"] {
+    - id : Integer
+    - email : String
+    - fullName : String
+}
+
+SystemAuditLogAdminController --> SystemAuditLogService
+SystemAuditLogServiceImpl ..|> SystemAuditLogService
+
+SystemAuditLogServiceImpl --> SystemAuditLogRepository
+SystemAuditLogServiceImpl --> UserRepository
+SystemAuditLogServiceImpl ..> AuditLogFieldFormatter
+
+SystemAuditLogAdminController ..> SystemAuditLogDTO
+SystemAuditLogAdminController ..> SystemAuditLogDetailDTO
+SystemAuditLogAdminController ..> SystemAuditLogStatsDTO
+SystemAuditLogService ..> SystemAuditLogDTO
+SystemAuditLogService ..> SystemAuditLogDetailDTO
+SystemAuditLogService ..> SystemAuditLogStatsDTO
+SystemAuditLogDetailDTO *-- AuditLogFieldDiffDTO
+AuditLogFieldFormatter ..> AuditLogFieldDiffDTO
+
+SystemAuditLogServiceImpl ..> SystemAuditLog
+SystemAuditLog --> User : adminId
+
+classDef default fill:#FFFFFF,stroke:#000000,stroke-width:1px,color:#000000

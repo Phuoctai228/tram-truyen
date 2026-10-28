@@ -1,0 +1,159 @@
+classDiagram
+direction LR
+
+class SystemSettingAdminController["<<controller>> SystemSettingAdminController"] {
+    - systemSettingService : SystemSettingService
+    - userRepository : UserRepository
+    + showSettingsPage(model: Model) String
+    + saveSettings(settingsDTO: SystemSettingsDTO, bindingResult: BindingResult, authentication: Authentication, httpRequest: HttpServletRequest, redirectAttributes: RedirectAttributes) String
+    + activateTheme(id: Integer, authentication: Authentication, httpRequest: HttpServletRequest, redirectAttributes: RedirectAttributes) String
+    + createTheme(name: String, folderPath: String, tokensJson: String, backgroundImage: MultipartFile, bgOpacity: Integer, bgBlur: Integer, authentication: Authentication, httpRequest: HttpServletRequest, redirectAttributes: RedirectAttributes) String
+    + editTheme(id: Integer, name: String, folderPath: String, tokensJson: String, backgroundImage: MultipartFile, bgOpacity: Integer, bgBlur: Integer, removeBg: Boolean, authentication: Authentication, httpRequest: HttpServletRequest, redirectAttributes: RedirectAttributes) String
+    + deleteTheme(id: Integer, authentication: Authentication, httpRequest: HttpServletRequest, redirectAttributes: RedirectAttributes) String
+}
+
+class SystemSettingService["<<service interface>> SystemSettingService"] {
+    + getSettings() SystemSettingsDTO*
+    + updateSettings(adminId: Integer, dto: SystemSettingsDTO, clientIp: String) boolean*
+    + getAllThemes() List~WebSetting~*
+    + getActiveTheme() WebSetting*
+    + activateTheme(themeId: Integer, adminId: Integer, clientIp: String) WebSetting*
+    + createTheme(name: String, folderPath: String, tokensJson: String, backgroundImage: MultipartFile, bgOpacity: Integer, bgBlur: Integer, adminId: Integer, clientIp: String) WebSetting*
+    + updateTheme(id: Integer, name: String, folderPath: String, tokensJson: String, backgroundImage: MultipartFile, bgOpacity: Integer, bgBlur: Integer, removeBg: Boolean, adminId: Integer, clientIp: String) WebSetting*
+    + deleteTheme(id: Integer, adminId: Integer, clientIp: String) void*
+    + getThemeTokens(folderPath: String) String*
+    + getThemeTokenMap(folderPath: String) Map~String, String~*
+    + getThemeBackground(folderPath: String) ThemeBackgroundDTO*
+}
+
+class SystemSettingServiceImpl["<<service>> SystemSettingServiceImpl"] {
+    - systemSettingRepository : SystemSettingRepository
+    - userRepository : UserRepository
+    - systemAuditLogRepository : SystemAuditLogRepository
+    - webSettingRepository : WebSettingRepository
+    - objectMapper : ObjectMapper
+    - mediaStorageService : MediaStorageService
+    + getSettings() SystemSettingsDTO
+    + updateSettings(adminId: Integer, dto: SystemSettingsDTO, clientIp: String) boolean
+    + getAllThemes() List~WebSetting~
+    + getActiveTheme() WebSetting
+    + activateTheme(themeId: Integer, adminId: Integer, clientIp: String) WebSetting
+    + createTheme(name: String, folderPath: String, tokensJson: String, backgroundImage: MultipartFile, bgOpacity: Integer, bgBlur: Integer, adminId: Integer, clientIp: String) WebSetting
+    + updateTheme(id: Integer, name: String, folderPath: String, tokensJson: String, backgroundImage: MultipartFile, bgOpacity: Integer, bgBlur: Integer, removeBg: Boolean, adminId: Integer, clientIp: String) WebSetting
+    + deleteTheme(id: Integer, adminId: Integer, clientIp: String) void
+}
+
+class SystemSettingRepository["<<repository>> SystemSettingRepository"] {
+    + findBySettingKey(settingKey: String) Optional~SystemSetting~*
+    + save(setting: SystemSetting) SystemSetting*
+}
+
+class WebSettingRepository["<<repository>> WebSettingRepository"] {
+    + findFirstByIsActiveTrueOrderByIdAsc() Optional~WebSetting~*
+    + findByFolderPath(folderPath: String) Optional~WebSetting~*
+    + existsByFolderPath(folderPath: String) boolean*
+    + findAllByOrderByIdAsc() List~WebSetting~*
+    + deactivateAllActiveThemes() void*
+    + findById(id: Integer) Optional~WebSetting~*
+    + save(theme: WebSetting) WebSetting*
+    + delete(theme: WebSetting) void*
+}
+
+class MediaStorageService["<<service interface>> MediaStorageService"] {
+    + uploadImage(file: MultipartFile) String*
+}
+
+class SystemAuditLogRepository["<<repository>> SystemAuditLogRepository"] {
+    + save(auditLog: SystemAuditLog) SystemAuditLog*
+}
+
+class UserRepository["<<repository>> UserRepository"] {
+    + findById(id: Integer) Optional~User~*
+}
+
+class SystemSettingsDTO["<<dto>> SystemSettingsDTO"] {
+    - vndToCoinRate : Integer
+    - contactPhone : String
+    - supportEmail : String
+    - termsOfService : String
+    - privacyPolicy : String
+    - lastUpdatedFormatted : String
+    - lastUpdatedByAdmin : String
+}
+
+class WebThemeViewDTO["<<dto>> WebThemeViewDTO"] {
+    - id : Integer
+    - name : String
+    - folderPath : String
+    - isActive : Boolean
+    - uploadedBy : Integer
+    - uploaderName : String
+    - formattedUpdatedAt : String
+    - tokensJson : String
+    - bgUrl : String
+    - bgOpacity : Integer
+    - bgBlur : Integer
+}
+
+class ThemeBackgroundDTO["<<dto>> ThemeBackgroundDTO"] {
+    - url : String
+    - opacity : Integer
+    - blur : Integer
+}
+
+class SystemSetting["<<entity>> SystemSetting"] {
+    - settingKey : String
+    - settingValue : String
+    - description : String
+    - updatedBy : Integer
+    - updatedAt : LocalDateTime
+}
+
+class WebSetting["<<entity>> WebSetting"] {
+    - id : Integer
+    - name : String
+    - folderPath : String
+    - thumbnailUrl : String
+    - isActive : Boolean
+    - uploadedBy : Integer
+    - createdAt : LocalDateTime
+    - updatedAt : LocalDateTime
+}
+
+class SystemAuditLog["<<entity>> SystemAuditLog"] {
+    - id : Integer
+    - adminId : Integer
+    - actionType : String
+    - targetEntity : String
+    - targetId : Integer
+    - oldValue : String
+    - newValue : String
+    - ipAddress : String
+    - createdAt : LocalDateTime
+}
+
+class User["<<entity>> User"] {
+    - id : Integer
+    - email : String
+    - fullName : String
+}
+
+SystemSettingAdminController --> SystemSettingService
+SystemSettingAdminController --> UserRepository
+SystemSettingServiceImpl ..|> SystemSettingService
+
+SystemSettingServiceImpl --> SystemSettingRepository
+SystemSettingServiceImpl --> WebSettingRepository
+SystemSettingServiceImpl --> SystemAuditLogRepository
+SystemSettingServiceImpl --> UserRepository
+SystemSettingServiceImpl --> MediaStorageService
+
+SystemSettingAdminController ..> SystemSettingsDTO
+SystemSettingAdminController ..> WebThemeViewDTO
+SystemSettingService ..> SystemSettingsDTO
+SystemSettingService ..> ThemeBackgroundDTO
+SystemSettingServiceImpl ..> SystemSetting
+SystemSettingServiceImpl ..> WebSetting
+SystemSettingServiceImpl ..> SystemAuditLog
+
+classDef default fill:#FFFFFF,stroke:#000000,stroke-width:1px,color:#000000

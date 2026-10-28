@@ -1,0 +1,113 @@
+classDiagram
+direction LR
+
+class UserAdminController["<<controller>> UserAdminController"] {
+    - userManagementService : UserManagementService
+    - userRepository : UserRepository
+    + banUser(request: BanUserRequest, bindingResult: BindingResult, authentication: Authentication, httpRequest: HttpServletRequest, redirectAttributes: RedirectAttributes) String
+    + unbanUser(request: UnbanUserRequest, bindingResult: BindingResult, authentication: Authentication, httpRequest: HttpServletRequest, redirectAttributes: RedirectAttributes) String
+    - getAdminId(authentication: Authentication) Integer
+    - getClientIp(request: HttpServletRequest) String
+}
+
+class UserManagementService["<<service interface>> UserManagementService"] {
+    + banUser(adminId: Integer, request: BanUserRequest, ipAddress: String) void*
+    + unbanUser(adminId: Integer, request: UnbanUserRequest, ipAddress: String) void*
+}
+
+class UserManagementServiceImpl["<<service>> UserManagementServiceImpl"] {
+    - userRepository : UserRepository
+    - systemAuditLogRepository : SystemAuditLogRepository
+    - notificationRepository : NotificationRepository
+    - objectMapper : ObjectMapper
+    + banUser(adminId: Integer, request: BanUserRequest, ipAddress: String) void
+    + unbanUser(adminId: Integer, request: UnbanUserRequest, ipAddress: String) void
+}
+
+class AccountLockService["<<service>> AccountLockService"] {
+    - userRepository : UserRepository
+    - systemAuditLogRepository : SystemAuditLogRepository
+    - objectMapper : ObjectMapper
+    + checkAndAutoUnban(user: User) boolean
+}
+
+class UserRepository["<<repository>> UserRepository"] {
+    + findById(id: Integer) Optional~User~*
+    + save(user: User) User*
+}
+
+class SystemAuditLogRepository["<<repository>> SystemAuditLogRepository"] {
+    + findFirstByTargetEntityAndTargetIdAndActionTypeOrderByCreatedAtDesc(targetEntity: String, targetId: Integer, actionType: String) Optional~SystemAuditLog~*
+    + save(auditLog: SystemAuditLog) SystemAuditLog*
+}
+
+class NotificationRepository["<<repository>> NotificationRepository"] {
+    + save(notification: Notification) Notification*
+}
+
+class BanUserRequest["<<dto>> BanUserRequest"] {
+    - userId : Integer
+    - reason : String
+    - duration : String
+    - note : String
+}
+
+class UnbanUserRequest["<<dto>> UnbanUserRequest"] {
+    - userId : Integer
+    - unbanReason : String
+    - sendNotification : Boolean
+}
+
+class User["<<entity>> User"] {
+    - id : Integer
+    - email : String
+    - fullName : String
+    - status : String
+}
+
+class SystemAuditLog["<<entity>> SystemAuditLog"] {
+    - id : Integer
+    - adminId : Integer
+    - actionType : String
+    - targetEntity : String
+    - targetId : Integer
+    - oldValue : String
+    - newValue : String
+    - ipAddress : String
+    - createdAt : LocalDateTime
+}
+
+class Notification["<<entity>> Notification"] {
+    - id : Integer
+    - userId : Integer
+    - title : String
+    - content : String
+    - isRead : Boolean
+    - createdAt : LocalDateTime
+}
+
+UserAdminController --> UserManagementService
+UserAdminController --> UserRepository
+UserManagementServiceImpl ..|> UserManagementService
+UserManagementServiceImpl --> UserRepository
+UserManagementServiceImpl --> SystemAuditLogRepository
+UserManagementServiceImpl --> NotificationRepository
+AccountLockService --> UserRepository
+AccountLockService --> SystemAuditLogRepository
+
+UserAdminController ..> BanUserRequest
+UserAdminController ..> UnbanUserRequest
+UserManagementService ..> BanUserRequest
+UserManagementService ..> UnbanUserRequest
+UserManagementServiceImpl ..> BanUserRequest
+UserManagementServiceImpl ..> UnbanUserRequest
+UserManagementServiceImpl ..> User
+UserManagementServiceImpl ..> SystemAuditLog
+UserManagementServiceImpl ..> Notification
+AccountLockService ..> User
+AccountLockService ..> SystemAuditLog
+
+SystemAuditLogRepository ..> SystemAuditLog
+NotificationRepository ..> Notification
+
+classDef default fill:#FFFFFF,stroke:#000000,stroke-width:1px,color:#000000

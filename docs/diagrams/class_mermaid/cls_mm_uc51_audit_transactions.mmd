@@ -1,0 +1,82 @@
+classDiagram
+direction LR
+
+class TransactionAuditAdminController["<<controller>> TransactionAuditAdminController"] {
+    - transactionAuditService : TransactionAuditService
+    + showAuditPage(startDate: String, endDate: String, type: String, orderCode: String, email: String, page: String, size: String, model: Model) String
+    + getIpnLogs(orderCode: String) ResponseEntity~List~PaymentLogDTO~~
+    - parseDate(dateStr: String) LocalDate
+}
+
+class TransactionAuditService["<<service interface>> TransactionAuditService"] {
+    + getAuditStats() TransactionAuditStatsDTO*
+    + getAuditTransactions(startDate: String, endDate: String, type: String, orderCode: String, email: String, page: int, size: int) Page~TransactionAuditDTO~*
+    + getIpnLogsByOrderCode(orderCode: String) List~PaymentLogDTO~*
+}
+
+class TransactionAuditServiceImpl["<<service>> TransactionAuditServiceImpl"] {
+    - jdbcTemplate : NamedParameterJdbcTemplate
+    - paymentLogRepository : PaymentLogRepository
+    - objectMapper : ObjectMapper
+    + getAuditStats() TransactionAuditStatsDTO
+    + getAuditTransactions(startDate: String, endDate: String, type: String, orderCode: String, email: String, page: int, size: int) Page~TransactionAuditDTO~
+    + getIpnLogsByOrderCode(orderCode: String) List~PaymentLogDTO~
+}
+
+class PaymentLogRepository["<<repository>> PaymentLogRepository"] {
+}
+
+class TransactionAuditDTO["<<dto>> TransactionAuditDTO"] {
+    - sourceType : String
+    - orderCode : String
+    - displayCode : String
+    - userName : String
+    - userEmail : String
+    - type : String
+    - coinAmount : Integer
+    - amountVnd : Integer
+    - status : String
+}
+
+class TransactionAuditStatsDTO["<<dto>> TransactionAuditStatsDTO"] {
+    - totalTopupVnd : Long
+    - totalCoinIssued : Long
+    - totalCoinSpent : Long
+    - totalTransactionsCount : Long
+    - successTopupOrdersCount : Long
+}
+
+class PaymentLogDTO["<<dto>> PaymentLogDTO"] {
+    - id : Integer
+    - orderCode : String
+    - rawPayload : String
+    - status : String
+    - createdAt : LocalDateTime
+}
+
+class PaymentLog["<<entity>> PaymentLog"] {
+    - id : Integer
+    - orderCode : String
+    - rawPayload : String
+    - ipAddress : String
+    - status : String
+    - createdAt : LocalDateTime
+}
+
+TransactionAuditAdminController --> TransactionAuditService
+TransactionAuditServiceImpl ..|> TransactionAuditService
+TransactionAuditServiceImpl --> PaymentLogRepository
+
+TransactionAuditAdminController ..> TransactionAuditDTO
+TransactionAuditAdminController ..> TransactionAuditStatsDTO
+TransactionAuditAdminController ..> PaymentLogDTO
+TransactionAuditService ..> TransactionAuditDTO
+TransactionAuditService ..> TransactionAuditStatsDTO
+TransactionAuditService ..> PaymentLogDTO
+TransactionAuditServiceImpl ..> TransactionAuditDTO
+TransactionAuditServiceImpl ..> TransactionAuditStatsDTO
+TransactionAuditServiceImpl ..> PaymentLogDTO
+TransactionAuditServiceImpl ..> PaymentLog
+PaymentLogRepository ..> PaymentLog
+
+classDef default fill:#FFFFFF,stroke:#000000,stroke-width:1px,color:#000000

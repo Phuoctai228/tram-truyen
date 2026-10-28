@@ -1,0 +1,118 @@
+@startuml sq_audit_transactions
+<style>
+    sequenceDiagram{
+        FontSize 16
+        LineColor black
+
+        arrow {
+            ' Set the maximum width of the text on arrows
+            MaximumWidth 300
+            LineColor black
+        }
+        actor{
+            BackgroundColor white
+            LineColor black
+            LineThickness 1.0
+        }
+        participant{
+            BackgroundColor white
+            LineColor black
+            RoundCorner 0
+        }
+        database{
+            BackgroundColor white
+            LineColor black
+        }
+        lifeLine{
+            LineColor black
+        }
+        group{
+            LineColor black
+        }
+        groupHeader{
+            BackgroundColor white
+            LineColor black
+        }
+        referenceHeader{
+            BackgroundColor white
+            LineColor black
+        }
+        reference{
+            BackgroundColor white
+            LineColor black
+        }
+    }
+</style>
+
+hide footbox
+mainframe Audit Transactions (UC-51)
+
+actor Admin as adm
+participant "TransactionAuditPage" as view
+participant "TransactionAuditAdminController" as ctrl <<controller>>
+participant ":TransactionAuditService" as svc
+participant ":NamedParameterJdbcTemplate" as jdbc
+participant ":PaymentLogRepository" as log_repo
+database Database as db
+
+adm ++
+
+adm -> view++:1. Select date range, transaction type, order code and click "Lọc"
+view -> ctrl--:2. GET /admin/transactions?startDate=s&endDate=e&type=t&page=0
+activate ctrl
+
+ctrl -> ctrl++:3. parseDate(startDate)
+ctrl--
+
+ctrl -> ctrl++:4. parseDate(endDate)
+ctrl--
+
+opt Invalid date range (startDate > endDate)
+    ctrl -> ctrl++:4.1. Set errorMessage and reset dates
+    ctrl--
+end
+
+ctrl -> svc++:5. getAuditStats()
+svc -> jdbc++:6. Execute aggregate queries for topup & spend stats
+jdbc -> db++:7. Query topup_orders and transactions summary
+db -->> jdbc:8. Return aggregate sum and count metrics
+db--
+jdbc -->> svc--:9. Return stats metrics
+svc -->> ctrl--:10. Return TransactionAuditStatsDTO
+
+ctrl -> svc++:11. getAuditTransactions(startDate, endDate, type, orderCode, email, 0, 10)
+svc -> jdbc++:12. Query combined CTE (topup_orders UNION transactions)
+jdbc -> db++:13. Execute CTE query with pagination and filters
+db -->> jdbc:14. Return transaction records
+db--
+jdbc -->> svc--:15. Return Page~TransactionAuditDTO~
+svc -->> ctrl--:16. Return Page~TransactionAuditDTO~
+
+ctrl -->> view--:17. Return "admin/transactions/index"
+activate view
+view -->> adm:18. Display summary cards and audit transaction table
+deactivate view
+
+opt Admin clicks "Xem IPN Log" on topup transaction row
+    adm -> view++:18.2. Click "Xem IPN Log"
+    view -> ctrl--:18.2.1. GET /admin/transactions/ipn-logs?orderCode=TT123456
+    activate ctrl
+
+    ctrl -> svc++:18.2.2. getIpnLogsByOrderCode(orderCode)
+    svc -> log_repo++:18.2.3. Query payment_logs by order_code
+    log_repo -> db++:18.2.4. SELECT * FROM payment_logs WHERE order_code = ?
+    db -->> log_repo:18.2.5. Return payment_log records
+    db--
+    log_repo -->> svc--:18.2.6. Return payment log list
+    svc -->> ctrl--:18.2.7. Return List~PaymentLogDTO~
+
+    ctrl -->> view--:18.2.8. Return 200 OK (List~PaymentLogDTO~)
+    activate view
+    view -->> adm:18.2.9. Display IPN payload and raw signature modal
+    deactivate view
+end
+
+deactivate ctrl
+deactivate adm
+
+@enduml
