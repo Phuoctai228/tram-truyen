@@ -1,0 +1,79 @@
+classDiagram
+direction LR
+
+class BookshelfController {
+    <<controller>>
+    - bookshelfService : BookshelfService
+    + completeChapter(payload: Map~String, Integer~, authentication: Authentication) ResponseEntity~?~
+}
+
+class BookshelfService {
+    <<service interface>>
+    + recordChapterRead(email: String, chapterId: Integer) void*
+    + isChapterRead(email: String, chapterId: Integer) boolean*
+}
+
+class BookshelfServiceImpl {
+    <<service>>
+    - userRepository : UserRepository
+    - chapterRepository : ChapterRepository
+    - userChapterActivityRepository : UserChapterActivityRepository
+    + recordChapterRead(email: String, chapterId: Integer) void
+    + isChapterRead(email: String, chapterId: Integer) boolean
+    - getUserByEmail(email: String) User
+}
+
+class UserChapterActivityRepository {
+    <<repository>>
+    + findByUserAndChapter(user: User, chapter: Chapter) Optional~UserChapterActivity~*
+    + save(activity: UserChapterActivity) UserChapterActivity*
+}
+
+class ChapterRepository {
+    <<repository>>
+    + findById(id: Integer) Optional~Chapter~*
+}
+
+class UserRepository {
+    <<repository>>
+    + findByEmail(email: String) Optional~User~*
+}
+
+class UserChapterActivity {
+    <<entity>>
+    - id : Integer
+    - user : User
+    - chapter : Chapter
+    - isRead : Boolean
+    - readAt : LocalDateTime
+    - isUnlocked : Boolean
+    - pricePaid : Integer
+    - unlockedAt : LocalDateTime
+}
+
+class User {
+    <<entity>>
+    - id : Integer
+    - email : String
+    - fullName : String
+}
+
+class Chapter {
+    <<entity>>
+    - id : Integer
+    - chapterNumber : Integer
+    - title : String
+}
+
+BookshelfController --> BookshelfService
+BookshelfServiceImpl ..|> BookshelfService
+
+BookshelfServiceImpl --> UserChapterActivityRepository
+BookshelfServiceImpl --> ChapterRepository
+BookshelfServiceImpl --> UserRepository
+
+BookshelfServiceImpl ..> UserChapterActivity
+UserChapterActivity --> User
+UserChapterActivity --> Chapter
+
+classDef default fill:#FFFFFF,stroke:#000000,stroke-width:1px,color:#000000
