@@ -1,0 +1,131 @@
+classDiagram
+direction LR
+
+class NovelController {
+    <<controller>>
+    - novelService : NovelService
+    - chapterService : ChapterService
+    - bookshelfService : BookshelfService
+    - ratingService : RatingService
+    - categoryService : CategoryService
+    - commentService : CommentService
+    + novelDetailsBySlug(slug: String, authentication: Authentication, model: Model) String
+    + novelDetailsLegacy(id: Integer) String
+}
+
+class NovelService {
+    <<service interface>>
+    + getPublicNovelBySlug(slug: String) Novel*
+    + getPublicNovel(id: Integer) Novel*
+    + getNovelsBySameAuthor(author: String, currentNovelId: Integer) List~Novel~*
+}
+
+class NovelServiceImpl {
+    <<service>>
+    - novelRepository : NovelRepository
+    - chapterRepository : ChapterRepository
+    - bookshelfRepository : BookshelfRepository
+    + getPublicNovelBySlug(slug: String) Novel
+    + getPublicNovel(id: Integer) Novel
+    + getNovelsBySameAuthor(author: String, currentNovelId: Integer) List~Novel~
+}
+
+class ChapterService {
+    <<service interface>>
+    + getPublicChapters(novelId: Integer) List~Chapter~*
+}
+
+class ChapterServiceImpl {
+    <<service>>
+    - chapterRepository : ChapterRepository
+    - novelRepository : NovelRepository
+    + getPublicChapters(novelId: Integer) List~Chapter~
+}
+
+class BookshelfService {
+    <<service interface>>
+    + isNovelInBookshelf(email: String, novelId: Integer) boolean*
+    + hasReadAnyChapter(email: String, novelId: Integer) boolean*
+    + countNovelFavorites(novelId: Integer) long*
+    + getLastReadChapter(email: String, novelId: Integer) Optional~Chapter~*
+}
+
+class BookshelfServiceImpl {
+    <<service>>
+    - bookshelfRepository : BookshelfRepository
+    - userChapterActivityRepository : UserChapterActivityRepository
+    - userRepository : UserRepository
+    - novelRepository : NovelRepository
+    + isNovelInBookshelf(email: String, novelId: Integer) boolean
+    + hasReadAnyChapter(email: String, novelId: Integer) boolean
+    + countNovelFavorites(novelId: Integer) long
+    + getLastReadChapter(email: String, novelId: Integer) Optional~Chapter~
+}
+
+class NovelRepository {
+    <<repository>>
+    + findBySlugAndIsDeletedFalseAndStatusNot(slug: String, status: String) Optional~Novel~*
+    + findByIdAndIsDeletedFalseAndStatusNot(id: Integer, status: String) Optional~Novel~*
+    + findTop5ByAuthorIgnoreCaseAndIdNotAndIsDeletedFalseOrderByViewsDesc(author: String, id: Integer) List~Novel~*
+}
+
+class ChapterRepository {
+    <<repository>>
+    + findAllByNovelIdAndIsDeletedFalseAndStatusInOrderByChapterNumberAsc(novelId: Integer, statuses: List~String~) List~Chapter~*
+}
+
+class BookshelfRepository {
+    <<repository>>
+    + existsByUserAndNovel(user: User, novel: Novel) boolean*
+    + countByNovelId(novelId: Integer) long*
+}
+
+class Novel {
+    <<entity>>
+    - id : Integer
+    - title : String
+    - slug : String
+    - author : String
+    - summary : String
+    - coverUrl : String
+    - status : String
+    - views : Integer
+    - averageRating : BigDecimal
+    - ratingCount : Integer
+    - chapterCount : Integer
+}
+
+class Chapter {
+    <<entity>>
+    - id : Integer
+    - chapterNumber : Integer
+    - title : String
+    - price : Integer
+    - status : String
+}
+
+class User {
+    <<entity>>
+    - id : Integer
+    - email : String
+    - fullName : String
+}
+
+NovelController --> NovelService
+NovelController --> ChapterService
+NovelController --> BookshelfService
+
+NovelServiceImpl ..|> NovelService
+ChapterServiceImpl ..|> ChapterService
+BookshelfServiceImpl ..|> BookshelfService
+
+NovelServiceImpl --> NovelRepository
+ChapterServiceImpl --> ChapterRepository
+BookshelfServiceImpl --> BookshelfRepository
+
+NovelController ..> Novel
+NovelController ..> Chapter
+
+Novel *-- Chapter
+
+classDef default fill:#FFFFFF,stroke:#000000,stroke-width:1px,color:#000000
