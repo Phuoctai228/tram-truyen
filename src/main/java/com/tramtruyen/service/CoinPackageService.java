@@ -15,4 +15,13 @@ public interface CoinPackageService {
      * @return Danh sách CoinPackageDTO
      */
     List<CoinPackageDTO> getActivePackages();
+
+    /**
+     * Gợi ý các gói nạp phù hợp nhất khi độc giả bị thiếu Coin để mở chương VIP (UC-26).
+     *
+     * @param shortfall số Coin còn thiếu (> 0)
+     * @param limit số gói tối đa cần lấy (thường là 2 gói như mockup)
+     * @return danh sách gói nạp gợi ý được gắn cờ bestFit cho gói tối ưu
+     */
+    List<CoinPackageDTO> suggestForShortfall(int shortfall, int limit);
 }

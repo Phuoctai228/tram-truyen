@@ -287,4 +287,37 @@ class BookshelfServiceImplTest {
 
         assertThat(read).isFalse();
     }
+
+    @Test
+    void getLastReadChapterReturnsChapterWhenActivityExists() {
+        when(userRepository.findByEmail("reader@test.com")).thenReturn(Optional.of(sampleUser));
+        when(novelRepository.findByIdAndIsDeletedFalse(1)).thenReturn(Optional.of(sampleNovel));
+
+        Chapter chapter5 = Chapter.builder().id(50).chapterNumber(5).isDeleted(false).build();
+        UserChapterActivity activity = UserChapterActivity.builder()
+                .user(sampleUser)
+                .chapter(chapter5)
+                .isRead(true)
+                .build();
+
+        when(userChapterActivityRepository.findFirstByUserAndChapter_NovelAndIsReadTrueOrderByReadAtDescChapter_ChapterNumberDesc(sampleUser, sampleNovel))
+                .thenReturn(Optional.of(activity));
+
+        Optional<Chapter> result = bookshelfService.getLastReadChapter("reader@test.com", 1);
+
+        assertThat(result).isPresent();
+        assertThat(result.get().getChapterNumber()).isEqualTo(5);
+    }
+
+    @Test
+    void getLastReadChapterReturnsEmptyWhenNoActivity() {
+        when(userRepository.findByEmail("reader@test.com")).thenReturn(Optional.of(sampleUser));
+        when(novelRepository.findByIdAndIsDeletedFalse(1)).thenReturn(Optional.of(sampleNovel));
+        when(userChapterActivityRepository.findFirstByUserAndChapter_NovelAndIsReadTrueOrderByReadAtDescChapter_ChapterNumberDesc(sampleUser, sampleNovel))
+                .thenReturn(Optional.empty());
+
+        Optional<Chapter> result = bookshelfService.getLastReadChapter("reader@test.com", 1);
+
+        assertThat(result).isEmpty();
+    }
 }

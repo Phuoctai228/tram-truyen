@@ -32,12 +32,19 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /** Default business implementation for Novel CMS operations. */
+import com.tramtruyen.entity.enums.NovelStatus;
+
 @Service
 @RequiredArgsConstructor
 public class NovelServiceImpl implements NovelService {
 
-    private static final String ARCHIVED_STATUS = "ARCHIVED";
-    private static final Set<String> NOVEL_STATUSES = Set.of("ONGOING", "COMPLETED", "ON_HOLD", "ARCHIVED");
+    private static final String ARCHIVED_STATUS = NovelStatus.ARCHIVED.name();
+    private static final Set<String> NOVEL_STATUSES = Set.of(
+            NovelStatus.ONGOING.name(),
+            NovelStatus.COMPLETED.name(),
+            NovelStatus.ON_HOLD.name(),
+            NovelStatus.ARCHIVED.name()
+    );
 
     private final NovelRepository novelRepository;
     private final MediaStorageService mediaStorageService;
@@ -211,7 +218,8 @@ public class NovelServiceImpl implements NovelService {
     private NovelSummaryDTO toNovelSummaryDTO(Novel novel) {
         long favoriteCount = bookshelfRepository.countByNovelId(novel.getId());
         List<LatestChapterDTO> latestChapters = chapterRepository
-                .findTop3ByNovelIdAndIsDeletedFalseAndStatusOrderByChapterNumberDesc(novel.getId(), "PUBLISHED")
+                .findTop3ByNovelIdAndIsDeletedFalseAndStatusInOrderByChapterNumberDesc(
+                        novel.getId(), ChapterServiceImpl.PUBLIC_STATUSES)
                 .stream()
                 .map(ch -> LatestChapterDTO.builder()
                         .id(ch.getId())

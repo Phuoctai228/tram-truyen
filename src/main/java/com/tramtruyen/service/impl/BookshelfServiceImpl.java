@@ -268,6 +268,21 @@ public class BookshelfServiceImpl implements BookshelfService {
 
     @Override
     @Transactional(readOnly = true)
+    public boolean hasReadAnyChapter(String email, Integer novelId) {
+        if (email == null || novelId == null) {
+            return false;
+        }
+        try {
+            User user = getUserByEmail(email);
+            Novel novel = getNovelById(novelId);
+            return userChapterActivityRepository.countByUserAndChapter_NovelAndIsReadTrue(user, novel) > 0;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public UserProfileDTO getUserProfile(String email) {
         User user = getUserByEmail(email);
         return UserProfileDTO.builder()
@@ -370,6 +385,24 @@ public class BookshelfServiceImpl implements BookshelfService {
                 .relativeTime(com.tramtruyen.util.DateTimeUtils.formatRelativeTime(lastTime))
                 .readUrl(readUrl)
                 .build();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<Chapter> getLastReadChapter(String email, Integer novelId) {
+        if (email == null || novelId == null) {
+            return Optional.empty();
+        }
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        Optional<Novel> novelOpt = novelRepository.findByIdAndIsDeletedFalse(novelId);
+        if (userOpt.isEmpty() || novelOpt.isEmpty()) {
+            return Optional.empty();
+        }
+        return userChapterActivityRepository
+                .findFirstByUserAndChapter_NovelAndIsReadTrueOrderByReadAtDescChapter_ChapterNumberDesc(
+                        userOpt.get(), novelOpt.get())
+                .map(UserChapterActivity::getChapter)
+                .filter(ch -> ch != null && !Boolean.TRUE.equals(ch.getIsDeleted()));
     }
 
     private User getUserByEmail(String email) {

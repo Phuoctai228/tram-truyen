@@ -11,6 +11,7 @@ import com.tramtruyen.repository.UserDailyCheckinRepository;
 import com.tramtruyen.repository.UserRepository;
 import com.tramtruyen.service.DailyCheckinService;
 import com.tramtruyen.service.WalletService;
+import com.tramtruyen.entity.enums.TransactionType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -137,7 +138,7 @@ public class DailyCheckinServiceImpl implements DailyCheckinService {
 
         // Credit coins to wallet ledger
         String description = "Điểm danh hàng ngày (Chuỗi " + newStreak + " ngày, mốc +" + rewardCoins + " Coin)";
-        walletService.addCoins(user, rewardCoins, "GIFT_COIN", checkin.getId(), description);
+        walletService.addCoins(user, rewardCoins, TransactionType.GIFT_COIN.name(), checkin.getId(), description);
 
         int newBalance = walletService.getBalance(email);
 

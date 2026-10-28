@@ -241,7 +241,7 @@ CREATE TABLE transactions (
     user_id INT REFERENCES users(id) ON DELETE CASCADE,
     amount INT NOT NULL, -- SỐ COIN (+ hoặc -)
     balance_after INT NOT NULL, -- Lưu lại số dư ví sau khi biến động để truy vết dễ hơn
-    type VARCHAR(50) NOT NULL, -- TOPUP_COIN, UNLOCK_CHAPTER, ADMIN_ADJUSTMENT, GIFT_COIN
+    type VARCHAR(50) NOT NULL, -- DEPOSIT (Nạp VNPay), UNLOCK_CHAPTER (Mở khóa VIP), GIFT_COIN (Thưởng điểm danh)
     reference_id INT, -- ID tham chiếu (Ví dụ: ID của topup_orders hoặc ID của chapters)
     description TEXT,
     created_by INT REFERENCES users(id) ON DELETE SET NULL, -- Lưu ID Admin/Staff nếu thao tác cộng/trừ thủ công

@@ -5,5 +5,6 @@ package com.tramtruyen.entity.enums;
  */
 public enum TransactionType {
     DEPOSIT,
-    UNLOCK_CHAPTER
+    UNLOCK_CHAPTER,
+    GIFT_COIN
 }

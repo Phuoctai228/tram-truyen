@@ -13,6 +13,7 @@ public class HomeController {
 
     private final HomeService homeService;
     private final com.tramtruyen.service.BookshelfService bookshelfService;
+    private final com.tramtruyen.service.SystemSettingService systemSettingService;
 
     @GetMapping("/")
     public String home(org.springframework.security.core.Authentication authentication, Model model) {
@@ -42,5 +43,29 @@ public class HomeController {
         model.addAttribute("heroInBookshelf", heroInBookshelf);
         
         return "home/index";
+    }
+
+    @GetMapping("/terms")
+    public String terms(Model model) {
+        model.addAttribute("title", "Điều khoản dịch vụ");
+        model.addAttribute("type", "TERMS");
+        model.addAttribute("settings", systemSettingService.getSettings());
+        return "home/policy";
+    }
+
+    @GetMapping("/privacy")
+    public String privacy(Model model) {
+        model.addAttribute("title", "Chính sách bảo mật");
+        model.addAttribute("type", "PRIVACY");
+        model.addAttribute("settings", systemSettingService.getSettings());
+        return "home/policy";
+    }
+
+    @GetMapping("/contact")
+    public String contact(Model model) {
+        model.addAttribute("title", "Liên hệ & Hỗ trợ");
+        model.addAttribute("type", "CONTACT");
+        model.addAttribute("settings", systemSettingService.getSettings());
+        return "home/policy";
     }
 }

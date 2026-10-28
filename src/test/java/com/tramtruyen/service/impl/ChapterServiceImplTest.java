@@ -3,6 +3,7 @@ package com.tramtruyen.service.impl;
 import com.tramtruyen.dto.ChapterForm;
 import com.tramtruyen.dto.ChapterSaveAction;
 import com.tramtruyen.entity.Novel;
+import com.tramtruyen.entity.enums.ChapterStatus;
 import com.tramtruyen.exception.DuplicateResourceException;
 import com.tramtruyen.exception.ResourceNotFoundException;
 import com.tramtruyen.repository.ChapterRepository;
@@ -66,11 +67,11 @@ class ChapterServiceImplTest {
 
         var result = chapterService.createChapter(1, form(), ChapterSaveAction.PUBLISHED);
 
-        assertThat(result.getStatus()).isEqualTo("PUBLISHED");
+        assertThat(result.getStatus()).isEqualTo(ChapterStatus.PUBLISHED_REGULAR.name());
     }
 
     @Test
-    void createPublishedPaidChapterUsesLockedStatus() {
+    void createPublishedPaidChapterUsesVipStatus() {
         Novel novel = Novel.builder().id(1).isDeleted(false).build();
         when(novelRepository.findByIdAndIsDeletedFalse(1)).thenReturn(Optional.of(novel));
         when(chapterRepository.existsByNovelIdAndChapterNumber(1, 1)).thenReturn(false);
@@ -81,7 +82,7 @@ class ChapterServiceImplTest {
 
         var result = chapterService.createChapter(1, chapterForm, ChapterSaveAction.PUBLISHED);
 
-        assertThat(result.getStatus()).isEqualTo("LOCKED");
+        assertThat(result.getStatus()).isEqualTo(ChapterStatus.PUBLISHED_VIP.name());
     }
 
     @Test
@@ -173,7 +174,7 @@ class ChapterServiceImplTest {
 
         var result = chapterService.updateChapter(1, 5, updatedForm(), ChapterSaveAction.PUBLISHED);
 
-        assertThat(result.getStatus()).isEqualTo("PUBLISHED");
+        assertThat(result.getStatus()).isEqualTo(ChapterStatus.PUBLISHED_REGULAR.name());
     }
 
     @Test
@@ -237,6 +238,40 @@ class ChapterServiceImplTest {
         var result = chapterService.createChapter(1, chapterForm);
 
         assertThat(result.getContent()).isEqualTo("<p>Safe</p>");
+    }
+
+    @Test
+    void getPublicChapterReturnsChapterWithoutSideEffects() {
+        Novel novel = Novel.builder().id(1).status("ONGOING").isDeleted(false).build();
+        com.tramtruyen.entity.Chapter chapter = com.tramtruyen.entity.Chapter.builder()
+                .id(10).novel(novel).chapterNumber(1).content("Test content").views(5).build();
+
+        when(novelRepository.findByIdAndIsDeletedFalseAndStatusNot(1, "ARCHIVED")).thenReturn(Optional.of(novel));
+        when(chapterRepository.findByNovelIdAndChapterNumberAndIsDeletedFalseAndStatusIn(
+                1, 1, ChapterServiceImpl.PUBLIC_STATUSES)).thenReturn(Optional.of(chapter));
+
+        var result = chapterService.getPublicChapter(1, 1);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getViews()).isEqualTo(5);
+        verify(chapterRepository, never()).save(any());
+        verify(novelRepository, never()).save(any());
+    }
+
+    @Test
+    void recordViewIncrementsChapterAndNovelViews() {
+        Novel novel = Novel.builder().id(1).views(10).build();
+        com.tramtruyen.entity.Chapter chapter = com.tramtruyen.entity.Chapter.builder().id(10).views(5).build();
+
+        when(chapterRepository.findById(10)).thenReturn(Optional.of(chapter));
+        when(novelRepository.findById(1)).thenReturn(Optional.of(novel));
+
+        chapterService.recordView(1, 10);
+
+        assertThat(chapter.getViews()).isEqualTo(6);
+        assertThat(novel.getViews()).isEqualTo(11);
+        verify(chapterRepository).save(chapter);
+        verify(novelRepository).save(novel);
     }
 
     private ChapterForm form() {

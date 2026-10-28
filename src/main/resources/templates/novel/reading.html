@@ -23,7 +23,8 @@
 
 <body class="font-body-reading antialiased" th:data-chapter-id="${chapter.id}" th:data-is-read="${isChapterRead}"
   th:data-novel-slug="${novel.slug}" th:data-chapter-number="${chapter.chapterNumber}"
-  th:data-is-unlocked="${isChapterUnlocked}" th:data-is-vip="${isVip}">
+  th:data-is-unlocked="${isChapterUnlocked}" th:data-is-vip="${isVip}" th:data-can-afford="${canAfford}"
+  th:data-logged-in="${isLoggedIn}">
   <header class="fixed top-0 w-full z-50 backdrop-blur-md shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
     <div class="h-14 max-w-5xl mx-auto px-4 sm:px-6 flex items-center gap-4">
       <div class="flex items-center gap-3 min-w-0">
@@ -70,71 +71,99 @@
           </h1>
         </header>
 
-        <article class="space-y-6 text-on-surface font-body-reading text-body-reading leading-[1.95] select-text"
-          id="reader-body">
-          <!-- Khi chương đã mở khóa hoặc miễn phí -->
-          <th:block th:if="${isChapterUnlocked}">
-            <!-- Render rich text nếu nội dung có chứa các thẻ định dạng HTML -->
-            <th:block
-              th:if="${#strings.contains(chapter.content, '<p') or #strings.contains(chapter.content, '<br') or #strings.contains(chapter.content, '<div')}">
-              <div th:utext="${chapter.content}">Nội dung</div>
-            </th:block>
-            <!-- Render từng đoạn nếu là văn bản thuần (plain text) -->
-            <th:block
-              th:unless="${#strings.contains(chapter.content, '<p') or #strings.contains(chapter.content, '<br') or #strings.contains(chapter.content, '<div')}">
-              <th:block th:each="para : ${paragraphs}">
-                <p th:if="${!#strings.isEmpty(#strings.trim(para))}" class="indent-8 text-justify" th:text="${para}">Nội
-                  dung</p>
+        <div class="relative reader-content-wrapper" id="reader-content-wrapper"
+          th:data-fingerprint="${userFingerprint ?: 'TT-PROTECTED'}">
+          <!-- Dynamic User Watermark Grid (subtle background trace for copyright protection) -->
+          <div class="reader-watermark-layer select-none pointer-events-none" aria-hidden="true" id="reader-watermark-layer">
+            <span class="watermark-item" th:each="i : ${#numbers.sequence(1, 24)}"
+              th:text="${watermarkText != null ? watermarkText : (#authentication?.name != null ? #authentication.name + ' • Trạm Truyện' : 'Bản quyền Trạm Truyện')}">UID: 1 • User • 26/10/2026 • Trạm Truyện</span>
+          </div>
+
+          <!-- Floating Drifting Watermark Badge (Continuously sweeps across screen to defeat screen recording) -->
+          <div class="reader-floating-watermark select-none pointer-events-none" aria-hidden="true" id="reader-floating-watermark">
+            <span th:text="${watermarkText != null ? watermarkText : 'Bản quyền Trạm Truyện'}">UID: 1 • User • 26/10/2026 • Trạm Truyện</span>
+          </div>
+
+          <article
+            class="space-y-6 text-on-surface font-body-reading text-body-reading leading-[1.95] select-none reader-protected-content"
+            id="reader-body">
+            <!-- Khi chương đã mở khóa hoặc miễn phí -->
+            <th:block th:if="${isChapterUnlocked}">
+              <!-- Render rich text nếu nội dung có chứa các thẻ định dạng HTML -->
+              <th:block
+                th:if="${#strings.contains(chapter.content, '<p') or #strings.contains(chapter.content, '<br') or #strings.contains(chapter.content, '<div')}">
+                <div th:utext="${chapter.content}">Nội dung</div>
+              </th:block>
+              <!-- Render từng đoạn nếu là văn bản thuần (plain text) -->
+              <th:block
+                th:unless="${#strings.contains(chapter.content, '<p') or #strings.contains(chapter.content, '<br') or #strings.contains(chapter.content, '<div')}">
+                <th:block th:each="para : ${paragraphs}">
+                  <p th:if="${!#strings.isEmpty(#strings.trim(para))}" class="indent-8 text-justify" th:text="${para}">
+                    Nội
+                    dung</p>
+                </th:block>
               </th:block>
             </th:block>
-          </th:block>
 
-          <!-- Khi chương VIP bị khóa: Chỉ hiển thị các đoạn đọc thử (server-side masked) và Paywall Card -->
-          <th:block th:if="${!isChapterUnlocked}">
-            <th:block th:each="para : ${paragraphs}">
-              <div th:if="${!#strings.isEmpty(#strings.trim(para))}" class="indent-8 text-justify mb-6"
-                th:utext="${para}">Nội dung</div>
-            </th:block>
+            <!-- Khi chương VIP bị khóa: Chỉ hiển thị các đoạn đọc thử (server-side masked) và Paywall Card -->
+            <th:block th:if="${!isChapterUnlocked}">
+              <th:block th:each="para : ${paragraphs}">
+                <div th:if="${!#strings.isEmpty(#strings.trim(para))}" class="indent-8 text-justify mb-6"
+                  th:utext="${para}">Nội dung</div>
+              </th:block>
 
-            <!-- In-flow VIP Paywall Section (If Chapter is Locked) -->
-            <div class="relative pt-6 pb-12 mt-6 select-none" id="vip-paywall-container">
-              <!-- Gradient Fade Over Preview Content -->
-              <div
-                class="absolute -top-28 left-0 right-0 h-28 bg-gradient-to-b from-transparent to-surface pointer-events-none">
-              </div>
-
-              <!-- In-flow Paywall Card matching image10.png theme -->
-              <div
-                class="rounded-3xl p-6 sm:p-8 text-center border border-[#ecd9c2] bg-[#fdfaf6] shadow-xl max-w-lg mx-auto relative z-10 transition-all">
+              <!-- In-flow VIP Paywall Section (If Chapter is Locked) -->
+              <div class="relative pt-6 pb-12 mt-6 select-none" id="vip-paywall-container">
+                <!-- Gradient Fade Over Preview Content -->
                 <div
-                  class="w-16 h-16 rounded-full bg-[#fbf0e0] border border-[#f3ddc3] flex items-center justify-center mx-auto mb-4 text-[#874b02] shadow-sm">
-                  <span class="material-symbols-outlined text-[30px] icon-fill">lock</span>
+                  class="absolute -top-28 left-0 right-0 h-28 bg-gradient-to-b from-transparent to-surface pointer-events-none">
                 </div>
 
-                <h3 class="font-serif text-2xl sm:text-3xl font-bold text-[#2d1b09] mb-2 tracking-tight">Chương VIP</h3>
+                <!-- In-flow Paywall Card matching image10.png theme -->
+                <div
+                  class="rounded-3xl p-6 sm:p-8 text-center border border-[#ecd9c2] bg-[#fdfaf6] shadow-xl max-w-lg mx-auto relative z-10 transition-all">
+                  <div
+                    class="w-16 h-16 rounded-full bg-[#fbf0e0] border border-[#f3ddc3] flex items-center justify-center mx-auto mb-4 text-[#874b02] shadow-sm">
+                    <span class="material-symbols-outlined text-[30px] icon-fill">lock</span>
+                  </div>
 
-                <p class="text-sm text-[#5d4a3b] mb-6 leading-relaxed">
-                  Bạn đang xem bản đọc thử. Hãy mở khóa <strong class="text-[#2d1b09]">Chương <span
-                      th:text="${chapter.chapterNumber}">1</span>: <span th:text="${chapter.title}">Tiêu
-                      đề</span></strong> với giá <strong class="text-[#874b02]" th:text="${chapter.price} + ' Coin'">50
-                    Coin</strong> để tiếp tục theo dõi trọn vẹn câu chuyện.
-                </p>
+                  <h3 class="font-serif text-2xl sm:text-3xl font-bold text-[#2d1b09] mb-2 tracking-tight">Chương VIP
+                  </h3>
 
-                <!-- Action Button -->
-                <button type="button" onclick="openVipUnlockModal()"
-                  class="w-full sm:w-auto px-8 py-3.5 bg-[#874b02] hover:bg-[#723e00] text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all inline-flex items-center justify-center gap-2 text-sm">
-                  <span class="material-symbols-outlined text-[18px]">key</span>
-                  <span th:text="'Mở khóa chương (' + ${chapter.price} + ' Coin)'">Mở khóa chương</span>
-                </button>
+                  <p class="text-sm text-[#5d4a3b] mb-6 leading-relaxed">
+                    Bạn đang xem bản đọc thử. Hãy mở khóa <strong class="text-[#2d1b09]">Chương <span
+                        th:text="${chapter.chapterNumber}">1</span>: <span th:text="${chapter.title}">Tiêu
+                        đề</span></strong> với giá <strong class="text-[#874b02]"
+                      th:text="${chapter.price} + ' Coin'">50
+                      Coin</strong> để tiếp tục theo dõi trọn vẹn câu chuyện.
+                  </p>
 
-                <div class="flex items-center justify-center gap-1.5 text-[11px] text-[#8c7a6b] mt-4">
-                  <span class="material-symbols-outlined text-[15px] text-[#874b02]">verified_user</span>
-                  <span>Đã đọc một lần, lưu vĩnh viễn trong tủ sách</span>
+                  <!-- Action Button -->
+                  <button type="button" onclick="openVipUnlockModal()"
+                    class="w-full sm:w-auto px-8 py-3.5 bg-[#874b02] hover:bg-[#723e00] text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all inline-flex items-center justify-center gap-2 text-sm">
+                    <span class="material-symbols-outlined text-[18px]">key</span>
+                    <span th:text="'Mở khóa chương (' + ${chapter.price} + ' Coin)'">Mở khóa chương</span>
+                  </button>
+
+                  <div class="flex items-center justify-center gap-1.5 text-[11px] text-[#8c7a6b] mt-4">
+                    <span class="material-symbols-outlined text-[15px] text-[#874b02]">verified_user</span>
+                    <span>Đã đọc một lần, lưu vĩnh viễn trong tủ sách</span>
+                  </div>
                 </div>
               </div>
+            </th:block>
+          </article>
+
+          <!-- Capture & Snipping Tool Protection Overlay (shown when window loses focus or screen captured) -->
+          <div id="capture-protect-overlay" class="capture-protect-overlay hidden select-none" aria-hidden="true">
+            <div class="capture-protect-card">
+              <span class="material-symbols-outlined text-[36px] text-[#874b02] mb-2 inline-block">verified_user</span>
+              <h3 class="font-serif font-bold text-lg text-[#2d1b09] mb-1">Nội dung đang được bảo vệ</h3>
+              <p class="text-xs text-[#6b5543] leading-relaxed">Nhấp chuột vào cửa sổ trình duyệt để tiếp tục trải
+                nghiệm đọc truyện.</p>
             </div>
-          </th:block>
-        </article>
+          </div>
+        </div>
 
         <!-- Nút Báo lỗi chương cuối nội dung chương -->
         <div class="mt-8 pt-4 border-t border-outline-variant/30 flex justify-end">
@@ -290,7 +319,9 @@
       <aside id="chapter-list-drawer"
         class="fixed top-0 left-0 w-80 sm:w-96 h-full z-50 shadow-2xl flex flex-col -translate-x-full transition-transform duration-300 border-r border-outline-variant/30">
         <div class="p-4 border-b border-outline-variant/30 flex items-center gap-3.5 bg-surface-container-low">
-          <img th:src="${novel.coverUrl != null ? novel.coverUrl : '/images/default-cover.jpg'}" alt="Cover"
+          <img
+            th:src="${novel.coverUrl != null and !#strings.isEmpty(#strings.trim(novel.coverUrl)) ? novel.coverUrl : '/images/default-cover.jpg'}"
+            alt="Cover"
             class="w-12 h-16 object-cover rounded-lg shadow-sm border border-outline-variant/30 flex-shrink-0">
           <div class="min-w-0 flex-1">
             <h4 class="font-headline-sm text-sm font-bold text-on-surface line-clamp-2" th:text="${novel.title}">Tên
@@ -469,10 +500,138 @@
         </div>
       </div>
 
-      <!-- VIP Unlock Modal (Chuẩn Design RDS image10.png) -->
+      <!-- VIP Unlock Modal (Dual State: Mockup 1 Affordable & Mockup 2 Insufficient Balance) -->
       <div id="vipUnlockModal" th:if="${!isChapterUnlocked}"
         class="fixed inset-0 z-[100] items-center justify-center bg-black/60 backdrop-blur-sm hidden transition-all p-4">
-        <div
+
+        <!-- Case A: Đã đăng nhập nhưng không đủ Coin (Mockup 2) -->
+        <div th:if="${isLoggedIn and !canAfford}"
+          class="bg-[#fffdfa] rounded-3xl p-6 sm:p-7 max-w-[440px] w-full flex flex-col text-center shadow-2xl relative border border-[#f0e4d2] animate-fade-in-up">
+          <!-- Close Button -->
+          <button type="button" onclick="closeVipUnlockModal()" aria-label="Đóng"
+            class="absolute top-4 right-4 text-[#8c7a6b] hover:text-[#2d1b09] transition-colors p-1.5 rounded-xl hover:bg-[#f6ebd8]">
+            <span class="material-symbols-outlined text-[20px]">close</span>
+          </button>
+
+          <!-- Circular Lock Icon with badge -->
+          <div
+            class="relative w-16 h-16 rounded-full bg-[#fbf0e0] border border-[#f3ddc3] flex items-center justify-center mx-auto mb-2.5 shadow-inner">
+            <span class="material-symbols-outlined text-[28px] text-[#874b02] icon-fill">lock</span>
+            <span
+              class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-white border border-[#ebd2b4] flex items-center justify-center shadow-xs">
+              <span class="material-symbols-outlined text-[13px] text-[#874b02]">link</span>
+            </span>
+          </div>
+
+          <!-- Tagline & Heading -->
+          <div class="text-[10px] font-bold tracking-widest text-[#a84d2a] uppercase mb-1">Nội dung độc quyền</div>
+          <h3 class="font-serif text-2xl font-bold text-[#2d1b09] mb-1 tracking-tight">Chương VIP - Số dư không đủ</h3>
+
+          <!-- Description -->
+          <p class="text-xs sm:text-sm text-[#5d4a3b] leading-relaxed mb-3.5">
+            Chương <span th:text="${chapter.chapterNumber}">15</span>: <strong class="text-[#2d1b09]"
+              th:text="${chapter.title}">Tiêu đề</strong> yêu cầu <strong class="text-[#874b02]"
+              th:text="${chapter.price} + ' Coin'">50 Coin</strong> để mở khóa.
+          </p>
+
+          <!-- Balance Box -->
+          <div
+            class="bg-[#fbf4ea]/90 border border-[#f2e1cc] rounded-2xl p-3.5 mb-3.5 text-left flex items-center gap-3">
+            <div
+              class="w-10 h-10 rounded-full bg-[#fae8d0] border border-[#ebd2b4] flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-[20px] text-[#874b02]">account_balance_wallet</span>
+            </div>
+            <div>
+              <div class="text-xs text-[#5d4a3b]">
+                Số dư ví của bạn: <strong class="text-[#2d1b09] font-bold"
+                  th:text="${userWalletBalance != null ? userWalletBalance : 0}">20</strong> <span
+                  class="text-[#874b02] text-xs font-semibold">Coin</span>
+              </div>
+              <div class="text-[11px] text-[#c2410c] mt-0.5 font-medium">
+                (Còn thiếu <strong class="font-bold"
+                  th:text="${shortfall != null ? shortfall : (chapter.price - userWalletBalance)}">30</strong> Coin để
+                mở khóa chương này)
+              </div>
+            </div>
+          </div>
+
+          <!-- Gói nạp đề xuất (Mockup 2 Grid) -->
+          <div class="mb-4 text-left" th:if="${suggestedPackages != null and !suggestedPackages.isEmpty()}">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[11px] font-bold text-[#8c7a6b] uppercase tracking-wider">Gói nạp đề xuất</span>
+              <span class="text-[11px] font-medium text-[#c2410c] flex items-center gap-0.5">
+                <span class="material-symbols-outlined text-[14px]">bolt</span>
+                <span>Nhận ngay lập tức</span>
+              </span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2.5">
+              <div th:each="pkg, stat : ${suggestedPackages}" th:data-package-id="${pkg.id}"
+                onclick="selectTopupPackage(this)" th:classappend="${stat.first ? 'selected' : ''}"
+                class="vip-package-card group">
+                <!-- Best Fit or Bonus Badge -->
+                <div class="flex justify-end mb-1">
+                  <span th:if="${pkg.bestFit}" class="vip-badge-bestfit">
+                    <span class="material-symbols-outlined text-[11px]">star</span>
+                    <span>PHÙ HỢP</span>
+                  </span>
+                  <span th:unless="${pkg.bestFit}"
+                    class="text-[10px] text-[#c2410c] font-bold flex items-center gap-0.5">
+                    <span class="material-symbols-outlined text-[13px]">local_fire_department</span>
+                    <span th:if="${pkg.badgeText != null}" th:text="${pkg.badgeText}">Hot</span>
+                  </span>
+                </div>
+
+                <!-- Coin Amount & Price -->
+                <div class="text-base sm:text-lg font-bold text-[#2d1b09]" th:text="${pkg.coinAmount} + ' Coin'">50 Coin
+                </div>
+                <div class="text-xs text-[#8c7a6b] mt-0.5"
+                  th:text="${#numbers.formatInteger(pkg.price, 0, 'POINT')} + ' đ'">50.000 đ</div>
+                <div th:if="${pkg.bonusCoin > 0}" class="text-[11px] text-[#c2410c] font-semibold mt-1"
+                  th:text="'+' + ${pkg.bonusCoin} + ' Tặng'">+5 Tặng</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Fallback if no suggested packages configured -->
+          <div th:if="${suggestedPackages == null or suggestedPackages.isEmpty()}" class="mb-4">
+            <a th:href="@{/wallet/topup(returnUrl=${'/truyen/' + novel.slug + '/chuong-' + chapter.chapterNumber})}"
+              class="text-xs text-[#874b02] underline hover:text-[#723e00] font-semibold">
+              Xem toàn bộ danh sách gói nạp Coin &rarr;
+            </a>
+          </div>
+
+          <!-- Actions Form (Direct to VNPay Sandbox) -->
+          <form id="topupDirectForm" th:action="@{/wallet/topup/process}" method="POST" class="m-0">
+            <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <input type="hidden" name="packageId" id="selectedTopupPackageId"
+              th:value="${suggestedPackages != null and !suggestedPackages.isEmpty() ? suggestedPackages[0].id : ''}">
+            <input type="hidden" name="returnUrl"
+              th:value="@{'/truyen/' + ${novel.slug} + '/chuong-' + ${chapter.chapterNumber}}">
+
+            <div class="grid grid-cols-2 gap-3 mb-2">
+              <button type="button" onclick="closeVipUnlockModal()"
+                class="py-3 px-4 bg-[#faeee2] hover:bg-[#f3dfce] text-[#784408] font-bold rounded-xl text-center text-sm transition-all">
+                Hủy
+              </button>
+              <button type="submit" id="btnTopupSubmit"
+                class="vip-btn-topup py-3 px-4 text-center text-sm shadow-md transition-all">
+                <span class="material-symbols-outlined text-[18px]">bolt</span>
+                <span>Nạp Coin Ngay</span>
+                <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+              </button>
+            </div>
+          </form>
+
+          <!-- Footer Guarantee -->
+          <div class="flex items-center justify-center gap-1.5 text-[11px] text-[#8c7a6b] mt-3">
+            <span class="material-symbols-outlined text-[15px] text-[#874b02]">verified_user</span>
+            <span>Giao dịch bảo mật 100% qua Napas, MoMo, Visa/Mastercard (VNPay)</span>
+          </div>
+        </div>
+
+        <!-- Case B: Đã đăng nhập và đủ Coin (Mockup 1) OR Chưa đăng nhập -->
+        <div th:unless="${isLoggedIn and !canAfford}"
           class="bg-[#fffdfa] rounded-3xl p-6 sm:p-8 max-w-[430px] w-full flex flex-col text-center shadow-2xl relative border border-[#f0e4d2] animate-fade-in-up">
           <!-- Close Button -->
           <button type="button" onclick="closeVipUnlockModal()" aria-label="Đóng"
@@ -528,7 +687,7 @@
             </div>
           </div>
 
-          <!-- Checkbox Auto-Unlock (Image 10) -->
+          <!-- Checkbox Auto-Unlock (Mockup 1) -->
           <div th:if="${isLoggedIn and canAfford}" class="flex items-center gap-2.5 mb-5 px-1 text-left">
             <input type="checkbox" id="modalAutoUnlockNext" name="autoUnlockNext" value="true"
               class="w-4 h-4 rounded border-[#d4c3b0] text-[#874b02] focus:ring-[#874b02] accent-[#874b02] cursor-pointer">
@@ -537,7 +696,6 @@
             </label>
           </div>
 
-          <!-- Actions State -->
           <!-- Case 1: Chưa đăng nhập -->
           <div th:if="${!isLoggedIn}" class="space-y-3 mb-2">
             <p class="text-xs text-amber-800 bg-amber-50 p-2.5 rounded-xl border border-amber-200">
@@ -556,33 +714,11 @@
             </div>
           </div>
 
-          <!-- Case 2: Đã đăng nhập nhưng không đủ Coin -->
-          <div th:if="${isLoggedIn and !canAfford}" class="space-y-3 mb-2">
-            <div
-              class="p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs text-left flex items-center gap-2">
-              <span class="material-symbols-outlined text-[18px] text-amber-700 shrink-0">info</span>
-              <span>Bạn còn thiếu <strong class="text-rose-700"><span
-                    th:text="${chapter.price - userWalletBalance}">0</span> Coin</strong> để mở khóa chương này.</span>
-            </div>
-            <div class="grid grid-cols-2 gap-3">
-              <button type="button" onclick="closeVipUnlockModal()"
-                class="py-3 px-4 bg-[#faeee2] hover:bg-[#f3dfce] text-[#784408] font-bold rounded-xl text-center text-sm transition-all">
-                Hủy
-              </button>
-              <a th:href="@{/user/checkin}"
-                class="py-3 px-4 bg-[#874b02] hover:bg-[#723e00] text-white font-bold rounded-xl text-center text-sm shadow-md transition-all flex items-center justify-center gap-1.5">
-                <span class="material-symbols-outlined text-[18px]">calendar_month</span>
-                <span>Điểm danh nhận Coin</span>
-              </a>
-            </div>
-          </div>
-
-          <!-- Case 3: Đã đăng nhập và đủ Coin -->
+          <!-- Case 2: Đã đăng nhập và đủ Coin -->
           <form th:if="${isLoggedIn and canAfford}" id="vipUnlockForm"
             th:action="@{'/truyen/' + ${novel.slug} + '/chuong-' + ${chapter.chapterNumber} + '/unlock'}" method="POST"
             onsubmit="handleVipUnlockSubmit(event)" class="m-0">
             <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-            <input type="hidden" name="chapterId" th:value="${chapter.id}">
             <div class="grid grid-cols-2 gap-3 mb-2">
               <button type="button" onclick="closeVipUnlockModal()"
                 class="py-3 px-4 bg-[#faeee2] hover:bg-[#f3dfce] text-[#784408] font-bold rounded-xl text-center text-sm transition-all">
@@ -717,7 +853,7 @@
       const bodyEl = document.body;
       const chapterId = bodyEl.getAttribute('data-chapter-id');
       const isInitiallyRead = bodyEl.getAttribute('data-is-read') === 'true';
-      const novelSlug = bodyEl.getAttribute('data-novel-slug');
+      const novelSlug = bodyEl.getAttribute('data-novel-slug') || '';
       const chapterNumber = bodyEl.getAttribute('data-chapter-number');
 
       const chapterStorageKey = chapterId ? ('tramtruyen_scroll_ch_' + chapterId) : null;
@@ -1371,13 +1507,36 @@
         }
       };
 
+      window.selectTopupPackage = function (el) {
+        if (!el) return;
+        document.querySelectorAll('.vip-package-card').forEach(c => c.classList.remove('selected'));
+        el.classList.add('selected');
+        const pkgId = el.getAttribute('data-package-id');
+        const hiddenInput = document.getElementById('selectedTopupPackageId');
+        if (hiddenInput && pkgId) {
+          hiddenInput.value = pkgId;
+        }
+      };
+
       window.handleVipUnlockSubmit = function (event) {
-        event.preventDefault();
+        if (event && event.preventDefault) {
+          event.preventDefault();
+        }
         const form = document.getElementById('vipUnlockForm');
         if (!form) return;
         const btn = document.getElementById('btnConfirmUnlock');
         const btnText = document.getElementById('btnConfirmUnlockText');
-        const autoUnlock = document.getElementById('modalAutoUnlockNext')?.checked || false;
+        const autoUnlockCheckbox = document.getElementById('modalAutoUnlockNext');
+        const autoUnlock = autoUnlockCheckbox ? autoUnlockCheckbox.checked : false;
+
+        // Sync with browser client storage for this novel
+        if (novelSlug) {
+          if (autoUnlock) {
+            localStorage.setItem('auto_unlock_' + novelSlug, 'true');
+          } else {
+            localStorage.removeItem('auto_unlock_' + novelSlug);
+          }
+        }
 
         if (btn) {
           btn.disabled = true;
@@ -1416,11 +1575,34 @@
           });
       };
 
-      // Auto pop up VIP modal on locked chapter
+      // Auto-unlock & VIP modal auto-pop up handler
+      const autoUnlockKey = 'auto_unlock_' + novelSlug;
+      const isAutoUnlockSaved = (novelSlug && localStorage.getItem(autoUnlockKey) === 'true');
+
+      const modalAutoUnlockCheckbox = document.getElementById('modalAutoUnlockNext');
+      if (modalAutoUnlockCheckbox) {
+        modalAutoUnlockCheckbox.checked = isAutoUnlockSaved;
+        modalAutoUnlockCheckbox.addEventListener('change', function () {
+          if (this.checked) {
+            localStorage.setItem(autoUnlockKey, 'true');
+          } else {
+            localStorage.removeItem(autoUnlockKey);
+          }
+        });
+      }
+
       if (bodyEl.getAttribute('data-is-unlocked') === 'false') {
-        setTimeout(() => {
-          openVipUnlockModal();
-        }, 400);
+        const canAfford = bodyEl.getAttribute('data-can-afford') === 'true';
+        const isLoggedIn = bodyEl.getAttribute('data-logged-in') === 'true';
+
+        if (isAutoUnlockSaved && isLoggedIn && canAfford) {
+          // User previously opted into auto-unlock for this novel: trigger unlock immediately!
+          handleVipUnlockSubmit();
+        } else {
+          setTimeout(() => {
+            openVipUnlockModal();
+          }, 350);
+        }
       }
 
       window.toggleAudioPanel = function () {
@@ -1431,6 +1613,273 @@
         if (isPanelOpen) closePlayerPanel();
         else openPlayerPanel();
       };
+
+      // =========================================================================
+      // CONTENT PROTECTION: Anti-Copy, Anti-Screenshot, Window Blur Protection
+      // =========================================================================
+      (function initContentProtection() {
+        const readerBody = document.getElementById('reader-body');
+        const readerWrapper = document.getElementById('reader-content-wrapper');
+        const captureOverlay = document.getElementById('capture-protect-overlay');
+
+        function showCopyWarningToast(msg) {
+          let toast = document.getElementById('anti-copy-toast');
+          if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'anti-copy-toast';
+            toast.className = 'fixed bottom-8 left-1/2 -translate-x-1/2 z-50 bg-[#2d1b09]/95 text-[#fffdfa] px-4 py-2.5 rounded-xl text-xs font-semibold shadow-2xl flex items-center gap-2 border border-[#874b02]/40 transition-opacity duration-300 opacity-0 pointer-events-none backdrop-blur-md';
+            toast.innerHTML = '<span class="material-symbols-outlined text-[18px] text-amber-400">shield</span><span id="anti-copy-toast-msg">Nội dung được bảo vệ bản quyền, không thể sao chép!</span>';
+            document.body.appendChild(toast);
+          }
+          const msgEl = document.getElementById('anti-copy-toast-msg');
+          if (msgEl && msg) msgEl.textContent = msg;
+          toast.classList.remove('opacity-0');
+          clearTimeout(toast._timer);
+          toast._timer = setTimeout(() => {
+            toast.classList.add('opacity-0');
+          }, 2400);
+        }
+
+        // 1. Prevent contextmenu, selectstart, dragstart on reading area
+        if (readerWrapper) {
+          readerWrapper.addEventListener('contextmenu', function (e) {
+            e.preventDefault();
+            showCopyWarningToast('Tính năng nhấp chuột phải đã bị vô hiệu hóa để bảo vệ bản quyền tác phẩm.');
+            return false;
+          });
+          readerWrapper.addEventListener('selectstart', function (e) {
+            e.preventDefault();
+            return false;
+          });
+          readerWrapper.addEventListener('dragstart', function (e) {
+            e.preventDefault();
+            return false;
+          });
+        }
+
+        // 2. Intercept copy event globally
+        document.addEventListener('copy', function (e) {
+          const selection = window.getSelection();
+          if (selection && selection.toString().trim().length > 0) {
+            e.preventDefault();
+            if (e.clipboardData) {
+              e.clipboardData.setData('text/plain', 'Nội dung thuộc bản quyền của Trạm Truyện. Vui lòng không sao chép trái phép!');
+            }
+            showCopyWarningToast();
+          }
+        });
+
+        // 3. Screen capture protection: PrintScreen key & shortcut interception
+        let captureTimer = null;
+        function triggerCaptureProtection() {
+          if (readerBody) readerBody.classList.add('reader-blur-protected');
+          if (captureOverlay) captureOverlay.classList.remove('hidden');
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText('Nội dung tác phẩm được bảo vệ bản quyền tại Trạm Truyện.');
+          }
+          clearTimeout(captureTimer);
+          captureTimer = setTimeout(() => {
+            if (document.hasFocus()) {
+              if (readerBody) readerBody.classList.remove('reader-blur-protected');
+              if (captureOverlay) captureOverlay.classList.add('hidden');
+            }
+          }, 1200);
+        }
+
+        window.addEventListener('keyup', function (e) {
+          if (e.key === 'PrintScreen' || e.keyCode === 44) {
+            triggerCaptureProtection();
+          }
+        });
+
+        // 4. Window blur protection (Snipping tool, Win+Shift+S, minimizing window, screen capture apps)
+        window.addEventListener('blur', function () {
+          if (readerBody) readerBody.classList.add('reader-blur-protected');
+          if (captureOverlay) captureOverlay.classList.remove('hidden');
+        });
+
+        window.addEventListener('focus', function () {
+          if (readerBody) readerBody.classList.remove('reader-blur-protected');
+          if (captureOverlay) captureOverlay.classList.add('hidden');
+        });
+
+        document.addEventListener('visibilitychange', function () {
+          if (document.hidden) {
+            if (readerBody) readerBody.classList.add('reader-blur-protected');
+            if (captureOverlay) captureOverlay.classList.remove('hidden');
+          } else if (document.hasFocus()) {
+            if (readerBody) readerBody.classList.remove('reader-blur-protected');
+            if (captureOverlay) captureOverlay.classList.add('hidden');
+          }
+        });
+
+        // 5. Intercept key combinations: Ctrl+C, Ctrl+P, Ctrl+U, Ctrl+S, F12, DevTools
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'PrintScreen' || e.keyCode === 44) {
+            triggerCaptureProtection();
+          }
+          if ((e.ctrlKey || e.metaKey) && (e.key === 'p' || e.key === 'P')) {
+            e.preventDefault();
+            showCopyWarningToast('Hệ thống không hỗ trợ in ấn hoặc lưu PDF chương truyện.');
+            return false;
+          }
+          if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S')) {
+            e.preventDefault();
+            return false;
+          }
+          if ((e.ctrlKey || e.metaKey) && (e.key === 'u' || e.key === 'U')) {
+            e.preventDefault();
+            return false;
+          }
+          if (e.key === 'F12' || ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c'))) {
+            e.preventDefault();
+            return false;
+          }
+        });
+
+        // 6. Zero-Width Invisible Forensic Steganography
+        // Encodes the reader fingerprint into invisible characters (\u200B=0, \u200C=1, \u200D=delimiter)
+        function textToZeroWidth(text) {
+          if (!text) return '';
+          return text.split('').map(function (c) {
+            return c.charCodeAt(0).toString(2).padStart(8, '0').split('').map(function (bit) {
+              return bit === '1' ? '\u200C' : '\u200B';
+            }).join('');
+          }).join('\u200D');
+        }
+
+        function zeroWidthToText(zwStr) {
+          if (!zwStr) return '';
+          const cleaned = zwStr.replace(/[^\u200B\u200C\u200D]/g, '');
+          if (!cleaned) return null;
+          const chars = cleaned.split('\u200D');
+          return chars.map(function (binStr) {
+            if (!binStr || binStr.length < 8) return '';
+            const bin = binStr.split('').map(function (b) { return b === '\u200C' ? '1' : '0'; }).join('');
+            return String.fromCharCode(parseInt(bin, 2));
+          }).join('');
+        }
+
+        // Global decoder utility for administrators to trace source of leaked chapters
+        window.decodeWatermarkFingerprint = function (leakedText) {
+          const result = zeroWidthToText(leakedText);
+          if (result && result.trim()) {
+            console.log('%c[BẢO MẬT TRẠM TRUYỆN] Phát hiện chữ ký nguồn rò rỉ: ' + result, 'color:#22c55e;font-size:14px;font-weight:bold;');
+            return result;
+          }
+          console.warn('[BẢO MẬT TRẠM TRUYỆN] Không tìm thấy chữ ký tàng hình trong đoạn văn bản.');
+          return null;
+        };
+
+        // Inject invisible fingerprint into paragraphs
+        function injectZeroWidthFingerprint() {
+          const fingerprint = readerWrapper ? readerWrapper.getAttribute('data-fingerprint') : null;
+          if (!fingerprint || !readerBody) return;
+          const zeroWidthCode = textToZeroWidth(fingerprint);
+          if (!zeroWidthCode) return;
+
+          const textContainers = readerBody.querySelectorAll('p, div.indent-8');
+          if (textContainers && textContainers.length > 0) {
+            textContainers.forEach(function (container, index) {
+              if (index % 2 === 0 && container.childNodes.length > 0) {
+                const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null, false);
+                const firstTextNode = walker.nextNode();
+                if (firstTextNode && firstTextNode.nodeValue && firstTextNode.nodeValue.length > 5) {
+                  const val = firstTextNode.nodeValue;
+                  firstTextNode.nodeValue = val.slice(0, 3) + zeroWidthCode + val.slice(3);
+                }
+              }
+            });
+          }
+        }
+
+        // 7. Anti-Tampering Guardian: Prevent removing or hiding watermarks via DevTools
+        function initWatermarkGuardian() {
+          const watermarkGrid = document.getElementById('reader-watermark-layer');
+          const floatingWatermark = document.getElementById('reader-floating-watermark');
+
+          function triggerTamperLockdown(reason) {
+            console.warn('[Security] Watermark integrity violation:', reason);
+            if (readerBody) readerBody.classList.add('reader-blur-protected');
+            if (captureOverlay) {
+              captureOverlay.classList.remove('hidden');
+              const cardTitle = captureOverlay.querySelector('h3');
+              const cardDesc = captureOverlay.querySelector('p');
+              if (cardTitle) cardTitle.textContent = 'Bảo Vệ Bản Quyền';
+              if (cardDesc) cardDesc.textContent = 'Phát hiện hành vi can thiệp hoặc gỡ bỏ lớp bảo vệ bản quyền. Trang đọc đã bị khóa.';
+            }
+          }
+
+          function verifyWatermarkVisibility() {
+            if (!watermarkGrid || !floatingWatermark) {
+              triggerTamperLockdown('Watermark element not found');
+              return;
+            }
+            if (!document.body.contains(watermarkGrid) || !document.body.contains(floatingWatermark)) {
+              triggerTamperLockdown('Watermark element detached from DOM');
+              return;
+            }
+            const gridStyle = window.getComputedStyle(watermarkGrid);
+            const floatStyle = window.getComputedStyle(floatingWatermark);
+
+            if (gridStyle.display === 'none' || gridStyle.visibility === 'hidden' || parseFloat(gridStyle.opacity) === 0) {
+              triggerTamperLockdown('Watermark grid style concealed');
+              return;
+            }
+            if (floatStyle.display === 'none' || floatStyle.visibility === 'hidden' || parseFloat(floatStyle.opacity) === 0) {
+              triggerTamperLockdown('Floating watermark style concealed');
+              return;
+            }
+          }
+
+          // Periodic check every 2.5 seconds
+          setInterval(verifyWatermarkVisibility, 2500);
+
+          // DOM Mutation Observer
+          if (window.MutationObserver && readerWrapper) {
+            const observer = new MutationObserver(function (mutations) {
+              for (let i = 0; i < mutations.length; i++) {
+                const mutation = mutations[i];
+                if (mutation.type === 'childList') {
+                  for (let j = 0; j < mutation.removedNodes.length; j++) {
+                    const node = mutation.removedNodes[j];
+                    if (node.id === 'reader-watermark-layer' || node.id === 'reader-floating-watermark') {
+                      triggerTamperLockdown('Watermark element removed');
+                      return;
+                    }
+                  }
+                } else if (mutation.type === 'attributes') {
+                  const target = mutation.target;
+                  if (target.id === 'reader-watermark-layer' || target.id === 'reader-floating-watermark') {
+                    verifyWatermarkVisibility();
+                  }
+                }
+              }
+            });
+
+            observer.observe(readerWrapper, {
+              childList: true,
+              subtree: true,
+              attributes: true,
+              attributeFilter: ['style', 'class', 'hidden']
+            });
+
+            if (floatingWatermark && floatingWatermark.parentElement) {
+              observer.observe(floatingWatermark.parentElement, {
+                childList: true,
+                attributes: true,
+                attributeFilter: ['style', 'class', 'hidden']
+              });
+            }
+          }
+        }
+
+        // Initialize forensic features on load
+        setTimeout(function () {
+          injectZeroWidthFingerprint();
+          initWatermarkGuardian();
+        }, 300);
+      })();
 
       // Keyboard shortcuts
       document.addEventListener('keydown', function (e) {

@@ -5,6 +5,7 @@ import com.tramtruyen.dto.NovelSummaryDTO;
 import com.tramtruyen.entity.Category;
 import com.tramtruyen.entity.Chapter;
 import com.tramtruyen.entity.Novel;
+import com.tramtruyen.entity.enums.ChapterStatus;
 import com.tramtruyen.repository.BookshelfRepository;
 import com.tramtruyen.repository.CategoryRepository;
 import com.tramtruyen.repository.ChapterRepository;
@@ -15,13 +16,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -63,7 +64,7 @@ class HomeServiceImplTest {
                 .chapterNumber(5)
                 .title("Khởi Đầu Gian Nan")
                 .updatedAt(LocalDateTime.now().minusMinutes(10))
-                .status("PUBLISHED")
+                .status(ChapterStatus.PUBLISHED_REGULAR.name())
                 .build();
     }
 
@@ -73,17 +74,18 @@ class HomeServiceImplTest {
         when(novelRepository.findTop12ByIsDeletedFalseOrderByUpdatedAtDesc()).thenReturn(List.of(sampleNovel));
         when(novelRepository.findTop10ByIsDeletedFalseOrderByViewsDesc()).thenReturn(List.of(sampleNovel));
         when(novelRepository.findTop12ByIsDeletedFalseAndStatusOrderByUpdatedAtDesc("COMPLETED")).thenReturn(List.of());
-        when(novelRepository.findTop12ByIsDeletedFalseOrderByAverageRatingDesc()).thenReturn(List.of(sampleNovel));
+        when(novelRepository.findTopRecommendedNovels(anyCollection(), any(Pageable.class))).thenReturn(List.of(sampleNovel));
         when(novelRepository.findTop12ByIsDeletedFalseOrderByCreatedAtDesc()).thenReturn(List.of(sampleNovel));
 
         when(bookshelfRepository.countByNovelId(anyInt())).thenReturn(25L);
-        when(chapterRepository.findTop3ByNovelIdAndIsDeletedFalseAndStatusOrderByChapterNumberDesc(eq(1), eq("PUBLISHED")))
+        when(chapterRepository.findTop3ByNovelIdAndIsDeletedFalseAndStatusInOrderByChapterNumberDesc(eq(1), anyList()))
                 .thenReturn(List.of(sampleChapter));
 
         HomePageDTO data = homeService.getHomePageData();
 
         assertThat(data).isNotNull();
         assertThat(data.getRecentlyUpdatedNovels()).hasSize(1);
+        assertThat(data.getRecommendedNovels()).hasSize(1);
         assertThat(data.getNewNovels()).hasSize(1);
         NovelSummaryDTO novelDTO = data.getRecentlyUpdatedNovels().get(0);
         assertThat(novelDTO.getTitle()).isEqualTo("Võ Đạo Đan Thần");

@@ -5,6 +5,10 @@
     <!-- Header Fragment -->
     <header th:fragment="main-header"
         class="fixed top-0 left-0 right-0 z-50 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(107,91,75,0.06)]">
+
+        <!-- Dynamic Active Web Theme CSS Variables (UC-52) -->
+        <style th:if="${activeThemeCss != null and !activeThemeCss.isEmpty()}" th:text="${activeThemeCss}"></style>
+
         <div class="h-20 max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between gap-6">
             <div class="flex items-center gap-8 lg:gap-10 shrink-0">
                 <a class="flex items-center gap-3 group" th:href="@{/}">
@@ -251,127 +255,8 @@
                 </button>
             </div>
         </div>
-        <script>
-            // Auto-hide toast after 5 seconds
-            document.addEventListener('DOMContentLoaded', function () {
-                setTimeout(function () {
-                    const toast = document.getElementById('global-toast');
-                    if (toast) {
-                        toast.style.opacity = '0';
-                        toast.style.transition = 'opacity 0.5s ease';
-                        setTimeout(() => toast.remove(), 500);
-                    }
-                }, 5000);
-            });
-        </script>
-
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                // Update Login & Register buttons to preserve current page return URL
-                const loginBtn = document.getElementById('navLoginBtn');
-                const regBtn = document.getElementById('navRegisterBtn');
-                const currentPath = window.location.pathname;
-                if (currentPath && currentPath !== '/' && !currentPath.startsWith('/login') && !currentPath.startsWith('/register')) {
-                    const redirectTarget = encodeURIComponent(currentPath + window.location.search);
-                    if (loginBtn) loginBtn.href = '/login?redirect=' + redirectTarget;
-                    if (regBtn) regBtn.href = '/register?redirect=' + redirectTarget;
-                }
-
-                // Dropdown menu logic
-                const btn = document.getElementById('userMenuBtn');
-                const dropdown = document.getElementById('userDropdown');
-                if (btn && dropdown) {
-                    btn.addEventListener('click', function (e) {
-                        e.stopPropagation();
-                        dropdown.classList.toggle('hidden');
-                    });
-                    document.addEventListener('click', function (e) {
-                        if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
-                            dropdown.classList.add('hidden');
-                        }
-                    });
-                    document.addEventListener('keydown', function (e) {
-                        if (e.key === 'Escape') {
-                            dropdown.classList.add('hidden');
-                        }
-                    });
-                }
-
-                // Live search suggestions
-                const searchInput = document.getElementById('searchInput');
-                const searchPopup = document.getElementById('searchSuggestions');
-                const suggestKeyword = document.getElementById('suggestKeyword');
-                const suggestCount = document.getElementById('suggestCount');
-                const suggestList = document.getElementById('suggestList');
-                const suggestSeeAll = document.getElementById('suggestSeeAll');
-
-                let debounceTimer;
-
-                if (searchInput && searchPopup) {
-                    searchInput.addEventListener('input', function () {
-                        clearTimeout(debounceTimer);
-                        const query = this.value.trim();
-
-                        if (query.length === 0) {
-                            searchPopup.classList.add('hidden');
-                            return;
-                        }
-
-                        debounceTimer = setTimeout(() => {
-                            fetch(`/api/search/suggestions?q=${encodeURIComponent(query)}`)
-                                .then(response => response.json())
-                                .then(data => {
-                                    suggestKeyword.textContent = query;
-                                    suggestCount.textContent = `${data.results.length} kết quả nổi bật`;
-
-                                    suggestList.innerHTML = '';
-                                    if (data.results.length === 0) {
-                                        suggestList.innerHTML = `<div class="p-4 text-center text-[#8c7a68] text-sm">Không tìm thấy kết quả nào</div>`;
-                                    } else {
-                                        data.results.forEach(novel => {
-                                            const a = document.createElement('a');
-                                            a.href = `/truyen/${novel.slug}`;
-                                            a.className = "flex items-center gap-4 p-3 hover:bg-[#faf8f5] rounded-xl transition-colors group";
-                                            a.innerHTML = `
-                                                <div class="w-12 h-16 shrink-0 rounded-md overflow-hidden bg-gray-100 border border-outline-variant/30">
-                                                    <img src="${novel.coverUrl || '/images/default-cover.jpg'}" alt="Cover" class="w-full h-full object-cover">
-                                                </div>
-                                                <div class="flex-1 min-w-0">
-                                                    <h4 class="font-bold text-[#231A11] text-[15px] mb-0.5 truncate group-hover:text-[#c08d41] transition-colors">${novel.title}</h4>
-                                                    <p class="text-[#8c7a68] text-[13px] truncate">${novel.author}</p>
-                                                </div>
-                                                <div class="shrink-0 bg-[#f5eae0] text-[#c08d41] text-[11px] font-bold px-2 py-1 rounded-full uppercase tracking-wider flex items-center gap-1">
-                                                    ${novel.category} <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
-                                                </div>
-                                            `;
-                                            suggestList.appendChild(a);
-                                        });
-                                    }
-
-                                    searchPopup.classList.remove('hidden');
-                                });
-                        }, 300);
-                    });
-
-                    suggestSeeAll.addEventListener('click', function (e) {
-                        e.preventDefault();
-                        document.getElementById('searchForm').submit();
-                    });
-
-                    document.addEventListener('click', function (e) {
-                        if (!searchInput.contains(e.target) && !searchPopup.contains(e.target)) {
-                            searchPopup.classList.add('hidden');
-                        }
-                    });
-
-                    searchInput.addEventListener('focus', function () {
-                        if (this.value.trim().length > 0 && suggestList.innerHTML !== '') {
-                            searchPopup.classList.remove('hidden');
-                        }
-                    });
-                }
-            });
-        </script>
+        <!-- External Header Interactions Script -->
+        <script th:src="@{/js/header.js}" defer></script>
     </header>
 </body>
 

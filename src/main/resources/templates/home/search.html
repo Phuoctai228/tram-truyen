@@ -89,7 +89,7 @@
           <!-- Status -->
           <div>
             <h4 class="font-bold text-[14px] text-[#231A11] mb-3">Tình trạng tác phẩm</h4>
-            <div class="grid grid-cols-3 gap-2">
+            <div class="grid grid-cols-4 gap-2">
               <label class="cursor-pointer">
                 <input type="radio" name="status" value=""
                   th:checked="${selectedStatus == null or selectedStatus == ''}" class="peer hidden">
@@ -110,6 +110,13 @@
                 <div
                   class="py-1.5 rounded-lg bg-[#f5eae0] text-[#8c7a68] text-[13px] font-medium peer-checked:bg-[#c08d41] peer-checked:text-white peer-checked:font-bold text-center transition-colors">
                   Hoàn thành</div>
+              </label>
+              <label class="cursor-pointer">
+                <input type="radio" name="status" value="ON_HOLD" th:checked="${selectedStatus == 'ON_HOLD'}"
+                  class="peer hidden">
+                <div
+                  class="py-1.5 rounded-lg bg-[#f5eae0] text-[#8c7a68] text-[13px] font-medium peer-checked:bg-[#c08d41] peer-checked:text-white peer-checked:font-bold text-center transition-colors">
+                  Tạm ngưng</div>
               </label>
             </div>
           </div>
@@ -247,6 +254,9 @@
               <span th:if="${selectedStatus == 'COMPLETED'}"
                 class="px-2.5 py-1 bg-[#f5eae0] text-[#6b5b4b] text-[12px] font-semibold rounded flex items-center gap-1">Hoàn
                 thành</span>
+              <span th:if="${selectedStatus == 'ON_HOLD'}"
+                class="px-2.5 py-1 bg-[#f5eae0] text-[#6b5b4b] text-[12px] font-semibold rounded flex items-center gap-1">Tạm
+                ngưng</span>
               <span th:if="${selectedChapterRange != null}"
                 class="px-2.5 py-1 bg-[#f5eae0] text-[#6b5b4b] text-[12px] font-semibold rounded flex items-center gap-1">Lọc
                 số chương</span>
@@ -303,10 +313,14 @@
                   <span th:text="${(novel.chapterCount != null ? novel.chapterCount : 0) + ' ch.'}">0 ch.</span>
                 </span>
               </div>
-              <!-- Badge if completed -->
+              <!-- Badge if completed or ongoing -->
               <div th:if="${novel.status == 'COMPLETED'}"
                 class="absolute top-2 left-2 px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#43a047] text-white select-none shadow-sm">
                 HOÀN THÀNH
+              </div>
+              <div th:if="${novel.status == 'ONGOING'}"
+                class="absolute top-2 left-2 px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#0284c7] text-white select-none shadow-sm">
+                ĐANG RA
               </div>
             </a>
 
