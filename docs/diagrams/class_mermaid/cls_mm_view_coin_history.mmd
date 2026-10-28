@@ -1,0 +1,196 @@
+classDiagram
+    direction LR
+
+    class WalletController["<<controller>> WalletController"] {
+        - walletService : WalletService
+        - userRepository : UserRepository
+        - systemSettingService : SystemSettingService
+        + WalletController(walletService: WalletService, userRepository: UserRepository, systemSettingService: SystemSettingService)
+        + showWallet(authentication: Authentication, model: Model) String
+        + getTransactionsApi(authentication: Authentication, type: String, keyword: String, date: String, page: int, size: int) ResponseEntity~Map~String, Object~~
+    }
+
+    class WalletService["<<service interface>> WalletService"] {
+        + getWalletOverview(user: User)* WalletOverviewDTO
+        + searchTransactions(user: User, type: String, keyword: String, date: LocalDate, page: int, size: int)* Page~TransactionDTO~
+    }
+
+    class WalletServiceImpl["<<service>> WalletServiceImpl"] {
+        - userRepository : UserRepository
+        - transactionRepository : TransactionRepository
+        - topupOrderRepository : TopupOrderRepository
+        + WalletServiceImpl(userRepository: UserRepository, transactionRepository: TransactionRepository, topupOrderRepository: TopupOrderRepository)
+        + getWalletOverview(user: User) WalletOverviewDTO
+        + searchTransactions(user: User, type: String, keyword: String, date: LocalDate, page: int, size: int) Page~TransactionDTO~
+    }
+
+    class SystemSettingService["<<service interface>> SystemSettingService"] {
+        + getVndToCoinRate()* int
+        + getVndPerCoinFormatted()* String
+    }
+
+    class SystemSettingServiceImpl["<<service>> SystemSettingServiceImpl"] {
+        - systemSettingRepository : SystemSettingRepository
+        - userRepository : UserRepository
+        + SystemSettingServiceImpl(systemSettingRepository: SystemSettingRepository, userRepository: UserRepository, systemAuditLogRepository: SystemAuditLogRepository, objectMapper: ObjectMapper)
+        + getVndToCoinRate() int
+        + getVndPerCoinFormatted() String
+    }
+
+    class WalletOverviewDTO["<<dto>> WalletOverviewDTO"] {
+        - userId : Integer
+        - userFullName : String
+        - userEmail : String
+        - userAvatarUrl : String
+        - walletBalance : Integer
+        - formattedBalance : String
+        - walletCode : String
+        - statusText : String
+        - lastUpdated : String
+        - totalTransactions : long
+        - transactions : List~TransactionDTO~
+        + getUserId() Integer
+        + getWalletBalance() Integer
+        + getFormattedBalance() String
+        + getWalletCode() String
+        + getStatusText() String
+        + getLastUpdated() String
+        + getTotalTransactions() long
+        + getTransactions() List~TransactionDTO~
+    }
+
+    class TransactionDTO["<<dto>> TransactionDTO"] {
+        - id : Integer
+        - orderCode : String
+        - type : String
+        - title : String
+        - subtitle : String
+        - amount : Integer
+        - amountDisplay : String
+        - secondaryText : String
+        - statusBadge : String
+        - icon : String
+        - iconBgColor : String
+        - amountColorClass : String
+        - createdAt : LocalDateTime
+        - formattedDate : String
+        + getId() Integer
+        + getOrderCode() String
+        + getType() String
+        + getTitle() String
+        + getAmount() Integer
+        + getAmountDisplay() String
+        + getStatusBadge() String
+        + getFormattedDate() String
+    }
+
+    class TransactionRepository["<<repository>> TransactionRepository"] {
+        + findByUserIdOrderByCreatedAtDesc(userId: Integer)* List~Transaction~
+        + findFirstByUserIdOrderByCreatedAtDesc(userId: Integer)* Optional~Transaction~
+        + countByUserId(userId: Integer)* long
+    }
+
+    class TopupOrderRepository["<<repository>> TopupOrderRepository"] {
+        + findByUserIdAndStatusOrderByCreatedAtDesc(userId: Integer, status: String)* List~TopupOrder~
+    }
+
+    class UserRepository["<<repository>> UserRepository"] {
+        + findByEmail(email: String)* Optional~User~
+        + findById(id: Integer)* Optional~User~
+    }
+
+    class Transaction["<<entity>> Transaction"] {
+        - id : Integer
+        - user : User
+        - amount : Integer
+        - balanceAfter : Integer
+        - type : String
+        - referenceId : Integer
+        - description : String
+        - createdAt : LocalDateTime
+        + getId() Integer
+        + setId(id: Integer) void
+        + getUser() User
+        + setUser(user: User) void
+        + getAmount() Integer
+        + setAmount(amount: Integer) void
+        + getBalanceAfter() Integer
+        + setBalanceAfter(balanceAfter: Integer) void
+        + getType() String
+        + setType(type: String) void
+        + getDescription() String
+        + setDescription(description: String) void
+        + getCreatedAt() LocalDateTime
+        + setCreatedAt(createdAt: LocalDateTime) void
+    }
+
+    class TopupOrder["<<entity>> TopupOrder"] {
+        - id : Integer
+        - user : User
+        - orderCode : String
+        - amountVnd : Integer
+        - coinReceived : Integer
+        - status : String
+        - createdAt : LocalDateTime
+        + getId() Integer
+        + setId(id: Integer) void
+        + getUser() User
+        + setUser(user: User) void
+        + getOrderCode() String
+        + setOrderCode(orderCode: String) void
+        + getAmountVnd() Integer
+        + setAmountVnd(amountVnd: Integer) void
+        + getCoinReceived() Integer
+        + setCoinReceived(coinReceived: Integer) void
+        + getStatus() String
+        + setStatus(status: String) void
+        + getCreatedAt() LocalDateTime
+        + setCreatedAt(createdAt: LocalDateTime) void
+    }
+
+    class User["<<entity>> User"] {
+        - id : Integer
+        - email : String
+        - fullName : String
+        - avatarUrl : String
+        - walletBalance : Integer
+        - status : String
+        + getId() Integer
+        + setId(id: Integer) void
+        + getEmail() String
+        + setEmail(email: String) void
+        + getFullName() String
+        + setFullName(fullName: String) void
+        + getAvatarUrl() String
+        + setAvatarUrl(avatarUrl: String) void
+        + getWalletBalance() Integer
+        + setWalletBalance(walletBalance: Integer) void
+        + getStatus() String
+        + setStatus(status: String) void
+    }
+
+    WalletController --> WalletService
+    WalletController --> UserRepository
+    WalletController --> SystemSettingService
+    WalletController ..> WalletOverviewDTO
+    WalletController ..> TransactionDTO
+    WalletServiceImpl ..|> WalletService
+    SystemSettingServiceImpl ..|> SystemSettingService
+    WalletServiceImpl --> UserRepository
+    WalletServiceImpl --> TransactionRepository
+    WalletServiceImpl --> TopupOrderRepository
+    WalletService ..> WalletOverviewDTO
+    WalletService ..> TransactionDTO
+    WalletServiceImpl ..> WalletOverviewDTO
+    WalletServiceImpl ..> TransactionDTO
+    WalletServiceImpl ..> Transaction
+    WalletServiceImpl ..> TopupOrder
+    WalletServiceImpl ..> User
+    WalletOverviewDTO o-- TransactionDTO
+    TransactionRepository ..> Transaction
+    TopupOrderRepository ..> TopupOrder
+    UserRepository ..> User
+    Transaction --> User
+    TopupOrder --> User
+
+    classDef default fill:#FFFFFF,stroke:#000000,stroke-width:1px,color:#000000

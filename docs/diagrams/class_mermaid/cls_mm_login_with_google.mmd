@@ -1,0 +1,212 @@
+classDiagram
+    direction LR
+
+    class AuthController["<<controller>> AuthController"] {
+        - authService : AuthService
+        + AuthController(authService: AuthService)
+        + showLoginForm(redirect: String, request: HttpServletRequest, authentication: Authentication, model: Model) String
+    }
+
+    class SecurityConfig["<<configuration>> SecurityConfig"] {
+        - customOAuth2UserService : CustomOAuth2UserService
+        - customAuthenticationSuccessHandler : CustomAuthenticationSuccessHandler
+        - customAuthenticationFailureHandler : CustomAuthenticationFailureHandler
+        - userRepository : UserRepository
+        - accountLockService : AccountLockService
+        + filterChain(http: HttpSecurity) SecurityFilterChain
+    }
+
+    class CustomOAuth2UserService["<<service>> CustomOAuth2UserService"] {
+        - userRepository : UserRepository
+        - roleRepository : RoleRepository
+        - accountLockService : AccountLockService
+        + CustomOAuth2UserService(userRepository: UserRepository, roleRepository: RoleRepository, accountLockService: AccountLockService)
+        + loadUser(userRequest: OAuth2UserRequest) OAuth2User
+    }
+
+    class CustomUserDetails["<<dto>> CustomUserDetails"] {
+        - user : User
+        - attributes : Map~String, Object~
+        + CustomUserDetails(user: User)
+        + CustomUserDetails(user: User, attributes: Map~String, Object~)
+        + getAttributes() Map~String, Object~
+        + getName() String
+        + getAuthorities() Collection~GrantedAuthority~
+        + getPassword() String
+        + getUsername() String
+        + isAccountNonLocked() boolean
+        + isEnabled() boolean
+        + getUser() User
+    }
+
+    class CustomAuthenticationSuccessHandler["<<service>> CustomAuthenticationSuccessHandler"] {
+        - requestCache : RequestCache
+        + CustomAuthenticationSuccessHandler()
+        + onAuthenticationSuccess(request: HttpServletRequest, response: HttpServletResponse, authentication: Authentication) void
+        + isValidRedirectUrl(url: String)$ boolean
+        - extractRelativePath(fullUrl: String)$ String
+    }
+
+    class CustomAuthenticationFailureHandler["<<service>> CustomAuthenticationFailureHandler"] {
+        - accountLockService : AccountLockService
+        + CustomAuthenticationFailureHandler(accountLockService: AccountLockService)
+        + onAuthenticationFailure(request: HttpServletRequest, response: HttpServletResponse, exception: AuthenticationException) void
+    }
+
+    class AccountLockService["<<service>> AccountLockService"] {
+        - userRepository : UserRepository
+        - systemAuditLogRepository : SystemAuditLogRepository
+        - objectMapper : ObjectMapper
+        - jdbcTemplate : JdbcTemplate
+        + checkAndAutoUnban(user: User) boolean
+        + buildAccountLockedInfo(email: String) AccountLockedInfoDTO
+    }
+
+    class AccountLockedInfoDTO["<<dto>> AccountLockedInfoDTO"] {
+        - title : String
+        - subtitle : String
+        - reasonDisplay : String
+        - bannedAtFormatted : String
+        - durationFormatted : String
+        - reviewer : String
+        - ticketNumber : String
+        - supportEmail : String
+        - permanent : boolean
+        - generic : boolean
+        + getTitle() String
+        + setTitle(title: String) void
+        + getSubtitle() String
+        + setSubtitle(subtitle: String) void
+        + getReasonDisplay() String
+        + setReasonDisplay(reasonDisplay: String) void
+        + getBannedAtFormatted() String
+        + setBannedAtFormatted(bannedAtFormatted: String) void
+        + getDurationFormatted() String
+        + setDurationFormatted(durationFormatted: String) void
+        + getReviewer() String
+        + setReviewer(reviewer: String) void
+        + getTicketNumber() String
+        + setTicketNumber(ticketNumber: String) void
+        + getSupportEmail() String
+        + setSupportEmail(supportEmail: String) void
+        + isPermanent() boolean
+        + setPermanent(permanent: boolean) void
+        + isGeneric() boolean
+        + setGeneric(generic: boolean) void
+    }
+
+    class UserRepository["<<repository>> UserRepository"] {
+        + findByEmail(email: String)* Optional~User~
+        + save(user: User)* User
+    }
+
+    class RoleRepository["<<repository>> RoleRepository"] {
+        + findByName(name: String)* Optional~Role~
+        + save(role: Role)* Role
+    }
+
+    class SystemAuditLogRepository["<<repository>> SystemAuditLogRepository"] {
+        + findFirstByTargetEntityAndTargetIdAndActionTypeOrderByCreatedAtDesc(targetEntity: String, targetId: Integer, actionType: String)* Optional~SystemAuditLog~
+    }
+
+    class User["<<entity>> User"] {
+        - id : Integer
+        - email : String
+        - password : String
+        - fullName : String
+        - avatarUrl : String
+        - walletBalance : Integer
+        - authProvider : String
+        - status : String
+        - createdAt : LocalDateTime
+        - updatedAt : LocalDateTime
+        - roles : Set~Role~
+        + getId() Integer
+        + setId(id: Integer) void
+        + getEmail() String
+        + setEmail(email: String) void
+        + getPassword() String
+        + setPassword(password: String) void
+        + getFullName() String
+        + setFullName(fullName: String) void
+        + getAvatarUrl() String
+        + setAvatarUrl(avatarUrl: String) void
+        + getWalletBalance() Integer
+        + setWalletBalance(walletBalance: Integer) void
+        + getAuthProvider() String
+        + setAuthProvider(authProvider: String) void
+        + getStatus() String
+        + setStatus(status: String) void
+        + getCreatedAt() LocalDateTime
+        + setCreatedAt(createdAt: LocalDateTime) void
+        + getUpdatedAt() LocalDateTime
+        + setUpdatedAt(updatedAt: LocalDateTime) void
+        + getRoles() Set~Role~
+        + setRoles(roles: Set~Role~) void
+    }
+
+    class Role["<<entity>> Role"] {
+        - id : Integer
+        - name : String
+        + getId() Integer
+        + setId(id: Integer) void
+        + getName() String
+        + setName(name: String) void
+    }
+
+    class SystemAuditLog["<<entity>> SystemAuditLog"] {
+        - id : Integer
+        - adminId : Integer
+        - actionType : String
+        - targetEntity : String
+        - targetId : Integer
+        - oldValue : String
+        - newValue : String
+        - ipAddress : String
+        - createdAt : LocalDateTime
+        + getId() Integer
+        + setId(id: Integer) void
+        + getAdminId() Integer
+        + setAdminId(adminId: Integer) void
+        + getActionType() String
+        + setActionType(actionType: String) void
+        + getTargetEntity() String
+        + setTargetEntity(targetEntity: String) void
+        + getTargetId() Integer
+        + setTargetId(targetId: Integer) void
+        + getOldValue() String
+        + setOldValue(oldValue: String) void
+        + getNewValue() String
+        + setNewValue(newValue: String) void
+        + getIpAddress() String
+        + setIpAddress(ipAddress: String) void
+        + getCreatedAt() LocalDateTime
+        + setCreatedAt(createdAt: LocalDateTime) void
+    }
+
+    AuthController ..> CustomAuthenticationSuccessHandler
+    SecurityConfig --> CustomOAuth2UserService
+    SecurityConfig --> CustomAuthenticationSuccessHandler
+    SecurityConfig --> CustomAuthenticationFailureHandler
+    SecurityConfig --> AccountLockService
+    SecurityConfig --> UserRepository
+    CustomOAuth2UserService --> UserRepository
+    CustomOAuth2UserService --> RoleRepository
+    CustomOAuth2UserService --> AccountLockService
+    CustomOAuth2UserService ..> CustomUserDetails
+    CustomOAuth2UserService ..> User
+    CustomOAuth2UserService ..> Role
+    CustomUserDetails --> User
+    CustomAuthenticationFailureHandler --> AccountLockService
+    CustomAuthenticationFailureHandler ..> AccountLockedInfoDTO
+    AccountLockService --> UserRepository
+    AccountLockService --> SystemAuditLogRepository
+    AccountLockService ..> AccountLockedInfoDTO
+    AccountLockService ..> User
+    AccountLockService ..> SystemAuditLog
+    UserRepository ..> User
+    RoleRepository ..> Role
+    SystemAuditLogRepository ..> SystemAuditLog
+    User o-- Role
+
+    classDef default fill:#FFFFFF,stroke:#000000,stroke-width:1px,color:#000000
