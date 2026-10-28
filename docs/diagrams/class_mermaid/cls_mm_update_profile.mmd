@@ -1,0 +1,108 @@
+classDiagram
+    direction LR
+
+    class UserController["<<controller>> UserController"] {
+        - userService : UserService
+        - bookshelfService : BookshelfService
+        + UserController(bookshelfService: BookshelfService, userService: UserService)
+        + viewEditProfile(authentication: Authentication, model: Model) String
+        + updateProfile(authentication: Authentication, fullName: String, avatar: MultipartFile, redirectAttributes: RedirectAttributes) String
+    }
+
+    class UserService["<<service interface>> UserService"] {
+        + updateProfile(email: String, fullName: String, avatar: MultipartFile)* void
+    }
+
+    class UserServiceImpl["<<service>> UserServiceImpl"] {
+        - userRepository : UserRepository
+        - mediaStorageService : MediaStorageService
+        + UserServiceImpl(userRepository: UserRepository, mediaStorageService: MediaStorageService, passwordEncoder: PasswordEncoder)
+        + updateProfile(email: String, fullName: String, avatar: MultipartFile) void
+    }
+
+    class BookshelfService["<<service interface>> BookshelfService"] {
+        + getUserProfile(email: String)* UserProfileDTO
+    }
+
+    class BookshelfServiceImpl["<<service>> BookshelfServiceImpl"] {
+        - userRepository : UserRepository
+        + BookshelfServiceImpl(userRepository: UserRepository)
+        + getUserProfile(email: String) UserProfileDTO
+    }
+
+    class MediaStorageService["<<service interface>> MediaStorageService"] {
+        + uploadImage(file: MultipartFile)* String
+    }
+
+    class CloudinaryMediaStorageService["<<service>> CloudinaryMediaStorageService"] {
+        - properties : CloudinaryProperties
+        + CloudinaryMediaStorageService(cloudinary: Cloudinary, properties: CloudinaryProperties)
+        + uploadImage(file: MultipartFile) String
+    }
+
+    class UserProfileDTO["<<dto>> UserProfileDTO"] {
+        - id : Integer
+        - fullName : String
+        - email : String
+        - avatarUrl : String
+        - walletBalance : Integer
+        - createdAt : LocalDateTime
+        - isEmailVerified : boolean
+        + getId() Integer
+        + setId(id: Integer) void
+        + getFullName() String
+        + setFullName(fullName: String) void
+        + getEmail() String
+        + setEmail(email: String) void
+        + getAvatarUrl() String
+        + setAvatarUrl(avatarUrl: String) void
+        + getWalletBalance() Integer
+        + setWalletBalance(walletBalance: Integer) void
+        + getCreatedAt() LocalDateTime
+        + setCreatedAt(createdAt: LocalDateTime) void
+        + isEmailVerified() boolean
+        + setEmailVerified(isEmailVerified: boolean) void
+    }
+
+    class UserRepository["<<repository>> UserRepository"] {
+        + findByEmail(email: String)* Optional~User~
+        + save(user: User)* User
+    }
+
+    class User["<<entity>> User"] {
+        - id : Integer
+        - email : String
+        - fullName : String
+        - avatarUrl : String
+        - status : String
+        - updatedAt : LocalDateTime
+        + getId() Integer
+        + setId(id: Integer) void
+        + getEmail() String
+        + setEmail(email: String) void
+        + getFullName() String
+        + setFullName(fullName: String) void
+        + getAvatarUrl() String
+        + setAvatarUrl(avatarUrl: String) void
+        + getStatus() String
+        + setStatus(status: String) void
+        + getUpdatedAt() LocalDateTime
+        + setUpdatedAt(updatedAt: LocalDateTime) void
+    }
+
+    UserController --> UserService
+    UserController --> BookshelfService
+    UserController ..> UserProfileDTO
+    BookshelfServiceImpl ..|> BookshelfService
+    UserServiceImpl ..|> UserService
+    CloudinaryMediaStorageService ..|> MediaStorageService
+    UserServiceImpl --> UserRepository
+    UserServiceImpl --> MediaStorageService
+    BookshelfServiceImpl --> UserRepository
+    BookshelfService ..> UserProfileDTO
+    BookshelfServiceImpl ..> UserProfileDTO
+    BookshelfServiceImpl ..> User
+    UserServiceImpl ..> User
+    UserRepository ..> User
+
+    classDef default fill:#FFFFFF,stroke:#000000,stroke-width:1px,color:#000000

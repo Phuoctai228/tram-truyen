@@ -1,0 +1,165 @@
+@startuml sq_topup_coin
+<style>
+    sequenceDiagram{
+        FontSize 16
+
+        arrow {
+            ' Set the maximum width of the text on arrows
+            MaximumWidth 300
+        }
+        actor{
+            BackgroundColor white
+            LineThickness 1.0
+        }
+        participant{
+            BackgroundColor white
+            RoundCorner 0
+        }
+        database{
+            BackgroundColor white
+        }
+        groupHeader{
+            BackgroundColor white
+        }
+        referenceHeader{
+            BackgroundColor white
+        }
+        reference{
+            BackgroundColor white
+        }
+    }
+</style>
+
+hide footbox
+mainframe Top-up Coin
+
+actor Member as act
+participant "TopupPage" as view
+participant "PaymentSuccessPage" as s_view
+participant "PaymentFailurePage" as f_view
+participant "VNPayGateway" as vnpay
+participant "PaymentController" as ctrl <<controller>>
+participant ":VNPayService" as svc
+participant ":TopupOrder" as order_ett
+participant ":Transaction" as tx_ett
+participant ":PaymentResultDTO" as dto
+participant ":CoinPackageRepository" as pkg_repo
+participant ":TopupOrderRepository" as order_repo
+participant ":UserRepository" as user_repo
+participant ":TransactionRepository" as tx_repo
+database Database as db
+
+act ++
+
+act -> view++: Select coin package and click "Pay via VNPay"
+view -> ctrl--: POST /wallet/topup/process
+activate ctrl
+
+ctrl -> user_repo++: findByEmail(email)
+user_repo -> db++: Execute query
+db -->> user_repo: Return user data
+db--
+user_repo -->> ctrl: Return user entity
+user_repo--
+
+ctrl -> svc++: createPaymentUrl(user, packageId, clientIp)
+
+svc -> pkg_repo++: findById(packageId)
+pkg_repo -> db++: Execute query
+db -->> pkg_repo: Return coin package
+db--
+pkg_repo -->> svc: Return coin package
+pkg_repo--
+
+svc -> order_ett++: Call TopupOrder.builder()
+order_ett -->> svc--: Return topupOrder entity
+
+svc -> order_repo++: save(order)
+order_repo -> db++: Save changes to database
+db -->> order_repo: Return saved order
+db--
+order_repo -->> svc: Return saved order
+order_repo--
+
+svc -> svc++: Build query string and generate HMAC-SHA512 hash
+svc--
+
+svc -->> ctrl--: Return paymentUrl
+
+ctrl -->> vnpay: Redirect to VNPay payment URL
+deactivate ctrl
+activate vnpay
+vnpay -->> act: Display VNPay payment gateway
+
+act -> vnpay: Process payment on gateway
+vnpay -->> ctrl--: Redirect GET /payment/vnpay-return
+activate ctrl
+
+ctrl -> svc++: processReturn(allParams)
+
+svc -> svc++: Verify HMAC-SHA512 checksum
+svc--
+
+svc -> order_repo++: findByOrderCode(orderCode)
+order_repo -> db++: Execute query
+db -->> order_repo: Return topup order
+db--
+order_repo -->> svc: Return topup order
+order_repo--
+
+svc -> svc++: Validate checksum and payment status
+svc--
+alt Payment failed / Cancelled / Invalid signature
+    svc -> order_repo++: save(order)
+    order_repo -> db++: Save changes to database
+    db -->> order_repo: Return updated order
+    db--
+    order_repo -->> svc: Return updated order
+    order_repo--
+
+    svc -> dto++: Call PaymentResultDTO.builder()
+    dto -->> svc--: Return paymentResultDTO
+
+    svc -->> ctrl: Return paymentResultDTO
+
+    ctrl -->> f_view: Return "wallet/payment-failure"
+    activate f_view
+    f_view -->> act: Display payment failure details
+    deactivate f_view
+else Payment successful
+    svc -> order_repo++: save(order)
+    order_repo -> db++: Save changes to database
+    db -->> order_repo: Return updated order
+    db--
+    order_repo -->> svc: Return updated order
+    order_repo--
+
+    svc -> user_repo++: save(user)
+    user_repo -> db++: Save changes to database
+    db -->> user_repo: Return updated user
+    db--
+    user_repo -->> svc: Return updated user
+    user_repo--
+
+    svc -> tx_ett++: Call Transaction.builder()
+    tx_ett -->> svc--: Return transaction entity
+
+    svc -> tx_repo++: save(transaction)
+    tx_repo -> db++: Save changes to database
+    db -->> tx_repo: Return saved transaction
+    db--
+    tx_repo -->> svc: Return saved transaction
+    tx_repo--
+
+    svc -> dto++: Call PaymentResultDTO.builder()
+    dto -->> svc--: Return paymentResultDTO
+
+    svc -->> ctrl--: Return paymentResultDTO
+
+    ctrl -->> s_view--: Return "wallet/payment-success"
+    activate s_view
+    s_view -->> act--: Display payment success receipt and credited coins
+    deactivate s_view
+end
+
+@enduml

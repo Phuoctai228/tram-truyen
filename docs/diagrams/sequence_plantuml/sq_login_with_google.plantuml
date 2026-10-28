@@ -1,0 +1,167 @@
+@startuml sq_login_with_google
+<style>
+    sequenceDiagram{
+        FontSize 16
+
+        arrow {
+            ' Set the maximum width of the text on arrows
+            MaximumWidth 300
+        }
+        actor{
+            BackgroundColor white
+            LineThickness 1.0
+        }
+        participant{
+            BackgroundColor white
+            RoundCorner 0
+        }
+        database{
+            BackgroundColor white
+        }
+        groupHeader{
+            BackgroundColor white
+        }
+        referenceHeader{
+            BackgroundColor white
+        }
+        reference{
+            BackgroundColor white
+        }
+    }
+</style>
+
+hide footbox
+mainframe Login with Google
+
+actor Guest as act
+participant "LoginPage" as view
+participant "HomePage" as r_view
+participant "AccountLockedPage" as locked_view
+participant "Google OAuth2 Server" as google
+participant "SecurityFilterChain" as sec
+participant ":CustomOAuth2UserService" as oauth_svc
+participant ":AccountLockService" as lock_svc
+participant ":CustomAuthenticationSuccessHandler" as success_handler
+participant ":CustomAuthenticationFailureHandler" as failure_handler
+participant ":CustomUserDetails" as details
+participant ":AccountLockedInfoDTO" as locked_dto
+participant ":User" as ett
+participant ":UserRepository" as user_repo
+participant ":RoleRepository" as role_repo
+participant ":SystemAuditLogRepository" as audit_repo
+database Database as db
+
+act ++
+
+act -> view++: Click "Login with Google"
+view -> sec++: GET /oauth2/authorization/google
+view--
+
+sec -->> google++: Redirect to Google authorization endpoint
+google -->> act: Display Google consent screen
+
+google -> google++: Validate authorization decision
+google--
+opt Authorization denied by user
+    act -> google: Deny authorization
+    google -->> sec: Callback /login/oauth2/code/google (error=access_denied)
+    sec -> failure_handler++: onAuthenticationFailure(request, response, exception)
+    failure_handler -->> sec--: Return result
+    sec -->> view: Redirect to /login?error
+    activate view
+    view -->> act: Display login cancelled message
+    deactivate view
+end
+
+act -> google: Authorize application
+google -->> sec: Callback /login/oauth2/code/google (authCode)
+google--
+
+sec -> google++: Request user info (accessToken)
+google -->> sec--: Return user profile (email, name, picture)
+
+sec -> oauth_svc++: loadUser(userRequest)
+
+oauth_svc -> user_repo++: findByEmail(email)
+user_repo -> db++: Execute query
+db -->> user_repo: Return user data
+db--
+user_repo -->> oauth_svc: Return user data
+user_repo--
+
+oauth_svc -> oauth_svc++: Check user existence and account status
+oauth_svc--
+alt Account banned
+    oauth_svc -->> sec: throw OAuth2AuthenticationException("account_locked")
+    sec -> failure_handler++: onAuthenticationFailure(request, response, exception)
+    failure_handler -> lock_svc++: buildAccountLockedInfo(email)
+
+    lock_svc -> audit_repo++: findFirstByTargetEntityAndTargetIdAndActionTypeOrderByCreatedAtDesc("USERS", id, "BAN_USER")
+    audit_repo -> db++: Execute query
+    db -->> audit_repo: Return ban audit log
+    db--
+    audit_repo -->> lock_svc: Return ban audit log
+    audit_repo--
+
+    lock_svc -> locked_dto++: Call AccountLockedInfoDTO(...)
+    locked_dto -->> lock_svc--: Return lockedInfo
+
+    lock_svc -->> failure_handler--: Return lockedInfo
+    failure_handler -->> sec--: Return result
+
+    sec -->> locked_view: Redirect to /account-locked
+    activate locked_view
+    locked_view -->> act: Display account locked page
+    deactivate locked_view
+else Account already exists (active)
+    oauth_svc -> user_repo++: save(user)
+    user_repo -> db++: Save changes to database
+    db -->> user_repo: Return saved user
+    db--
+    user_repo -->> oauth_svc: Return saved user
+    user_repo--
+
+    oauth_svc -> details++: Call CustomUserDetails(user, attributes)
+    details -->> oauth_svc--: Return userDetails
+
+    oauth_svc -->> sec: Return userDetails
+
+    sec -> success_handler++: onAuthenticationSuccess(request, response, authentication)
+    success_handler -->> sec--: Return result
+
+    sec -->> r_view: Redirect to /
+    activate r_view
+    r_view -->> act: Display home page
+    deactivate r_view
+else New user registration
+    oauth_svc -> ett++: Call User(email, name, picture, "GOOGLE", "ACTIVE")
+    ett -->> oauth_svc--: Return user entity
+
+    oauth_svc -> role_repo++: findByName("ROLE_MEMBER")
+    role_repo -> db++: Execute query
+    db -->> role_repo: Return Role entity
+    db--
+    role_repo -->> oauth_svc: Return Role entity
+    role_repo--
+
+    oauth_svc -> user_repo++: save(user)
+    user_repo -> db++: Save changes to database
+    db -->> user_repo: Return saved user
+    db--
+    user_repo -->> oauth_svc: Return saved user
+    user_repo--
+
+    oauth_svc -> details++: Call CustomUserDetails(user, attributes)
+    details -->> oauth_svc--: Return userDetails
+
+    oauth_svc -->> sec--: Return userDetails
+
+    sec -> success_handler++: onAuthenticationSuccess(request, response, authentication)
+    success_handler -->> sec--: Return result
+
+    sec -->> r_view--: Redirect to /
+    activate r_view
+    r_view -->> act--: Display home page
+end
+
+@enduml

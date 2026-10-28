@@ -1,0 +1,286 @@
+classDiagram
+    direction LR
+
+    class PaymentController["<<controller>> PaymentController"] {
+        - coinPackageService : CoinPackageService
+        - vnPayService : VNPayService
+        - userRepository : UserRepository
+        - systemSettingService : SystemSettingService
+        + PaymentController(coinPackageService: CoinPackageService, vnPayService: VNPayService, userRepository: UserRepository, systemSettingService: SystemSettingService)
+        + showTopupPage(authentication: Authentication, model: Model) String
+        + processTopup(authentication: Authentication, packageId: Integer, request: HttpServletRequest) String
+        + handlePaymentReturn(allParams: Map~String, String~, model: Model) String
+        + handlePaymentIpn(allParams: Map~String, String~, request: HttpServletRequest) Map~String, String~
+    }
+
+    class CoinPackageService["<<service interface>> CoinPackageService"] {
+        + getActivePackages()* List~CoinPackageDTO~
+    }
+
+    class CoinPackageServiceImpl["<<service>> CoinPackageServiceImpl"] {
+        - coinPackageRepository : CoinPackageRepository
+        + CoinPackageServiceImpl(coinPackageRepository: CoinPackageRepository)
+        + initPackages() void
+        + getActivePackages() List~CoinPackageDTO~
+    }
+
+    class VNPayService["<<service interface>> VNPayService"] {
+        + createPaymentUrl(user: User, packageId: Integer, ipAddress: String)* String
+        + processReturn(params: Map~String, String~)* PaymentResultDTO
+        + processIpn(params: Map~String, String~, ipAddress: String)* Map~String, String~
+    }
+
+    class VNPayServiceImpl["<<service>> VNPayServiceImpl"] {
+        - vnPayProperties : VNPayProperties
+        - coinPackageRepository : CoinPackageRepository
+        - topupOrderRepository : TopupOrderRepository
+        - paymentLogRepository : PaymentLogRepository
+        - transactionRepository : TransactionRepository
+        - userRepository : UserRepository
+        + VNPayServiceImpl(vnPayProperties: VNPayProperties, coinPackageRepository: CoinPackageRepository, topupOrderRepository: TopupOrderRepository, paymentLogRepository: PaymentLogRepository, transactionRepository: TransactionRepository, userRepository: UserRepository)
+        + createPaymentUrl(user: User, packageId: Integer, ipAddress: String) String
+        + processReturn(params: Map~String, String~) PaymentResultDTO
+        + processIpn(params: Map~String, String~, ipAddress: String) Map~String, String~
+        - fulfillOrder(order: TopupOrder, transactionNo: String) void
+        - getFriendlyErrorMessage(responseCode: String) String
+    }
+
+    class SystemSettingService["<<service interface>> SystemSettingService"] {
+        + getVndToCoinRate()* int
+        + getVndPerCoinFormatted()* String
+    }
+
+    class SystemSettingServiceImpl["<<service>> SystemSettingServiceImpl"] {
+        - systemSettingRepository : SystemSettingRepository
+        - userRepository : UserRepository
+        + getVndToCoinRate() int
+        + getVndPerCoinFormatted() String
+    }
+
+    class CoinPackageDTO["<<dto>> CoinPackageDTO"] {
+        - id : Integer
+        - name : String
+        - price : Integer
+        - coinAmount : Integer
+        - baseCoin : Integer
+        - bonusCoin : Integer
+        - badgeText : String
+        + getId() Integer
+        + getName() String
+        + getPrice() Integer
+        + getCoinAmount() Integer
+        + getBaseCoin() Integer
+        + getBonusCoin() Integer
+        + getBadgeText() String
+    }
+
+    class PaymentResultDTO["<<dto>> PaymentResultDTO"] {
+        - success : boolean
+        - orderCode : String
+        - amountVnd : Integer
+        - paymentMethod : String
+        - coinReceived : Integer
+        - formattedTime : String
+        - currentBalance : Integer
+        - statusText : String
+        - failureReason : String
+        - responseCode : String
+        + isSuccess() boolean
+        + getOrderCode() String
+        + getAmountVnd() Integer
+        + getPaymentMethod() String
+        + getCoinReceived() Integer
+        + getFormattedTime() String
+        + getCurrentBalance() Integer
+        + getStatusText() String
+        + getFailureReason() String
+        + getResponseCode() String
+    }
+
+    class CoinPackageRepository["<<repository>> CoinPackageRepository"] {
+        + findByStatusOrderByPriceAsc(status: String)* List~CoinPackage~
+        + findById(id: Integer)* Optional~CoinPackage~
+    }
+
+    class TopupOrderRepository["<<repository>> TopupOrderRepository"] {
+        + findByOrderCode(orderCode: String)* Optional~TopupOrder~
+        + save(order: TopupOrder)* TopupOrder
+    }
+
+    class PaymentLogRepository["<<repository>> PaymentLogRepository"] {
+        + save(paymentLog: PaymentLog)* PaymentLog
+    }
+
+    class TransactionRepository["<<repository>> TransactionRepository"] {
+        + save(transaction: Transaction)* Transaction
+    }
+
+    class UserRepository["<<repository>> UserRepository"] {
+        + findByEmail(email: String)* Optional~User~
+        + findById(id: Integer)* Optional~User~
+        + save(user: User)* User
+    }
+
+    class CoinPackage["<<entity>> CoinPackage"] {
+        - id : Integer
+        - name : String
+        - price : Integer
+        - coinAmount : Integer
+        - status : String
+        - createdAt : LocalDateTime
+        + getId() Integer
+        + setId(id: Integer) void
+        + getName() String
+        + setName(name: String) void
+        + getPrice() Integer
+        + setPrice(price: Integer) void
+        + getCoinAmount() Integer
+        + setCoinAmount(coinAmount: Integer) void
+        + getStatus() String
+        + setStatus(status: String) void
+        + getCreatedAt() LocalDateTime
+        + setCreatedAt(createdAt: LocalDateTime) void
+    }
+
+    class TopupOrder["<<entity>> TopupOrder"] {
+        - id : Integer
+        - user : User
+        - coinPackage : CoinPackage
+        - orderCode : String
+        - amountVnd : Integer
+        - coinReceived : Integer
+        - status : String
+        - paymentMethod : String
+        - bankTransactionCode : String
+        - paidAt : LocalDateTime
+        - createdAt : LocalDateTime
+        - updatedAt : LocalDateTime
+        + getId() Integer
+        + setId(id: Integer) void
+        + getUser() User
+        + setUser(user: User) void
+        + getCoinPackage() CoinPackage
+        + setCoinPackage(coinPackage: CoinPackage) void
+        + getOrderCode() String
+        + setOrderCode(orderCode: String) void
+        + getAmountVnd() Integer
+        + setAmountVnd(amountVnd: Integer) void
+        + getCoinReceived() Integer
+        + setCoinReceived(coinReceived: Integer) void
+        + getStatus() String
+        + setStatus(status: String) void
+        + getPaymentMethod() String
+        + setPaymentMethod(paymentMethod: String) void
+        + getBankTransactionCode() String
+        + setBankTransactionCode(bankTransactionCode: String) void
+        + getPaidAt() LocalDateTime
+        + setPaidAt(paidAt: LocalDateTime) void
+    }
+
+    class PaymentLog["<<entity>> PaymentLog"] {
+        - id : Integer
+        - orderCode : String
+        - rawPayload : String
+        - ipAddress : String
+        - status : String
+        - createdAt : LocalDateTime
+        + getId() Integer
+        + setId(id: Integer) void
+        + getOrderCode() String
+        + setOrderCode(orderCode: String) void
+        + getRawPayload() String
+        + setRawPayload(rawPayload: String) void
+        + getIpAddress() String
+        + setIpAddress(ipAddress: String) void
+        + getStatus() String
+        + setStatus(status: String) void
+        + getCreatedAt() LocalDateTime
+        + setCreatedAt(createdAt: LocalDateTime) void
+    }
+
+    class Transaction["<<entity>> Transaction"] {
+        - id : Integer
+        - user : User
+        - amount : Integer
+        - balanceAfter : Integer
+        - type : String
+        - referenceId : Integer
+        - description : String
+        - createdAt : LocalDateTime
+        + getId() Integer
+        + setId(id: Integer) void
+        + getUser() User
+        + setUser(user: User) void
+        + getAmount() Integer
+        + setAmount(amount: Integer) void
+        + getBalanceAfter() Integer
+        + setBalanceAfter(balanceAfter: Integer) void
+        + getType() String
+        + setType(type: String) void
+        + getReferenceId() Integer
+        + setReferenceId(referenceId: Integer) void
+        + getDescription() String
+        + setDescription(description: String) void
+    }
+
+    class User["<<entity>> User"] {
+        - id : Integer
+        - email : String
+        - fullName : String
+        - walletBalance : Integer
+        - status : String
+        + getId() Integer
+        + setId(id: Integer) void
+        + getEmail() String
+        + setEmail(email: String) void
+        + getFullName() String
+        + setFullName(fullName: String) void
+        + getWalletBalance() Integer
+        + setWalletBalance(walletBalance: Integer) void
+        + getStatus() String
+        + setStatus(status: String) void
+    }
+
+    PaymentController --> CoinPackageService
+    PaymentController --> VNPayService
+    PaymentController --> UserRepository
+    PaymentController --> SystemSettingService
+    PaymentController ..> CoinPackageDTO
+    PaymentController ..> PaymentResultDTO
+    PaymentController ..> User
+
+    CoinPackageServiceImpl ..|> CoinPackageService
+    CoinPackageServiceImpl --> CoinPackageRepository
+    CoinPackageService ..> CoinPackageDTO
+    CoinPackageServiceImpl ..> CoinPackageDTO
+    CoinPackageServiceImpl ..> CoinPackage
+
+    VNPayServiceImpl ..|> VNPayService
+    VNPayServiceImpl --> CoinPackageRepository
+    VNPayServiceImpl --> TopupOrderRepository
+    VNPayServiceImpl --> PaymentLogRepository
+    VNPayServiceImpl --> TransactionRepository
+    VNPayServiceImpl --> UserRepository
+    VNPayService ..> PaymentResultDTO
+    VNPayService ..> User
+    VNPayServiceImpl ..> PaymentResultDTO
+    VNPayServiceImpl ..> TopupOrder
+    VNPayServiceImpl ..> CoinPackage
+    VNPayServiceImpl ..> PaymentLog
+    VNPayServiceImpl ..> Transaction
+    VNPayServiceImpl ..> User
+
+    SystemSettingServiceImpl ..|> SystemSettingService
+
+    CoinPackageRepository ..> CoinPackage
+    TopupOrderRepository ..> TopupOrder
+    PaymentLogRepository ..> PaymentLog
+    TransactionRepository ..> Transaction
+    TransactionRepository ..> User
+    UserRepository ..> User
+
+    TopupOrder --> User
+    TopupOrder --> CoinPackage
+    Transaction --> User
+
+    classDef default fill:#FFFFFF,stroke:#000000,stroke-width:1px,color:#000000

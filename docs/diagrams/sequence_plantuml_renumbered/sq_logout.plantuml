@@ -1,0 +1,57 @@
+@startuml sq_logout
+<style>
+    sequenceDiagram{
+        FontSize 16
+
+        arrow {
+            ' Set the maximum width of the text on arrows
+            MaximumWidth 300
+        }
+        actor{
+            BackgroundColor white
+            LineThickness 1.0
+        }
+        participant{
+            BackgroundColor white
+            RoundCorner 0
+        }
+        database{
+            BackgroundColor white
+        }
+        groupHeader{
+            BackgroundColor white
+        }
+        referenceHeader{
+            BackgroundColor white
+        }
+        reference{
+            BackgroundColor white
+        }
+    }
+</style>
+
+hide footbox
+mainframe Logout
+
+actor Member as act
+participant "HeaderFragment" as view
+participant "HomePage" as r_view
+participant "SecurityFilterChain" as sec
+participant "HomeController" as ctrl <<controller>>
+
+act ++
+
+act -> view++:1. Click "Đăng xuất"
+view -> sec--:2. POST /logout
+activate sec
+
+sec -> sec++:3. Invalidate session and clear cookies
+sec--
+
+sec -->> r_view--:4. Redirect to /
+activate r_view
+r_view -> ctrl++:5. GET /
+ctrl -->> r_view--:6. Return "index"
+r_view -->> act--:7. Display home page
+
+@enduml
