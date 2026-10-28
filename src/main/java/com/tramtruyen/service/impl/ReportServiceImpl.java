@@ -227,7 +227,13 @@ public class ReportServiceImpl implements ReportService {
 
         boolean isRejected = "REJECTED".equalsIgnoreCase(request.getDecision());
         String newStatus = isRejected ? "REJECTED" : "PROCESSED";
-        String actionApplied = request.getAction() != null ? request.getAction() : "NONE";
+        String actionApplied = request.getAction() != null ? request.getAction().trim() : "NONE";
+
+        if (!isRejected) {
+            if (!"HIDE".equalsIgnoreCase(actionApplied) && !"NO_CHANGE".equalsIgnoreCase(actionApplied)) {
+                throw new IllegalArgumentException("Biện pháp xử lý không hợp lệ. Chỉ chấp nhận 'Ẩn bình luận' hoặc 'Chỉ ghi nhận'.");
+            }
+        }
 
         Comment comment = report.getComment();
         String oldCommentStatus = (comment != null) ? comment.getStatus() : "UNKNOWN";
@@ -235,69 +241,56 @@ public class ReportServiceImpl implements ReportService {
         int affectedReplyCount = 0;
         List<Integer> affectedReplyIds = new ArrayList<>();
 
-        if (!isRejected && comment != null) {
-            boolean isHide = "HIDE".equalsIgnoreCase(actionApplied);
-            boolean isDelete = "DELETE".equalsIgnoreCase(actionApplied);
+        if (!isRejected && "HIDE".equalsIgnoreCase(actionApplied) && comment != null) {
+            String targetStatus = "HIDDEN";
+            LocalDateTime now = LocalDateTime.now();
 
-            if (isHide || isDelete) {
-                String targetStatus = isDelete ? "DELETED" : "HIDDEN";
-                LocalDateTime now = LocalDateTime.now();
+            // 1. Cập nhật bình luận gốc bị báo cáo
+            comment.setStatus(targetStatus);
+            comment.setUpdatedAt(now);
+            commentRepository.save(comment);
 
-                // 1. Cập nhật bình luận gốc bị báo cáo
-                comment.setStatus(targetStatus);
-                comment.setUpdatedAt(now);
-                commentRepository.save(comment);
+            // 2. Duyệt theo tầng (BFS) tìm toàn bộ bình luận con cháu
+            // Dùng tập visited chống lặp/vòng lặp, giới hạn độ sâu 50
+            Set<Integer> visited = new HashSet<>();
+            visited.add(comment.getId());
+            List<Integer> currentLayer = Collections.singletonList(comment.getId());
+            List<Comment> allDescendants = new ArrayList<>();
+            int depth = 0;
+            final int MAX_DEPTH = 50;
 
-                // 2. Duyệt theo tầng (BFS) tìm toàn bộ bình luận con cháu
-                // Dùng tập visited chống lặp/vòng lặp, giới hạn độ sâu 50
-                Set<Integer> visited = new HashSet<>();
-                visited.add(comment.getId());
-                List<Integer> currentLayer = Collections.singletonList(comment.getId());
-                List<Comment> allDescendants = new ArrayList<>();
-                int depth = 0;
-                final int MAX_DEPTH = 50;
-
-                while (!currentLayer.isEmpty() && depth < MAX_DEPTH) {
-                    List<Comment> children = commentRepository.findByParentIdIn(currentLayer);
-                    List<Integer> nextLayer = new ArrayList<>();
-                    for (Comment child : children) {
-                        if (child != null && child.getId() != null && visited.add(child.getId())) {
-                            allDescendants.add(child);
-                            nextLayer.add(child.getId());
-                        }
-                    }
-                    currentLayer = nextLayer;
-                    depth++;
-                }
-
-                affectedReplyCount = allDescendants.size();
-
-                // 3. Quy tắc thăng hạng: VISIBLE < HIDDEN < DELETED (chỉ nâng, không hạ)
-                // - Nếu targetStatus là DELETED: nâng mọi con có status != DELETED lên DELETED (con đã DELETED giữ DELETED)
-                // - Nếu targetStatus là HIDDEN: nâng mọi con có status == VISIBLE lên HIDDEN (con đã DELETED giữ DELETED, con đã HIDDEN giữ HIDDEN)
-                List<Integer> idsToUpdate = new ArrayList<>();
-                for (Comment c : allDescendants) {
-                    if (isDelete) {
-                        if (!"DELETED".equalsIgnoreCase(c.getStatus())) {
-                            idsToUpdate.add(c.getId());
-                        }
-                    } else if (isHide) {
-                        if ("VISIBLE".equalsIgnoreCase(c.getStatus())) {
-                            idsToUpdate.add(c.getId());
-                        }
+            while (!currentLayer.isEmpty() && depth < MAX_DEPTH) {
+                List<Comment> children = commentRepository.findByParentIdIn(currentLayer);
+                List<Integer> nextLayer = new ArrayList<>();
+                for (Comment child : children) {
+                    if (child != null && child.getId() != null && visited.add(child.getId())) {
+                        allDescendants.add(child);
+                        nextLayer.add(child.getId());
                     }
                 }
-
-                if (!idsToUpdate.isEmpty()) {
-                    commentRepository.updateStatusForIds(idsToUpdate, targetStatus, now);
-                }
-
-                // Ghi nhận danh sách ID bị ảnh hưởng (cắt tối đa 50)
-                affectedReplyIds = allDescendants.stream()
-                        .map(Comment::getId)
-                        .limit(50)
-                        .collect(Collectors.toList());
+                currentLayer = nextLayer;
+                depth++;
             }
+
+            affectedReplyCount = allDescendants.size();
+
+            // 3. Quy tắc cập nhật: chỉ nâng các câu trả lời con đang có status == VISIBLE lên HIDDEN
+            List<Integer> idsToUpdate = new ArrayList<>();
+            for (Comment c : allDescendants) {
+                if ("VISIBLE".equalsIgnoreCase(c.getStatus())) {
+                    idsToUpdate.add(c.getId());
+                }
+            }
+
+            if (!idsToUpdate.isEmpty()) {
+                commentRepository.updateStatusForIds(idsToUpdate, targetStatus, now);
+            }
+
+            // Ghi nhận danh sách ID bị ảnh hưởng (cắt tối đa 50)
+            affectedReplyIds = allDescendants.stream()
+                    .map(Comment::getId)
+                    .limit(50)
+                    .collect(Collectors.toList());
         }
 
         report.setStatus(newStatus);
@@ -318,7 +311,11 @@ public class ReportServiceImpl implements ReportService {
                     : NotificationService.REPORT_NOTIFICATION_PREFIX + ": Bình luận đã được xử lý #RP-" + report.getId();
 
             String repliesSuffix = affectedReplyCount > 0 ? " và " + affectedReplyCount + " câu trả lời bên dưới" : "";
-            String actionText = isRejected ? "Từ chối tiếp nhận" : ("HIDE".equalsIgnoreCase(actionApplied) ? "Đã ẩn bình luận vi phạm" + repliesSuffix : "Đã gỡ bỏ bình luận vi phạm" + repliesSuffix);
+            String actionText = isRejected
+                    ? "Từ chối tiếp nhận"
+                    : ("HIDE".equalsIgnoreCase(actionApplied)
+                            ? "Đã ẩn bình luận vi phạm khỏi trang công khai" + repliesSuffix
+                            : "Ghi nhận phản hồi, không thay đổi bình luận");
 
             String notifContent = "Kính gửi bạn " + reporterName + ",\n\n"
                     + "Ban Quản Trị Trạm Truyện xin chân thành cảm ơn bạn đã gửi báo cáo về bình luận: \"" + commentSnippet + "\".\n\n"

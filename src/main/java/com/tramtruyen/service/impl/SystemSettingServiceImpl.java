@@ -572,13 +572,7 @@ public class SystemSettingServiceImpl implements SystemSettingService {
 
     @Override
     @Transactional
-    public WebSetting createTheme(String name, String folderPath, String thumbnailUrl, String tokensJson, Integer adminId, String clientIp) {
-        return createTheme(name, folderPath, thumbnailUrl, tokensJson, null, 12, 4, adminId, clientIp);
-    }
-
-    @Override
-    @Transactional
-    public WebSetting createTheme(String name, String folderPath, String thumbnailUrl, String tokensJson,
+    public WebSetting createTheme(String name, String folderPath, String tokensJson,
                                   MultipartFile backgroundImage, Integer bgOpacity, Integer bgBlur,
                                   Integer adminId, String clientIp) {
         // 1. Validate toàn bộ trước
@@ -685,21 +679,7 @@ public class SystemSettingServiceImpl implements SystemSettingService {
 
     @Override
     @Transactional
-    public WebSetting updateTheme(Integer id, String name, String thumbnailUrl, String tokensJson, Integer adminId, String clientIp) {
-        return updateTheme(id, name, null, thumbnailUrl, tokensJson, null, 12, 4, false, adminId, clientIp);
-    }
-
-    @Override
-    @Transactional
-    public WebSetting updateTheme(Integer id, String name, String thumbnailUrl, String tokensJson,
-                                  MultipartFile backgroundImage, Integer bgOpacity, Integer bgBlur, Boolean removeBg,
-                                  Integer adminId, String clientIp) {
-        return updateTheme(id, name, null, thumbnailUrl, tokensJson, backgroundImage, bgOpacity, bgBlur, removeBg, adminId, clientIp);
-    }
-
-    @Override
-    @Transactional
-    public WebSetting updateTheme(Integer id, String name, String folderPath, String thumbnailUrl, String tokensJson,
+    public WebSetting updateTheme(Integer id, String name, String folderPath, String tokensJson,
                                   MultipartFile backgroundImage, Integer bgOpacity, Integer bgBlur, Boolean removeBg,
                                   Integer adminId, String clientIp) {
         // 1. Validate toàn bộ trước

@@ -20,10 +20,6 @@ public interface NotificationService {
 
     Page<NotificationDTO> getUserNotifications(Integer userId, String tab, int page, int size);
 
-    default Page<NotificationDTO> getMailboxNotifications(Integer userId, String tab, int page, int size) {
-        return getUserNotifications(userId, tab, page, size);
-    }
-
     long getUnreadCount(Integer userId);
 
     long getUnreadGeneralCount(Integer userId);

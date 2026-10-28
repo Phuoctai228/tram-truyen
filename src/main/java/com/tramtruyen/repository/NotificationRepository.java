@@ -14,8 +14,6 @@ import java.util.List;
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Integer> {
 
-    List<Notification> findByUserIdOrderByCreatedAtDesc(Integer userId);
-
     @Query("SELECT n FROM Notification n WHERE (n.userId = :userId OR n.userId IS NULL) " +
            "AND (n.title IS NULL OR LOWER(n.title) NOT LIKE LOWER(CONCAT(:reportPrefix, '%'))) " +
            "ORDER BY n.createdAt DESC")
@@ -28,9 +26,6 @@ public interface NotificationRepository extends JpaRepository<Notification, Inte
 
     @Query("SELECT n FROM Notification n WHERE (n.userId = :userId OR n.userId IS NULL) ORDER BY n.createdAt DESC")
     Page<Notification> findUserAndSystemNotifications(@Param("userId") Integer userId, Pageable pageable);
-
-    @Query("SELECT n FROM Notification n WHERE (n.userId = :userId OR n.userId IS NULL) AND LOWER(n.title) LIKE LOWER(CONCAT('%', :keyword, '%')) ORDER BY n.createdAt DESC")
-    Page<Notification> findUserAndSystemNotificationsByKeyword(@Param("userId") Integer userId, @Param("keyword") String keyword, Pageable pageable);
 
     @Query("SELECT COUNT(n) FROM Notification n WHERE n.userId = :userId AND (n.isRead = false OR n.isRead IS NULL)")
     long countUnreadByUserId(@Param("userId") Integer userId);

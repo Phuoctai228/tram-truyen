@@ -12,8 +12,6 @@ import java.util.Optional;
 @Repository
 public interface WebSettingRepository extends JpaRepository<WebSetting, Integer> {
 
-    Optional<WebSetting> findByIsActiveTrue();
-
     Optional<WebSetting> findFirstByIsActiveTrueOrderByIdAsc();
 
     Optional<WebSetting> findByFolderPath(String folderPath);

@@ -15,7 +15,6 @@ public class WebThemeViewDTO {
     private Integer id;
     private String name;
     private String folderPath;
-    private String thumbnailUrl;
     private Boolean isActive;
     private Integer uploadedBy;
     private String uploaderName;
