@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>UC-28 View Reading History</title>
+    <title>UC-28-View Reading History</title>
 </head>
 <body>
 <div class="uc-container" style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
@@ -13,70 +13,70 @@
             color: black !important;
         }
     </style>
-    <table style="border-collapse: collapse; width: 100%; border: 1.5pt solid black;">
+    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 25%;">UC ID and Name:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-28 View Reading History</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">UC ID and Name:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-28-View Reading History</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Created By:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 25%;">TaiTP</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 25%;">Date Created:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 25%;">2026-09-18</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Created By:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">TaiTP</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Date Created:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-18</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Primary Actor:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;">Member</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Secondary Actors:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;">None</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Primary Actor:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Member</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Secondary Actors:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">None</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Trigger:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Member navigates to the "Lịch sử đọc" section from the profile menu.</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Trigger:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Member selects "Lịch sử đọc" from the user dropdown menu or the profile sidebar.</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Description:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Displays a chronologically sorted list of the chapters the member has recently read, allowing them to easily revisit recent reading sessions across different novels.</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Description:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Allows an authenticated Member to view a chronological log of up to 50 recently read chapters (paginated at 10 items per page), resume reading any chapter, remove individual history entries, or clear their entire reading history.</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Preconditions:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>PRE-1. The user must be authenticated as a Member.</p></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Preconditions:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> Member is logged into the system.</p></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Postconditions:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>POST-1. The actor views their reading history list.</p></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Postconditions:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> The Member views their paginated reading history ordered by most recently read timestamp.</p></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Normal Flow:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>A. View History Successfully</p><ol><li>Member clicks on the "Lịch sử đọc" link.</li><li>The system retrieves the current actor's session data.</li><li>The system retrieves the 50 most recent reading history records associated with the member.</li><li>The system retrieves the associated novel and chapter metadata for those records.</li><li>The system formats the timestamps relative to the current time.</li><li>The system renders the history page displaying the list of recently read chapters.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Normal Flow:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. View Reading History Successfully</b></p><ol><li>Member accesses the Reading History page.</li><li>The system validates the Member's authentication session.</li><li>The system queries the Member's read chapter activity records for non-deleted novels and published chapters, ordered by readAt descending and capped at a maximum of 50 records.</li><li>The system slices the retrieved records for the requested page (10 records per page).</li><li>The system renders the reading history list displaying novel covers, novel titles, chapter numbers and titles, relative read timestamps, "Đọc tiếp" buttons, individual "close" remove buttons, the "Xóa lịch sử" button, and pagination controls.</li></ol></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Alternative Flows:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>A.3 Empty History</p><ol><li>The system determines the member has no reading history records.</li><li>The system renders an empty state illustration with a descriptive message.</li><li>Back to step 1.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Alternative Flows:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.3 Empty Reading History</b></p><ol><li>The system determines the Member has no recorded reading history.</li><li>The system renders an empty state view with a "Khám phá truyện" button directing the Member to the homepage.</li><li>Back to step 1.</li></ol><p><b>A.5.1 Resume Reading from History</b></p><ol><li>Member clicks the "Đọc tiếp" button (or chapter link) on a history entry.</li><li>The system navigates the Member to the corresponding chapter reading page.</li></ol><p><b>A.5.2 Remove Single History Item</b></p><ol><li>Member clicks the "close" icon button ("Xóa khỏi lịch sử") on a history entry.</li><li>The system deletes the activity record (or resets isRead = false and readAt = null if the chapter is an unlocked VIP chapter) and reloads the current history page with a confirmation message.</li><li>Back to step 1.</li></ol><p><b>A.5.3 Clear All Reading History</b></p><ol><li>Member clicks the "Xóa lịch sử" button and confirms the browser confirmation dialog.</li><li>The system clears all reading history entries for the Member (preserving unlocked VIP ownership records by resetting their read flags) and reloads the page with a confirmation message.</li><li>Back to step 1.</li></ol><p><b>A.5.4 Change History Page</b></p><ol><li>Member clicks a page number or the "chevron_left" / "chevron_right" button on the pagination controls.</li><li>The system loads the requested page of history entries.</li><li>Back to step 1.</li></ol></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Exceptions:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>EX-1 Session Invalid (Not Logged In)</p><ol><li>The system displays an authentication error message.</li><li>The system redirects the user to the login page.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Exceptions:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Session Invalid (Not Logged In)</b></p><ol><li>The system displays an authentication error message.</li><li>The system redirects the user to the login page.</li></ol><p><b>EX-3 Database Query Error</b></p><ol><li>The system fails to retrieve reading history records from the database.</li><li>The system logs the error and displays an error message.</li></ol></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Priority:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Low, Nice to Have</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Priority:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Low, Could Have</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Frequency of Use:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Low</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Frequency of Use:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Medium</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Business Rules:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">BR-14</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Business Rules:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">BR-14, BR-21</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Other Information:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">None</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Other Information:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Maximum history capacity is 50 entries, paginated at 10 entries per page.<br/>Removing or clearing history never revokes unlocked VIP chapters.</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Assumptions:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Member has a stable internet connection.</li></ul></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Assumptions:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Member has stable internet connection.</li></ul></td>
         </tr>
     </table>
 </div>

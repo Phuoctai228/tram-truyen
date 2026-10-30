@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SDS - UC-11: Read Chapter</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            line-height: 1.5;
+            color: #000000;
+            margin: 20px 30px;
+            background-color: #ffffff;
+        }
+        h2 { font-size: 15pt; font-weight: bold; color: #000000; margin-bottom: 8px; }
+        h3 { font-size: 13pt; font-weight: bold; font-style: italic; color: #000000; margin-top: 16px; margin-bottom: 8px; }
+        p { margin: 6px 0; font-family: 'Times New Roman', Times, serif; font-size: 12pt; color: #000000; }
+        .class-title { font-family: 'Times New Roman', Times, serif; font-size: 12pt; font-weight: bold; font-style: italic; color: #000000; margin-top: 14px; margin-bottom: 4px; }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            table-layout: fixed;
+            margin: 8px 0 18px 0;
+            border: 1px solid #000000;
+            color: #000000;
+        }
+        th, td {
+            border: 1px solid #000000;
+            padding: 6px 10px;
+            text-align: left;
+            vertical-align: top;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            color: #000000;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-word;
+        }
+        th {
+            background-color: #fbe5d6;
+            font-weight: bold;
+            color: #000000;
+        }
+        .col-no { width: 6%; text-align: center; color: #000000; }
+        .col-method { width: 28%; font-weight: bold; color: #000000; }
+        .col-desc { width: 66%; color: #000000; }
+        .sql-item { margin-top: 12px; margin-bottom: 4px; font-weight: bold; color: #000000; }
+        .sql-block {
+            margin: 4px 0 14px 0;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            color: #000000;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>3. Read Chapter (UC-11)</h2>
+
+    <h3>b. Class Specifications</h3>
+
+    <p class="class-title"><b><i>NovelController Class</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">readChapterBySlug</td>
+                <td class="col-desc">
+                    <b>- Input:</b> slug: String, chapterNumber: Integer, authentication: Authentication, request: HttpServletRequest, model: Model.<br>
+                    <b>- Output:</b> String (View name "novel/reading").<br>
+                    <b>- Internal Method Processing:</b> Handles GET /truyen/{slug}/chuong-{chapterNumber} request. Fetches the public novel via novelService.getPublicNovelBySlug(slug) and target chapter via chapterService.getPublicChapter(novelId, chapterNumber). Checks HTTP session attribute VIEWED_CHAPTER_IDS to deduplicate views per session and calls chapterService.recordView(novelId, chapterId) on first visit. Invokes chapterAccessService.checkAccess(novel, chapter, authentication) to resolve VIP lock status and readable paragraphs. Fetches the full published chapter list to calculate prevChapterNumber and nextChapterNumber, populates the Model, and returns "novel/reading".
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>NovelService Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">getPublicNovelBySlug</td>
+                <td class="col-desc">
+                    <b>- Input:</b> slug: String.<br>
+                    <b>- Output:</b> Novel.<br>
+                    <b>- Internal Method Processing:</b> Retrieves a non-deleted, non-archived novel entity by its URL slug.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>NovelServiceImpl Class</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">getPublicNovelBySlug</td>
+                <td class="col-desc">
+                    <b>- Input:</b> slug: String.<br>
+                    <b>- Output:</b> Novel.<br>
+                    <b>- Internal Method Processing:</b> Queries novelRepository.findBySlugAndIsDeletedFalseAndStatusNot(slug, "ARCHIVED") and throws ResourceNotFoundException if the novel is missing or archived.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>ChapterService Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">getPublicChapter</td>
+                <td class="col-desc">
+                    <b>- Input:</b> novelId: Integer, chapterNumber: Integer.<br>
+                    <b>- Output:</b> Chapter.<br>
+                    <b>- Internal Method Processing:</b> Retrieves a published chapter by novel ID and chapter number.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">getPublicChapters</td>
+                <td class="col-desc">
+                    <b>- Input:</b> novelId: Integer.<br>
+                    <b>- Output:</b> List&lt;Chapter&gt;.<br>
+                    <b>- Internal Method Processing:</b> Retrieves all published chapters of the novel ordered by chapter number ascending for chapter navigation.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">03</td>
+                <td class="col-method">recordView</td>
+                <td class="col-desc">
+                    <b>- Input:</b> novelId: Integer, chapterId: Integer.<br>
+                    <b>- Output:</b> void.<br>
+                    <b>- Internal Method Processing:</b> Increments the view counter on both the chapter and its parent novel.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>ChapterServiceImpl Class</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">getPublicChapter</td>
+                <td class="col-desc">
+                    <b>- Input:</b> novelId: Integer, chapterNumber: Integer.<br>
+                    <b>- Output:</b> Chapter.<br>
+                    <b>- Internal Method Processing:</b> Verifies the novel is public via novelRepository.findByIdAndIsDeletedFalseAndStatusNot(novelId, "ARCHIVED"), queries chapterRepository.findByNovelIdAndChapterNumberAndIsDeletedFalseAndStatusIn(), sanitizes the HTML content, and returns the Chapter entity (or throws ResourceNotFoundException).
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">getPublicChapters</td>
+                <td class="col-desc">
+                    <b>- Input:</b> novelId: Integer.<br>
+                    <b>- Output:</b> List&lt;Chapter&gt;.<br>
+                    <b>- Internal Method Processing:</b> Queries chapterRepository.findAllByNovelIdAndIsDeletedFalseAndStatusInOrderByChapterNumberAsc(novelId, PUBLIC_STATUSES) to return the ordered list of published chapters.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">03</td>
+                <td class="col-method">recordView</td>
+                <td class="col-desc">
+                    <b>- Input:</b> novelId: Integer, chapterId: Integer.<br>
+                    <b>- Output:</b> void.<br>
+                    <b>- Internal Method Processing:</b> Fetches the Chapter by chapterId, increments chapter.views by 1, and saves it via chapterRepository.save(). Then fetches the parent Novel by novelId, increments novel.views by 1, and saves it via novelRepository.save().
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>ChapterAccessService Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">checkAccess</td>
+                <td class="col-desc">
+                    <b>- Input:</b> novel: Novel, chapter: Chapter, authentication: Authentication.<br>
+                    <b>- Output:</b> ChapterAccessDTO.<br>
+                    <b>- Internal Method Processing:</b> Evaluates whether the visitor can read the full chapter or only a locked VIP preview.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>ChapterAccessServiceImpl Class</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">checkAccess</td>
+                <td class="col-desc">
+                    <b>- Input:</b> novel: Novel, chapter: Chapter, authentication: Authentication.<br>
+                    <b>- Output:</b> ChapterAccessDTO.<br>
+                    <b>- Internal Method Processing:</b> Checks authentication state. If authenticated, checks privileged roles via chapterAccessPolicy.isPrivileged(), loads the User via userRepository.findByEmail(), and checks if the user has already unlocked the chapter via userChapterActivityRepository.findByUserAndChapter(). Resolves ChapterAccessStatus via chapterAccessPolicy.resolve(). If readable, splits full content via chapterPreviewBuilder.splitParagraphs(); otherwise generates a truncated teaser via chapterPreviewBuilder.buildPreview(). Returns ChapterAccessDTO.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>ChapterAccessPolicy Class</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">isPaid</td>
+                <td class="col-desc">
+                    <b>- Input:</b> chapter: Chapter.<br>
+                    <b>- Output:</b> boolean.<br>
+                    <b>- Internal Method Processing:</b> Returns true if chapter.status is PUBLISHED_VIP and chapter.price &gt; 0.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">isPrivileged</td>
+                <td class="col-desc">
+                    <b>- Input:</b> authorities: Collection&lt;GrantedAuthority&gt; (or role names).<br>
+                    <b>- Output:</b> boolean.<br>
+                    <b>- Internal Method Processing:</b> Returns true if the user holds ROLE_ADMIN or ROLE_STAFF.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">03</td>
+                <td class="col-method">resolve</td>
+                <td class="col-desc">
+                    <b>- Input:</b> chapter: Chapter, loggedIn: boolean, privileged: boolean, alreadyUnlocked: boolean, walletBalance: int.<br>
+                    <b>- Output:</b> ChapterAccessStatus.<br>
+                    <b>- Internal Method Processing:</b> Evaluates chapter access state in priority order: FREE (if not paid), LOGIN_REQUIRED (if guest), STAFF_BYPASS (if Staff/Admin), UNLOCKED (if already purchased), PURCHASABLE (if walletBalance &gt;= price), or INSUFFICIENT_BALANCE.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>ChapterPreviewBuilder Class</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">splitParagraphs</td>
+                <td class="col-desc">
+                    <b>- Input:</b> content: String.<br>
+                    <b>- Output:</b> List&lt;String&gt;.<br>
+                    <b>- Internal Method Processing:</b> Splits the full chapter text by line breaks into non-blank paragraphs for readable chapters.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">buildPreview</td>
+                <td class="col-desc">
+                    <b>- Input:</b> content: String.<br>
+                    <b>- Output:</b> List&lt;String&gt;.<br>
+                    <b>- Internal Method Processing:</b> Extracts at most 2 paragraphs (capped at 500 characters) to display as a preview teaser when a VIP chapter is locked.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>ChapterRepository Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">findByNovelIdAndChapterNumberAndIsDeletedFalseAndStatusIn</td>
+                <td class="col-desc">
+                    <b>- Input:</b> novelId: Integer, chapterNumber: Integer, statuses: List&lt;String&gt;.<br>
+                    <b>- Output:</b> Optional&lt;Chapter&gt;.<br>
+                    <b>- Internal Method Processing:</b> Finds a non-deleted published chapter by novel ID and chapter number.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">findAllByNovelIdAndIsDeletedFalseAndStatusInOrderByChapterNumberAsc</td>
+                <td class="col-desc">
+                    <b>- Input:</b> novelId: Integer, statuses: List&lt;String&gt;.<br>
+                    <b>- Output:</b> List&lt;Chapter&gt;.<br>
+                    <b>- Internal Method Processing:</b> Retrieves all published chapters of the novel ordered by chapter number ascending.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">03</td>
+                <td class="col-method">findById</td>
+                <td class="col-desc">
+                    <b>- Input:</b> id: Integer.<br>
+                    <b>- Output:</b> Optional&lt;Chapter&gt;.<br>
+                    <b>- Internal Method Processing:</b> Retrieves a chapter entity by its primary key ID before incrementing its view count.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">04</td>
+                <td class="col-method">save</td>
+                <td class="col-desc">
+                    <b>- Input:</b> chapter: Chapter.<br>
+                    <b>- Output:</b> Chapter.<br>
+                    <b>- Internal Method Processing:</b> Persists the updated chapter view count to the database.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>NovelRepository Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">findBySlugAndIsDeletedFalseAndStatusNot</td>
+                <td class="col-desc">
+                    <b>- Input:</b> slug: String, status: String.<br>
+                    <b>- Output:</b> Optional&lt;Novel&gt;.<br>
+                    <b>- Internal Method Processing:</b> Retrieves a public, non-archived novel by slug.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">findByIdAndIsDeletedFalseAndStatusNot</td>
+                <td class="col-desc">
+                    <b>- Input:</b> id: Integer, status: String.<br>
+                    <b>- Output:</b> Optional&lt;Novel&gt;.<br>
+                    <b>- Internal Method Processing:</b> Verifies that the novel by ID is neither deleted nor archived.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">03</td>
+                <td class="col-method">findById</td>
+                <td class="col-desc">
+                    <b>- Input:</b> id: Integer.<br>
+                    <b>- Output:</b> Optional&lt;Novel&gt;.<br>
+                    <b>- Internal Method Processing:</b> Retrieves the novel entity by ID to increment its cumulative view count.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">04</td>
+                <td class="col-method">save</td>
+                <td class="col-desc">
+                    <b>- Input:</b> novel: Novel.<br>
+                    <b>- Output:</b> Novel.<br>
+                    <b>- Internal Method Processing:</b> Persists the updated novel view count to the database.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>UserRepository Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">findByEmail</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String.<br>
+                    <b>- Output:</b> Optional&lt;User&gt;.<br>
+                    <b>- Internal Method Processing:</b> Retrieves the logged-in user entity by email to check wallet balance and VIP unlock status.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>UserChapterActivityRepository Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">findByUserAndChapter</td>
+                <td class="col-desc">
+                    <b>- Input:</b> user: User, chapter: Chapter.<br>
+                    <b>- Output:</b> Optional&lt;UserChapterActivity&gt;.<br>
+                    <b>- Internal Method Processing:</b> Retrieves the user's activity record for the chapter to check whether is_unlocked is TRUE.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>d. Database Queries</h3>
+
+    <p class="sql-item">1. Retrieve public novel by slug</p>
+    <div class="sql-block">SELECT id, title, slug, author, summary, cover_url, status, is_deleted, views, average_rating, rating_count
+FROM novels
+WHERE slug = ?
+  AND is_deleted = FALSE
+  AND status &lt;&gt; 'ARCHIVED';</div>
+
+    <p class="sql-item">2. Retrieve published chapter by novel ID and chapter number</p>
+    <div class="sql-block">SELECT id, novel_id, chapter_number, title, content, price, auto_unlock_at, views, status, is_deleted, created_at, updated_at
+FROM chapters
+WHERE novel_id = ?
+  AND chapter_number = ?
+  AND is_deleted = FALSE
+  AND status IN ('PUBLISHED_REGULAR', 'PUBLISHED_VIP', 'PUBLISHED');</div>
+
+    <p class="sql-item">3. Increment chapter view count</p>
+    <div class="sql-block">UPDATE chapters
+SET views = views + 1,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = ?;</div>
+
+    <p class="sql-item">4. Increment novel cumulative view count</p>
+    <div class="sql-block">UPDATE novels
+SET views = views + 1,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = ?;</div>
+
+    <p class="sql-item">5. Retrieve authenticated user by email</p>
+    <div class="sql-block">SELECT id, email, full_name, wallet_balance, status
+FROM users
+WHERE email = ?;</div>
+
+    <p class="sql-item">6. Check user's unlock and reading activity for the chapter</p>
+    <div class="sql-block">SELECT id, user_id, chapter_id, is_read, read_at, is_unlocked, price_paid, unlocked_at
+FROM user_chapter_activities
+WHERE user_id = ?
+  AND chapter_id = ?;</div>
+
+    <p class="sql-item">7. Retrieve all published chapters for previous/next chapter navigation</p>
+    <div class="sql-block">SELECT id, novel_id, chapter_number, title, price, status
+FROM chapters
+WHERE novel_id = ?
+  AND is_deleted = FALSE
+  AND status IN ('PUBLISHED_REGULAR', 'PUBLISHED_VIP', 'PUBLISHED')
+ORDER BY chapter_number ASC;</div>
+
+</body>
+</html>

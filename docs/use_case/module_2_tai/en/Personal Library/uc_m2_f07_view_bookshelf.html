@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>UC-18 View Bookshelf</title>
+    <title>UC-18-View Bookshelf</title>
 </head>
 <body>
 <div class="uc-container" style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
@@ -13,70 +13,70 @@
             color: black !important;
         }
     </style>
-    <table style="border-collapse: collapse; width: 100%; border: 1.5pt solid black;">
+    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 25%;">UC ID and Name:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-18 View Bookshelf</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">UC ID and Name:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-18-View Bookshelf</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Created By:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 25%;">TaiTP</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 25%;">Date Created:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 25%;">2026-09-18</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Created By:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">TaiTP</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Date Created:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-18</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Primary Actor:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;">Member</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Secondary Actors:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;">None</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Primary Actor:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Member</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Secondary Actors:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">None</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Trigger:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Member navigates to the Bookshelf section from the user profile menu.</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Trigger:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Member selects "Tủ sách" from the header navigation or "Tủ sách của tôi" from the user profile sidebar.</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Description:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Displays a list of all novels the member has bookmarked, showing their current reading progress and providing a quick link to resume reading.</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Description:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Allows an authenticated Member to view their personal Bookshelf with summary statistics (total, reading, completed), reading progress bars, status filtering, keyword searching, sorting, and pagination (8 novels per page).</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Preconditions:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>PRE-1. The user must be authenticated as a Member.</p></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Preconditions:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> Member is logged into the system.</p></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Postconditions:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>POST-1. The actor views their personal bookshelf.</p></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Postconditions:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> The Member views their paginated list of bookmarked novels along with each novel's dynamically calculated reading progress.</p></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Normal Flow:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>A. View Bookshelf Successfully</p><ol><li>Member clicks on the "Tủ sách" link in the navigation menu.</li><li>The system retrieves the current actor's session data.</li><li>The system retrieves all bookmark records associated with the member from the database.</li><li>The system retrieves the descriptive metadata (title, cover, latest chapter) for each bookmarked novel.</li><li>The system calculates the reading progress percentage based on the latest saved chapter index versus total published chapters.</li><li>The system renders the bookshelf page, displaying the list of novels with their progress bars and a "Đọc tiếp" button for each.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Normal Flow:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. View Bookshelf Successfully</b></p><ol><li>Member accesses the personal Bookshelf page.</li><li>The system validates the Member's authentication session.</li><li>The system retrieves all non-deleted novels in the Member's bookshelf along with the Member's chapter reading activities.</li><li>The system calculates each novel's read chapter count, total published chapter count, completion percentage, last read chapter, and reading status, as well as overall bookshelf statistics.</li><li>The system applies the selected status filter, search keyword, sort order (defaulting to most recently added), and paginates the results at 8 novels per page.</li><li>The system renders the Bookshelf statistics, filter tabs ("Tất cả", "Đang đọc", "Đã xong"), search box, sort dropdown, novel cards with progress bars and action buttons ("Đọc tiếp", "Chờ chương mới", or "Đọc lại"), and pagination controls.</li></ol></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Alternative Flows:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>A.3 Empty Bookshelf</p><ol><li>The system determines the member has no bookmark records.</li><li>The system renders an empty state illustration with a descriptive message.</li><li>Back to step 1.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Alternative Flows:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.3 Empty Bookshelf or No Filter Match</b></p><ol><li>The system determines there are no novels in the Member's bookshelf or none matching the active filter/search criteria.</li><li>The system renders an empty state view with the "Khám phá truyện ngay" button (or "Xem tất cả truyện trong tủ" if filtered).</li><li>Back to step 1.</li></ol><p><b>A.6.1 Filter, Search, or Sort Bookshelf</b></p><ol><li>Member clicks a status filter tab ("Tất cả", "Đang đọc", "Đã xong"), enters a keyword in the search box, or selects a sort option ("Mới đọc gần đây", "Tên truyện A - Z", "Tiến độ cao nhất").</li><li>The system reloads the Bookshelf page with the selected filter, search, and sort parameters.</li><li>Back to step 1.</li></ol><p><b>A.6.2 Change Bookshelf Page</b></p><ol><li>Member clicks a page number or the "chevron_left" / "chevron_right" pagination button.</li><li>The system loads the requested page of 8 bookshelf items.</li><li>Back to step 1.</li></ol><p><b>A.6.3 Continue Reading from Bookshelf</b></p><ol><li>Member clicks the "Đọc tiếp" or "Đọc lại" button on a novel card.</li><li>The system navigates the Member to the corresponding chapter reading page.</li></ol></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Exceptions:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>EX-1 Session Invalid (Not Logged In)</p><ol><li>The system displays an authentication error message.</li><li>The system redirects the user to the login page.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Exceptions:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Session Invalid (Not Logged In)</b></p><ol><li>The system displays an authentication error message.</li><li>The system redirects the user to the login page.</li></ol><p><b>EX-3 Database Connection Error</b></p><ol><li>The system fails to retrieve the bookshelf records due to a database error.</li><li>The system logs the error and displays an error message.</li></ol></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Priority:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Priority:</td>
             <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High, Must Have</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Frequency of Use:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Frequency of Use:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Very High</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Business Rules:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">BR-15</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Business Rules:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">BR-13, BR-15</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Other Information:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">None</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Other Information:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Pagination is fixed at 8 novels per page.<br/>If a novel is ongoing and the Member has read all published chapters, the action button is disabled with the label "Chờ chương mới".</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Assumptions:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Member has a stable internet connection.</li></ul></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Assumptions:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Member has stable internet connection.</li></ul></td>
         </tr>
     </table>
 </div>

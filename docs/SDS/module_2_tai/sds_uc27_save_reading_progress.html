@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SDS - UC-27: Save Reading Progress</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            line-height: 1.5;
+            color: #000000;
+            margin: 20px 30px;
+            background-color: #ffffff;
+        }
+        h2 { font-size: 15pt; font-weight: bold; color: #000000; margin-bottom: 8px; }
+        h3 { font-size: 13pt; font-weight: bold; font-style: italic; color: #000000; margin-top: 16px; margin-bottom: 8px; }
+        p { margin: 6px 0; font-family: 'Times New Roman', Times, serif; font-size: 12pt; color: #000000; }
+        .class-title { font-family: 'Times New Roman', Times, serif; font-size: 12pt; font-weight: bold; font-style: italic; color: #000000; margin-top: 14px; margin-bottom: 4px; }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            table-layout: fixed;
+            margin: 8px 0 18px 0;
+            border: 1px solid #000000;
+            color: #000000;
+        }
+        th, td {
+            border: 1px solid #000000;
+            padding: 6px 10px;
+            text-align: left;
+            vertical-align: top;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            color: #000000;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-word;
+        }
+        th {
+            background-color: #fbe5d6;
+            font-weight: bold;
+            color: #000000;
+        }
+        .col-no { width: 6%; text-align: center; color: #000000; }
+        .col-method { width: 28%; font-weight: bold; color: #000000; }
+        .col-desc { width: 66%; color: #000000; }
+        .sql-item { margin-top: 12px; margin-bottom: 4px; font-weight: bold; color: #000000; }
+        .sql-block {
+            margin: 4px 0 14px 0;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            color: #000000;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>9. Save Reading Progress (UC-27)</h2>
+
+    <h3>b. Class Specifications</h3>
+
+    <p class="class-title"><b><i>BookshelfController Class</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">completeChapter</td>
+                <td class="col-desc">
+                    <b>- Input:</b> payload: Map&lt;String, Integer&gt;, authentication: Authentication.<br>
+                    <b>- Output:</b> ResponseEntity&lt;?&gt;.<br>
+                    <b>- Internal Method Processing:</b> Handles POST /api/user/reading/complete-chapter AJAX request triggered when the reader reaches the chapter completion threshold. Verifies user authentication; if unauthenticated, returns HTTP 401. Extracts chapterId from the JSON request body (returning HTTP 400 if missing), calls bookshelfService.recordChapterRead(email, chapterId), and returns HTTP 200 with {"status": "recorded"}.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>BookshelfService Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">recordChapterRead</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String, chapterId: Integer.<br>
+                    <b>- Output:</b> void.<br>
+                    <b>- Internal Method Processing:</b> Records or updates the user's chapter reading completion state and timestamp.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">isChapterRead</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String, chapterId: Integer.<br>
+                    <b>- Output:</b> boolean.<br>
+                    <b>- Internal Method Processing:</b> Checks whether the user has already marked the specified chapter as read.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>BookshelfServiceImpl Class</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">recordChapterRead</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String, chapterId: Integer.<br>
+                    <b>- Output:</b> void.<br>
+                    <b>- Internal Method Processing:</b> Resolves the User via getUserByEmail(email) and fetches the Chapter via chapterRepository.findById(chapterId) (throwing ResourceNotFoundException if not found). Looks up an existing UserChapterActivity via userChapterActivityRepository.findByUserAndChapter(user, chapter) or instantiates a new record, sets isRead = true and readAt = LocalDateTime.now(), and saves the record via userChapterActivityRepository.save(activity).
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">isChapterRead</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String, chapterId: Integer.<br>
+                    <b>- Output:</b> boolean.<br>
+                    <b>- Internal Method Processing:</b> Queries userChapterActivityRepository.findByUserAndChapter(user, chapter) and returns true if isRead is enabled on the activity record.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">03</td>
+                <td class="col-method">getUserByEmail</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String.<br>
+                    <b>- Output:</b> User.<br>
+                    <b>- Internal Method Processing:</b> Queries userRepository.findByEmail(email) and returns the authenticated User entity or throws ResourceNotFoundException.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>UserChapterActivityRepository Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">findByUserAndChapter</td>
+                <td class="col-desc">
+                    <b>- Input:</b> user: User, chapter: Chapter.<br>
+                    <b>- Output:</b> Optional&lt;UserChapterActivity&gt;.<br>
+                    <b>- Internal Method Processing:</b> Finds an existing user-chapter activity entry by user and chapter references.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">save</td>
+                <td class="col-desc">
+                    <b>- Input:</b> activity: UserChapterActivity.<br>
+                    <b>- Output:</b> UserChapterActivity.<br>
+                    <b>- Internal Method Processing:</b> Inserts a new activity record or updates the existing record with is_read = TRUE and the latest read_at timestamp.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>ChapterRepository Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">findById</td>
+                <td class="col-desc">
+                    <b>- Input:</b> id: Integer.<br>
+                    <b>- Output:</b> Optional&lt;Chapter&gt;.<br>
+                    <b>- Internal Method Processing:</b> Retrieves a chapter entity by its primary key ID.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>UserRepository Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">findByEmail</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String.<br>
+                    <b>- Output:</b> Optional&lt;User&gt;.<br>
+                    <b>- Internal Method Processing:</b> Retrieves the user entity by email address.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>d. Database Queries</h3>
+
+    <p class="sql-item">1. Retrieve authenticated user by email</p>
+    <div class="sql-block">SELECT id, email, full_name, status
+FROM users
+WHERE email = ?;</div>
+
+    <p class="sql-item">2. Retrieve chapter by primary key ID</p>
+    <div class="sql-block">SELECT id, novel_id, chapter_number, title, status, is_deleted
+FROM chapters
+WHERE id = ?;</div>
+
+    <p class="sql-item">3. Check existing reading/unlock activity for user and chapter</p>
+    <div class="sql-block">SELECT id, user_id, chapter_id, is_read, read_at, is_unlocked, price_paid, unlocked_at
+FROM user_chapter_activities
+WHERE user_id = ?
+  AND chapter_id = ?;</div>
+
+    <p class="sql-item">4. Upsert reading completion status and timestamp</p>
+    <div class="sql-block">INSERT INTO user_chapter_activities (user_id, chapter_id, is_read, read_at)
+VALUES (?, ?, TRUE, CURRENT_TIMESTAMP)
+ON CONFLICT (user_id, chapter_id)
+DO UPDATE SET is_read = TRUE,
+              read_at = CURRENT_TIMESTAMP;</div>
+
+</body>
+</html>

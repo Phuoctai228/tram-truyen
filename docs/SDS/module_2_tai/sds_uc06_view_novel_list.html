@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SDS - UC-06: View Novel List</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            line-height: 1.5;
+            color: #000000;
+            margin: 20px 30px;
+            background-color: #ffffff;
+        }
+        h2 { font-size: 15pt; font-weight: bold; color: #000000; margin-bottom: 8px; }
+        h3 { font-size: 13pt; font-weight: bold; font-style: italic; color: #000000; margin-top: 16px; margin-bottom: 8px; }
+        p { margin: 6px 0; font-family: 'Times New Roman', Times, serif; font-size: 12pt; color: #000000; }
+        .class-title { font-family: 'Times New Roman', Times, serif; font-size: 12pt; font-weight: bold; font-style: italic; color: #000000; margin-top: 14px; margin-bottom: 4px; }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            table-layout: fixed;
+            margin: 8px 0 18px 0;
+            border: 1px solid #000000;
+            color: #000000;
+        }
+        th, td {
+            border: 1px solid #000000;
+            padding: 6px 10px;
+            text-align: left;
+            vertical-align: top;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            color: #000000;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-word;
+        }
+        th {
+            background-color: #fbe5d6;
+            font-weight: bold;
+            color: #000000;
+        }
+        .col-no { width: 6%; text-align: center; color: #000000; }
+        .col-method { width: 28%; font-weight: bold; color: #000000; }
+        .col-desc { width: 66%; color: #000000; }
+        .sql-item { margin-top: 12px; margin-bottom: 4px; font-weight: bold; color: #000000; }
+        .sql-block {
+            margin: 4px 0 14px 0;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            color: #000000;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>1. View Novel List (UC-06)</h2>
+
+    <h3>b. Class Specifications</h3>
+
+    <p class="class-title"><b><i>HomeController Class</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">home</td>
+                <td class="col-desc">
+                    <b>- Input:</b> authentication: Authentication, model: Model.<br>
+                    <b>- Output:</b> String (View name "home/index").<br>
+                    <b>- Internal Method Processing:</b> Handles GET / request to display the public novel list on the homepage. Invokes homeService.getHomePageData() to retrieve categorized novel lists (recently updated, hot/most-viewed, completed, recommended, and newly created novels). Extracts the top 5 hot novels for the hero banner, checks whether the featured hero novel is already in the authenticated user's bookshelf via bookshelfService.isNovelInBookshelf(), populates the Spring MVC Model, and returns the "home/index" view.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>HomeService Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">getHomePageData</td>
+                <td class="col-desc">
+                    <b>- Input:</b> None.<br>
+                    <b>- Output:</b> HomePageDTO.<br>
+                    <b>- Internal Method Processing:</b> Defines the service contract to aggregate and return all public novel lists displayed on the homepage.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>HomeServiceImpl Class</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">getHomePageData</td>
+                <td class="col-desc">
+                    <b>- Input:</b> None.<br>
+                    <b>- Output:</b> HomePageDTO.<br>
+                    <b>- Internal Method Processing:</b> Queries NovelRepository for five homepage sections: top 12 recently updated novels, top 10 hot novels by view count, top 12 completed novels, top 12 recommended novels (having at least one published chapter, ordered by average rating and views), and top 12 newly added novels. Filters out archived novels using publicNovels(), transforms each Novel entity into a NovelSummaryDTO via mapToSummaryDTO(), and builds the aggregated HomePageDTO object.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">mapToSummaryDTO</td>
+                <td class="col-desc">
+                    <b>- Input:</b> novel: Novel, includeChapters: boolean.<br>
+                    <b>- Output:</b> NovelSummaryDTO.<br>
+                    <b>- Internal Method Processing:</b> Queries bookshelfRepository.countByNovelId() to get the total favorite count for the novel. If includeChapters is true, queries chapterRepository.findTop3ByNovelIdAndIsDeletedFalseAndStatusInOrderByChapterNumberDesc() to fetch up to 3 latest published chapters and maps them to LatestChapterDTO with formatted relative timestamps. Constructs and returns a NovelSummaryDTO.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">03</td>
+                <td class="col-method">publicNovels</td>
+                <td class="col-desc">
+                    <b>- Input:</b> novels: List&lt;Novel&gt;.<br>
+                    <b>- Output:</b> List&lt;Novel&gt;.<br>
+                    <b>- Internal Method Processing:</b> Filters the input list of novels to exclude any novel whose status is "ARCHIVED", ensuring only publicly visible novels are returned.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>BookshelfService Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">isNovelInBookshelf</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String, novelId: Integer.<br>
+                    <b>- Output:</b> boolean.<br>
+                    <b>- Internal Method Processing:</b> Checks whether the specified novel (featured in the homepage hero banner) is already saved in the authenticated user's personal bookshelf.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>NovelRepository Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">findTop12ByIsDeletedFalseOrderByUpdatedAtDesc</td>
+                <td class="col-desc">
+                    <b>- Input:</b> None.<br>
+                    <b>- Output:</b> List&lt;Novel&gt;.<br>
+                    <b>- Internal Method Processing:</b> Retrieves the top 12 non-deleted novels ordered by updated_at descending for the "Recently Updated" section.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">findTop10ByIsDeletedFalseOrderByViewsDesc</td>
+                <td class="col-desc">
+                    <b>- Input:</b> None.<br>
+                    <b>- Output:</b> List&lt;Novel&gt;.<br>
+                    <b>- Internal Method Processing:</b> Retrieves the top 10 non-deleted novels ordered by total views descending for the "Hot Novels" ranking and hero banner.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">03</td>
+                <td class="col-method">findTop12ByIsDeletedFalseAndStatusOrderByUpdatedAtDesc</td>
+                <td class="col-desc">
+                    <b>- Input:</b> status: String ("COMPLETED").<br>
+                    <b>- Output:</b> List&lt;Novel&gt;.<br>
+                    <b>- Internal Method Processing:</b> Retrieves the top 12 non-deleted novels matching the given status (COMPLETED) ordered by updated_at descending.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">04</td>
+                <td class="col-method">findTopRecommendedNovels</td>
+                <td class="col-desc">
+                    <b>- Input:</b> publicStatuses: Collection&lt;String&gt;, pageable: Pageable.<br>
+                    <b>- Output:</b> List&lt;Novel&gt;.<br>
+                    <b>- Internal Method Processing:</b> Executes a custom JPQL query to fetch non-deleted, non-archived novels that have at least one published chapter, ordered by average_rating descending and views descending.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">05</td>
+                <td class="col-method">findTop12ByIsDeletedFalseOrderByCreatedAtDesc</td>
+                <td class="col-desc">
+                    <b>- Input:</b> None.<br>
+                    <b>- Output:</b> List&lt;Novel&gt;.<br>
+                    <b>- Internal Method Processing:</b> Retrieves the top 12 non-deleted novels ordered by created_at descending for the "New Novels" section.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>ChapterRepository Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">findTop3ByNovelIdAndIsDeletedFalseAndStatusInOrderByChapterNumberDesc</td>
+                <td class="col-desc">
+                    <b>- Input:</b> novelId: Integer, statuses: List&lt;String&gt;.<br>
+                    <b>- Output:</b> List&lt;Chapter&gt;.<br>
+                    <b>- Internal Method Processing:</b> Retrieves up to 3 latest non-deleted published chapters (PUBLISHED_REGULAR, PUBLISHED_VIP) for a given novel ordered by chapter_number descending.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>BookshelfRepository Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">countByNovelId</td>
+                <td class="col-desc">
+                    <b>- Input:</b> novelId: Integer.<br>
+                    <b>- Output:</b> long.<br>
+                    <b>- Internal Method Processing:</b> Counts the total number of users who have saved the specified novel in their personal bookshelf.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>d. Database Queries</h3>
+
+    <p class="sql-item">1. Retrieve top 12 recently updated novels</p>
+    <div class="sql-block">SELECT id, title, slug, author, summary, cover_url, status, is_deleted, uploader_id,
+       views, average_rating, rating_count, created_at, updated_at
+FROM novels
+WHERE is_deleted = FALSE
+ORDER BY updated_at DESC
+LIMIT 12;</div>
+
+    <p class="sql-item">2. Retrieve top 10 hot novels by view count</p>
+    <div class="sql-block">SELECT id, title, slug, author, summary, cover_url, status, is_deleted, uploader_id,
+       views, average_rating, rating_count, created_at, updated_at
+FROM novels
+WHERE is_deleted = FALSE
+ORDER BY views DESC
+LIMIT 10;</div>
+
+    <p class="sql-item">3. Retrieve top 12 completed novels</p>
+    <div class="sql-block">SELECT id, title, slug, author, summary, cover_url, status, is_deleted, uploader_id,
+       views, average_rating, rating_count, created_at, updated_at
+FROM novels
+WHERE is_deleted = FALSE
+  AND status = ?
+ORDER BY updated_at DESC
+LIMIT 12;</div>
+
+    <p class="sql-item">4. Retrieve top 12 recommended public novels</p>
+    <div class="sql-block">SELECT n.id, n.title, n.slug, n.author, n.summary, n.cover_url, n.status, n.is_deleted,
+       n.uploader_id, n.views, n.average_rating, n.rating_count, n.created_at, n.updated_at
+FROM novels n
+WHERE n.is_deleted = FALSE
+  AND n.status &lt;&gt; 'ARCHIVED'
+  AND EXISTS (
+      SELECT 1
+      FROM chapters c
+      WHERE c.novel_id = n.id
+        AND c.is_deleted = FALSE
+        AND c.status IN ('PUBLISHED_REGULAR', 'PUBLISHED_VIP', 'PUBLISHED')
+  )
+ORDER BY n.average_rating DESC, n.views DESC
+LIMIT 12 OFFSET 0;</div>
+
+    <p class="sql-item">5. Retrieve top 12 newly created novels</p>
+    <div class="sql-block">SELECT id, title, slug, author, summary, cover_url, status, is_deleted, uploader_id,
+       views, average_rating, rating_count, created_at, updated_at
+FROM novels
+WHERE is_deleted = FALSE
+ORDER BY created_at DESC
+LIMIT 12;</div>
+
+    <p class="sql-item">6. Count total bookshelf favorites for a novel</p>
+    <div class="sql-block">SELECT COUNT(id)
+FROM bookshelves
+WHERE novel_id = ?;</div>
+
+    <p class="sql-item">7. Retrieve top 3 latest published chapters per novel</p>
+    <div class="sql-block">SELECT id, novel_id, chapter_number, title, price, status, views, created_at, updated_at
+FROM chapters
+WHERE novel_id = ?
+  AND is_deleted = FALSE
+  AND status IN ('PUBLISHED_REGULAR', 'PUBLISHED_VIP', 'PUBLISHED')
+ORDER BY chapter_number DESC
+LIMIT 3;</div>
+
+</body>
+</html>

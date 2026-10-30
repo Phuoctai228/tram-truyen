@@ -1,119 +1,250 @@
 classDiagram
-direction LR
+    direction LR
 
-class NovelController {
-    <<controller>>
-    - chapterUnlockService : ChapterUnlockService
-    - novelService : NovelService
-    - chapterService : ChapterService
-    + unlockChapter(slug: String, chapterNumber: Integer, autoUnlockNext: Boolean, authentication: Authentication, request: HttpServletRequest, redirectAttributes: RedirectAttributes) Object
-}
+    class NovelController {
+        <<controller>>
+        ⠀
+        ⠀⠀
+        - chapterUnlockService : ChapterUnlockService
+        - novelService : NovelService
+        - chapterService : ChapterService
+        + unlockChapter(slug: String, chapterNumber: Integer, autoUnlockNext: Boolean, authentication: Authentication, request: HttpServletRequest, redirectAttributes: RedirectAttributes) Object
+    }
 
-class ChapterUnlockService {
-    <<service interface>>
-    + isChapterUnlocked(email: String, chapterId: Integer) boolean*
-    + unlockChapter(email: String, chapterId: Integer, autoUnlockNext: Boolean) UnlockResultDTO*
-}
+    class NovelService {
+        <<service interface>>
+        ⠀
+        ⠀⠀
+        + getPublicNovelBySlug(slug: String) Novel*
+    }
 
-class ChapterUnlockServiceImpl {
-    <<service>>
-    - userRepository : UserRepository
-    - chapterRepository : ChapterRepository
-    - userChapterActivityRepository : UserChapterActivityRepository
-    - walletService : WalletService
-    - chapterAccessPolicy : ChapterAccessPolicy
-    + isChapterUnlocked(email: String, chapterId: Integer) boolean
-    + unlockChapter(email: String, chapterId: Integer, autoUnlockNext: Boolean) UnlockResultDTO
-    - validateChapterEligibility(chapter: Chapter) void
-    - buildTransactionDescription(chapter: Chapter) String
-    - buildPrivilegedResult(chapter: Chapter, user: User, autoUnlockNext: Boolean) UnlockResultDTO
-    - buildAlreadyUnlockedResult(chapter: Chapter, user: User, autoUnlockNext: Boolean) UnlockResultDTO
-    - buildFreeResult(chapter: Chapter, user: User, autoUnlockNext: Boolean, existingOpt: Optional~UserChapterActivity~) UnlockResultDTO
-    - markChapterUnlocked(user: User, chapter: Chapter, price: int, existingOpt: Optional~UserChapterActivity~) void
-}
+    class NovelServiceImpl {
+        <<service>>
+        ⠀
+        ⠀⠀
+        - novelRepository : NovelRepository
+        + getPublicNovelBySlug(slug: String) Novel
+    }
 
-class WalletService {
-    <<service interface>>
-    + deductCoins(user: User, amount: int, transactionType: String, referenceId: Integer, description: String) void*
-}
+    class ChapterService {
+        <<service interface>>
+        ⠀
+        ⠀⠀
+        + getPublicChapter(novelId: Integer, chapterNumber: Integer) Chapter*
+    }
 
-class ChapterAccessPolicy {
-    + isPaid(chapter: Chapter) boolean
-    + isPrivileged(roleNames: Set~String~) boolean
-}
+    class ChapterServiceImpl {
+        <<service>>
+        ⠀
+        ⠀⠀
+        - chapterRepository : ChapterRepository
+        - novelRepository : NovelRepository
+        + getPublicChapter(novelId: Integer, chapterNumber: Integer) Chapter
+    }
 
-class UserRepository {
-    <<repository>>
-    + findByEmail(email: String) Optional~User~*
-    + findByEmailWithLock(email: String) Optional~User~*
-}
+    class ChapterUnlockService {
+        <<service interface>>
+        ⠀
+        ⠀⠀
+        + isChapterUnlocked(email: String, chapterId: Integer) boolean*
+        + unlockChapter(email: String, chapterId: Integer, autoUnlockNext: Boolean) UnlockResultDTO*
+    }
 
-class ChapterRepository {
-    <<repository>>
-    + findById(id: Integer) Optional~Chapter~*
-}
+    class ChapterUnlockServiceImpl {
+        <<service>>
+        ⠀
+        ⠀⠀
+        - userRepository : UserRepository
+        - chapterRepository : ChapterRepository
+        - userChapterActivityRepository : UserChapterActivityRepository
+        - walletService : WalletService
+        - chapterAccessPolicy : ChapterAccessPolicy
+        + isChapterUnlocked(email: String, chapterId: Integer) boolean
+        + unlockChapter(email: String, chapterId: Integer, autoUnlockNext: Boolean) UnlockResultDTO
+        - validateChapterEligibility(chapter: Chapter) void
+        - buildTransactionDescription(chapter: Chapter) String
+        - markChapterUnlocked(user: User, chapter: Chapter, price: int, existingOpt: Optional~UserChapterActivity~) void
+    }
 
-class UserChapterActivityRepository {
-    <<repository>>
-    + findByUserAndChapter(user: User, chapter: Chapter) Optional~UserChapterActivity~*
-    + save(activity: UserChapterActivity) UserChapterActivity*
-}
+    class WalletService {
+        <<service interface>>
+        ⠀
+        ⠀⠀
+        + deductCoins(user: User, amount: int, transactionType: String, referenceId: Integer, description: String) void*
+    }
 
-class UnlockResultDTO {
-    <<dto>>
-    - success : boolean
-    - chapterId : Integer
-    - chapterNumber : Integer
-    - chapterTitle : String
-    - pricePaid : Integer
-    - remainingBalance : Integer
-    - autoUnlockNext : Boolean
-    - message : String
-}
+    class WalletServiceImpl {
+        <<service>>
+        ⠀
+        ⠀⠀
+        - userRepository : UserRepository
+        - transactionRepository : TransactionRepository
+        + deductCoins(user: User, amount: int, transactionType: String, referenceId: Integer, description: String) void
+    }
 
-class UserChapterActivity {
-    <<entity>>
-    - id : Integer
-    - user : User
-    - chapter : Chapter
-    - isRead : Boolean
-    - isUnlocked : Boolean
-    - pricePaid : Integer
-    - unlockedAt : LocalDateTime
-}
+    class ChapterAccessPolicy {
+        <<service>>
+        ⠀
+        ⠀⠀
+        + isPaid(chapter: Chapter) boolean
+        + isPrivileged(roleNames: Set~String~) boolean
+    }
 
-class User {
-    <<entity>>
-    - id : Integer
-    - email : String
-    - walletBalance : Integer
-}
+    class UnlockResultDTO {
+        <<dto>>
+        ⠀
+        ⠀⠀
+        - success : boolean
+        - chapterId : Integer
+        - chapterNumber : Integer
+        - chapterTitle : String
+        - pricePaid : Integer
+        - remainingBalance : Integer
+        - autoUnlockNext : Boolean
+        - message : String
+    }
 
-class Chapter {
-    <<entity>>
-    - id : Integer
-    - chapterNumber : Integer
-    - title : String
-    - price : Integer
-    - status : String
-    - isDeleted : Boolean
-}
+    class NovelRepository {
+        <<repository>>
+        ⠀
+        ⠀⠀
+        + findBySlugAndIsDeletedFalseAndStatusNot(slug: String, status: String) Optional~Novel~*
+    }
 
-NovelController --> ChapterUnlockService
-ChapterUnlockServiceImpl ..|> ChapterUnlockService
+    class UserRepository {
+        <<repository>>
+        ⠀
+        ⠀⠀
+        + findByEmail(email: String) Optional~User~*
+        + findByEmailWithLock(email: String) Optional~User~*
+        + findByIdWithLock(id: Integer) Optional~User~*
+        + save(user: User) User*
+    }
 
-ChapterUnlockServiceImpl --> UserRepository
-ChapterUnlockServiceImpl --> ChapterRepository
-ChapterUnlockServiceImpl --> UserChapterActivityRepository
-ChapterUnlockServiceImpl --> WalletService
-ChapterUnlockServiceImpl --> ChapterAccessPolicy
+    class ChapterRepository {
+        <<repository>>
+        ⠀
+        ⠀⠀
+        + findByNovelIdAndChapterNumberAndIsDeletedFalseAndStatusIn(novelId: Integer, chapterNumber: Integer, statuses: List~String~) Optional~Chapter~*
+        + findById(id: Integer) Optional~Chapter~*
+    }
 
-NovelController ..> UnlockResultDTO
-ChapterUnlockService ..> UnlockResultDTO
-ChapterUnlockServiceImpl ..> UnlockResultDTO
-ChapterUnlockServiceImpl ..> UserChapterActivity
+    class UserChapterActivityRepository {
+        <<repository>>
+        ⠀
+        ⠀⠀
+        + findByUserAndChapter(user: User, chapter: Chapter) Optional~UserChapterActivity~*
+        + save(activity: UserChapterActivity) UserChapterActivity*
+    }
 
-UserChapterActivity --> User
-UserChapterActivity --> Chapter
+    class TransactionRepository {
+        <<repository>>
+        ⠀
+        ⠀⠀
+        + save(transaction: Transaction) Transaction*
+    }
 
-classDef default fill:#FFFFFF,stroke:#000000,stroke-width:1px,color:#000000
+    class Novel {
+        <<entity>>
+        ⠀
+        ⠀⠀
+        - id : Integer
+        - title : String
+        - slug : String
+    }
+
+    class UserChapterActivity {
+        <<entity>>
+        ⠀
+        ⠀⠀
+        - id : Integer
+        - user : User
+        - chapter : Chapter
+        - isRead : Boolean
+        - isUnlocked : Boolean
+        - pricePaid : Integer
+        - unlockedAt : LocalDateTime
+    }
+
+    class Transaction {
+        <<entity>>
+        ⠀
+        ⠀⠀
+        - id : Integer
+        - user : User
+        - amount : Integer
+        - balanceAfter : Integer
+        - type : String
+        - referenceId : Integer
+        - description : String
+    }
+
+    class User {
+        <<entity>>
+        ⠀
+        ⠀⠀
+        - id : Integer
+        - email : String
+        - walletBalance : Integer
+    }
+
+    class Chapter {
+        <<entity>>
+        ⠀
+        ⠀⠀
+        - id : Integer
+        - novel : Novel
+        - chapterNumber : Integer
+        - title : String
+        - price : Integer
+        - status : String
+        - isDeleted : Boolean
+    }
+
+    NovelController --> NovelService
+    NovelController --> ChapterService
+    NovelController --> ChapterUnlockService
+    NovelController ..> Novel
+    NovelController ..> Chapter
+    NovelController ..> UnlockResultDTO
+    NovelServiceImpl ..|> NovelService
+    ChapterServiceImpl ..|> ChapterService
+    ChapterUnlockServiceImpl ..|> ChapterUnlockService
+    WalletServiceImpl ..|> WalletService
+    NovelService ..> Novel
+    ChapterService ..> Chapter
+    ChapterUnlockService ..> UnlockResultDTO
+    NovelServiceImpl --> NovelRepository
+    NovelServiceImpl ..> Novel
+    ChapterServiceImpl --> ChapterRepository
+    ChapterServiceImpl --> NovelRepository
+    ChapterServiceImpl ..> Chapter
+    ChapterServiceImpl ..> Novel
+    ChapterUnlockServiceImpl --> UserRepository
+    ChapterUnlockServiceImpl --> ChapterRepository
+    ChapterUnlockServiceImpl --> UserChapterActivityRepository
+    ChapterUnlockServiceImpl --> WalletService
+    ChapterUnlockServiceImpl --> ChapterAccessPolicy
+    ChapterUnlockServiceImpl ..> UnlockResultDTO
+    ChapterUnlockServiceImpl ..> UserChapterActivity
+    ChapterUnlockServiceImpl ..> User
+    ChapterUnlockServiceImpl ..> Chapter
+    WalletServiceImpl --> UserRepository
+    WalletServiceImpl --> TransactionRepository
+    WalletServiceImpl ..> User
+    WalletServiceImpl ..> Transaction
+    WalletService ..> User
+    ChapterAccessPolicy ..> Chapter
+    NovelRepository ..> Novel
+    UserRepository ..> User
+    ChapterRepository ..> Chapter
+    UserChapterActivityRepository ..> UserChapterActivity
+    UserChapterActivityRepository ..> User
+    UserChapterActivityRepository ..> Chapter
+    TransactionRepository ..> Transaction
+    UserChapterActivity --> User
+    UserChapterActivity --> Chapter
+    Transaction --> User
+    Chapter --> Novel
+
+    classDef default fill:#FFFFFF,stroke:#000000,stroke-width:1px,color:#000000

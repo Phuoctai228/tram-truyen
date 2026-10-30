@@ -1,0 +1,125 @@
+@startuml sq_uc06_view_novel_list
+<style>
+    sequenceDiagram{
+        FontSize 16
+
+        arrow {
+            ' Set the maximum width of the text on arrows
+            MaximumWidth 300
+        }
+        actor{
+            BackgroundColor white
+            LineThickness 1.0
+        }
+        participant{
+            BackgroundColor white
+            RoundCorner 0
+        }
+        database{
+            BackgroundColor white
+        }
+        groupHeader{
+            BackgroundColor white
+        }
+        referenceHeader{
+            BackgroundColor white
+        }
+        reference{
+            BackgroundColor white
+        }
+    }
+</style>
+
+hide footbox
+mainframe View Novel List
+
+actor Guest as act
+participant "HomePage" as view
+participant "HomeController" as home_ctrl <<controller>>
+participant ":HomeService" as home_svc
+participant ":BookshelfService" as bookshelf_svc
+participant ":NovelSummaryDTO" as summary_dto
+participant ":HomePageDTO" as home_dto
+participant ":NovelRepository" as novel_repo
+participant ":BookshelfRepository" as bookshelf_repo
+participant ":ChapterRepository" as chapter_repo
+database Database as db
+
+act ++
+
+act -> view++: 1. Access homepage
+view -> home_ctrl++: 2. GET /
+
+home_ctrl -> home_svc++: 3. getHomePageData()
+
+home_svc -> novel_repo++: 4. findTop12ByIsDeletedFalseOrderByUpdatedAtDesc()
+novel_repo -> db++: 5. Execute query
+db -->> novel_repo: 6. Return recently updated novels
+db--
+novel_repo -->> home_svc: 7. Return recently updated novels
+novel_repo--
+
+home_svc -> novel_repo++: 8. findTop10ByIsDeletedFalseOrderByViewsDesc()
+novel_repo -> db++: 9. Execute query
+db -->> novel_repo: 10. Return hot novels
+db--
+novel_repo -->> home_svc: 11. Return hot novels
+novel_repo--
+
+home_svc -> novel_repo++: 12. findTop12ByIsDeletedFalseAndStatusOrderByUpdatedAtDesc("COMPLETED")
+novel_repo -> db++: 13. Execute query
+db -->> novel_repo: 14. Return completed novels
+db--
+novel_repo -->> home_svc: 15. Return completed novels
+novel_repo--
+
+home_svc -> novel_repo++: 16. findTopRecommendedNovels(publicStatuses, pageable)
+novel_repo -> db++: 17. Execute query
+db -->> novel_repo: 18. Return recommended novels
+db--
+novel_repo -->> home_svc: 19. Return recommended novels
+novel_repo--
+
+home_svc -> novel_repo++: 20. findTop12ByIsDeletedFalseOrderByCreatedAtDesc()
+novel_repo -> db++: 21. Execute query
+db -->> novel_repo: 22. Return new novels
+db--
+novel_repo -->> home_svc: 23. Return new novels
+novel_repo--
+
+home_svc -> home_svc++: 24. Filter non-archived public novels
+home_svc--
+
+home_svc -> bookshelf_repo++: 25. countByNovelId(novelId)
+bookshelf_repo -> db++: 26. Execute query
+db -->> bookshelf_repo: 27. Return favoriteCount
+db--
+bookshelf_repo -->> home_svc: 28. Return favoriteCount
+bookshelf_repo--
+
+home_svc -> chapter_repo++: 29. findTop3ByNovelIdAndIsDeletedFalseAndStatusInOrderByChapterNumberDesc(novelId, publicStatuses)
+chapter_repo -> db++: 30. Execute query
+db -->> chapter_repo: 31. Return latest chapters
+db--
+chapter_repo -->> home_svc: 32. Return latest chapters
+chapter_repo--
+
+home_svc -> summary_dto++: 33. Call NovelSummaryDTO(novel, favoriteCount, latestChapters)
+summary_dto -->> home_svc--: 34. Return novelSummaryDTO
+
+home_svc -> home_dto++: 35. Call HomePageDTO(novelLists)
+home_dto -->> home_svc--: 36. Return homePageDTO
+
+home_svc -->> home_ctrl--: 37. Return homePageData
+
+home_ctrl -> home_ctrl++: 38. Check if user is authenticated and hotNovels not empty
+home_ctrl--
+opt User is authenticated
+    home_ctrl -> bookshelf_svc++: 39. isNovelInBookshelf(email, heroNovelId)
+    bookshelf_svc -->> home_ctrl--: 40. Return heroInBookshelf
+end
+
+home_ctrl -->> view--: 41. Return "home/index"
+view -->> act--: 42. Display homepage novel lists
+
+@enduml

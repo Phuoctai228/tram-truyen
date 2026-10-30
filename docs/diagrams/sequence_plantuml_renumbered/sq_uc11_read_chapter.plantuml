@@ -1,0 +1,190 @@
+@startuml sq_uc11_read_chapter
+<style>
+    sequenceDiagram{
+        FontSize 16
+
+        arrow {
+            ' Set the maximum width of the text on arrows
+            MaximumWidth 300
+        }
+        actor{
+            BackgroundColor white
+            LineThickness 1.0
+        }
+        participant{
+            BackgroundColor white
+            RoundCorner 0
+        }
+        database{
+            BackgroundColor white
+        }
+        groupHeader{
+            BackgroundColor white
+        }
+        referenceHeader{
+            BackgroundColor white
+        }
+        reference{
+            BackgroundColor white
+        }
+    }
+</style>
+
+hide footbox
+mainframe Read Chapter
+
+actor Member as act
+participant "ChapterReaderPage" as view
+participant "NovelController" as ctrl <<controller>>
+participant ":NovelService" as novel_svc
+participant ":ChapterService" as chapter_svc
+participant ":ChapterAccessService" as access_svc
+participant ":ChapterAccessPolicy" as policy
+participant ":ChapterPreviewBuilder" as preview_builder
+participant ":ChapterAccessDTO" as access_dto
+participant ":NovelRepository" as novel_repo
+participant ":ChapterRepository" as chapter_repo
+participant ":UserRepository" as user_repo
+participant ":UserChapterActivityRepository" as activity_repo
+database Database as db
+
+act ++
+
+act -> view++: 1. Access chapter reading page
+view -> ctrl++: 2. GET /truyen/{slug}/chuong-{chapterNumber}
+
+ctrl -> novel_svc++: 3. getPublicNovelBySlug(slug)
+
+novel_svc -> novel_repo++: 4. findBySlugAndIsDeletedFalseAndStatusNot(slug, "ARCHIVED")
+novel_repo -> db++: 5. Execute query
+db -->> novel_repo: 6. Return novel data
+db--
+novel_repo -->> novel_svc: 7. Return novel entity
+novel_repo--
+
+novel_svc -->> ctrl--: 8. Return novel
+
+ctrl -> chapter_svc++: 9. getPublicChapter(novelId, chapterNumber)
+
+chapter_svc -> novel_repo++: 10. findByIdAndIsDeletedFalseAndStatusNot(novelId, "ARCHIVED")
+novel_repo -> db++: 11. Execute query
+db -->> novel_repo: 12. Return novel entity
+db--
+novel_repo -->> chapter_svc: 13. Return novel entity
+novel_repo--
+
+chapter_svc -> chapter_repo++: 14. findByNovelIdAndChapterNumberAndIsDeletedFalseAndStatusIn(novelId, chapterNumber, publicStatuses)
+chapter_repo -> db++: 15. Execute query
+db -->> chapter_repo: 16. Return chapter data
+db--
+chapter_repo -->> chapter_svc: 17. Return chapter entity
+chapter_repo--
+
+chapter_svc -> chapter_svc++: 18. Validate chapter existence and sanitize content
+chapter_svc--
+alt Chapter not found or not published
+    chapter_svc -->> ctrl: 19. throw ResourceNotFoundException
+    ctrl -->> view: 20. Return error 404
+    view -->> act: 21. Display chapter not found page
+else Public chapter found
+    chapter_svc -->> ctrl--: 22. Return chapter
+
+    ctrl -> ctrl++: 23. Check if chapter was not viewed in current session
+    ctrl--
+    opt First view in current session
+        ctrl -> chapter_svc++: 24. recordView(novelId, chapterId)
+
+        chapter_svc -> chapter_repo++: 25. findById(chapterId)
+        chapter_repo -> db++: 26. Execute query
+        db -->> chapter_repo: 27. Return chapter entity
+        db--
+        chapter_repo -->> chapter_svc: 28. Return chapter entity
+        chapter_repo--
+
+        chapter_svc -> chapter_repo++: 29. save(chapter)
+        chapter_repo -> db++: 30. Save changes to database
+        db -->> chapter_repo: 31. Return updated chapter
+        db--
+        chapter_repo -->> chapter_svc: 32. Return updated chapter
+        chapter_repo--
+
+        chapter_svc -> novel_repo++: 33. findById(novelId)
+        novel_repo -> db++: 34. Execute query
+        db -->> novel_repo: 35. Return novel entity
+        db--
+        novel_repo -->> chapter_svc: 36. Return novel entity
+        novel_repo--
+
+        chapter_svc -> novel_repo++: 37. save(novel)
+        novel_repo -> db++: 38. Save changes to database
+        db -->> novel_repo: 39. Return updated novel
+        db--
+        novel_repo -->> chapter_svc: 40. Return updated novel
+        novel_repo--
+
+        chapter_svc -->> ctrl--: 41. Return result
+    end
+
+    ctrl -> access_svc++: 42. checkAccess(novel, chapter, authentication)
+
+    access_svc -> access_svc++: 43. Check authentication status
+    access_svc--
+    opt User is authenticated
+        access_svc -> policy++: 44. isPrivileged(authorities)
+        policy -->> access_svc--: 45. Return privileged
+
+        access_svc -> user_repo++: 46. findByEmail(email)
+        user_repo -> db++: 47. Execute query
+        db -->> user_repo: 48. Return user entity
+        db--
+        user_repo -->> access_svc: 49. Return user entity
+        user_repo--
+
+        access_svc -> activity_repo++: 50. findByUserAndChapter(user, chapter)
+        activity_repo -> db++: 51. Execute query
+        db -->> activity_repo: 52. Return activity data
+        db--
+        activity_repo -->> access_svc: 53. Return activity entity
+        activity_repo--
+    end
+
+    access_svc -> policy++: 54. resolve(chapter, loggedIn, privileged, alreadyUnlocked, walletBalance)
+    policy -->> access_svc--: 55. Return accessStatus
+
+    access_svc -> policy++: 56. isPaid(chapter)
+    policy -->> access_svc--: 57. Return isPaid
+
+    access_svc -> access_svc++: 58. Evaluate chapter readability
+    access_svc--
+    alt Chapter is readable (Free, Unlocked, or Privileged)
+        access_svc -> preview_builder++: 59. splitParagraphs(content)
+        preview_builder -->> access_svc--: 60. Return full paragraphs
+    else Chapter is locked VIP
+        access_svc -> preview_builder++: 61. buildPreview(content)
+        preview_builder -->> access_svc--: 62. Return preview paragraphs
+    end
+
+    access_svc -> access_dto++: 63. Call ChapterAccessDTO(status, readable, paragraphs, walletBalance)
+    access_dto -->> access_svc--: 64. Return chapterAccessDTO
+
+    access_svc -->> ctrl--: 65. Return chapterAccessDTO
+
+    ctrl -> chapter_svc++: 66. getPublicChapters(novelId)
+
+    chapter_svc -> chapter_repo++: 67. findAllByNovelIdAndIsDeletedFalseAndStatusInOrderByChapterNumberAsc(novelId, publicStatuses)
+    chapter_repo -> db++: 68. Execute query
+    db -->> chapter_repo: 69. Return published chapters
+    db--
+    chapter_repo -->> chapter_svc: 70. Return published chapters
+    chapter_repo--
+
+    chapter_svc -->> ctrl--: 71. Return chapters
+
+    ctrl -> ctrl++: 72. Resolve prevChapterNumber and nextChapterNumber
+    ctrl--
+
+    ctrl -->> view--: 73. Return "novel/reading"
+    view -->> act--: 74. Display chapter content or VIP unlock prompt
+end
+
+@enduml

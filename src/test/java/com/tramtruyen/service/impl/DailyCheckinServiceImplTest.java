@@ -62,6 +62,7 @@ class DailyCheckinServiceImplTest {
         when(userDailyCheckinRepository.findByUserAndCheckinDate(user, LocalDate.now())).thenReturn(Optional.empty());
         when(userDailyCheckinRepository.findTopByUserOrderByCheckinDateDesc(user)).thenReturn(Optional.of(yesterdayCheckin));
         when(userDailyCheckinRepository.countByUser(user)).thenReturn(2L);
+        when(userDailyCheckinRepository.sumRewardCoinByUser(user)).thenReturn(10L);
 
         DailyCheckinStatusDTO status = dailyCheckinService.getCheckinStatus("member@example.com");
 
@@ -69,6 +70,7 @@ class DailyCheckinServiceImplTest {
         assertThat(status.getStreakCount()).isEqualTo(2);
         assertThat(status.getCurrentStreakDay()).isEqualTo(3);
         assertThat(status.getTodayReward()).isEqualTo(10); // Day 3 reward is 10
+        assertThat(status.getTotalRewardCoins()).isEqualTo(10);
         assertThat(status.getRoadmap()).hasSize(7);
     }
 

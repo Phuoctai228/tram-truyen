@@ -1,111 +1,149 @@
 classDiagram
-direction LR
+    direction LR
 
-class UserController {
-    <<controller>>
-    - readingHistoryService : ReadingHistoryService
-    - bookshelfService : BookshelfService
-    + viewHistory(page: int, size: int, authentication: Authentication, model: Model) String
-    + removeHistoryItem(chapterId: Integer, authentication: Authentication, redirectAttributes: RedirectAttributes) String
-    + clearHistory(authentication: Authentication, redirectAttributes: RedirectAttributes) String
-}
+    class UserController {
+        <<controller>>
+        ⠀
+        ⠀⠀
+        - readingHistoryService : ReadingHistoryService
+        + viewHistory(page: int, size: int, authentication: Authentication, model: Model) String
+        + removeHistoryItem(chapterId: Integer, authentication: Authentication, redirectAttributes: RedirectAttributes) String
+        + clearHistory(authentication: Authentication, redirectAttributes: RedirectAttributes) String
+    }
 
-class ReadingHistoryService {
-    <<service interface>>
-    + getReadingHistory(email: String, page: int, size: int) Page~ReadingHistoryItemDTO~*
-    + removeHistoryItem(email: String, chapterId: Integer) void*
-    + clearHistory(email: String) void*
-}
+    class ReadingHistoryService {
+        <<service interface>>
+        ⠀
+        ⠀⠀
+        + getReadingHistory(email: String, page: int, size: int) Page~ReadingHistoryItemDTO~*
+        + recordChapterAccess(email: String, chapterId: Integer) void*
+        + removeHistoryItem(email: String, chapterId: Integer) void*
+        + clearHistory(email: String) void*
+    }
 
-class ReadingHistoryServiceImpl {
-    <<service>>
-    - userRepository : UserRepository
-    - userChapterActivityRepository : UserChapterActivityRepository
-    + getReadingHistory(email: String, page: int, size: int) Page~ReadingHistoryItemDTO~
-    + removeHistoryItem(email: String, chapterId: Integer) void
-    + clearHistory(email: String) void
-    - mapToHistoryDTO(activity: UserChapterActivity) ReadingHistoryItemDTO
-}
+    class ReadingHistoryServiceImpl {
+        <<service>>
+        ⠀
+        ⠀⠀
+        - userRepository : UserRepository
+        - userChapterActivityRepository : UserChapterActivityRepository
+        - chapterRepository : ChapterRepository
+        + getReadingHistory(email: String, page: int, size: int) Page~ReadingHistoryItemDTO~
+        + recordChapterAccess(email: String, chapterId: Integer) void
+        + removeHistoryItem(email: String, chapterId: Integer) void
+        + clearHistory(email: String) void
+        - removeFromHistory(activity: UserChapterActivity) void
+        - getUserByEmail(email: String) User
+        - mapToHistoryDTO(activity: UserChapterActivity) ReadingHistoryItemDTO
+    }
 
-class UserRepository {
-    <<repository>>
-    + findByEmail(email: String) Optional~User~*
-}
+    class ReadingHistoryItemDTO {
+        <<dto>>
+        ⠀
+        ⠀⠀
+        - activityId : Integer
+        - novelId : Integer
+        - novelSlug : String
+        - novelTitle : String
+        - novelCoverUrl : String
+        - author : String
+        - categories : List~String~
+        - chapterId : Integer
+        - chapterNumber : Integer
+        - chapterTitle : String
+        - isVip : Boolean
+        - price : Integer
+        - readAt : LocalDateTime
+        - relativeTime : String
+        - readUrl : String
+    }
 
-class UserChapterActivityRepository {
-    <<repository>>
-    + findAllByUserAndIsReadTrueOrderByReadAtDesc(user: User, pageable: Pageable) Page~UserChapterActivity~*
-    + findByUserAndChapterId(user: User, chapterId: Integer) Optional~UserChapterActivity~*
-    + save(activity: UserChapterActivity) UserChapterActivity*
-    + delete(activity: UserChapterActivity) void*
-}
+    class UserRepository {
+        <<repository>>
+        ⠀
+        ⠀⠀
+        + findByEmail(email: String) Optional~User~*
+    }
 
-class ReadingHistoryItemDTO {
-    <<dto>>
-    - activityId : Integer
-    - novelId : Integer
-    - novelSlug : String
-    - novelTitle : String
-    - novelCoverUrl : String
-    - author : String
-    - categories : List~String~
-    - chapterId : Integer
-    - chapterNumber : Integer
-    - chapterTitle : String
-    - isVip : Boolean
-    - price : Integer
-    - readAt : LocalDateTime
-    - relativeTime : String
-    - readUrl : String
-}
+    class UserChapterActivityRepository {
+        <<repository>>
+        ⠀
+        ⠀⠀
+        + findAllByUserAndReadAtIsNotNullOrderByReadAtDesc(user: User, pageable: Pageable) Page~UserChapterActivity~*
+        + findByUserAndChapterId(user: User, chapterId: Integer) Optional~UserChapterActivity~*
+        + findByUserAndChapter(user: User, chapter: Chapter) Optional~UserChapterActivity~*
+        + save(activity: UserChapterActivity) UserChapterActivity*
+        + delete(activity: UserChapterActivity) void*
+    }
 
-class UserChapterActivity {
-    <<entity>>
-    - id : Integer
-    - user : User
-    - chapter : Chapter
-    - isRead : Boolean
-    - readAt : LocalDateTime
-    - isUnlocked : Boolean
-}
+    class ChapterRepository {
+        <<repository>>
+        ⠀
+        ⠀⠀
+        + findById(id: Integer) Optional~Chapter~*
+    }
 
-class User {
-    <<entity>>
-    - id : Integer
-    - email : String
-    - fullName : String
-}
+    class UserChapterActivity {
+        <<entity>>
+        ⠀
+        ⠀⠀
+        - id : Integer
+        - user : User
+        - chapter : Chapter
+        - isRead : Boolean
+        - readAt : LocalDateTime
+        - isUnlocked : Boolean
+    }
 
-class Chapter {
-    <<entity>>
-    - id : Integer
-    - chapterNumber : Integer
-    - title : String
-    - price : Integer
-    - novel : Novel
-}
+    class User {
+        <<entity>>
+        ⠀
+        ⠀⠀
+        - id : Integer
+        - email : String
+        - fullName : String
+    }
 
-class Novel {
-    <<entity>>
-    - id : Integer
-    - title : String
-    - slug : String
-    - author : String
-    - coverUrl : String
-}
+    class Chapter {
+        <<entity>>
+        ⠀
+        ⠀⠀
+        - id : Integer
+        - chapterNumber : Integer
+        - title : String
+        - price : Integer
+        - novel : Novel
+    }
 
-UserController --> ReadingHistoryService
-ReadingHistoryServiceImpl ..|> ReadingHistoryService
+    class Novel {
+        <<entity>>
+        ⠀
+        ⠀⠀
+        - id : Integer
+        - title : String
+        - slug : String
+        - author : String
+        - coverUrl : String
+    }
 
-ReadingHistoryServiceImpl --> UserRepository
-ReadingHistoryServiceImpl --> UserChapterActivityRepository
+    UserController --> ReadingHistoryService
+    UserController ..> ReadingHistoryItemDTO
+    ReadingHistoryServiceImpl ..|> ReadingHistoryService
+    ReadingHistoryService ..> ReadingHistoryItemDTO
+    ReadingHistoryServiceImpl --> UserRepository
+    ReadingHistoryServiceImpl --> UserChapterActivityRepository
+    ReadingHistoryServiceImpl --> ChapterRepository
+    ReadingHistoryServiceImpl ..> ReadingHistoryItemDTO
+    ReadingHistoryServiceImpl ..> UserChapterActivity
+    ReadingHistoryServiceImpl ..> User
+    ReadingHistoryServiceImpl ..> Chapter
+    ReadingHistoryServiceImpl ..> Novel
+    UserRepository ..> User
+    UserChapterActivityRepository ..> UserChapterActivity
+    UserChapterActivityRepository ..> User
+    ChapterRepository ..> Chapter
+    UserChapterActivity --> User
+    UserChapterActivity --> Chapter
+    Chapter --> Novel
 
-UserController ..> ReadingHistoryItemDTO
-ReadingHistoryService ..> ReadingHistoryItemDTO
-ReadingHistoryServiceImpl ..> ReadingHistoryItemDTO
-
-UserChapterActivity --> User
-UserChapterActivity --> Chapter
-Chapter --> Novel
-
-classDef default fill:#FFFFFF,stroke:#000000,stroke-width:1px,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,stroke-width:1px,color:#000000

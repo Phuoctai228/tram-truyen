@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SDS - UC-26: Unlock Paid Chapter</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            line-height: 1.5;
+            color: #000000;
+            margin: 20px 30px;
+            background-color: #ffffff;
+        }
+        h2 { font-size: 15pt; font-weight: bold; color: #000000; margin-bottom: 8px; }
+        h3 { font-size: 13pt; font-weight: bold; font-style: italic; color: #000000; margin-top: 16px; margin-bottom: 8px; }
+        p { margin: 6px 0; font-family: 'Times New Roman', Times, serif; font-size: 12pt; color: #000000; }
+        .class-title { font-family: 'Times New Roman', Times, serif; font-size: 12pt; font-weight: bold; font-style: italic; color: #000000; margin-top: 14px; margin-bottom: 4px; }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            table-layout: fixed;
+            margin: 8px 0 18px 0;
+            border: 1px solid #000000;
+            color: #000000;
+        }
+        th, td {
+            border: 1px solid #000000;
+            padding: 6px 10px;
+            text-align: left;
+            vertical-align: top;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            color: #000000;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-word;
+        }
+        th {
+            background-color: #fbe5d6;
+            font-weight: bold;
+            color: #000000;
+        }
+        .col-no { width: 6%; text-align: center; color: #000000; }
+        .col-method { width: 28%; font-weight: bold; color: #000000; }
+        .col-desc { width: 66%; color: #000000; }
+        .sql-item { margin-top: 12px; margin-bottom: 4px; font-weight: bold; color: #000000; }
+        .sql-block {
+            margin: 4px 0 14px 0;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            color: #000000;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>8. Unlock Paid Chapter (UC-26)</h2>
+
+    <h3>b. Class Specifications</h3>
+
+    <p class="class-title"><b><i>NovelController Class</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">unlockChapter</td>
+                <td class="col-desc">
+                    <b>- Input:</b> slug: String, chapterNumber: Integer, autoUnlockNext: Boolean, authentication: Authentication, request: HttpServletRequest, redirectAttributes: RedirectAttributes.<br>
+                    <b>- Output:</b> Object (ResponseEntity&lt;UnlockResultDTO&gt; for AJAX or redirect URL String).<br>
+                    <b>- Internal Method Processing:</b> Handles POST /truyen/{slug}/chuong-{chapterNumber}/unlock request. Verifies user authentication; if unauthenticated, returns HTTP 401 (AJAX) or redirects to /login. Resolves the public novel via novelService.getPublicNovelBySlug(slug) and target chapter via chapterService.getPublicChapter(novelId, chapterNumber). Invokes chapterUnlockService.unlockChapter(email, chapterId, autoUnlockNext) and returns the result as JSON or redirects back to the unlocked chapter page.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>NovelService Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">getPublicNovelBySlug</td>
+                <td class="col-desc">
+                    <b>- Input:</b> slug: String.<br>
+                    <b>- Output:</b> Novel.<br>
+                    <b>- Internal Method Processing:</b> Retrieves an active, non-archived novel entity by its URL slug.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>NovelServiceImpl Class</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">getPublicNovelBySlug</td>
+                <td class="col-desc">
+                    <b>- Input:</b> slug: String.<br>
+                    <b>- Output:</b> Novel.<br>
+                    <b>- Internal Method Processing:</b> Queries novelRepository.findBySlugAndIsDeletedFalseAndStatusNot(slug, "ARCHIVED") and returns the novel entity or throws ResourceNotFoundException.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>ChapterService Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">getPublicChapter</td>
+                <td class="col-desc">
+                    <b>- Input:</b> novelId: Integer, chapterNumber: Integer.<br>
+                    <b>- Output:</b> Chapter.<br>
+                    <b>- Internal Method Processing:</b> Retrieves a published chapter by novel ID and chapter number.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>ChapterServiceImpl Class</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">getPublicChapter</td>
+                <td class="col-desc">
+                    <b>- Input:</b> novelId: Integer, chapterNumber: Integer.<br>
+                    <b>- Output:</b> Chapter.<br>
+                    <b>- Internal Method Processing:</b> Queries chapterRepository.findByNovelIdAndChapterNumberAndIsDeletedFalseAndStatusIn(novelId, chapterNumber, PUBLIC_STATUSES) and returns the Chapter entity.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>ChapterUnlockService Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">isChapterUnlocked</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String, chapterId: Integer.<br>
+                    <b>- Output:</b> boolean.<br>
+                    <b>- Internal Method Processing:</b> Checks whether the specified chapter is already unlocked or accessible by the user.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">unlockChapter</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String, chapterId: Integer, autoUnlockNext: Boolean.<br>
+                    <b>- Output:</b> UnlockResultDTO.<br>
+                    <b>- Internal Method Processing:</b> Executes the transactional VIP chapter purchase and returns the unlock result.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>ChapterUnlockServiceImpl Class</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">isChapterUnlocked</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String, chapterId: Integer.<br>
+                    <b>- Output:</b> boolean.<br>
+                    <b>- Internal Method Processing:</b> Checks if the chapter is free, if the user has a privileged role (ROLE_ADMIN/ROLE_STAFF), or if an unlocked UserChapterActivity record exists.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">unlockChapter</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String, chapterId: Integer, autoUnlockNext: Boolean.<br>
+                    <b>- Output:</b> UnlockResultDTO.<br>
+                    <b>- Internal Method Processing:</b> Fetches the Chapter by ID and validates eligibility via validateChapterEligibility(chapter). Acquires a pessimistic write lock on the User via userRepository.findByEmailWithLock(email). If the user is privileged, already unlocked the chapter, or the chapter is free, returns a 0-Coin UnlockResultDTO. Otherwise, deducts the chapter price via walletService.deductCoins(lockedUser, price, "UNLOCK_CHAPTER", chapterId, description), records the unlock via markChapterUnlocked(), and returns the completed UnlockResultDTO.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">03</td>
+                <td class="col-method">validateChapterEligibility</td>
+                <td class="col-desc">
+                    <b>- Input:</b> chapter: Chapter.<br>
+                    <b>- Output:</b> void.<br>
+                    <b>- Internal Method Processing:</b> Ensures neither the chapter nor its novel is soft-deleted, the novel is not ARCHIVED, and the chapter status is not DRAFT or LOCKED; otherwise throws ChapterNotPurchasableException.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">04</td>
+                <td class="col-method">buildTransactionDescription</td>
+                <td class="col-desc">
+                    <b>- Input:</b> chapter: Chapter.<br>
+                    <b>- Output:</b> String.<br>
+                    <b>- Internal Method Processing:</b> Formats a human-readable ledger description containing the chapter number, chapter title, and novel title.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">05</td>
+                <td class="col-method">markChapterUnlocked</td>
+                <td class="col-desc">
+                    <b>- Input:</b> user: User, chapter: Chapter, price: int, existingOpt: Optional&lt;UserChapterActivity&gt;.<br>
+                    <b>- Output:</b> void.<br>
+                    <b>- Internal Method Processing:</b> Creates or updates the UserChapterActivity entity with isUnlocked = true, pricePaid = price, and unlockedAt = LocalDateTime.now(), then saves it via userChapterActivityRepository.save(activity).
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>WalletService Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">deductCoins</td>
+                <td class="col-desc">
+                    <b>- Input:</b> user: User, amount: int, transactionType: String, referenceId: Integer, description: String.<br>
+                    <b>- Output:</b> void.<br>
+                    <b>- Internal Method Processing:</b> Deducts the specified Coin amount from the user's wallet balance and records a ledger transaction.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>WalletServiceImpl Class</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">deductCoins</td>
+                <td class="col-desc">
+                    <b>- Input:</b> user: User, amount: int, transactionType: String, referenceId: Integer, description: String.<br>
+                    <b>- Output:</b> void.<br>
+                    <b>- Internal Method Processing:</b> Locks the user row using userRepository.findByIdWithLock(userId). Checks if walletBalance &gt;= amount; if insufficient, throws InsufficientBalanceException. Subtracts amount from walletBalance, saves the updated User via userRepository.save(lockedUser), creates a Transaction record with amount = -price and type = "UNLOCK_CHAPTER", and persists it via transactionRepository.save(tx).
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>ChapterAccessPolicy Class</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">isPaid</td>
+                <td class="col-desc">
+                    <b>- Input:</b> chapter: Chapter.<br>
+                    <b>- Output:</b> boolean.<br>
+                    <b>- Internal Method Processing:</b> Returns true when the chapter status is PUBLISHED_VIP and price &gt; 0.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">isPrivileged</td>
+                <td class="col-desc">
+                    <b>- Input:</b> roleNames: Set&lt;String&gt;.<br>
+                    <b>- Output:</b> boolean.<br>
+                    <b>- Internal Method Processing:</b> Returns true if the user's roles include ROLE_ADMIN or ROLE_STAFF.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>NovelRepository Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">findBySlugAndIsDeletedFalseAndStatusNot</td>
+                <td class="col-desc">
+                    <b>- Input:</b> slug: String, status: String.<br>
+                    <b>- Output:</b> Optional&lt;Novel&gt;.<br>
+                    <b>- Internal Method Processing:</b> Retrieves a non-deleted, non-archived novel by its slug.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>ChapterRepository Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">findByNovelIdAndChapterNumberAndIsDeletedFalseAndStatusIn</td>
+                <td class="col-desc">
+                    <b>- Input:</b> novelId: Integer, chapterNumber: Integer, statuses: List&lt;String&gt;.<br>
+                    <b>- Output:</b> Optional&lt;Chapter&gt;.<br>
+                    <b>- Internal Method Processing:</b> Finds a published chapter by novel ID and chapter number.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">findById</td>
+                <td class="col-desc">
+                    <b>- Input:</b> id: Integer.<br>
+                    <b>- Output:</b> Optional&lt;Chapter&gt;.<br>
+                    <b>- Internal Method Processing:</b> Retrieves a chapter entity by its primary key ID.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>UserRepository Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">findByEmail</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String.<br>
+                    <b>- Output:</b> Optional&lt;User&gt;.<br>
+                    <b>- Internal Method Processing:</b> Finds a user entity by email address.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">findByEmailWithLock</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String.<br>
+                    <b>- Output:</b> Optional&lt;User&gt;.<br>
+                    <b>- Internal Method Processing:</b> Queries the user by email with a PESSIMISTIC_WRITE database lock (SELECT ... FOR UPDATE) to prevent concurrent double-spending.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">03</td>
+                <td class="col-method">findByIdWithLock</td>
+                <td class="col-desc">
+                    <b>- Input:</b> id: Integer.<br>
+                    <b>- Output:</b> Optional&lt;User&gt;.<br>
+                    <b>- Internal Method Processing:</b> Queries the user by ID with a PESSIMISTIC_WRITE lock before deducting Coins.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">04</td>
+                <td class="col-method">save</td>
+                <td class="col-desc">
+                    <b>- Input:</b> user: User.<br>
+                    <b>- Output:</b> User.<br>
+                    <b>- Internal Method Processing:</b> Updates the user's wallet_balance in the users table.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>UserChapterActivityRepository Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">findByUserAndChapter</td>
+                <td class="col-desc">
+                    <b>- Input:</b> user: User, chapter: Chapter.<br>
+                    <b>- Output:</b> Optional&lt;UserChapterActivity&gt;.<br>
+                    <b>- Internal Method Processing:</b> Checks if an activity record already exists for the user and chapter.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">save</td>
+                <td class="col-desc">
+                    <b>- Input:</b> activity: UserChapterActivity.<br>
+                    <b>- Output:</b> UserChapterActivity.<br>
+                    <b>- Internal Method Processing:</b> Inserts or updates the user_chapter_activities record with is_unlocked = TRUE, price_paid, and unlocked_at.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>TransactionRepository Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">save</td>
+                <td class="col-desc">
+                    <b>- Input:</b> transaction: Transaction.<br>
+                    <b>- Output:</b> Transaction.<br>
+                    <b>- Internal Method Processing:</b> Inserts a new Coin deduction ledger entry (type = 'UNLOCK_CHAPTER') into the transactions table.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>d. Database Queries</h3>
+
+    <p class="sql-item">1. Retrieve public novel by slug</p>
+    <div class="sql-block">SELECT id, title, slug, status, is_deleted
+FROM novels
+WHERE slug = ?
+  AND is_deleted = FALSE
+  AND status &lt;&gt; 'ARCHIVED';</div>
+
+    <p class="sql-item">2. Retrieve published chapter by novel ID and chapter number</p>
+    <div class="sql-block">SELECT id, novel_id, chapter_number, title, price, status, is_deleted
+FROM chapters
+WHERE novel_id = ?
+  AND chapter_number = ?
+  AND is_deleted = FALSE
+  AND status IN ('PUBLISHED_REGULAR', 'PUBLISHED_VIP', 'PUBLISHED');</div>
+
+    <p class="sql-item">3. Retrieve chapter by ID for eligibility check</p>
+    <div class="sql-block">SELECT id, novel_id, chapter_number, title, price, status, is_deleted
+FROM chapters
+WHERE id = ?;</div>
+
+    <p class="sql-item">4. Lock user row by email for concurrent purchase safety</p>
+    <div class="sql-block">SELECT id, email, full_name, wallet_balance, status
+FROM users
+WHERE email = ?
+FOR UPDATE;</div>
+
+    <p class="sql-item">5. Check existing user chapter activity</p>
+    <div class="sql-block">SELECT id, user_id, chapter_id, is_read, read_at, is_unlocked, price_paid, unlocked_at
+FROM user_chapter_activities
+WHERE user_id = ?
+  AND chapter_id = ?;</div>
+
+    <p class="sql-item">6. Lock user row by ID before wallet deduction</p>
+    <div class="sql-block">SELECT id, email, full_name, wallet_balance, status
+FROM users
+WHERE id = ?
+FOR UPDATE;</div>
+
+    <p class="sql-item">7. Deduct Coin price from user wallet balance</p>
+    <div class="sql-block">UPDATE users
+SET wallet_balance = ?,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = ?;</div>
+
+    <p class="sql-item">8. Insert UNLOCK_CHAPTER transaction into wallet ledger</p>
+    <div class="sql-block">INSERT INTO transactions (user_id, amount, balance_after, type, reference_id, description, created_at)
+VALUES (?, ?, ?, 'UNLOCK_CHAPTER', ?, ?, CURRENT_TIMESTAMP)
+RETURNING id;</div>
+
+    <p class="sql-item">9. Record permanent VIP chapter unlock for the user</p>
+    <div class="sql-block">INSERT INTO user_chapter_activities (user_id, chapter_id, is_unlocked, price_paid, unlocked_at)
+VALUES (?, ?, TRUE, ?, CURRENT_TIMESTAMP)
+ON CONFLICT (user_id, chapter_id)
+DO UPDATE SET is_unlocked = TRUE,
+              price_paid = EXCLUDED.price_paid,
+              unlocked_at = CURRENT_TIMESTAMP;</div>
+
+</body>
+</html>

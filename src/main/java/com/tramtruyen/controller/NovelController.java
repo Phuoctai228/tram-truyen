@@ -9,10 +9,13 @@ import com.tramtruyen.service.ChapterService;
 import com.tramtruyen.service.ChapterUnlockService;
 import com.tramtruyen.service.NovelService;
 import com.tramtruyen.service.RatingService;
+import com.tramtruyen.service.ReadingHistoryService;
 import com.tramtruyen.service.WalletService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -34,6 +37,7 @@ import java.util.Set;
 
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class NovelController {
 
     private final NovelService novelService;
@@ -45,6 +49,7 @@ public class NovelController {
     private final WalletService walletService;
     private final com.tramtruyen.service.CommentService commentService;
     private final com.tramtruyen.service.ChapterAccessService chapterAccessService;
+    private final ReadingHistoryService readingHistoryService;
 
     @GetMapping("/search")
     public String searchNovels(
@@ -356,6 +361,11 @@ public class NovelController {
         com.tramtruyen.dto.ChapterAccessDTO access =
                 chapterAccessService.checkAccess(novel, chapter, authentication);
 
+        // Record reading history (UC-28) only when the member can actually read the chapter
+        if (isLoggedIn && access.isReadable()) {
+            recordReadingHistory(authentication.getName(), chapter.getId());
+        }
+
         List<Chapter> chapters = chapterService.getPublicChapters(novel.getId());
         Integer prevChapterNumber = null;
         Integer nextChapterNumber = null;
@@ -431,6 +441,21 @@ public class NovelController {
 
         redirectAttributes.addFlashAttribute("successMessage", result.getMessage());
         return "redirect:/truyen/" + slug + "/chuong-" + chapterNumber;
+    }
+
+    /**
+     * Records chapter access into the member's reading history without blocking the reading page
+     * if a persistence error (e.g. concurrent duplicate insert) occurs.
+     *
+     * @param email     authenticated member email
+     * @param chapterId accessed chapter ID
+     */
+    private void recordReadingHistory(String email, Integer chapterId) {
+        try {
+            readingHistoryService.recordChapterAccess(email, chapterId);
+        } catch (DataAccessException e) {
+            log.warn("Failed to record reading history for user {} chapter {}: {}", email, chapterId, e.getMessage());
+        }
     }
 
     @GetMapping("/novel/{id}/read/{chapterNumber}")

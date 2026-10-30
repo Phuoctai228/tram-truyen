@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>UC-27 Save Reading Progress</title>
+    <title>UC-27-Save Reading Progress</title>
 </head>
 <body>
 <div class="uc-container" style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
@@ -13,70 +13,70 @@
             color: black !important;
         }
     </style>
-    <table style="border-collapse: collapse; width: 100%; border: 1.5pt solid black;">
+    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 25%;">UC ID and Name:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-27 Save Reading Progress</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">UC ID and Name:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-27-Save Reading Progress</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Created By:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 25%;">TaiTP</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 25%;">Date Created:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 25%;">2026-09-18</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Created By:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">TaiTP</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Date Created:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-18</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Primary Actor:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;">Member</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Secondary Actors:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;">None</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Primary Actor:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Member</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Secondary Actors:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">None</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Trigger:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Member successfully loads and reads a chapter on the reading interface.</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Trigger:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Member scrolls through an unlocked or free chapter on the reading page and reaches at least 95% of the chapter content, or views a short chapter whose content fully fits within the viewport.</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Description:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Automatically tracks and saves the member's reading progress (percentage and latest chapter ID) in the background while they are reading a novel, updating their bookshelf bookmark.</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Description:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Allows the system to automatically save the Member's scroll position locally in browser localStorage and asynchronously record chapter completion (isRead = true and readAt timestamp) on the server when the Member scrolls to at least 95% of the chapter or when short chapter content fully displays within the visible viewport.</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Preconditions:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>PRE-1. The chapter content must be loaded successfully.</p><p>PRE-2. The user must be authenticated as a Member.</p></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Preconditions:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> Member is authenticated and actively reading an unlocked or free chapter.</p></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Postconditions:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>POST-1. The member's reading progress is synchronized with the database.</p></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Postconditions:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> The Member's chapter activity record is marked as read with the latest timestamp in the database, updating both Reading History and Bookshelf completion progress.</p></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Normal Flow:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>A. Save Progress Successfully</p><ol><li>Member reads a chapter on the reading interface.</li><li>The system determines the numerical index of the current chapter relative to the novel's total published chapters.</li><li>The system calculates the overall completion percentage.</li><li>The system constructs an update payload with the chapter ID and calculated percentage.</li><li>5a. The system triggers an asynchronous background job to persist the reading progress in the database.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Normal Flow:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Save Reading Progress Automatically</b></p><ol><li>Member scrolls through the chapter content on the reading page.</li><li>The client script updates the top reading progress bar and saves the current scroll percentage and last-read chapter metadata to browser localStorage.</li><li>When the scroll progress reaches at least 95%, the client script dispatches an asynchronous request containing the chapter ID to the server.</li><li>The system validates the Member's session and retrieves the target chapter.</li><li>The system creates or updates the Member's chapter activity record, setting the read flag to true and updating the read timestamp to the current time.</li><li>The system returns a success status to the client silently without interrupting the reading experience.</li></ol></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Alternative Flows:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>None</p></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Alternative Flows:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.1 Restore Saved Scroll Position on Return</b></p><ol><li>Member re-opens a chapter that has a saved scroll percentage between 3% and 95% in browser localStorage.</li><li>The system automatically scrolls the viewport to the saved position and displays a toast notification indicating the reading position was restored.</li><li>Back to step 1.</li></ol><p><b>A.2 Short Chapter Auto-Completion</b></p><ol><li>Member opens a chapter with short content that completely fits within the viewport without scrolling.</li><li>The client script detects that the bottom of the content is within the visible viewport, updates the progress bar to 100%, and triggers an asynchronous completion request to the server.</li></ol></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Exceptions:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>EX-1 Session Invalid (Not Logged In)</p><ol><li>The system determines the member's session is invalid during the background request.</li><li>The system silently drops the progress update.</li></ol><p>EX-5 Network Failure</p><ol><li>The system encounters a temporary network timeout when saving progress.</li><li>The system queues the update locally.</li><li>The system attempts to sync again upon the next successful network interaction.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Exceptions:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Session Invalid (Not Logged In)</b></p><ol><li>The system detects an unauthenticated request when recording server-side chapter completion.</li><li>The system returns an unauthorized response and the client keeps progress locally in browser localStorage without interrupting the reader.</li></ol><p><b>EX-2 Short Chapter Non-Scrollable Exception</b></p><ol><li>The chapter content is short or the remaining scroll distance is negligible (&le; 80px due to bottom padding).</li><li>The client script automatically recognizes the short chapter, displays 100% progress, and dispatches the completion request after page load or upon clicking the next chapter button ("Chương sau").</li></ol><p><b>EX-5 Silent Sync Failure</b></p><ol><li>The asynchronous server update fails due to a network drop or server error.</li><li>The client catches the error silently so the Member's reading experience is not disrupted.</li></ol></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Priority:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Medium, Must Have</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Priority:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Medium, Should Have</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Frequency of Use:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Frequency of Use:</td>
             <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Very High</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Business Rules:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">BR-13</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Business Rules:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">BR-13, BR-14</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Other Information:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Process happens completely asynchronously in the background.</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Other Information:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Completion trigger fires once per chapter page load when scroll percentage reaches at least 95%.</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Assumptions:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Member maintains a stable internet connection while reading.</li></ul></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Assumptions:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Member has stable internet connection.</li></ul></td>
         </tr>
     </table>
 </div>

@@ -31,7 +31,7 @@
 </style>
 
 hide footbox
-mainframe Login
+mainframe Login Local
 
 actor Guest as act
 participant "LoginPage" as view

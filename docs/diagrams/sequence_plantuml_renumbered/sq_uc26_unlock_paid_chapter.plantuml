@@ -1,0 +1,189 @@
+@startuml sq_uc26_unlock_paid_chapter
+<style>
+    sequenceDiagram{
+        FontSize 16
+
+        arrow {
+            ' Set the maximum width of the text on arrows
+            MaximumWidth 300
+        }
+        actor{
+            BackgroundColor white
+            LineThickness 1.0
+        }
+        participant{
+            BackgroundColor white
+            RoundCorner 0
+        }
+        database{
+            BackgroundColor white
+        }
+        groupHeader{
+            BackgroundColor white
+        }
+        referenceHeader{
+            BackgroundColor white
+        }
+        reference{
+            BackgroundColor white
+        }
+    }
+</style>
+
+hide footbox
+mainframe Unlock Paid Chapter
+
+actor Member as act
+participant "ChapterReaderPage" as view
+participant "LoginPage" as r_view
+participant "NovelController" as ctrl <<controller>>
+participant ":NovelService" as novel_svc
+participant ":ChapterService" as chapter_svc
+participant ":ChapterUnlockService" as unlock_svc
+participant ":WalletService" as wallet_svc
+participant ":ChapterAccessPolicy" as policy
+participant ":Transaction" as tx_ett
+participant ":UserChapterActivity" as activity_ett
+participant ":UnlockResultDTO" as result_dto
+participant ":NovelRepository" as novel_repo
+participant ":ChapterRepository" as chapter_repo
+participant ":UserRepository" as user_repo
+participant ":UserChapterActivityRepository" as activity_repo
+participant ":TransactionRepository" as tx_repo
+database Database as db
+
+act ++
+
+act -> view++: 1. Click "Mở khóa chương" in VIP modal
+view -> ctrl++: 2. POST /truyen/{slug}/chuong-{chapterNumber}/unlock
+
+ctrl -> ctrl++: 3. Check authentication status
+ctrl--
+opt User is not authenticated
+    ctrl -->> r_view: 4. Redirect to /login
+    activate r_view
+    r_view -->> act: 5. Display login page
+    deactivate r_view
+end
+
+ctrl -> novel_svc++: 6. getPublicNovelBySlug(slug)
+novel_svc -> novel_repo++: 7. findBySlugAndIsDeletedFalseAndStatusNot(slug, "ARCHIVED")
+novel_repo -> db++: 8. Execute query
+db -->> novel_repo: 9. Return novel entity
+db--
+novel_repo -->> novel_svc: 10. Return novel entity
+novel_repo--
+novel_svc -->> ctrl--: 11. Return novel
+
+ctrl -> chapter_svc++: 12. getPublicChapter(novelId, chapterNumber)
+chapter_svc -> chapter_repo++: 13. findByNovelIdAndChapterNumberAndIsDeletedFalseAndStatusIn(novelId, chapterNumber, publicStatuses)
+chapter_repo -> db++: 14. Execute query
+db -->> chapter_repo: 15. Return chapter entity
+db--
+chapter_repo -->> chapter_svc: 16. Return chapter entity
+chapter_repo--
+chapter_svc -->> ctrl--: 17. Return chapter
+
+ctrl -> unlock_svc++: 18. unlockChapter(email, chapterId, autoUnlockNext)
+
+unlock_svc -> chapter_repo++: 19. findById(chapterId)
+chapter_repo -> db++: 20. Execute query
+db -->> chapter_repo: 21. Return chapter data
+db--
+chapter_repo -->> unlock_svc: 22. Return chapter entity
+chapter_repo--
+
+unlock_svc -> unlock_svc++: 23. Validate chapter eligibility
+unlock_svc--
+opt Chapter is not purchasable
+    unlock_svc -->> ctrl: 24. throw ChapterNotPurchasableException
+    ctrl -->> view: 25. Return error response
+    view -->> act: 26. Display error message
+end
+
+unlock_svc -> user_repo++: 27. findByEmailWithLock(email)
+user_repo -> db++: 28. Execute query
+db -->> user_repo: 29. Return locked user data
+db--
+user_repo -->> unlock_svc: 30. Return lockedUser entity
+user_repo--
+
+unlock_svc -> policy++: 31. isPrivileged(roleNames)
+policy -->> unlock_svc--: 32. Return isPrivileged
+
+unlock_svc -> activity_repo++: 33. findByUserAndChapter(lockedUser, chapter)
+activity_repo -> db++: 34. Execute query
+db -->> activity_repo: 35. Return activity data
+db--
+activity_repo -->> unlock_svc: 36. Return activity entity
+activity_repo--
+
+unlock_svc -> policy++: 37. isPaid(chapter)
+policy -->> unlock_svc--: 38. Return isPaid
+
+unlock_svc -> unlock_svc++: 39. Check privileged access, already unlocked status, and chapter price
+unlock_svc--
+alt Privileged role, already unlocked, or free chapter
+    unlock_svc -> result_dto++: 40. Call UnlockResultDTO(chapter, 0, remainingBalance)
+    result_dto -->> unlock_svc--: 41. Return unlockResultDTO
+    unlock_svc -->> ctrl: 42. Return unlockResultDTO
+    ctrl -->> view: 43. Redirect to /truyen/{slug}/chuong-{chapterNumber}
+    view -->> act: 44. Display unlocked chapter content
+else Paid VIP chapter requiring purchase
+    unlock_svc -> wallet_svc++: 45. deductCoins(lockedUser, price, "UNLOCK_CHAPTER", chapterId, description)
+
+    wallet_svc -> user_repo++: 46. findByIdWithLock(userId)
+    user_repo -> db++: 47. Execute query
+    db -->> user_repo: 48. Return locked user data
+    db--
+    user_repo -->> wallet_svc: 49. Return lockedUser entity
+    user_repo--
+
+    wallet_svc -> wallet_svc++: 50. Check if walletBalance >= price
+    wallet_svc--
+    alt Insufficient wallet balance
+        wallet_svc -->> unlock_svc: 51. throw InsufficientBalanceException
+        unlock_svc -->> ctrl: 52. throw InsufficientBalanceException
+        ctrl -->> view: 53. Return error response
+        view -->> act: 54. Display insufficient balance message
+    else Sufficient wallet balance
+        wallet_svc -> user_repo++: 55. save(lockedUser)
+        user_repo -> db++: 56. Save changes to database
+        db -->> user_repo: 57. Return updated user
+        db--
+        user_repo -->> wallet_svc: 58. Return updated user
+        user_repo--
+
+        wallet_svc -> tx_ett++: 59. Call Transaction(lockedUser, -price, newBalance, "UNLOCK_CHAPTER")
+        tx_ett -->> wallet_svc--: 60. Return transaction entity
+
+        wallet_svc -> tx_repo++: 61. save(tx)
+        tx_repo -> db++: 62. Save changes to database
+        db -->> tx_repo: 63. Return saved transaction
+        db--
+        tx_repo -->> wallet_svc: 64. Return saved transaction
+        tx_repo--
+
+        wallet_svc -->> unlock_svc--: 65. Return result
+
+        unlock_svc -> activity_ett++: 66. Call UserChapterActivity(lockedUser, chapter, true, price)
+        activity_ett -->> unlock_svc--: 67. Return activity entity
+
+        unlock_svc -> activity_repo++: 68. save(activity)
+        activity_repo -> db++: 69. Save changes to database
+        db -->> activity_repo: 70. Return saved activity
+        db--
+        activity_repo -->> unlock_svc: 71. Return saved activity
+        activity_repo--
+
+        unlock_svc -> result_dto++: 72. Call UnlockResultDTO(chapter, price, remainingBalance)
+        result_dto -->> unlock_svc--: 73. Return unlockResultDTO
+
+        unlock_svc -->> ctrl--: 74. Return unlockResultDTO
+        ctrl -->> view--: 75. Redirect to /truyen/{slug}/chuong-{chapterNumber}
+        view -->> act--: 76. Display unlocked VIP chapter content
+    end
+end
+
+@enduml
+

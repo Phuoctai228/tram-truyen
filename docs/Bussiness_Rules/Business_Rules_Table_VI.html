@@ -1,4 +1,4 @@
-﻿<style>
+<style>
     table.c200 { border-collapse: collapse; width: 100%; font-family: 'Times New Roman', serif; font-size: 11pt; }
     table.c200 td { border: 1px solid black; padding: 5px 8px; vertical-align: top; }
     table.c200 tr:first-child td { background-color: #fbe5df; font-weight: bold; text-align: center; }
@@ -48,7 +48,7 @@
             <p class="c56 c94"><span class="c18">Ràng buộc</span></p>
         </td>
         <td class="c69" colspan="1" rowspan="1">
-            <p class="c56"><span class="c18">Trạng thái truyện: ONGOING là trạng thái mặc định ban đầu. Giao diện công khai chỉ giới hạn hiển thị truyện ở trạng thái ONGOING và COMPLETED.</span></p>
+            <p class="c56"><span class="c18">Trạng thái truyện: ONGOING là trạng thái mặc định ban đầu. Giao diện công khai hiển thị các truyện chưa lưu trữ (ONGOING, COMPLETED, ON_HOLD) và ẩn các truyện ở trạng thái ARCHIVED.</span></p>
         </td>
     </tr>    <tr class="c8">
         <td class="c102" colspan="1" rowspan="1">
@@ -58,7 +58,7 @@
             <p class="c56 c94"><span class="c18">Ràng buộc</span></p>
         </td>
         <td class="c69" colspan="1" rowspan="1">
-            <p class="c56"><span class="c18">Xóa truyện: Truyện không bao giờ bị xóa vật lý (chỉ xóa mềm). Các truyện ở trạng thái ON_HOLD tuyệt đối không được hiển thị trong danh sách công khai.</span></p>
+            <p class="c56"><span class="c18">Xóa truyện: Truyện không bao giờ bị xóa vật lý (chỉ xóa mềm qua cờ is_deleted = true). Các truyện đã xóa mềm hoặc ở trạng thái ARCHIVED tuyệt đối không được hiển thị trong danh sách công khai.</span></p>
         </td>
     </tr>    <tr class="c8">
         <td class="c102" colspan="1" rowspan="1">
@@ -138,7 +138,7 @@
             <p class="c56 c94"><span class="c18">Ràng buộc</span></p>
         </td>
         <td class="c69" colspan="1" rowspan="1">
-            <p class="c56"><span class="c18">Truy cập VIP: Guest (Khách) không thể vượt qua khóa VIP. Chức năng nghe audio chỉ có sẵn cho các chương mà người dùng đã có quyền truy cập.</span></p>
+            <p class="c56"><span class="c18">Truy cập VIP &amp; Nghe đọc Audio: Guest và Member chưa mua chương không thể xem toàn bộ chương VIP (chỉ xem được đoạn trích xem trước), trong khi Staff và Admin có quyền truy cập đặc quyền. Chức năng nghe đọc audio (Web Speech API) khả dụng cho mọi đối tượng (Guest, Member, Staff, Admin) trên các chương miễn phí hoặc đã mở khóa.</span></p>
         </td>
     </tr>    <tr class="c8">
         <td class="c102" colspan="1" rowspan="1">
@@ -148,7 +148,7 @@
             <p class="c56 c94"><span class="c18">Tính toán</span></p>
         </td>
         <td class="c69" colspan="1" rowspan="1">
-            <p class="c56"><span class="c18">Tiến độ đọc: Việc lưu tiến độ đọc chỉ dành riêng cho các Member đã đăng nhập. Tỷ lệ phần trăm hoàn thành được tính toán động dựa trên tổng số chương tại thời điểm đó.</span></p>
+            <p class="c56"><span class="c18">Tiến độ đọc: Vị trí cuộn trang được lưu cục bộ trên trình duyệt (localStorage) cho mọi người đọc. Trạng thái hoàn thành chương trên máy chủ (isRead = true) được ghi nhận cho Member đã đăng nhập khi cuộn đạt tối thiểu 95% nội dung chương đã mở khóa hoặc khi nội dung chương ngắn hiển thị trọn vẹn trong khung nhìn. Tỷ lệ phần trăm hoàn thành trong Tủ sách được tính động bằng số chương đã đọc chia cho tổng số chương đã xuất bản.</span></p>
         </td>
     </tr>    <tr class="c8">
         <td class="c102" colspan="1" rowspan="1">
@@ -158,7 +158,7 @@
             <p class="c56 c94"><span class="c18">Sự kiện</span></p>
         </td>
         <td class="c69" colspan="1" rowspan="1">
-            <p class="c56"><span class="c18">Lịch sử đọc: Danh sách lịch sử đọc được giới hạn tối đa 50 mục gần nhất. Chỉ giữ lại mốc thời gian mới nhất cho mỗi chương nếu đọc lại nhiều lần.</span></p>
+            <p class="c56"><span class="c18">Lịch sử đọc: Danh sách lịch sử đọc giới hạn tối đa 50 mục gần nhất (phân trang 10 mục/trang), chỉ giữ lại mốc thời gian đọc mới nhất (readAt) cho mỗi chương. Khi xóa lịch sử đối với chương VIP đã mở khóa, hệ thống chỉ đặt lại trạng thái đọc (isRead = false, readAt = null) và bảo toàn quyền sở hữu VIP vĩnh viễn.</span></p>
         </td>
     </tr>    <tr class="c8">
         <td class="c102" colspan="1" rowspan="1">
@@ -168,7 +168,7 @@
             <p class="c56 c94"><span class="c18">Sự kiện</span></p>
         </td>
         <td class="c69" colspan="1" rowspan="1">
-            <p class="c56"><span class="c18">Tủ sách: Tủ sách mặc định sắp xếp đưa truyện mới đọc gần nhất lên đầu. Xóa một truyện khỏi tủ sách cũng sẽ xóa luôn dấu trang (tiến độ đọc) của truyện đó.</span></p>
+            <p class="c56"><span class="c18">Tủ sách: Tủ sách mặc định sắp xếp theo thời gian thêm vào gần nhất (addedAt DESC, 8 truyện/trang), hỗ trợ lọc theo trạng thái đọc (Tất cả, Đang đọc, Đã xong), tìm kiếm từ khóa và sắp xếp (Mới đọc gần đây, Tên truyện A-Z, Tiến độ cao nhất). Xóa một truyện khỏi tủ sách chỉ xóa bản ghi tủ sách, hoàn toàn giữ nguyên tiến độ và lịch sử đọc của người dùng.</span></p>
         </td>
     </tr>    <tr class="c8">
         <td class="c102" colspan="1" rowspan="1">
@@ -238,7 +238,7 @@
             <p class="c56 c94"><span class="c18">Sự kiện</span></p>
         </td>
         <td class="c69" colspan="1" rowspan="1">
-            <p class="c56"><span class="c18">Điểm danh hàng ngày: Thời gian reset điểm danh được quyết định bởi múi giờ của server. Phần thưởng điểm danh không thể rút hoặc quy đổi thành tiền mặt.</span></p>
+            <p class="c56"><span class="c18">Điểm danh hàng ngày: Giới hạn 1 lần mỗi ngày theo ngày của máy chủ. Phần thưởng tính theo chu kỳ chuỗi 7 ngày liên tiếp (+5, +5, +10, +10, +15, +15, +30 Coin; đứt chuỗi quay về Ngày 1, hết Ngày 7 lặp lại Ngày 1). Phần thưởng điểm danh không thể rút hoặc quy đổi thành tiền mặt.</span></p>
         </td>
     </tr>    <tr class="c8">
         <td class="c102" colspan="1" rowspan="1">

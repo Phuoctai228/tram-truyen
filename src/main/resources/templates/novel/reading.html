@@ -19,6 +19,35 @@
   <link rel="stylesheet" th:href="@{/css/novel/vip-unlock.css}">
   <script src="https://cdn.tailwindcss.com"></script>
   <script th:src="@{/js/novel/tailwind-config.js}"></script>
+  <style>
+    .karaoke-sentence {
+      transition: background-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+      border-radius: 4px;
+      padding: 1px 3px;
+      margin: 0 -1px;
+    }
+    .karaoke-sentence.active,
+    body.theme-light .karaoke-sentence.active {
+      background-color: rgba(254, 215, 170, 0.45) !important;
+      color: #7c2d12 !important;
+      box-shadow: 0 0 0 1.5px rgba(249, 115, 22, 0.22) !important;
+    }
+    body.theme-sepia .karaoke-sentence.active {
+      background-color: rgba(217, 119, 6, 0.18) !important;
+      color: #451a03 !important;
+      box-shadow: 0 0 0 1.5px rgba(217, 119, 6, 0.18) !important;
+    }
+    body.theme-dark .karaoke-sentence.active {
+      background-color: rgba(245, 158, 11, 0.2) !important;
+      color: #fef08a !important;
+      box-shadow: 0 0 0 1.5px rgba(245, 158, 11, 0.28) !important;
+    }
+    body.theme-blue .karaoke-sentence.active {
+      background-color: rgba(186, 230, 253, 0.5) !important;
+      color: #075985 !important;
+      box-shadow: 0 0 0 1.5px rgba(56, 189, 248, 0.22) !important;
+    }
+  </style>
 </head>
 
 <body class="font-body-reading antialiased" th:data-chapter-id="${chapter.id}" th:data-is-read="${isChapterRead}"
@@ -736,6 +765,114 @@
         </div>
       </div>
 
+      <!-- Vietnamese Voice Guide Modal (Solution 2) -->
+      <div id="vietnameseVoiceGuideModal"
+        class="fixed inset-0 z-[110] items-center justify-center bg-black/60 backdrop-blur-sm hidden transition-all p-4">
+        <div
+          class="bg-surface rounded-3xl p-6 sm:p-7 max-w-[520px] w-full flex flex-col shadow-2xl relative border border-outline-variant/30 animate-fade-in-up max-h-[90vh] overflow-y-auto">
+          <!-- Close Button -->
+          <button type="button" onclick="closeVoiceGuideModal()" aria-label="Đóng"
+            class="absolute top-4 right-4 text-outline hover:text-on-surface transition-colors p-1.5 rounded-xl hover:bg-surface-container">
+            <span class="material-symbols-outlined text-[20px]">close</span>
+          </button>
+
+          <!-- Icon & Header -->
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-[28px]">record_voice_over</span>
+            </div>
+            <div>
+              <h3 class="font-headline-sm font-bold text-lg text-on-surface">Kích hoạt Giọng đọc Tiếng Việt</h3>
+              <p class="text-xs text-on-surface-variant">Hướng dẫn cài đặt giọng đọc AI tự nhiên cho thiết bị của bạn</p>
+            </div>
+          </div>
+
+          <!-- Platform Tabs -->
+          <div class="flex gap-2 p-1 bg-surface-container-low rounded-xl mb-4 text-xs font-semibold">
+            <button type="button" onclick="switchGuideTab('windows')" id="guide-tab-windows"
+              class="flex-1 py-1.5 px-2 rounded-lg bg-surface text-primary shadow-xs transition-all flex items-center justify-center gap-1.5">
+              <span class="material-symbols-outlined text-[16px]">desktop_windows</span> Windows 10/11
+            </button>
+            <button type="button" onclick="switchGuideTab('browser')" id="guide-tab-browser"
+              class="flex-1 py-1.5 px-2 rounded-lg text-on-surface-variant hover:text-on-surface transition-all flex items-center justify-center gap-1.5">
+              <span class="material-symbols-outlined text-[16px]">public</span> Edge / Chrome
+            </button>
+            <button type="button" onclick="switchGuideTab('mobile')" id="guide-tab-mobile"
+              class="flex-1 py-1.5 px-2 rounded-lg text-on-surface-variant hover:text-on-surface transition-all flex items-center justify-center gap-1.5">
+              <span class="material-symbols-outlined text-[16px]">smartphone</span> Điện thoại
+            </button>
+          </div>
+
+          <!-- Content: Windows -->
+          <div id="guide-content-windows" class="space-y-2.5 text-xs text-on-surface-variant mb-5">
+            <div class="flex items-start gap-2.5 bg-surface-container-lowest p-2.5 rounded-xl border border-outline-variant/30">
+              <span class="w-5 h-5 rounded-full bg-primary/15 text-primary flex items-center justify-center shrink-0 font-bold text-[11px]">1</span>
+              <div>Nhấn tổ hợp phím <kbd class="px-1.5 py-0.5 rounded bg-surface-container font-mono border border-outline-variant/40 text-[10px]">Windows + I</kbd> để mở Cài đặt (Settings).</div>
+            </div>
+            <div class="flex items-start gap-2.5 bg-surface-container-lowest p-2.5 rounded-xl border border-outline-variant/30">
+              <span class="w-5 h-5 rounded-full bg-primary/15 text-primary flex items-center justify-center shrink-0 font-bold text-[11px]">2</span>
+              <div>Vào mục <strong>Time & Language</strong> (Thời gian & Ngôn ngữ) &rarr; chọn <strong>Language & region</strong>.</div>
+            </div>
+            <div class="flex items-start gap-2.5 bg-surface-container-lowest p-2.5 rounded-xl border border-outline-variant/30">
+              <span class="w-5 h-5 rounded-full bg-primary/15 text-primary flex items-center justify-center shrink-0 font-bold text-[11px]">3</span>
+              <div>Nhấn <strong>Add a language</strong> &rarr; Tìm kiếm và chọn <strong>Tiếng Việt (Vietnamese)</strong>.</div>
+            </div>
+            <div class="flex items-start gap-2.5 bg-primary/5 p-2.5 rounded-xl border border-primary/20">
+              <span class="w-5 h-5 rounded-full bg-primary text-on-primary flex items-center justify-center shrink-0 font-bold text-[11px]">4</span>
+              <div><strong class="text-primary font-bold">Quan trọng:</strong> Tích chọn ô <strong>"Text-to-speech" (Chuyển văn bản thành giọng nói)</strong> rồi bấm <strong>Install</strong>.</div>
+            </div>
+            <div class="flex items-start gap-2.5 bg-surface-container-lowest p-2.5 rounded-xl border border-outline-variant/30">
+              <span class="w-5 h-5 rounded-full bg-primary/15 text-primary flex items-center justify-center shrink-0 font-bold text-[11px]">5</span>
+              <div>Sau khi tải xong, khởi động lại trình duyệt và tải lại trang. Hệ thống sẽ có giọng <strong>Microsoft HoaiMy / An</strong> tự nhiên.</div>
+            </div>
+          </div>
+
+          <!-- Content: Browser -->
+          <div id="guide-content-browser" class="space-y-3 text-xs text-on-surface-variant mb-5 hidden">
+            <div class="bg-surface-container-lowest p-3 rounded-xl border border-outline-variant/30">
+              <div class="font-bold text-on-surface flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-[16px] text-primary">recommend</span>
+                Khuyên dùng Microsoft Edge:
+              </div>
+              <p>Trình duyệt Edge tích hợp sẵn bộ giọng đọc trực tuyến Microsoft Natural tiếng Việt đọc rất mượt mà mà không bắt buộc cài thêm gói ngôn ngữ hệ thống.</p>
+            </div>
+            <div class="bg-surface-container-lowest p-3 rounded-xl border border-outline-variant/30">
+              <div class="font-bold text-on-surface flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-[16px] text-tertiary">language</span>
+                Trên Google Chrome / Cốc Cốc:
+              </div>
+              <p>Mở Cài đặt trình duyệt &rarr; Ngôn ngữ &rarr; Thêm Tiếng Việt làm ngôn ngữ ưu tiên hàng đầu để Chrome kích hoạt giọng đọc tiếng Việt của Google.</p>
+            </div>
+          </div>
+
+          <!-- Content: Mobile -->
+          <div id="guide-content-mobile" class="space-y-3 text-xs text-on-surface-variant mb-5 hidden">
+            <div class="bg-surface-container-lowest p-3 rounded-xl border border-outline-variant/30">
+              <div class="font-bold text-on-surface flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-[16px] text-primary">android</span>
+                Android:
+              </div>
+              <p>Hệ điều hành Android đã có sẵn Google TTS tiếng Việt. Bạn có thể mở web đọc bằng Chrome trên điện thoại để nghe ngay.</p>
+            </div>
+            <div class="bg-surface-container-lowest p-3 rounded-xl border border-outline-variant/30">
+              <div class="font-bold text-on-surface flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-[16px] text-tertiary">phone_iphone</span>
+                iPhone / iPad (iOS 16 trở lên):
+              </div>
+              <p>Vào Cài đặt &rarr; Trợ năng &rarr; Đọc nội dung &rarr; Giọng nói &rarr; Tiếng Việt &rarr; Tải gói giọng nói (Linh).</p>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="pt-3 border-t border-outline-variant/20">
+            <button type="button" onclick="closeVoiceGuideModal()"
+              class="w-full py-2.5 px-4 bg-primary text-on-primary font-bold rounded-xl text-xs shadow-sm hover:opacity-95 transition-opacity">
+              Đã hiểu
+            </button>
+          </div>
+        </div>
+      </div>
+
       <!-- Bottom Sticky Footer -->
       <footer
         class="fixed bottom-0 left-0 right-0 z-40 bg-surface/95 backdrop-blur-md shadow-[0_-4px_20px_rgba(107,91,75,0.06)] border-t border-outline-variant/10">
@@ -791,6 +928,7 @@
       <!-- Audio Floating Player (Placed on empty right space on desktop, non-obtrusive, draggable) -->
       <div id="audio-player-panel"
         class="fixed bottom-20 left-1/2 -translate-x-1/2 lg:bottom-auto lg:left-auto lg:translate-x-0 lg:top-36 lg:right-20 xl:right-24 2xl:right-32 w-[92%] sm:w-[340px] bg-surface-container-lowest/95 backdrop-blur-xl shadow-2xl rounded-2xl p-4 z-50 transform translate-y-6 opacity-0 transition-all duration-300 pointer-events-none border border-outline-variant/30">
+        
         <div id="audio-panel-header" class="flex items-center justify-between mb-3 cursor-move select-none"
           title="Nhấn giữ và kéo để di chuyển">
           <span class="font-label-md text-label-md text-primary font-bold flex items-center gap-1.5">
@@ -798,6 +936,11 @@
             Nghe đọc truyện
           </span>
           <div class="flex items-center gap-1">
+            <button type="button" onclick="openVoiceGuideModal()"
+              class="p-1 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors"
+              title="Hướng dẫn cài đặt giọng Tiếng Việt">
+              <span class="material-symbols-outlined text-[18px]">help_outline</span>
+            </button>
             <span
               class="material-symbols-outlined text-[18px] text-on-surface-variant/40 hover:text-on-surface-variant cursor-grab active:cursor-grabbing"
               title="Kéo để di chuyển">drag_indicator</span>
@@ -807,6 +950,21 @@
             </button>
           </div>
         </div>
+
+        <!-- Missing Vietnamese Voice Notice Banner (Solution 2) -->
+        <div id="audio-vn-warning"
+          class="hidden mb-3 p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/25 text-[11px] text-amber-800 dark:text-amber-200">
+          <div class="flex items-start gap-1.5">
+            <span class="material-symbols-outlined text-[16px] text-amber-600 shrink-0 mt-0.5">info</span>
+            <div class="flex-1 leading-snug">
+              <span>Thiết bị chưa có giọng đọc Tiếng Việt.</span>
+              <button type="button" onclick="openVoiceGuideModal()" class="font-bold underline text-primary hover:opacity-80 block mt-0.5">
+                Xem hướng dẫn cài đặt &rarr;
+              </button>
+            </div>
+          </div>
+        </div>
+
         <div class="space-y-4">
           <!-- Cài đặt giọng & tốc độ -->
           <div class="grid grid-cols-2 gap-3">
@@ -871,15 +1029,39 @@
       const isPermanentlyCompleted = isInitiallyRead || !!(storedChapterData && (storedChapterData.isFinished || storedChapterData.percent >= 95));
 
       let maxProgress = 0;
-      let hasSavedComplete = isPermanentlyCompleted;
+      // Only the DB flag decides whether completion was already persisted; localStorage may be stale
+      // (read while logged out, another account, or after clearing history)
+      let hasSavedComplete = isInitiallyRead;
 
       const progressBar = document.getElementById('reading-bar');
       const progressLabel = document.getElementById('progress-percent');
 
+      // Check if all chapter content fits entirely within the visible viewport (Short Chapter Edge Case)
+      function isContentFullyVisible() {
+        const isUnlocked = bodyEl.getAttribute('data-is-unlocked') !== 'false';
+        if (!isUnlocked) return false; // Never auto-complete if chapter is locked VIP
+        const readerBody = document.getElementById('reader-body');
+        if (!readerBody) return false;
+        const rect = readerBody.getBoundingClientRect();
+        return rect.bottom <= (window.innerHeight || document.documentElement.clientHeight);
+      }
+
+      function isShortChapter() {
+        const isUnlocked = bodyEl.getAttribute('data-is-unlocked') !== 'false';
+        if (!isUnlocked) return false;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        // Either the reader body ends within the viewport or the remaining scroll distance is negligible (<= 80px)
+        return isContentFullyVisible() || height <= 80;
+      }
+
       function calculateCurrentScroll() {
         const winScroll = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop;
         const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        return height > 0 ? Math.min(100, Math.max(0, Math.round((winScroll / height) * 100))) : 0;
+        // Short chapters without a scrollbar or fully fitting on screen are treated as 100% read
+        if (isShortChapter()) {
+          return 100;
+        }
+        return height > 0 ? Math.min(100, Math.max(0, Math.round((winScroll / height) * 100))) : 100;
       }
 
       function updateProgressBarUI(pct) {
@@ -918,6 +1100,33 @@
         maxProgress = calculateCurrentScroll();
       }
       updateProgressBarUI(maxProgress);
+
+      // Sync completion to DB once layout is final (short chapters, or completed in localStorage but not in DB)
+      function checkAndPersistCompletion() {
+        if (!isPermanentlyCompleted) {
+          maxProgress = Math.max(maxProgress, calculateCurrentScroll());
+        }
+        if (maxProgress >= 95 && !hasSavedComplete) {
+          maxProgress = 100;
+          updateProgressBarUI(100);
+          saveChapterCompletionToDatabase();
+          saveScrollProgressToLocalStorage();
+        }
+      }
+
+      window.addEventListener('load', function () {
+        checkAndPersistCompletion();
+        // Re-check after 1 second in case fonts/styles slightly adjusted layout
+        setTimeout(checkAndPersistCompletion, 1000);
+      });
+
+      window.addEventListener('resize', function () {
+        if (isShortChapter() && maxProgress < 100) {
+          maxProgress = 100;
+          updateProgressBarUI(100);
+          checkAndPersistCompletion();
+        }
+      });
 
       // LocalStorage Reading Progress Management
       function saveScrollProgressToLocalStorage() {
@@ -966,7 +1175,7 @@
         // When reaching completion (>= 95% or 100%)
         if (maxProgress >= 95 && !hasSavedComplete) {
           maxProgress = 100;
-          hasSavedComplete = true;
+          // hasSavedComplete is set inside saveChapterCompletionToDatabase() (setting it here would block the API call)
           updateProgressBarUI(100);
           saveChapterCompletionToDatabase();
         }
@@ -987,10 +1196,11 @@
       // Navigation handler before leaving (e.g. clicking "Chương sau")
       window.saveReadingProgressBeforeLeave = function () {
         const currentScrolled = calculateCurrentScroll();
-        // Only mark complete if the reader actually reached the end of the chapter (>= 95%)
-        if ((currentScrolled >= 95 || maxProgress >= 95) && !hasSavedComplete) {
+        const shortChapter = isShortChapter();
+        // Mark complete if the reader reached >= 95% OR entire content fits on screen (short chapter)
+        if ((currentScrolled >= 95 || maxProgress >= 95 || shortChapter) && !hasSavedComplete) {
           maxProgress = 100;
-          hasSavedComplete = true;
+          // hasSavedComplete is set inside saveChapterCompletionToDatabase() (setting it here would block the API call)
           updateProgressBarUI(100);
           saveChapterCompletionToDatabase();
         }
@@ -1200,30 +1410,62 @@
       const voiceSelect = document.getElementById('audio-voice-select');
       const speedSlider = document.getElementById('audio-speed');
       const speedLabel = document.getElementById('speed-label');
+      const audioVnWarning = document.getElementById('audio-vn-warning');
 
-      let synth = window.speechSynthesis;
+      let synth = ('speechSynthesis' in window) ? window.speechSynthesis : null;
       let voices = [];
       let sentences = [];
       let currentSentenceIndex = 0;
       let isPlaying = false;
       let isPanelOpen = false;
+      let hasVietnameseVoice = false;
 
-      // Load Voices
+      // Load Voices with Vietnamese Detection
       function populateVoiceList() {
-        voices = synth.getVoices().filter(v => v.lang.includes('vi')); // Only Vietnamese voices
-        if (voices.length === 0) voices = synth.getVoices(); // Fallback if no VN voices found
+        if (!synth) {
+          hasVietnameseVoice = false;
+          if (audioVnWarning) audioVnWarning.classList.remove('hidden');
+          return;
+        }
 
-        voiceSelect.innerHTML = '';
-        voices.forEach((voice, i) => {
-          const option = document.createElement('option');
-          option.textContent = voice.name + (voice.default ? ' (Mặc định)' : '');
-          option.value = i;
-          voiceSelect.appendChild(option);
-        });
+        const allVoices = synth.getVoices();
+        voices = allVoices.filter(v => v.lang && v.lang.toLowerCase().includes('vi'));
+        hasVietnameseVoice = voices.length > 0;
+
+        if (!hasVietnameseVoice) {
+          // Device has no Vietnamese voice pack!
+          if (audioVnWarning) audioVnWarning.classList.remove('hidden');
+          voices = allVoices; // List available voices anyway
+        } else {
+          if (audioVnWarning) audioVnWarning.classList.add('hidden');
+        }
+
+        if (voiceSelect) {
+          voiceSelect.innerHTML = '';
+          if (!hasVietnameseVoice && voices.length === 0) {
+            const option = document.createElement('option');
+            option.textContent = 'Chưa có giọng Tiếng Việt';
+            voiceSelect.appendChild(option);
+          } else {
+            voices.forEach((voice, i) => {
+              const option = document.createElement('option');
+              let label = voice.name;
+              if (!hasVietnameseVoice) {
+                label += ` (${voice.lang})`;
+              } else if (voice.default) {
+                label += ' (Mặc định)';
+              }
+              option.textContent = label;
+              option.value = i;
+              voiceSelect.appendChild(option);
+            });
+          }
+        }
       }
+
       populateVoiceList();
-      if (speechSynthesis.onvoiceschanged !== undefined) {
-        speechSynthesis.onvoiceschanged = populateVoiceList;
+      if (synth && synth.onvoiceschanged !== undefined) {
+        synth.onvoiceschanged = populateVoiceList;
       }
 
       function getParagraphTexts() {
@@ -1289,14 +1531,14 @@
         stopAudio();
         // Remove Karaoke Highlights
         document.querySelectorAll('.karaoke-sentence').forEach(el => {
-          el.classList.remove('bg-primary', 'text-on-primary', 'shadow-sm');
+          el.classList.remove('active', 'bg-primary', 'text-on-primary', 'shadow-sm');
         });
       }
 
       function highlightSentence(index) {
         document.querySelectorAll('.karaoke-sentence').forEach((el, i) => {
           if (i === index) {
-            el.classList.add('bg-primary', 'text-on-primary', 'shadow-sm');
+            el.classList.add('active');
             // Auto-scroll
             const rect = el.getBoundingClientRect();
             if (rect.top > window.innerHeight - 200 || rect.bottom < 100) {
@@ -1306,12 +1548,13 @@
               });
             }
           } else {
-            el.classList.remove('bg-primary', 'text-on-primary', 'shadow-sm');
+            el.classList.remove('active', 'bg-primary', 'text-on-primary', 'shadow-sm');
           }
         });
       }
 
       function speakSentence(index) {
+        if (!synth) return;
         if (index < 0 || index >= sentences.length) {
           isPlaying = false;
           toggleIcon.textContent = "play_arrow";
@@ -1321,8 +1564,10 @@
         synth.cancel(); // clear queue
 
         let utterance = new SpeechSynthesisUtterance(sentences[index]);
-        const selectedVoice = voices[voiceSelect.value];
-        if (selectedVoice) utterance.voice = selectedVoice;
+        if (voices.length > 0 && voiceSelect) {
+          const selectedVoice = voices[voiceSelect.value];
+          if (selectedVoice) utterance.voice = selectedVoice;
+        }
 
         utterance.rate = parseFloat(speedSlider.value);
         utterance.pitch = 1.0;
@@ -1352,22 +1597,59 @@
         } else {
           isPlaying = false;
           toggleIcon.textContent = "play_arrow";
-          synth.cancel();
+          if (synth) synth.cancel();
         }
       }
 
       function stopAudio() {
         isPlaying = false;
         toggleIcon.textContent = "play_arrow";
-        synth.cancel();
+        if (synth) synth.cancel();
         currentSentenceIndex = 0;
         highlightSentence(-1);
       }
 
+      // Voice Guide Modal (Solution 2)
+      window.openVoiceGuideModal = function () {
+        const modal = document.getElementById('vietnameseVoiceGuideModal');
+        if (modal) {
+          modal.classList.remove('hidden');
+          modal.classList.add('flex');
+        }
+      };
+
+      window.closeVoiceGuideModal = function () {
+        const modal = document.getElementById('vietnameseVoiceGuideModal');
+        if (modal) {
+          modal.classList.add('hidden');
+          modal.classList.remove('flex');
+        }
+      };
+
+      window.switchGuideTab = function (tabName) {
+        ['windows', 'browser', 'mobile'].forEach(t => {
+          const tabBtn = document.getElementById('guide-tab-' + t);
+          const content = document.getElementById('guide-content-' + t);
+          if (t === tabName) {
+            if (tabBtn) {
+              tabBtn.classList.add('bg-surface', 'text-primary', 'shadow-xs');
+              tabBtn.classList.remove('text-on-surface-variant');
+            }
+            if (content) content.classList.remove('hidden');
+          } else {
+            if (tabBtn) {
+              tabBtn.classList.remove('bg-surface', 'text-primary', 'shadow-xs');
+              tabBtn.classList.add('text-on-surface-variant');
+            }
+            if (content) content.classList.add('hidden');
+          }
+        });
+      };
+
       // Event Listeners for Player
       if (btnAudioMain) {
         btnAudioMain.addEventListener('click', () => {
-          if (!('speechSynthesis' in window)) {
+          if (!synth) {
             alert("Trình duyệt của bạn không hỗ trợ tính năng đọc âm thanh.");
             return;
           }
@@ -1631,7 +1913,7 @@
       }
 
       window.toggleAudioPanel = function () {
-        if (!('speechSynthesis' in window)) {
+        if (!synth) {
           alert("Trình duyệt của bạn không hỗ trợ tính năng đọc âm thanh.");
           return;
         }

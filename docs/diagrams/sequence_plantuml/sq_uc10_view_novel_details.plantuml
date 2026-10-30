@@ -1,0 +1,167 @@
+@startuml sq_uc10_view_novel_details
+<style>
+    sequenceDiagram{
+        FontSize 16
+
+        arrow {
+            ' Set the maximum width of the text on arrows
+            MaximumWidth 300
+        }
+        actor{
+            BackgroundColor white
+            LineThickness 1.0
+        }
+        participant{
+            BackgroundColor white
+            RoundCorner 0
+        }
+        database{
+            BackgroundColor white
+        }
+        groupHeader{
+            BackgroundColor white
+        }
+        referenceHeader{
+            BackgroundColor white
+        }
+        reference{
+            BackgroundColor white
+        }
+    }
+</style>
+
+hide footbox
+mainframe View Novel Details
+
+actor Guest as act
+participant "NovelDetailPage" as view
+participant "NovelController" as ctrl <<controller>>
+participant ":NovelService" as novel_svc
+participant ":ChapterService" as chapter_svc
+participant ":BookshelfService" as bookshelf_svc
+participant ":NovelRepository" as novel_repo
+participant ":ChapterRepository" as chapter_repo
+participant ":BookshelfRepository" as bookshelf_repo
+participant ":UserRepository" as user_repo
+participant ":UserChapterActivityRepository" as activity_repo
+database Database as db
+
+act ++
+
+act -> view++: Select novel card or title link
+view -> ctrl++: GET /truyen/{slug}
+
+ctrl -> novel_svc++: getPublicNovelBySlug(slug)
+
+novel_svc -> novel_repo++: findBySlugAndIsDeletedFalseAndStatusNot(slug, "ARCHIVED")
+novel_repo -> db++: Execute query
+db -->> novel_repo: Return novel data
+db--
+novel_repo -->> novel_svc: Return novel entity
+novel_repo--
+
+novel_svc -> novel_svc++: Validate novel existence and public status
+novel_svc--
+alt Novel not found or archived
+    novel_svc -->> ctrl: throw ResourceNotFoundException
+    ctrl -->> view: Return error 404
+    view -->> act: Display novel not found page
+else Public novel found
+    novel_svc -->> ctrl--: Return novel
+
+    ctrl -> chapter_svc++: getPublicChapters(novelId)
+
+    chapter_svc -> novel_repo++: findByIdAndIsDeletedFalseAndStatusNot(novelId, "ARCHIVED")
+    novel_repo -> db++: Execute query
+    db -->> novel_repo: Return novel entity
+    db--
+    novel_repo -->> chapter_svc: Return novel entity
+    novel_repo--
+
+    chapter_svc -> chapter_repo++: findAllByNovelIdAndIsDeletedFalseAndStatusInOrderByChapterNumberAsc(novelId, publicStatuses)
+    chapter_repo -> db++: Execute query
+    db -->> chapter_repo: Return published chapters
+    db--
+    chapter_repo -->> chapter_svc: Return published chapters
+    chapter_repo--
+
+    chapter_svc -->> ctrl--: Return chapters
+
+    ctrl -> ctrl++: Check if user is authenticated
+    ctrl--
+    opt User is authenticated
+        ctrl -> bookshelf_svc++: isNovelInBookshelf(email, novelId)
+
+        bookshelf_svc -> user_repo++: findByEmail(email)
+        user_repo -> db++: Execute query
+        db -->> user_repo: Return user entity
+        db--
+        user_repo -->> bookshelf_svc: Return user entity
+        user_repo--
+
+        bookshelf_svc -> novel_repo++: findByIdAndIsDeletedFalse(novelId)
+        novel_repo -> db++: Execute query
+        db -->> novel_repo: Return novel entity
+        db--
+        novel_repo -->> bookshelf_svc: Return novel entity
+        novel_repo--
+
+        bookshelf_svc -> bookshelf_repo++: existsByUserAndNovel(user, novel)
+        bookshelf_repo -> db++: Execute query
+        db -->> bookshelf_repo: Return boolean result
+        db--
+        bookshelf_repo -->> bookshelf_svc: Return inBookshelf
+        bookshelf_repo--
+
+        bookshelf_svc -->> ctrl--: Return inBookshelf
+
+        ctrl -> bookshelf_svc++: hasReadAnyChapter(email, novelId)
+
+        bookshelf_svc -> activity_repo++: countByUserAndChapter_NovelAndIsReadTrue(user, novel)
+        activity_repo -> db++: Execute query
+        db -->> activity_repo: Return read chapter count
+        db--
+        activity_repo -->> bookshelf_svc: Return read chapter count
+        activity_repo--
+
+        bookshelf_svc -->> ctrl--: Return hasReadAnyChapter
+
+        ctrl -> bookshelf_svc++: getLastReadChapter(email, novelId)
+
+        bookshelf_svc -> activity_repo++: findFirstByUserAndChapter_NovelAndIsReadTrueOrderByReadAtDescChapter_ChapterNumberDesc(user, novel)
+        activity_repo -> db++: Execute query
+        db -->> activity_repo: Return latest read activity
+        db--
+        activity_repo -->> bookshelf_svc: Return latest read activity
+        activity_repo--
+
+        bookshelf_svc -->> ctrl--: Return lastReadChapter
+    end
+
+    ctrl -> bookshelf_svc++: countNovelFavorites(novelId)
+
+    bookshelf_svc -> bookshelf_repo++: countByNovelId(novelId)
+    bookshelf_repo -> db++: Execute query
+    db -->> bookshelf_repo: Return favoriteCount
+    db--
+    bookshelf_repo -->> bookshelf_svc: Return favoriteCount
+    bookshelf_repo--
+
+    bookshelf_svc -->> ctrl--: Return favoriteCount
+
+    ctrl -> novel_svc++: getNovelsBySameAuthor(author, novelId)
+
+    novel_svc -> novel_repo++: findTop5ByAuthorIgnoreCaseAndIdNotAndIsDeletedFalseOrderByViewsDesc(author, novelId)
+    novel_repo -> db++: Execute query
+    db -->> novel_repo: Return same author novels
+    db--
+    novel_repo -->> novel_svc: Return same author novels
+    novel_repo--
+
+    novel_svc -->> ctrl--: Return sameAuthorNovels
+
+    ctrl -->> view--: Return "novel/details"
+    view -->> act--: Display novel details, chapter list, and reading actions
+end
+
+@enduml

@@ -132,7 +132,7 @@
       <td style="border: 1px solid #dee2e6; padding: 12px; text-align: center; font-weight: bold; color: #0d6efd;">BR-10</td>
       <td style="border: 1px solid #dee2e6; padding: 12px; font-weight: 500;">Thưởng điểm danh</td>
       <td style="border: 1px solid #dee2e6; padding: 12px;">
-        Mỗi Member đăng nhập và thực hiện thao tác Điểm danh (Check-in) trong khoảng thời gian từ <code>00:00:00</code> đến <code>23:59:59</code> mỗi ngày sẽ nhận được Coin thưởng tự động.
+        Mỗi Member đăng nhập và thực hiện thao tác Điểm danh (Check-in) trong khoảng thời gian từ <code>00:00:00</code> đến <code>23:59:59</code> mỗi ngày theo ngày máy chủ sẽ nhận được Coin thưởng theo chu kỳ chuỗi 7 ngày liên tiếp (<code>+5, +5, +10, +10, +15, +15, +30 Coin</code>; nếu bỏ lỡ 1 ngày hoặc hoàn tất mốc ngày 7 sẽ quay lại Ngày 1).
       </td>
       <td style="border: 1px solid #dee2e6; padding: 12px;">Member</td>
       <td style="border: 1px solid #dee2e6; padding: 12px; color: #6c757d;">Chỉ áp dụng 1 lần/ngày.</td>
@@ -274,7 +274,7 @@
       <td style="border: 1px solid #dee2e6; padding: 12px; text-align: center; font-weight: bold; color: #0d6efd;">BR-10</td>
       <td style="border: 1px solid #dee2e6; padding: 12px; font-weight: 500;">Daily Check-in Reward</td>
       <td style="border: 1px solid #dee2e6; padding: 12px;">
-        Members who log in and complete the Check-in action between <code>00:00:00</code> and <code>23:59:59</code> daily will receive automatic Coin rewards.
+        Members who log in and complete the Check-in action between <code>00:00:00</code> and <code>23:59:59</code> daily (server date) receive Coin rewards following a 7-day consecutive streak cycle (<code>+5, +5, +10, +10, +15, +15, +30 Coins</code>; missing a day or completing Day 7 resets the cycle to Day 1).
       </td>
       <td style="border: 1px solid #dee2e6; padding: 12px;">Member</td>
       <td style="border: 1px solid #dee2e6; padding: 12px; color: #6c757d;">Applicable only once per day.</td>

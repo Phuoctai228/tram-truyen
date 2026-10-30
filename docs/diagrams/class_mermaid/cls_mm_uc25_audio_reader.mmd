@@ -1,74 +1,153 @@
 classDiagram
-direction LR
+    direction LR
 
-class NovelController {
-    <<controller>>
-    - chapterService : ChapterService
-    - chapterAccessService : ChapterAccessService
-    + readChapterBySlug(slug: String, chapterNumber: Integer, authentication: Authentication, request: HttpServletRequest, model: Model) String
-}
+    class NovelController {
+        <<controller>>
+        ⠀
+        ⠀⠀
+        - novelService : NovelService
+        - chapterService : ChapterService
+        - chapterAccessService : ChapterAccessService
+        + readChapterBySlug(slug: String, chapterNumber: Integer, authentication: Authentication, request: HttpServletRequest, model: Model) String
+    }
 
-class ChapterService {
-    <<service interface>>
-    + getPublicChapter(novelId: Integer, chapterNumber: Integer) Chapter*
-}
+    class NovelService {
+        <<service interface>>
+        ⠀
+        ⠀⠀
+        + getPublicNovelBySlug(slug: String) Novel*
+    }
 
-class ChapterServiceImpl {
-    <<service>>
-    - chapterRepository : ChapterRepository
-    - novelRepository : NovelRepository
-    + getPublicChapter(novelId: Integer, chapterNumber: Integer) Chapter
-}
+    class NovelServiceImpl {
+        <<service>>
+        ⠀
+        ⠀⠀
+        - novelRepository : NovelRepository
+        + getPublicNovelBySlug(slug: String) Novel
+    }
 
-class ChapterAccessService {
-    <<service interface>>
-    + checkAccess(novel: Novel, chapter: Chapter, authentication: Authentication) ChapterAccessDTO*
-}
+    class ChapterService {
+        <<service interface>>
+        ⠀
+        ⠀⠀
+        + getPublicChapter(novelId: Integer, chapterNumber: Integer) Chapter*
+    }
 
-class ChapterAccessServiceImpl {
-    <<service>>
-    - chapterPreviewBuilder : ChapterPreviewBuilder
-    - chapterAccessPolicy : ChapterAccessPolicy
-    + checkAccess(novel: Novel, chapter: Chapter, authentication: Authentication) ChapterAccessDTO
-}
+    class ChapterServiceImpl {
+        <<service>>
+        ⠀
+        ⠀⠀
+        - chapterRepository : ChapterRepository
+        - novelRepository : NovelRepository
+        + getPublicChapter(novelId: Integer, chapterNumber: Integer) Chapter
+    }
 
-class ChapterRepository {
-    <<repository>>
-    + findByNovelIdAndChapterNumberAndIsDeletedFalseAndStatusIn(novelId: Integer, chapterNumber: Integer, statuses: List~String~) Optional~Chapter~*
-}
+    class ChapterAccessService {
+        <<service interface>>
+        ⠀
+        ⠀⠀
+        + checkAccess(novel: Novel, chapter: Chapter, authentication: Authentication) ChapterAccessDTO*
+    }
 
-class ChapterAccessDTO {
-    <<dto>>
-    - readable : boolean
-    - paragraphs : List~String~
-}
+    class ChapterAccessServiceImpl {
+        <<service>>
+        ⠀
+        ⠀⠀
+        - chapterPreviewBuilder : ChapterPreviewBuilder
+        - chapterAccessPolicy : ChapterAccessPolicy
+        + checkAccess(novel: Novel, chapter: Chapter, authentication: Authentication) ChapterAccessDTO
+    }
 
-class Novel {
-    <<entity>>
-    - id : Integer
-    - title : String
-    - slug : String
-}
+    class ChapterPreviewBuilder {
+        <<service>>
+        ⠀
+        ⠀⠀
+        - previewRatio : double
+        + splitParagraphs(content: String) List~String~
+        + buildPreviewParagraphs(content: String, previewLimit: int) List~String~
+    }
 
-class Chapter {
-    <<entity>>
-    - id : Integer
-    - chapterNumber : Integer
-    - title : String
-    - content : String
-    - price : Integer
-    - status : String
-}
+    class ChapterAccessPolicy {
+        <<service>>
+        ⠀
+        ⠀⠀
+        + isPaid(chapter: Chapter) boolean
+        + isPrivileged(roleNames: Set~String~) boolean
+        + resolve(chapter: Chapter, loggedIn: boolean, privileged: boolean, alreadyUnlocked: boolean, walletBalance: int) ChapterAccessStatus
+    }
 
-NovelController --> ChapterService
-NovelController --> ChapterAccessService
-ChapterServiceImpl ..|> ChapterService
-ChapterAccessServiceImpl ..|> ChapterAccessService
+    class ChapterAccessDTO {
+        <<dto>>
+        ⠀
+        ⠀⠀
+        - readable : boolean
+        - paragraphs : List~String~
+    }
 
-ChapterServiceImpl --> ChapterRepository
-NovelController ..> ChapterAccessDTO
-ChapterAccessService ..> ChapterAccessDTO
+    class NovelRepository {
+        <<repository>>
+        ⠀
+        ⠀⠀
+        + findBySlugAndIsDeletedFalseAndStatusNot(slug: String, status: String) Optional~Novel~*
+    }
 
-Novel *-- Chapter
+    class ChapterRepository {
+        <<repository>>
+        ⠀
+        ⠀⠀
+        + findByNovelIdAndChapterNumberAndIsDeletedFalseAndStatusIn(novelId: Integer, chapterNumber: Integer, statuses: List~String~) Optional~Chapter~*
+    }
 
-classDef default fill:#FFFFFF,stroke:#000000,stroke-width:1px,color:#000000
+    class Novel {
+        <<entity>>
+        ⠀
+        ⠀⠀
+        - id : Integer
+        - title : String
+        - slug : String
+    }
+
+    class Chapter {
+        <<entity>>
+        ⠀
+        ⠀⠀
+        - id : Integer
+        - novel : Novel
+        - chapterNumber : Integer
+        - title : String
+        - content : String
+        - price : Integer
+        - status : String
+    }
+
+    NovelController --> NovelService
+    NovelController --> ChapterService
+    NovelController --> ChapterAccessService
+    NovelController ..> Novel
+    NovelController ..> Chapter
+    NovelController ..> ChapterAccessDTO
+    NovelServiceImpl ..|> NovelService
+    ChapterServiceImpl ..|> ChapterService
+    ChapterAccessServiceImpl ..|> ChapterAccessService
+    NovelService ..> Novel
+    ChapterService ..> Chapter
+    ChapterAccessService ..> Novel
+    ChapterAccessService ..> Chapter
+    ChapterAccessService ..> ChapterAccessDTO
+    NovelServiceImpl --> NovelRepository
+    ChapterServiceImpl --> ChapterRepository
+    ChapterServiceImpl --> NovelRepository
+    ChapterAccessServiceImpl --> ChapterPreviewBuilder
+    ChapterAccessServiceImpl --> ChapterAccessPolicy
+    NovelServiceImpl ..> Novel
+    ChapterServiceImpl ..> Chapter
+    ChapterServiceImpl ..> Novel
+    ChapterAccessServiceImpl ..> Novel
+    ChapterAccessServiceImpl ..> Chapter
+    ChapterAccessServiceImpl ..> ChapterAccessDTO
+    ChapterAccessPolicy ..> Chapter
+    NovelRepository ..> Novel
+    ChapterRepository ..> Chapter
+    Chapter --> Novel
+
+    classDef default fill:#FFFFFF,stroke:#000000,stroke-width:1px,color:#000000

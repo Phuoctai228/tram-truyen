@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>UC-11 Read Chapter</title>
+    <title>UC-11-Read Chapter</title>
 </head>
 <body>
 <div class="uc-container" style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
@@ -13,70 +13,70 @@
             color: black !important;
         }
     </style>
-    <table style="border-collapse: collapse; width: 100%; border: 1.5pt solid black;">
+    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 25%;">UC ID and Name:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-11 Read Chapter</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">UC ID and Name:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-11-Read Chapter</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Created By:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 25%;">TaiTP</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 25%;">Date Created:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 25%;">2026-09-18</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Created By:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">TaiTP</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Date Created:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-18</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Primary Actor:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;">Guest, Member</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Secondary Actors:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;">None</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Primary Actor:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Guest, Member, Staff, Admin</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Secondary Actors:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">None</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Trigger:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Actor clicks on a specific chapter link from the novel details page or bookshelf.</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Trigger:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Actor selects a chapter from the novel details page, clicks "Đọc truyện" / "Đọc tiếp", or clicks "Chương trước" / "Chương tiếp" on the reading interface.</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Description:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Allows an actor to read the textual content of a published chapter. The system validates access rights (Free vs VIP) and automatically records reading history/progress for authenticated members.</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Description:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Allows the actor to read the text content of a published chapter, customize reading appearance settings (theme, font family, font size, line height, content width), navigate between chapters, and view chapter comments.</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Preconditions:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>PRE-1. The requested chapter must exist in the system.</p></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Preconditions:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> The novel is publicly visible (non-deleted and non-archived).</p><p><b>PRE-2.</b> The requested chapter exists, is not soft-deleted, and has a published status.</p></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Postconditions:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>POST-1. The actor reads the chapter content.</p></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Postconditions:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> The actor views the full chapter content (or VIP preview if locked).</p><p><b>POST-2.</b> The chapter and novel view counts are incremented once per user session.</p></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Normal Flow:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>A. Read Free Chapter Successfully</p><ol><li>Actor accesses the reading page for a specific chapter.</li><li>The system extracts the chapter ID from the request.</li><li>The system retrieves the chapter data from the database.</li><li>The system validates the chapter's publication status is published.</li><li>The system determines the chapter access level is Free.</li><li>The system retrieves the textual content of the chapter from the database.</li><li>The system retrieves the actor's session data.</li><li>The system retrieves the actor's saved reading preferences (e.g., font size, background color).</li><li>The system renders the reading interface, displaying the formatted text and navigation controls ("Chương trước", "Chương sau").</li><li>10a. The system triggers an asynchronous background job to update the novel's total view count.</li><li>11a. If the actor is a Member, the system triggers an asynchronous background job to record the chapter in their reading history and update their bookmark progress.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Normal Flow:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Read Chapter Successfully</b></p><ol><li>Actor accesses the chapter reading page.</li><li>The system retrieves the novel and chapter details and validates that the chapter is published.</li><li>The system checks the session view tracker and increments the chapter and novel view counts if not yet counted in the current session.</li><li>The system evaluates the actor's access rights for the chapter (free chapter, unlocked VIP chapter, or privileged Staff/Admin role).</li><li>The system retrieves adjacent chapters (previous/next), the full published chapter list for the drawer, and chapter comments.</li><li>The system renders the reading interface with the full chapter content, navigation buttons ("Chương trước", "Danh sách chương", "Chương tiếp"), and floating toolbar.</li></ol></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Alternative Flows:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>A.5 Locked VIP Chapter</p><ol><li>The system determines the chapter access level is VIP.</li><li>The system checks the actor's session and unlock records.</li><li>The system validates the actor has not unlocked this chapter.</li><li>The system displays a prompt overlay asking the user to unlock the chapter, presenting an "Mở khóa" button.</li><li>Back to step 1 (triggered after the actor successfully unlocks it via UC-26).</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Alternative Flows:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.4 Locked VIP Chapter</b></p><ol><li>The system determines the chapter is a VIP chapter and the actor (Guest or unentitled Member) has not unlocked it.</li><li>The system generates a preview excerpt of the chapter content.</li><li>The system renders the preview paragraphs along with a VIP paywall card containing the "Mở khóa chương" button and automatically opens the VIP unlock modal.</li><li>Back to step 1.</li></ol><p><b>A.6.1 Navigate to Adjacent Chapter</b></p><ol><li>Actor clicks the "Chương trước" or "Chương tiếp" button (or selects a chapter from the "Danh sách chương" drawer).</li><li>The system loads the selected chapter page.</li><li>Back to step 1.</li></ol><p><b>A.6.2 Customize Reading Settings</b></p><ol><li>Actor clicks the "settings" icon ("Cài đặt hiển thị") on the floating toolbar.</li><li>Actor adjusts theme, font family, font size, line height, or content width, or clicks "Đặt lại mặc định".</li><li>The system applies the visual changes immediately and saves the preferences to browser localStorage.</li><li>Back to step 6.</li></ol></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Exceptions:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>EX-3 Chapter Not Found</p><ol><li>The system determines the requested chapter ID does not exist in the database.</li><li>The system displays a 404 error page.</li></ol><p>EX-4 Chapter Unpublished</p><ol><li>The system determines the chapter's publication status is unpublished.</li><li>The system displays an error message indicating the chapter is currently unavailable.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Exceptions:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-2 Chapter Not Found or Unpublished</b></p><ol><li>The system determines the requested chapter does not exist, is soft-deleted, or is not published.</li><li>The system throws a resource not found error and displays the 404 error page.</li></ol></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Priority:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Priority:</td>
             <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High, Must Have</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Frequency of Use:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Frequency of Use:</td>
             <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Very High</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Business Rules:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">BR-12, BR-13</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Business Rules:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">BR-11, BR-12, BR-13, BR-16, BR-21</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Other Information:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">None</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Other Information:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Staff and Admin actors have privileged access to read VIP chapters without purchasing.<br/>View count deduplication is enforced per HTTP session via the session attribute VIEWED_CHAPTER_IDS.</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Assumptions:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Actor has a stable internet connection.</li></ul></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Assumptions:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Actor has stable internet connection.</li></ul></td>
         </tr>
     </table>
 </div>
