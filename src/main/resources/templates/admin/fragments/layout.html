@@ -23,11 +23,33 @@
             </nav>
         </div>
         <div class="sidebar-footer">
-            <strong sec:authorize="isAuthenticated()" sec:authentication="principal.user.fullName">TRẠM TRUYỆN CMS</strong>
-            <strong sec:authorize="!isAuthenticated()">TRẠM TRUYỆN CMS</strong>
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                <div style="width: 36px; height: 36px; border-radius: 50%; overflow: hidden; flex-shrink: 0; border: 1.5px solid rgba(135,82,0,0.3); background: #faf6f0;">
+                    <img sec:authorize="isAuthenticated()"
+                         th:if="${#authentication.principal.user.avatarUrl != null and !#strings.isEmpty(#authentication.principal.user.avatarUrl)}"
+                         th:src="${#authentication.principal.user.avatarUrl}" alt="Avatar"
+                         onerror="this.onerror=null;this.src='/images/default-avatar.jpg';"
+                         style="width: 100%; height: 100%; object-fit: cover;">
+                    <img sec:authorize="isAuthenticated()"
+                         th:unless="${#authentication.principal.user.avatarUrl != null and !#strings.isEmpty(#authentication.principal.user.avatarUrl)}"
+                         src="/images/default-avatar.jpg" alt="Avatar"
+                         style="width: 100%; height: 100%; object-fit: cover;">
+                    <img sec:authorize="!isAuthenticated()" src="/images/default-avatar.jpg" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div style="overflow: hidden; min-width: 0; line-height: 1.3;">
+                    <strong style="display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" sec:authorize="isAuthenticated()" sec:authentication="principal.user.fullName">TRẠM TRUYỆN CMS</strong>
+                    <strong style="display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" sec:authorize="!isAuthenticated()">TRẠM TRUYỆN CMS</strong>
+        
 
-            <span sec:authorize="isAuthenticated()" sec:authentication="principal.user.email">Hệ thống hoạt động</span>
-            <span sec:authorize="!isAuthenticated()">Hệ thống hoạt động</span>
+                    <span style="display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px;" sec:authorize="isAuthenticated()" sec:authentication="principal.user.email">Hệ thống hoạt động</span>
+                    <span style="display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px;" sec:authorize="!isAuthenticated()">Hệ thống hoạt động</span>
+        
+                </div>
+            </div>
+
+
+
+
 
             <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" class="admin-logout-form">
                 <button type="submit" class="admin-logout-btn">
@@ -39,7 +61,24 @@
 
     <header th:fragment="topbar" class="topbar">
         <span class="search-hint">⌕ &nbsp; Tìm kiếm truyện, chương, tác giả...</span>
-        <span class="profile">Quản trị nội dung <b>TT</b></span>
+        <div class="profile" sec:authorize="isAuthenticated()">
+            <div style="display: flex; flex-direction: column; align-items: flex-end; line-height: 1.25;">
+                <span style="font-size: 13px; font-weight: 600;" sec:authentication="principal.user.fullName">Quản trị viên</span>
+                <span style="font-size: 11px; color: var(--muted, #8a7664);">Quản trị hệ thống</span>
+            </div>
+            <div style="width: 36px; height: 36px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--amber, #875200); background: #faf6f0; flex-shrink: 0;">
+                <img th:if="${#authentication.principal.user.avatarUrl != null and !#strings.isEmpty(#authentication.principal.user.avatarUrl)}"
+                     th:src="${#authentication.principal.user.avatarUrl}" alt="Avatar"
+                     onerror="this.onerror=null;this.src='/images/default-avatar.jpg';"
+                     style="width: 100%; height: 100%; object-fit: cover;">
+                <img th:unless="${#authentication.principal.user.avatarUrl != null and !#strings.isEmpty(#authentication.principal.user.avatarUrl)}"
+                     src="/images/default-avatar.jpg" alt="Avatar"
+                     style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+        </div>
+        <div class="profile" sec:authorize="!isAuthenticated()">
+            <span>Quản trị nội dung <b>TT</b></span>
+        </div>
     </header>
 
     <!-- Fragment Toast thông báo thao tác cho Quản trị viên (UC-44, 43, 52, 49/48/50) -->

@@ -38,6 +38,12 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("SELECT u.walletBalance FROM User u WHERE u.id = :id")
     Optional<Integer> findWalletBalanceById(@Param("id") Integer id);
 
+    @Query("SELECT u.avatarUrl FROM User u WHERE u.id = :id")
+    Optional<String> findAvatarUrlById(@Param("id") Integer id);
+
+    @Query("SELECT u.fullName FROM User u WHERE u.id = :id")
+    Optional<String> findFullNameById(@Param("id") Integer id);
+
     @Query(value = "SELECT DISTINCT u FROM User u LEFT JOIN u.roles r " +
             "WHERE (:status IS NULL OR :status = '' OR u.status = :status) " +
             "AND (:roleName IS NULL OR :roleName = '' OR r.name = :roleName) " +
