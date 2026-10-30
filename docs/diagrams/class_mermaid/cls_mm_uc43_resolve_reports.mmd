@@ -1,7 +1,7 @@
 classDiagram
 direction LR
 
-class ReportAdminController["<<controller>> ReportAdminController"] {
+class ReportAdminController["«controller»<br/>ReportAdminController"] {
     - reportService : ReportService
     - userRepository : UserRepository
     + listReports(tab: String, status: String, page: String, size: String, model: Model) String
@@ -9,7 +9,7 @@ class ReportAdminController["<<controller>> ReportAdminController"] {
     + resolveContentReport(id: Integer, request: ResolveReportRequest, bindingResult: BindingResult, currentStatus: String, page: int, authentication: Authentication, httpRequest: HttpServletRequest, redirectAttributes: RedirectAttributes) String
 }
 
-class ReportService["<<service interface>> ReportService"] {
+class ReportService["«service interface»<br/>ReportService"] {
     + getCommentReports(status: String, page: int, size: int) Page~CommentReport~*
     + getContentReports(status: String, page: int, size: int) Page~ContentReport~*
     + resolveCommentReport(adminId: Integer, reportId: Integer, request: ResolveReportRequest, clientIp: String) void*
@@ -17,7 +17,7 @@ class ReportService["<<service interface>> ReportService"] {
     + getReportCounts() Map~String, Long~*
 }
 
-class ReportServiceImpl["<<service>> ReportServiceImpl"] {
+class ReportServiceImpl["«service»<br/>ReportServiceImpl"] {
     - commentRepository : CommentRepository
     - commentReportRepository : CommentReportRepository
     - chapterRepository : ChapterRepository
@@ -30,45 +30,45 @@ class ReportServiceImpl["<<service>> ReportServiceImpl"] {
     + resolveContentReport(adminId: Integer, reportId: Integer, request: ResolveReportRequest, clientIp: String) void
 }
 
-class CommentReportRepository["<<repository>> CommentReportRepository"] {
+class CommentReportRepository["«repository»<br/>CommentReportRepository"] {
     + findById(id: Integer) Optional~CommentReport~*
     + save(report: CommentReport) CommentReport*
 }
 
-class ContentReportRepository["<<repository>> ContentReportRepository"] {
+class ContentReportRepository["«repository»<br/>ContentReportRepository"] {
     + findById(id: Integer) Optional~ContentReport~*
     + save(report: ContentReport) ContentReport*
 }
 
-class CommentRepository["<<repository>> CommentRepository"] {
+class CommentRepository["«repository»<br/>CommentRepository"] {
     + save(comment: Comment) Comment*
     + findByParentIdIn(parentIds: Collection~Integer~) List~Comment~*
     + updateStatusForIds(ids: Collection~Integer~, status: String, updatedAt: LocalDateTime) int*
 }
 
-class ChapterRepository["<<repository>> ChapterRepository"] {
+class ChapterRepository["«repository»<br/>ChapterRepository"] {
     + save(chapter: Chapter) Chapter*
 }
 
-class NotificationRepository["<<repository>> NotificationRepository"] {
+class NotificationRepository["«repository»<br/>NotificationRepository"] {
     + save(notification: Notification) Notification*
 }
 
-class SystemAuditLogRepository["<<repository>> SystemAuditLogRepository"] {
+class SystemAuditLogRepository["«repository»<br/>SystemAuditLogRepository"] {
     + save(auditLog: SystemAuditLog) SystemAuditLog*
 }
 
-class UserRepository["<<repository>> UserRepository"] {
+class UserRepository["«repository»<br/>UserRepository"] {
     + findById(id: Integer) Optional~User~*
 }
 
-class ResolveReportRequest["<<dto>> ResolveReportRequest"] {
+class ResolveReportRequest["«dto»<br/>ResolveReportRequest"] {
     - adminNote : String
     - action : String
     - decision : String
 }
 
-class CommentReport["<<entity>> CommentReport"] {
+class CommentReport["«entity»<br/>CommentReport"] {
     - id : Integer
     - user : User
     - comment : Comment
@@ -80,7 +80,7 @@ class CommentReport["<<entity>> CommentReport"] {
     - processedAt : LocalDateTime
 }
 
-class ContentReport["<<entity>> ContentReport"] {
+class ContentReport["«entity»<br/>ContentReport"] {
     - id : Integer
     - user : User
     - chapter : Chapter
@@ -92,21 +92,21 @@ class ContentReport["<<entity>> ContentReport"] {
     - processedAt : LocalDateTime
 }
 
-class Comment["<<entity>> Comment"] {
+class Comment["«entity»<br/>Comment"] {
     - id : Integer
     - user : User
     - content : String
     - status : String
 }
 
-class Chapter["<<entity>> Chapter"] {
+class Chapter["«entity»<br/>Chapter"] {
     - id : Integer
     - chapterNumber : Integer
     - title : String
     - status : String
 }
 
-class SystemAuditLog["<<entity>> SystemAuditLog"] {
+class SystemAuditLog["«entity»<br/>SystemAuditLog"] {
     - id : Integer
     - adminId : Integer
     - actionType : String
@@ -118,7 +118,7 @@ class SystemAuditLog["<<entity>> SystemAuditLog"] {
     - createdAt : LocalDateTime
 }
 
-class Notification["<<entity>> Notification"] {
+class Notification["«entity»<br/>Notification"] {
     - id : Integer
     - userId : Integer
     - title : String
@@ -127,7 +127,7 @@ class Notification["<<entity>> Notification"] {
     - createdAt : LocalDateTime
 }
 
-class User["<<entity>> User"] {
+class User["«entity»<br/>User"] {
     - id : Integer
     - email : String
     - fullName : String
@@ -135,8 +135,7 @@ class User["<<entity>> User"] {
 
 ReportAdminController --> ReportService
 ReportAdminController --> UserRepository
-ReportServiceImpl ..|> ReportService
-
+ReportService <|.. ReportServiceImpl
 ReportServiceImpl --> CommentReportRepository
 ReportServiceImpl --> ContentReportRepository
 ReportServiceImpl --> CommentRepository
@@ -144,7 +143,6 @@ ReportServiceImpl --> ChapterRepository
 ReportServiceImpl --> UserRepository
 ReportServiceImpl --> NotificationRepository
 ReportServiceImpl --> SystemAuditLogRepository
-
 ReportAdminController ..> ResolveReportRequest
 ReportService ..> ResolveReportRequest
 ReportServiceImpl ..> ResolveReportRequest
@@ -152,7 +150,6 @@ ReportServiceImpl ..> CommentReport
 ReportServiceImpl ..> ContentReport
 ReportServiceImpl ..> SystemAuditLog
 ReportServiceImpl ..> Notification
-
 CommentReport --> User
 CommentReport --> Comment
 ContentReport --> User

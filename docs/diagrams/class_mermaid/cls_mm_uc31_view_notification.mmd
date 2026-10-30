@@ -1,7 +1,7 @@
 classDiagram
 direction LR
 
-class UserNotificationController["<<controller>> UserNotificationController"] {
+class UserNotificationController["«controller»<br/>UserNotificationController"] {
     - notificationService : NotificationService
     - bookshelfService : BookshelfService
     - userRepository : UserRepository
@@ -9,11 +9,9 @@ class UserNotificationController["<<controller>> UserNotificationController"] {
     + markAllAsRead(authentication: Authentication, tab: String, page: int, redirectAttributes: RedirectAttributes) String
     + markAsRead(id: Integer, authentication: Authentication) ResponseEntity~?~
     + deleteNotification(id: Integer, authentication: Authentication, tab: String, page: int, redirectAttributes: RedirectAttributes) String
-    - isAuthenticated(authentication: Authentication) boolean
-    - getUserId(authentication: Authentication) Integer
 }
 
-class NotificationService["<<service interface>> NotificationService"] {
+class NotificationService["«service interface»<br/>NotificationService"] {
     + getUserNotifications(userId: Integer, tab: String, page: int, size: int) Page~NotificationDTO~*
     + getNotificationDetail(notificationId: Integer, userId: Integer) NotificationDTO*
     + getUnreadCount(userId: Integer) long*
@@ -22,7 +20,11 @@ class NotificationService["<<service interface>> NotificationService"] {
     + deleteNotification(notificationId: Integer, userId: Integer) void*
 }
 
-class NotificationServiceImpl["<<service>> NotificationServiceImpl"] {
+class BookshelfService["«service interface»<br/>BookshelfService"] {
+    + getUserProfile(email: String) UserProfileDTO*
+}
+
+class NotificationServiceImpl["«service»<br/>NotificationServiceImpl"] {
     - notificationRepository : NotificationRepository
     - userRepository : UserRepository
     + getUserNotifications(userId: Integer, tab: String, page: int, size: int) Page~NotificationDTO~
@@ -33,11 +35,7 @@ class NotificationServiceImpl["<<service>> NotificationServiceImpl"] {
     + deleteNotification(notificationId: Integer, userId: Integer) void
 }
 
-class BookshelfService["<<service interface>> BookshelfService"] {
-    + getUserProfile(email: String) UserProfileDTO*
-}
-
-class NotificationRepository["<<repository>> NotificationRepository"] {
+class NotificationRepository["«repository»<br/>NotificationRepository"] {
     + findGeneralNotifications(userId: Integer, reportPrefix: String, pageable: Pageable) Page~Notification~*
     + findReportNotifications(userId: Integer, reportPrefix: String, pageable: Pageable) Page~Notification~*
     + countUnreadByUserId(userId: Integer) long*
@@ -46,11 +44,11 @@ class NotificationRepository["<<repository>> NotificationRepository"] {
     + delete(notification: Notification) void*
 }
 
-class UserRepository["<<repository>> UserRepository"] {
+class UserRepository["«repository»<br/>UserRepository"] {
     + findByEmail(email: String) Optional~User~*
 }
 
-class NotificationDTO["<<dto>> NotificationDTO"] {
+class NotificationDTO["«dto»<br/>NotificationDTO"] {
     - id : Integer
     - userId : Integer
     - title : String
@@ -59,13 +57,13 @@ class NotificationDTO["<<dto>> NotificationDTO"] {
     - createdAt : LocalDateTime
 }
 
-class UserProfileDTO["<<dto>> UserProfileDTO"] {
+class UserProfileDTO["«dto»<br/>UserProfileDTO"] {
     - fullName : String
     - email : String
     - avatarUrl : String
 }
 
-class Notification["<<entity>> Notification"] {
+class Notification["«entity»<br/>Notification"] {
     - id : Integer
     - userId : Integer
     - title : String
@@ -74,19 +72,12 @@ class Notification["<<entity>> Notification"] {
     - createdAt : LocalDateTime
 }
 
-class User["<<entity>> User"] {
-    - id : Integer
-    - email : String
-    - fullName : String
-}
-
 UserNotificationController --> NotificationService
 UserNotificationController --> BookshelfService
 UserNotificationController --> UserRepository
-NotificationServiceImpl ..|> NotificationService
+NotificationService <|.. NotificationServiceImpl
 NotificationServiceImpl --> NotificationRepository
 NotificationServiceImpl --> UserRepository
-
 UserNotificationController ..> NotificationDTO
 UserNotificationController ..> UserProfileDTO
 NotificationService ..> NotificationDTO

@@ -1,46 +1,44 @@
 classDiagram
 direction LR
 
-class ReportController["<<controller>> ReportController"] {
+class ReportController["«controller»<br/>ReportController"] {
     - reportService : ReportService
     - userRepository : UserRepository
     + reportComment(request: ReportCommentRequest, bindingResult: BindingResult, authentication: Authentication) ResponseEntity~?~
-    - isAuthenticated(authentication: Authentication) boolean
-    - getUserId(authentication: Authentication) Integer
 }
 
-class ReportService["<<service interface>> ReportService"] {
+class ReportService["«service interface»<br/>ReportService"] {
     + reportComment(userId: Integer, request: ReportCommentRequest) void*
 }
 
-class ReportServiceImpl["<<service>> ReportServiceImpl"] {
+class ReportServiceImpl["«service»<br/>ReportServiceImpl"] {
     - commentRepository : CommentRepository
     - commentReportRepository : CommentReportRepository
     - userRepository : UserRepository
     + reportComment(userId: Integer, request: ReportCommentRequest) void
 }
 
-class CommentReportRepository["<<repository>> CommentReportRepository"] {
+class CommentReportRepository["«repository»<br/>CommentReportRepository"] {
     + existsByUserIdAndCommentIdAndStatusIn(userId: Integer, commentId: Integer, statuses: Collection~String~) boolean*
     + save(report: CommentReport) CommentReport*
 }
 
-class CommentRepository["<<repository>> CommentRepository"] {
+class CommentRepository["«repository»<br/>CommentRepository"] {
     + findById(id: Integer) Optional~Comment~*
 }
 
-class UserRepository["<<repository>> UserRepository"] {
+class UserRepository["«repository»<br/>UserRepository"] {
     + findById(id: Integer) Optional~User~*
     + findByEmail(email: String) Optional~User~*
 }
 
-class ReportCommentRequest["<<dto>> ReportCommentRequest"] {
+class ReportCommentRequest["«dto»<br/>ReportCommentRequest"] {
     - commentId : Integer
     - violationType : String
     - description : String
 }
 
-class CommentReport["<<entity>> CommentReport"] {
+class CommentReport["«entity»<br/>CommentReport"] {
     - id : Integer
     - user : User
     - comment : Comment
@@ -52,7 +50,7 @@ class CommentReport["<<entity>> CommentReport"] {
     - processedAt : LocalDateTime
 }
 
-class Comment["<<entity>> Comment"] {
+class Comment["«entity»<br/>Comment"] {
     - id : Integer
     - user : User
     - content : String
@@ -61,7 +59,7 @@ class Comment["<<entity>> Comment"] {
     - updatedAt : LocalDateTime
 }
 
-class User["<<entity>> User"] {
+class User["«entity»<br/>User"] {
     - id : Integer
     - email : String
     - fullName : String
@@ -70,17 +68,14 @@ class User["<<entity>> User"] {
 
 ReportController --> ReportService
 ReportController --> UserRepository
-ReportServiceImpl ..|> ReportService
-
+ReportService <|.. ReportServiceImpl
 ReportServiceImpl --> CommentReportRepository
 ReportServiceImpl --> CommentRepository
 ReportServiceImpl --> UserRepository
-
 ReportController ..> ReportCommentRequest
 ReportService ..> ReportCommentRequest
 ReportServiceImpl ..> ReportCommentRequest
 ReportServiceImpl ..> CommentReport
-
 CommentReport --> User
 CommentReport --> Comment
 Comment --> User

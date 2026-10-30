@@ -1,7 +1,7 @@
 classDiagram
 direction LR
 
-class SystemSettingAdminController["<<controller>> SystemSettingAdminController"] {
+class SystemSettingAdminController["«controller»<br/>SystemSettingAdminController"] {
     - systemSettingService : SystemSettingService
     - userRepository : UserRepository
     + showSettingsPage(model: Model) String
@@ -12,7 +12,7 @@ class SystemSettingAdminController["<<controller>> SystemSettingAdminController"
     + deleteTheme(id: Integer, authentication: Authentication, httpRequest: HttpServletRequest, redirectAttributes: RedirectAttributes) String
 }
 
-class SystemSettingService["<<service interface>> SystemSettingService"] {
+class SystemSettingService["«service interface»<br/>SystemSettingService"] {
     + getSettings() SystemSettingsDTO*
     + updateSettings(adminId: Integer, dto: SystemSettingsDTO, clientIp: String) boolean*
     + getAllThemes() List~WebSetting~*
@@ -26,7 +26,11 @@ class SystemSettingService["<<service interface>> SystemSettingService"] {
     + getThemeBackground(folderPath: String) ThemeBackgroundDTO*
 }
 
-class SystemSettingServiceImpl["<<service>> SystemSettingServiceImpl"] {
+class MediaStorageService["«service interface»<br/>MediaStorageService"] {
+    + uploadImage(file: MultipartFile) String*
+}
+
+class SystemSettingServiceImpl["«service»<br/>SystemSettingServiceImpl"] {
     - systemSettingRepository : SystemSettingRepository
     - userRepository : UserRepository
     - systemAuditLogRepository : SystemAuditLogRepository
@@ -43,12 +47,12 @@ class SystemSettingServiceImpl["<<service>> SystemSettingServiceImpl"] {
     + deleteTheme(id: Integer, adminId: Integer, clientIp: String) void
 }
 
-class SystemSettingRepository["<<repository>> SystemSettingRepository"] {
+class SystemSettingRepository["«repository»<br/>SystemSettingRepository"] {
     + findBySettingKey(settingKey: String) Optional~SystemSetting~*
     + save(setting: SystemSetting) SystemSetting*
 }
 
-class WebSettingRepository["<<repository>> WebSettingRepository"] {
+class WebSettingRepository["«repository»<br/>WebSettingRepository"] {
     + findFirstByIsActiveTrueOrderByIdAsc() Optional~WebSetting~*
     + findByFolderPath(folderPath: String) Optional~WebSetting~*
     + existsByFolderPath(folderPath: String) boolean*
@@ -59,19 +63,15 @@ class WebSettingRepository["<<repository>> WebSettingRepository"] {
     + delete(theme: WebSetting) void*
 }
 
-class MediaStorageService["<<service interface>> MediaStorageService"] {
-    + uploadImage(file: MultipartFile) String*
-}
-
-class SystemAuditLogRepository["<<repository>> SystemAuditLogRepository"] {
+class SystemAuditLogRepository["«repository»<br/>SystemAuditLogRepository"] {
     + save(auditLog: SystemAuditLog) SystemAuditLog*
 }
 
-class UserRepository["<<repository>> UserRepository"] {
+class UserRepository["«repository»<br/>UserRepository"] {
     + findById(id: Integer) Optional~User~*
 }
 
-class SystemSettingsDTO["<<dto>> SystemSettingsDTO"] {
+class SystemSettingsDTO["«dto»<br/>SystemSettingsDTO"] {
     - vndToCoinRate : Integer
     - contactPhone : String
     - supportEmail : String
@@ -81,7 +81,7 @@ class SystemSettingsDTO["<<dto>> SystemSettingsDTO"] {
     - lastUpdatedByAdmin : String
 }
 
-class WebThemeViewDTO["<<dto>> WebThemeViewDTO"] {
+class WebThemeViewDTO["«dto»<br/>WebThemeViewDTO"] {
     - id : Integer
     - name : String
     - folderPath : String
@@ -95,13 +95,13 @@ class WebThemeViewDTO["<<dto>> WebThemeViewDTO"] {
     - bgBlur : Integer
 }
 
-class ThemeBackgroundDTO["<<dto>> ThemeBackgroundDTO"] {
+class ThemeBackgroundDTO["«dto»<br/>ThemeBackgroundDTO"] {
     - url : String
     - opacity : Integer
     - blur : Integer
 }
 
-class SystemSetting["<<entity>> SystemSetting"] {
+class SystemSetting["«entity»<br/>SystemSetting"] {
     - settingKey : String
     - settingValue : String
     - description : String
@@ -109,7 +109,7 @@ class SystemSetting["<<entity>> SystemSetting"] {
     - updatedAt : LocalDateTime
 }
 
-class WebSetting["<<entity>> WebSetting"] {
+class WebSetting["«entity»<br/>WebSetting"] {
     - id : Integer
     - name : String
     - folderPath : String
@@ -120,7 +120,7 @@ class WebSetting["<<entity>> WebSetting"] {
     - updatedAt : LocalDateTime
 }
 
-class SystemAuditLog["<<entity>> SystemAuditLog"] {
+class SystemAuditLog["«entity»<br/>SystemAuditLog"] {
     - id : Integer
     - adminId : Integer
     - actionType : String
@@ -132,22 +132,14 @@ class SystemAuditLog["<<entity>> SystemAuditLog"] {
     - createdAt : LocalDateTime
 }
 
-class User["<<entity>> User"] {
-    - id : Integer
-    - email : String
-    - fullName : String
-}
-
 SystemSettingAdminController --> SystemSettingService
 SystemSettingAdminController --> UserRepository
-SystemSettingServiceImpl ..|> SystemSettingService
-
+SystemSettingService <|.. SystemSettingServiceImpl
 SystemSettingServiceImpl --> SystemSettingRepository
 SystemSettingServiceImpl --> WebSettingRepository
 SystemSettingServiceImpl --> SystemAuditLogRepository
 SystemSettingServiceImpl --> UserRepository
 SystemSettingServiceImpl --> MediaStorageService
-
 SystemSettingAdminController ..> SystemSettingsDTO
 SystemSettingAdminController ..> WebThemeViewDTO
 SystemSettingService ..> SystemSettingsDTO

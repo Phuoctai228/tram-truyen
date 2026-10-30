@@ -1,19 +1,18 @@
 classDiagram
 direction LR
 
-class UserAdminController["<<controller>> UserAdminController"] {
+class UserAdminController["«controller»<br/>UserAdminController"] {
     - userManagementService : UserManagementService
     - userRepository : UserRepository
     + listUsers(keyword: String, role: String, status: String, page: String, size: String, authentication: Authentication, model: Model) String
-    - getAdminId(authentication: Authentication) Integer
 }
 
-class UserManagementService["<<service interface>> UserManagementService"] {
+class UserManagementService["«service interface»<br/>UserManagementService"] {
     + getUsers(keyword: String, role: String, status: String, page: int, size: int) Page~UserManagementDTO~*
     + getUserStats() UserStatsDTO*
 }
 
-class UserManagementServiceImpl["<<service>> UserManagementServiceImpl"] {
+class UserManagementServiceImpl["«service»<br/>UserManagementServiceImpl"] {
     - userRepository : UserRepository
     - roleRepository : RoleRepository
     - systemAuditLogRepository : SystemAuditLogRepository
@@ -21,17 +20,17 @@ class UserManagementServiceImpl["<<service>> UserManagementServiceImpl"] {
     + getUserStats() UserStatsDTO
 }
 
-class UserRepository["<<repository>> UserRepository"] {
+class UserRepository["«repository»<br/>UserRepository"] {
     + searchUsers(keyword: String, keywordId: Integer, roleName: String, status: String, pageable: Pageable) Page~User~*
     + count() long*
     + countByStatus(status: String) long*
 }
 
-class SystemAuditLogRepository["<<repository>> SystemAuditLogRepository"] {
+class SystemAuditLogRepository["«repository»<br/>SystemAuditLogRepository"] {
     + findByTargetEntityAndActionTypeAndTargetIdInOrderByCreatedAtDesc(targetEntity: String, actionType: String, targetIds: Collection~Integer~) List~SystemAuditLog~*
 }
 
-class UserManagementDTO["<<dto>> UserManagementDTO"] {
+class UserManagementDTO["«dto»<br/>UserManagementDTO"] {
     - id : Integer
     - email : String
     - fullName : String
@@ -40,14 +39,14 @@ class UserManagementDTO["<<dto>> UserManagementDTO"] {
     - roleDisplayName : String
 }
 
-class UserStatsDTO["<<dto>> UserStatsDTO"] {
+class UserStatsDTO["«dto»<br/>UserStatsDTO"] {
     - totalUsers : long
     - activeUsers : long
     - activePercentage : String
     - bannedUsers : long
 }
 
-class User["<<entity>> User"] {
+class User["«entity»<br/>User"] {
     - id : Integer
     - email : String
     - fullName : String
@@ -55,29 +54,16 @@ class User["<<entity>> User"] {
     - status : String
 }
 
-class Role["<<entity>> Role"] {
+class Role["«entity»<br/>Role"] {
     - id : Integer
     - name : String
 }
 
-class SystemAuditLog["<<entity>> SystemAuditLog"] {
-    - id : Integer
-    - adminId : Integer
-    - actionType : String
-    - targetEntity : String
-    - targetId : Integer
-    - oldValue : String
-    - newValue : String
-    - ipAddress : String
-    - createdAt : LocalDateTime
-}
-
 UserAdminController --> UserManagementService
 UserAdminController --> UserRepository
-UserManagementServiceImpl ..|> UserManagementService
+UserManagementService <|.. UserManagementServiceImpl
 UserManagementServiceImpl --> UserRepository
 UserManagementServiceImpl --> SystemAuditLogRepository
-
 UserAdminController ..> UserManagementDTO
 UserAdminController ..> UserStatsDTO
 UserManagementService ..> UserManagementDTO

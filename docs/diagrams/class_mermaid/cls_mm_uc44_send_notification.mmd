@@ -1,23 +1,21 @@
 classDiagram
 direction LR
 
-class NotificationAdminController["<<controller>> NotificationAdminController"] {
+class NotificationAdminController["«controller»<br/>NotificationAdminController"] {
     - notificationService : NotificationService
     - userRepository : UserRepository
     + showSendNotificationPage(page: String, size: String, model: Model) String
     + sendNotification(request: SendNotificationRequest, bindingResult: BindingResult, authentication: Authentication, httpRequest: HttpServletRequest, redirectAttributes: RedirectAttributes) String
     + searchRecipients(keyword: String) ResponseEntity~List~UserRecipientDTO~~
-    - getAdminId(authentication: Authentication) Integer
-    - getClientIp(request: HttpServletRequest) String
 }
 
-class NotificationService["<<service interface>> NotificationService"] {
+class NotificationService["«service interface»<br/>NotificationService"] {
     + sendNotification(senderAdminId: Integer, request: SendNotificationRequest, clientIp: String) void*
     + searchRecipients(keyword: String) List~UserRecipientDTO~*
     + getRecentNotifications(page: int, size: int) Page~NotificationDTO~*
 }
 
-class NotificationServiceImpl["<<service>> NotificationServiceImpl"] {
+class NotificationServiceImpl["«service»<br/>NotificationServiceImpl"] {
     - notificationRepository : NotificationRepository
     - userRepository : UserRepository
     - systemAuditLogRepository : SystemAuditLogRepository
@@ -27,20 +25,20 @@ class NotificationServiceImpl["<<service>> NotificationServiceImpl"] {
     + getRecentNotifications(page: int, size: int) Page~NotificationDTO~
 }
 
-class NotificationRepository["<<repository>> NotificationRepository"] {
+class NotificationRepository["«repository»<br/>NotificationRepository"] {
     + save(notification: Notification) Notification*
 }
 
-class SystemAuditLogRepository["<<repository>> SystemAuditLogRepository"] {
+class SystemAuditLogRepository["«repository»<br/>SystemAuditLogRepository"] {
     + save(auditLog: SystemAuditLog) SystemAuditLog*
 }
 
-class UserRepository["<<repository>> UserRepository"] {
+class UserRepository["«repository»<br/>UserRepository"] {
     + findById(id: Integer) Optional~User~*
     + findTop10ByFullNameContainingIgnoreCaseOrEmailContainingIgnoreCase(fullName: String, email: String) List~User~*
 }
 
-class SendNotificationRequest["<<dto>> SendNotificationRequest"] {
+class SendNotificationRequest["«dto»<br/>SendNotificationRequest"] {
     - scope : String
     - recipientId : Integer
     - recipientName : String
@@ -49,14 +47,14 @@ class SendNotificationRequest["<<dto>> SendNotificationRequest"] {
     - content : String
 }
 
-class UserRecipientDTO["<<dto>> UserRecipientDTO"] {
+class UserRecipientDTO["«dto»<br/>UserRecipientDTO"] {
     - id : Integer
     - fullName : String
     - email : String
     - avatarUrl : String
 }
 
-class NotificationDTO["<<dto>> NotificationDTO"] {
+class NotificationDTO["«dto»<br/>NotificationDTO"] {
     - id : Integer
     - userId : Integer
     - title : String
@@ -65,7 +63,7 @@ class NotificationDTO["<<dto>> NotificationDTO"] {
     - createdAt : LocalDateTime
 }
 
-class Notification["<<entity>> Notification"] {
+class Notification["«entity»<br/>Notification"] {
     - id : Integer
     - userId : Integer
     - title : String
@@ -74,7 +72,7 @@ class Notification["<<entity>> Notification"] {
     - createdAt : LocalDateTime
 }
 
-class SystemAuditLog["<<entity>> SystemAuditLog"] {
+class SystemAuditLog["«entity»<br/>SystemAuditLog"] {
     - id : Integer
     - adminId : Integer
     - actionType : String
@@ -86,19 +84,12 @@ class SystemAuditLog["<<entity>> SystemAuditLog"] {
     - createdAt : LocalDateTime
 }
 
-class User["<<entity>> User"] {
-    - id : Integer
-    - email : String
-    - fullName : String
-}
-
 NotificationAdminController --> NotificationService
 NotificationAdminController --> UserRepository
-NotificationServiceImpl ..|> NotificationService
+NotificationService <|.. NotificationServiceImpl
 NotificationServiceImpl --> NotificationRepository
 NotificationServiceImpl --> UserRepository
 NotificationServiceImpl --> SystemAuditLogRepository
-
 NotificationAdminController ..> SendNotificationRequest
 NotificationAdminController ..> UserRecipientDTO
 NotificationAdminController ..> NotificationDTO

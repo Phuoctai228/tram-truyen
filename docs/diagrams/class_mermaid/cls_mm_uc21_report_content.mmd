@@ -1,46 +1,44 @@
 classDiagram
 direction LR
 
-class ReportController["<<controller>> ReportController"] {
+class ReportController["«controller»<br/>ReportController"] {
     - reportService : ReportService
     - userRepository : UserRepository
     + reportContent(request: ReportContentRequest, bindingResult: BindingResult, authentication: Authentication) ResponseEntity~?~
-    - isAuthenticated(authentication: Authentication) boolean
-    - getUserId(authentication: Authentication) Integer
 }
 
-class ReportService["<<service interface>> ReportService"] {
+class ReportService["«service interface»<br/>ReportService"] {
     + reportContent(userId: Integer, request: ReportContentRequest) void*
 }
 
-class ReportServiceImpl["<<service>> ReportServiceImpl"] {
+class ReportServiceImpl["«service»<br/>ReportServiceImpl"] {
     - chapterRepository : ChapterRepository
     - contentReportRepository : ContentReportRepository
     - userRepository : UserRepository
     + reportContent(userId: Integer, request: ReportContentRequest) void
 }
 
-class ContentReportRepository["<<repository>> ContentReportRepository"] {
+class ContentReportRepository["«repository»<br/>ContentReportRepository"] {
     + existsByUserIdAndChapterIdAndStatusIn(userId: Integer, chapterId: Integer, statuses: Collection~String~) boolean*
     + save(report: ContentReport) ContentReport*
 }
 
-class ChapterRepository["<<repository>> ChapterRepository"] {
+class ChapterRepository["«repository»<br/>ChapterRepository"] {
     + findById(id: Integer) Optional~Chapter~*
 }
 
-class UserRepository["<<repository>> UserRepository"] {
+class UserRepository["«repository»<br/>UserRepository"] {
     + findById(id: Integer) Optional~User~*
     + findByEmail(email: String) Optional~User~*
 }
 
-class ReportContentRequest["<<dto>> ReportContentRequest"] {
+class ReportContentRequest["«dto»<br/>ReportContentRequest"] {
     - chapterId : Integer
     - issueType : String
     - description : String
 }
 
-class ContentReport["<<entity>> ContentReport"] {
+class ContentReport["«entity»<br/>ContentReport"] {
     - id : Integer
     - user : User
     - chapter : Chapter
@@ -52,7 +50,7 @@ class ContentReport["<<entity>> ContentReport"] {
     - processedAt : LocalDateTime
 }
 
-class Chapter["<<entity>> Chapter"] {
+class Chapter["«entity»<br/>Chapter"] {
     - id : Integer
     - chapterNumber : Integer
     - title : String
@@ -61,7 +59,7 @@ class Chapter["<<entity>> Chapter"] {
     - isDeleted : Boolean
 }
 
-class User["<<entity>> User"] {
+class User["«entity»<br/>User"] {
     - id : Integer
     - email : String
     - fullName : String
@@ -70,17 +68,14 @@ class User["<<entity>> User"] {
 
 ReportController --> ReportService
 ReportController --> UserRepository
-ReportServiceImpl ..|> ReportService
-
+ReportService <|.. ReportServiceImpl
 ReportServiceImpl --> ContentReportRepository
 ReportServiceImpl --> ChapterRepository
 ReportServiceImpl --> UserRepository
-
 ReportController ..> ReportContentRequest
 ReportService ..> ReportContentRequest
 ReportServiceImpl ..> ReportContentRequest
 ReportServiceImpl ..> ContentReport
-
 ContentReport --> User
 ContentReport --> Chapter
 

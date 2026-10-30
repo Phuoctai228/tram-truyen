@@ -52,7 +52,6 @@ participant "TransactionAuditPage" as view
 participant "TransactionAuditAdminController" as ctrl <<controller>>
 participant ":TransactionAuditService" as svc
 participant ":NamedParameterJdbcTemplate" as jdbc
-participant ":PaymentLogRepository" as log_repo
 database Database as db
 
 adm ++
@@ -93,26 +92,6 @@ activate view
 view -->> adm: Display summary cards and audit transaction table
 deactivate view
 
-opt Admin clicks "Xem IPN Log" on topup transaction row
-    adm -> view++: Click "Xem IPN Log"
-    view -> ctrl--: GET /admin/transactions/ipn-logs?orderCode=TT123456
-    activate ctrl
-
-    ctrl -> svc++: getIpnLogsByOrderCode(orderCode)
-    svc -> log_repo++: Query payment_logs by order_code
-    log_repo -> db++: SELECT * FROM payment_logs WHERE order_code = ?
-    db -->> log_repo: Return payment_log records
-    db--
-    log_repo -->> svc--: Return payment log list
-    svc -->> ctrl--: Return List~PaymentLogDTO~
-
-    ctrl -->> view--: Return 200 OK (List~PaymentLogDTO~)
-    activate view
-    view -->> adm: Display IPN payload and raw signature modal
-    deactivate view
-end
-
-deactivate ctrl
 deactivate adm
 
 @enduml
