@@ -1,0 +1,103 @@
+﻿@startuml sq_uc19_remove_novel_from_bookshelf
+<style>
+    sequenceDiagram{
+        FontSize 16
+
+        arrow {
+            ' Set the maximum width of the text on arrows
+            MaximumWidth 300
+        }
+        actor{
+            BackgroundColor white
+            LineThickness 1.0
+        }
+        participant{
+            BackgroundColor white
+            RoundCorner 0
+        }
+        database{
+            BackgroundColor white
+        }
+        groupHeader{
+            BackgroundColor white
+        }
+        referenceHeader{
+            BackgroundColor white
+        }
+        reference{
+            BackgroundColor white
+        }
+    }
+</style>
+
+hide footbox
+mainframe Remove Novel from Bookshelf
+
+actor Member as act
+participant "BookshelfPage" as view
+participant "LoginPage" as r_view
+participant "BookshelfController" as ctrl <<controller>>
+participant ":BookshelfService" as svc
+participant ":UserRepository" as user_repo
+participant ":NovelRepository" as novel_repo
+participant ":BookshelfRepository" as bookshelf_repo
+database Database as db
+
+act ++
+
+act -> view++: Confirm removing novel from bookshelf
+view -> ctrl++: POST /user/bookshelf/{novelId}/remove
+
+ctrl -> ctrl++: Check authentication status
+ctrl--
+opt User is not authenticated
+    ctrl -->> r_view: Redirect to /login
+    activate r_view
+    r_view -->> act: Display login page
+    deactivate r_view
+end
+
+ctrl -> svc++: removeNovelFromBookshelf(email, novelId)
+
+svc -> user_repo++: findByEmail(email)
+user_repo -> db++: Execute query
+db -->> user_repo: Return user data
+db--
+user_repo -->> svc: Return user entity
+user_repo--
+
+svc -> novel_repo++: findByIdAndIsDeletedFalse(novelId)
+novel_repo -> db++: Execute query
+db -->> novel_repo: Return novel data
+db--
+novel_repo -->> svc: Return novel entity
+novel_repo--
+
+svc -> bookshelf_repo++: findByUserAndNovel(user, novel)
+bookshelf_repo -> db++: Execute query
+db -->> bookshelf_repo: Return bookshelf data
+db--
+bookshelf_repo -->> svc: Return bookshelf entity
+bookshelf_repo--
+
+svc -> svc++: Validate bookshelf entry existence
+svc--
+alt Bookshelf entry not found
+    svc -->> ctrl: throw ResourceNotFoundException
+    ctrl -->> view: Redirect to /user/bookshelf
+    view -->> act: Display error message
+else Bookshelf entry found
+    svc -> bookshelf_repo++: delete(bookshelf)
+    bookshelf_repo -> db++: Save changes to database
+    db -->> bookshelf_repo: Return result
+    db--
+    bookshelf_repo -->> svc: Return result
+    bookshelf_repo--
+
+    svc -->> ctrl--: Return result
+    ctrl -->> view--: Redirect to /user/bookshelf
+    view -->> act--: Display updated bookshelf with success message
+end
+
+@enduml
+

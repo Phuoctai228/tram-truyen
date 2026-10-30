@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>UC-32 Điểm Danh Hàng Ngày</title>
+    <title>UC-32-Điểm Danh Hàng Ngày</title>
 </head>
 <body>
 <div class="uc-container" style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
@@ -13,70 +13,70 @@
             color: black !important;
         }
     </style>
-    <table style="border-collapse: collapse; width: 100%; border: 1.5pt solid black;">
+    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 25%;">Mã và Tên UC:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-32 Điểm Danh Hàng Ngày</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Mã và Tên UC:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-32-Điểm Danh Hàng Ngày</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Người tạo:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 25%;">TaiTP</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 25%;">Ngày tạo:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 25%;">2026-09-18</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Người tạo:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">TaiTP</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Ngày tạo:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-18</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Tác nhân chính:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;">Member</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Tác nhân phụ:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;">Không có</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Tác nhân chính:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Member</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Tác nhân phụ:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Không có</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Kích hoạt (Trigger):</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Member nhấn nút "Điểm danh" trên trang chủ hoặc hồ sơ người dùng.</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Kích hoạt (Trigger):</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Member truy cập trang Điểm danh hàng ngày qua mục "Điểm danh nhận Coin" trên menu người dùng (hoặc "Điểm danh hàng ngày" ở thanh bên trang cá nhân) và nhấn nút "Điểm danh nhận ngay".</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Mô tả (Description):</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cho phép thành viên nhận phần thưởng hàng ngày (Coin miễn phí) mỗi ngày một lần theo giờ máy chủ để khuyến khích duy trì sử dụng. Hệ thống sử dụng khóa lạc quan (optimistic locking) để đảm bảo phần thưởng chỉ được nhận một lần mỗi ngày.</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Mô tả (Description):</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cho phép Member đã đăng nhập thực hiện điểm danh 1 lần mỗi ngày theo ngày máy chủ để duy trì chuỗi điểm danh liên tiếp 7 ngày và nhận Coin thưởng miễn phí (+5, +5, +10, +10, +15, +15, +30 Coin).</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Điều kiện tiên quyết:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>PRE-1. Người dùng phải được xác thực với vai trò Member.</p></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Điều kiện tiên quyết:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> Member đã đăng nhập vào hệ thống.</p><p><b>PRE-2.</b> Member chưa thực hiện điểm danh trong ngày hiện tại của máy chủ.</p></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Điều kiện hậu quyết:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>POST-1. Coin miễn phí được cộng vào ví của thành viên và thời gian điểm danh được ghi lại.</p></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Điều kiện hậu quyết:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> Một bản ghi điểm danh mới được lưu vào bảng user_daily_checkins với ngày hôm nay, số ngày chuỗi liên tiếp mới và số Coin thưởng.</p><p><b>POST-2.</b> Số dư Coin thưởng của Member được cộng thêm và giao dịch GIFT_COIN được ghi nhận vào lịch sử ví.</p></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Luồng cơ bản:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>A. Điểm danh thành công</p><ol><li>Member nhấn nút "Điểm danh".</li><li>Hệ thống trích xuất dữ liệu phiên làm việc của tác nhân hiện tại.</li><li>Hệ thống khởi tạo một giao dịch cơ sở dữ liệu và truy xuất trường `last_checkin_time` của thành viên.</li><li>Hệ thống xác thực ngày hiện tại của máy chủ lớn hơn ngày của `last_checkin_time`.</li><li>Hệ thống tính toán lượng Coin thưởng miễn phí dựa trên chuỗi điểm danh liên tiếp hiện tại.</li><li>Hệ thống thực thi bản cập nhật cơ sở dữ liệu để cộng phần thưởng vào số dư Coin và cập nhật `last_checkin_time`.</li><li>Hệ thống hiển thị cửa sổ thông báo thành công cho biết lượng Coin nhận được.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Luồng cơ bản:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Điểm danh hàng ngày thành công</b></p><ol><li>Member truy cập vào trang Điểm danh hàng ngày.</li><li>Hệ thống truy xuất trạng thái điểm danh hôm nay của Member, số ngày chuỗi liên tiếp hiện tại và lộ trình thưởng 7 ngày (+5, +5, +10, +10, +15, +15, +30 Coin).</li><li>Member nhấn vào nút "Điểm danh nhận ngay".</li><li>Hệ thống kiểm tra xác nhận Member chưa có bản ghi điểm danh nào trong ngày hiện tại của máy chủ.</li><li>Hệ thống kiểm tra bản ghi điểm danh ngày hôm qua để tính số ngày chuỗi liên tiếp mới (tăng thêm 1 ngày, hoặc đặt lại về Ngày 1 nếu bị đứt chuỗi hoặc đã hoàn tất mốc Ngày 7).</li><li>Hệ thống lưu bản ghi điểm danh mới vào bảng user_daily_checkins và cộng số Coin thưởng tương ứng vào ví của Member trong cùng một giao dịch.</li><li>Hệ thống tải lại trang Điểm danh hàng ngày, chuyển nút sang trạng thái vô hiệu hóa "Đã điểm danh hôm nay", cập nhật số dư Coin hiển thị và bật thông báo nhận thưởng.</li></ol></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Luồng thay thế:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>A.4 Đã điểm danh rồi</p><ol><li>Hệ thống xác định ngày hiện tại của máy chủ hoàn toàn giống với ngày của `last_checkin_time`.</li><li>Hệ thống hủy bỏ giao dịch.</li><li>Hệ thống hiển thị thông báo lỗi cho biết thành viên đã điểm danh trong ngày hôm nay.</li><li>Quay lại bước 1.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Luồng thay thế:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.2 Đã điểm danh trong ngày hôm nay</b></p><ol><li>Hệ thống phát hiện Member đã thực hiện điểm danh trong ngày hiện tại của máy chủ.</li><li>Hệ thống hiển thị nút ở trạng thái vô hiệu hóa với nhãn "Đã điểm danh hôm nay" (và nếu có yêu cầu gửi lặp lại, hệ thống trả về thông báo cảnh báo mà không cộng thêm Coin).</li><li>Quay lại bước 1.</li></ol></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Ngoại lệ (Exceptions):</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>EX-1 Phiên đăng nhập không hợp lệ</p><ol><li>Hệ thống hiển thị thông báo lỗi xác thực.</li><li>Hệ thống chuyển hướng người dùng đến trang đăng nhập.</li></ol><p>EX-6 Lỗi khóa lạc quan</p><ol><li>Hệ thống gặp lỗi không khớp phiên bản khi xác nhận giao dịch.</li><li>Hệ thống hoàn tác giao dịch.</li><li>Hệ thống hiển thị thông báo lỗi chung.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Ngoại lệ (Exceptions):</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Phiên không hợp lệ (Chưa đăng nhập)</b></p><ol><li>Hệ thống hiển thị thông báo lỗi xác thực.</li><li>Hệ thống chuyển hướng người dùng đến trang đăng nhập.</li></ol><p><b>EX-6 Lỗi giao dịch cơ sở dữ liệu</b></p><ol><li>Hệ thống không thể lưu bản ghi điểm danh hoặc cộng ví do lỗi cơ sở dữ liệu.</li><li>Hệ thống hoàn tác (rollback) giao dịch và hiển thị thông báo lỗi trên trang điểm danh.</li></ol></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Mức độ ưu tiên:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Medium, Should Have</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Mức độ ưu tiên:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Low, Could Have</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Tần suất sử dụng:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cao (Một lần mỗi ngày cho mỗi người dùng)</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Tần suất sử dụng:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cao (Tối đa 1 lần/người dùng/ngày)</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Quy tắc nghiệp vụ:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Quy tắc nghiệp vụ:</td>
             <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">BR-22</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Thông tin khác:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Không có.</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Thông tin khác:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Mốc thưởng chuỗi 7 ngày liên tiếp: Ngày 1 (+5), Ngày 2 (+5), Ngày 3 (+10), Ngày 4 (+10), Ngày 5 (+15), Ngày 6 (+15), Ngày 7 (+30 Coin).</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Giả định:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Thành viên có kết nối internet ổn định.</li></ul></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Giả định:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Member có kết nối internet ổn định.</li></ul></td>
         </tr>
     </table>
 </div>

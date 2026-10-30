@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SDS - UC-10: View Novel Details</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            line-height: 1.5;
+            color: #000000;
+            margin: 20px 30px;
+            background-color: #ffffff;
+        }
+        h2 { font-size: 15pt; font-weight: bold; color: #000000; margin-bottom: 8px; }
+        h3 { font-size: 13pt; font-weight: bold; font-style: italic; color: #000000; margin-top: 16px; margin-bottom: 8px; }
+        p { margin: 6px 0; font-family: 'Times New Roman', Times, serif; font-size: 12pt; color: #000000; }
+        .class-title { font-family: 'Times New Roman', Times, serif; font-size: 12pt; font-weight: bold; font-style: italic; color: #000000; margin-top: 14px; margin-bottom: 4px; }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            table-layout: fixed;
+            margin: 8px 0 18px 0;
+            border: 1px solid #000000;
+            color: #000000;
+        }
+        th, td {
+            border: 1px solid #000000;
+            padding: 6px 10px;
+            text-align: left;
+            vertical-align: top;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            color: #000000;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-word;
+        }
+        th {
+            background-color: #fbe5d6;
+            font-weight: bold;
+            color: #000000;
+        }
+        .col-no { width: 6%; text-align: center; color: #000000; }
+        .col-method { width: 28%; font-weight: bold; color: #000000; }
+        .col-desc { width: 66%; color: #000000; }
+        .sql-item { margin-top: 12px; margin-bottom: 4px; font-weight: bold; color: #000000; }
+        .sql-block {
+            margin: 4px 0 14px 0;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            color: #000000;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>2. View Novel Details (UC-10)</h2>
+
+    <h3>b. Class Specifications</h3>
+
+    <p class="class-title"><b><i>NovelController Class</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">novelDetailsBySlug</td>
+                <td class="col-desc">
+                    <b>- Input:</b> slug: String, authentication: Authentication, model: Model.<br>
+                    <b>- Output:</b> String (View name "novel/details").<br>
+                    <b>- Internal Method Processing:</b> Handles GET /truyen/{slug} request. Retrieves the public novel by slug via novelService.getPublicNovelBySlug(slug) and fetches its published table of contents via chapterService.getPublicChapters(novelId). If the user is authenticated, checks bookshelf membership (isNovelInBookshelf), reading history existence (hasReadAnyChapter), and latest read chapter bookmark (getLastReadChapter). Also fetches total favorites (countNovelFavorites) and related works by the same author (getNovelsBySameAuthor), binds all attributes to the Model, and renders "novel/details".
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>NovelService Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">getPublicNovelBySlug</td>
+                <td class="col-desc">
+                    <b>- Input:</b> slug: String.<br>
+                    <b>- Output:</b> Novel.<br>
+                    <b>- Internal Method Processing:</b> Retrieves an active, non-archived novel matching the given URL slug or throws ResourceNotFoundException if not found.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">getNovelsBySameAuthor</td>
+                <td class="col-desc">
+                    <b>- Input:</b> author: String, currentNovelId: Integer.<br>
+                    <b>- Output:</b> List&lt;Novel&gt;.<br>
+                    <b>- Internal Method Processing:</b> Retrieves up to 5 public novels written by the same author (excluding the current novel) ordered by views descending.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>NovelServiceImpl Class</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">getPublicNovelBySlug</td>
+                <td class="col-desc">
+                    <b>- Input:</b> slug: String.<br>
+                    <b>- Output:</b> Novel.<br>
+                    <b>- Internal Method Processing:</b> Validates that slug is non-blank and queries novelRepository.findBySlugAndIsDeletedFalseAndStatusNot(slug, "ARCHIVED"). Throws ResourceNotFoundException if the novel does not exist, is soft-deleted, or is archived.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">getNovelsBySameAuthor</td>
+                <td class="col-desc">
+                    <b>- Input:</b> author: String, currentNovelId: Integer.<br>
+                    <b>- Output:</b> List&lt;Novel&gt;.<br>
+                    <b>- Internal Method Processing:</b> Queries novelRepository.findTop5ByAuthorIgnoreCaseAndIdNotAndIsDeletedFalseOrderByViewsDesc() and filters out archived novels to display related titles by the same author.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>ChapterService Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">getPublicChapters</td>
+                <td class="col-desc">
+                    <b>- Input:</b> novelId: Integer.<br>
+                    <b>- Output:</b> List&lt;Chapter&gt;.<br>
+                    <b>- Internal Method Processing:</b> Retrieves all publicly published chapters belonging to the specified novel ordered by chapter number ascending.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>ChapterServiceImpl Class</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">getPublicChapters</td>
+                <td class="col-desc">
+                    <b>- Input:</b> novelId: Integer.<br>
+                    <b>- Output:</b> List&lt;Chapter&gt;.<br>
+                    <b>- Internal Method Processing:</b> Verifies that the parent novel is public via novelRepository.findByIdAndIsDeletedFalseAndStatusNot(novelId, "ARCHIVED"), then calls chapterRepository.findAllByNovelIdAndIsDeletedFalseAndStatusInOrderByChapterNumberAsc() with public statuses (PUBLISHED_REGULAR, PUBLISHED_VIP, PUBLISHED).
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>BookshelfService Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">isNovelInBookshelf</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String, novelId: Integer.<br>
+                    <b>- Output:</b> boolean.<br>
+                    <b>- Internal Method Processing:</b> Checks whether the authenticated user has already saved the novel in their personal bookshelf.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">hasReadAnyChapter</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String, novelId: Integer.<br>
+                    <b>- Output:</b> boolean.<br>
+                    <b>- Internal Method Processing:</b> Checks whether the user has read at least one chapter of the novel.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">03</td>
+                <td class="col-method">countNovelFavorites</td>
+                <td class="col-desc">
+                    <b>- Input:</b> novelId: Integer.<br>
+                    <b>- Output:</b> long.<br>
+                    <b>- Internal Method Processing:</b> Returns the total number of readers who bookmarked the novel in their bookshelf.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">04</td>
+                <td class="col-method">getLastReadChapter</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String, novelId: Integer.<br>
+                    <b>- Output:</b> Optional&lt;Chapter&gt;.<br>
+                    <b>- Internal Method Processing:</b> Retrieves the most recently read chapter of the novel for the "Continue Reading" button.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>BookshelfServiceImpl Class</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">isNovelInBookshelf</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String, novelId: Integer.<br>
+                    <b>- Output:</b> boolean.<br>
+                    <b>- Internal Method Processing:</b> Looks up the User by email and the Novel by ID, then calls bookshelfRepository.existsByUserAndNovel(user, novel). Returns false if not found.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">hasReadAnyChapter</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String, novelId: Integer.<br>
+                    <b>- Output:</b> boolean.<br>
+                    <b>- Internal Method Processing:</b> Looks up the User and Novel entities and checks if userChapterActivityRepository.countByUserAndChapter_NovelAndIsReadTrue(user, novel) &gt; 0.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">03</td>
+                <td class="col-method">countNovelFavorites</td>
+                <td class="col-desc">
+                    <b>- Input:</b> novelId: Integer.<br>
+                    <b>- Output:</b> long.<br>
+                    <b>- Internal Method Processing:</b> Delegates to bookshelfRepository.countByNovelId(novelId) to return total favorites.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">04</td>
+                <td class="col-method">getLastReadChapter</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String, novelId: Integer.<br>
+                    <b>- Output:</b> Optional&lt;Chapter&gt;.<br>
+                    <b>- Internal Method Processing:</b> Queries userChapterActivityRepository.findFirstByUserAndChapter_NovelAndIsReadTrueOrderByReadAtDescChapter_ChapterNumberDesc(user, novel) and extracts the non-deleted Chapter entity.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>NovelRepository Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">findBySlugAndIsDeletedFalseAndStatusNot</td>
+                <td class="col-desc">
+                    <b>- Input:</b> slug: String, status: String.<br>
+                    <b>- Output:</b> Optional&lt;Novel&gt;.<br>
+                    <b>- Internal Method Processing:</b> Finds a non-deleted novel by slug whose status is not ARCHIVED.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">findByIdAndIsDeletedFalseAndStatusNot</td>
+                <td class="col-desc">
+                    <b>- Input:</b> id: Integer, status: String.<br>
+                    <b>- Output:</b> Optional&lt;Novel&gt;.<br>
+                    <b>- Internal Method Processing:</b> Finds a non-deleted novel by ID whose status is not ARCHIVED.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">03</td>
+                <td class="col-method">findByIdAndIsDeletedFalse</td>
+                <td class="col-desc">
+                    <b>- Input:</b> id: Integer.<br>
+                    <b>- Output:</b> Optional&lt;Novel&gt;.<br>
+                    <b>- Internal Method Processing:</b> Finds a non-deleted novel by primary key ID.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">04</td>
+                <td class="col-method">findTop5ByAuthorIgnoreCaseAndIdNotAndIsDeletedFalseOrderByViewsDesc</td>
+                <td class="col-desc">
+                    <b>- Input:</b> author: String, id: Integer.<br>
+                    <b>- Output:</b> List&lt;Novel&gt;.<br>
+                    <b>- Internal Method Processing:</b> Finds up to 5 other non-deleted novels by the same author (case-insensitive) ordered by views descending.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>ChapterRepository Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">findAllByNovelIdAndIsDeletedFalseAndStatusInOrderByChapterNumberAsc</td>
+                <td class="col-desc">
+                    <b>- Input:</b> novelId: Integer, statuses: List&lt;String&gt;.<br>
+                    <b>- Output:</b> List&lt;Chapter&gt;.<br>
+                    <b>- Internal Method Processing:</b> Retrieves all non-deleted published chapters of the specified novel ordered by chapter_number ascending.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>BookshelfRepository Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">existsByUserAndNovel</td>
+                <td class="col-desc">
+                    <b>- Input:</b> user: User, novel: Novel.<br>
+                    <b>- Output:</b> boolean.<br>
+                    <b>- Internal Method Processing:</b> Checks if a bookshelf entry exists for the given user and novel pair.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">countByNovelId</td>
+                <td class="col-desc">
+                    <b>- Input:</b> novelId: Integer.<br>
+                    <b>- Output:</b> long.<br>
+                    <b>- Internal Method Processing:</b> Counts total bookshelf records associated with the given novel ID.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>UserRepository Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">findByEmail</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String.<br>
+                    <b>- Output:</b> Optional&lt;User&gt;.<br>
+                    <b>- Internal Method Processing:</b> Finds the user account entity matching the given email address.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>UserChapterActivityRepository Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">countByUserAndChapter_NovelAndIsReadTrue</td>
+                <td class="col-desc">
+                    <b>- Input:</b> user: User, novel: Novel.<br>
+                    <b>- Output:</b> long.<br>
+                    <b>- Internal Method Processing:</b> Counts how many chapters of the specified novel have been marked as read (is_read = TRUE) by the user.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">findFirstByUserAndChapter_NovelAndIsReadTrueOrderByReadAtDescChapter_ChapterNumberDesc</td>
+                <td class="col-desc">
+                    <b>- Input:</b> user: User, novel: Novel.<br>
+                    <b>- Output:</b> Optional&lt;UserChapterActivity&gt;.<br>
+                    <b>- Internal Method Processing:</b> Retrieves the user's most recent read chapter activity for the novel ordered by read_at descending and chapter_number descending.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>d. Database Queries</h3>
+
+    <p class="sql-item">1. Retrieve public novel by slug</p>
+    <div class="sql-block">SELECT id, title, slug, author, summary, cover_url, status, is_deleted, uploader_id,
+       views, average_rating, rating_count, created_at, updated_at
+FROM novels
+WHERE slug = ?
+  AND is_deleted = FALSE
+  AND status &lt;&gt; 'ARCHIVED';</div>
+
+    <p class="sql-item">2. Verify public novel by ID</p>
+    <div class="sql-block">SELECT id, title, slug, author, summary, cover_url, status, is_deleted, uploader_id,
+       views, average_rating, rating_count, created_at, updated_at
+FROM novels
+WHERE id = ?
+  AND is_deleted = FALSE
+  AND status &lt;&gt; 'ARCHIVED';</div>
+
+    <p class="sql-item">3. Retrieve all published chapters of the novel</p>
+    <div class="sql-block">SELECT id, novel_id, chapter_number, title, price, status, views, created_at, updated_at
+FROM chapters
+WHERE novel_id = ?
+  AND is_deleted = FALSE
+  AND status IN ('PUBLISHED_REGULAR', 'PUBLISHED_VIP', 'PUBLISHED')
+ORDER BY chapter_number ASC;</div>
+
+    <p class="sql-item">4. Retrieve authenticated user by email</p>
+    <div class="sql-block">SELECT id, email, password, full_name, avatar_url, wallet_balance, auth_provider, status, created_at, updated_at
+FROM users
+WHERE email = ?;</div>
+
+    <p class="sql-item">5. Check if novel is in user's bookshelf</p>
+    <div class="sql-block">SELECT EXISTS (
+    SELECT 1
+    FROM bookshelves
+    WHERE user_id = ?
+      AND novel_id = ?
+);</div>
+
+    <p class="sql-item">6. Count read chapters of the novel for the user</p>
+    <div class="sql-block">SELECT COUNT(uca.id)
+FROM user_chapter_activities uca
+INNER JOIN chapters c ON uca.chapter_id = c.id
+WHERE uca.user_id = ?
+  AND c.novel_id = ?
+  AND uca.is_read = TRUE;</div>
+
+    <p class="sql-item">7. Retrieve latest read chapter activity for "Continue Reading"</p>
+    <div class="sql-block">SELECT uca.id, uca.user_id, uca.chapter_id, uca.is_read, uca.read_at,
+       c.chapter_number, c.title, c.status
+FROM user_chapter_activities uca
+INNER JOIN chapters c ON uca.chapter_id = c.id
+WHERE uca.user_id = ?
+  AND c.novel_id = ?
+  AND uca.is_read = TRUE
+ORDER BY uca.read_at DESC, c.chapter_number DESC
+LIMIT 1;</div>
+
+    <p class="sql-item">8. Count total bookshelf favorites for the novel</p>
+    <div class="sql-block">SELECT COUNT(id)
+FROM bookshelves
+WHERE novel_id = ?;</div>
+
+    <p class="sql-item">9. Retrieve top 5 novels by the same author</p>
+    <div class="sql-block">SELECT id, title, slug, author, summary, cover_url, status, views, average_rating, rating_count
+FROM novels
+WHERE LOWER(author) = LOWER(?)
+  AND id &lt;&gt; ?
+  AND is_deleted = FALSE
+ORDER BY views DESC
+LIMIT 5;</div>
+
+</body>
+</html>

@@ -7,6 +7,7 @@ import com.tramtruyen.entity.Novel;
 import com.tramtruyen.entity.User;
 import com.tramtruyen.entity.UserChapterActivity;
 import com.tramtruyen.exception.ResourceNotFoundException;
+import com.tramtruyen.repository.ChapterRepository;
 import com.tramtruyen.repository.UserChapterActivityRepository;
 import com.tramtruyen.repository.UserRepository;
 import com.tramtruyen.service.ReadingHistoryService;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +28,9 @@ import java.util.stream.Collectors;
 
 /**
  * Production implementation of ReadingHistoryService respecting BR-14 (50 recent entries limit).
+ * <p>
+ * Reading history is driven by {@code readAt} (last access time of a chapter), while {@code isRead}
+ * keeps its meaning of "chapter completed" used by the progress bar and bookshelf.
  */
 @Service
 @RequiredArgsConstructor
@@ -33,43 +38,54 @@ import java.util.stream.Collectors;
 public class ReadingHistoryServiceImpl implements ReadingHistoryService {
 
     private static final int MAX_HISTORY_LIMIT = 50;
+    private static final int DEFAULT_PAGE_SIZE = 10;
+    private static final String USER_NOT_FOUND_MESSAGE = "Không tìm thấy người dùng";
+    private static final String CHAPTER_NOT_FOUND_MESSAGE = "Không tìm thấy chương truyện";
 
     private final UserRepository userRepository;
     private final UserChapterActivityRepository userChapterActivityRepository;
+    private final ChapterRepository chapterRepository;
 
     @Override
     @Transactional(readOnly = true)
     public Page<ReadingHistoryItemDTO> getReadingHistory(String email, int page, int size) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy người dùng"));
+        User user = getUserByEmail(email);
 
-        int effectiveSize = Math.max(1, Math.min(size > 0 ? size : 10, MAX_HISTORY_LIMIT));
+        int requestedSize = size > 0 ? size : DEFAULT_PAGE_SIZE;
+        int effectiveSize = Math.max(1, Math.min(requestedSize, MAX_HISTORY_LIMIT));
         int effectivePage = Math.max(0, page);
         Pageable pageable = PageRequest.of(effectivePage, effectiveSize);
 
         Page<UserChapterActivity> activitiesPage =
-                userChapterActivityRepository.findAllByUserAndIsReadTrueOrderByReadAtDesc(user, pageable);
+                userChapterActivityRepository.findAllByUserAndReadAtIsNotNullOrderByReadAtDesc(user, pageable);
 
         return activitiesPage.map(this::mapToHistoryDTO);
     }
 
     @Override
     @Transactional
+    public void recordChapterAccess(String email, Integer chapterId) {
+        User user = getUserByEmail(email);
+        Chapter chapter = chapterRepository.findById(chapterId)
+                .orElseThrow(() -> new ResourceNotFoundException(CHAPTER_NOT_FOUND_MESSAGE));
+
+        UserChapterActivity activity = userChapterActivityRepository.findByUserAndChapter(user, chapter)
+                .orElseGet(() -> UserChapterActivity.builder()
+                        .user(user)
+                        .chapter(chapter)
+                        .build());
+        activity.setReadAt(LocalDateTime.now());
+        userChapterActivityRepository.save(activity);
+    }
+
+    @Override
+    @Transactional
     public void removeHistoryItem(String email, Integer chapterId) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy người dùng"));
+        User user = getUserByEmail(email);
 
         Optional<UserChapterActivity> activityOpt = userChapterActivityRepository.findByUserAndChapterId(user, chapterId);
         if (activityOpt.isPresent()) {
-            UserChapterActivity activity = activityOpt.get();
-            // If the user also unlocked this chapter, we only clear read history flag, preserving the purchase
-            if (Boolean.TRUE.equals(activity.getIsUnlocked())) {
-                activity.setIsRead(false);
-                activity.setReadAt(null);
-                userChapterActivityRepository.save(activity);
-            } else {
-                userChapterActivityRepository.delete(activity);
-            }
+            removeFromHistory(activityOpt.get());
             log.info("Removed chapter {} from reading history for user {}", chapterId, email);
         }
     }
@@ -77,23 +93,37 @@ public class ReadingHistoryServiceImpl implements ReadingHistoryService {
     @Override
     @Transactional
     public void clearHistory(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy người dùng"));
+        User user = getUserByEmail(email);
 
-        Pageable allPage = PageRequest.of(0, MAX_HISTORY_LIMIT);
         Page<UserChapterActivity> activities =
-                userChapterActivityRepository.findAllByUserAndIsReadTrueOrderByReadAtDesc(user, allPage);
+                userChapterActivityRepository.findAllByUserAndReadAtIsNotNullOrderByReadAtDesc(
+                        user, Pageable.unpaged());
 
         for (UserChapterActivity activity : activities.getContent()) {
-            if (Boolean.TRUE.equals(activity.getIsUnlocked())) {
-                activity.setIsRead(false);
-                activity.setReadAt(null);
-                userChapterActivityRepository.save(activity);
-            } else {
-                userChapterActivityRepository.delete(activity);
-            }
+            removeFromHistory(activity);
         }
         log.info("Cleared all reading history for user {}", email);
+    }
+
+    /**
+     * Removes an activity from reading history. Unlocked VIP chapters keep their ownership record
+     * (only read flags are reset); other records are deleted.
+     *
+     * @param activity activity to remove from history
+     */
+    private void removeFromHistory(UserChapterActivity activity) {
+        if (Boolean.TRUE.equals(activity.getIsUnlocked())) {
+            activity.setIsRead(false);
+            activity.setReadAt(null);
+            userChapterActivityRepository.save(activity);
+        } else {
+            userChapterActivityRepository.delete(activity);
+        }
+    }
+
+    private User getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_MESSAGE));
     }
 
     private ReadingHistoryItemDTO mapToHistoryDTO(UserChapterActivity activity) {

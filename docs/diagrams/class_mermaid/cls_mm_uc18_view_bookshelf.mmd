@@ -1,138 +1,154 @@
 classDiagram
-direction LR
+    direction LR
 
-class BookshelfController {
-    <<controller>>
-    - bookshelfService : BookshelfService
-    + viewBookshelf(filter: String, q: String, sort: String, page: int, authentication: Authentication, model: Model) String
-    + tuSachAlias() String
-}
+    class BookshelfController {
+        <<controller>>
+        ⠀
+        ⠀⠀
+        - bookshelfService : BookshelfService
+        + viewBookshelf(filter: String, q: String, sort: String, page: int, authentication: Authentication, model: Model) String
+    }
 
-class BookshelfService {
-    <<service interface>>
-    + getBookshelfPage(email: String, filter: String, query: String, sort: String, page: int, size: int) BookshelfPageDTO*
-    + getUserProfile(email: String) UserProfileDTO*
-}
+    class BookshelfService {
+        <<service interface>>
+        ⠀
+        ⠀⠀
+        + getBookshelfPage(email: String, filter: String, query: String, sort: String, page: int, size: int) BookshelfPageDTO*
+    }
 
-class BookshelfServiceImpl {
-    <<service>>
-    - bookshelfRepository : BookshelfRepository
-    - userRepository : UserRepository
-    - novelRepository : NovelRepository
-    - chapterRepository : ChapterRepository
-    - categoryRepository : CategoryRepository
-    - userChapterActivityRepository : UserChapterActivityRepository
-    + getBookshelfPage(email: String, filter: String, query: String, sort: String, page: int, size: int) BookshelfPageDTO
-    + getUserProfile(email: String) UserProfileDTO
-    - mapToBookshelfItem(user: User, bookshelf: Bookshelf) BookshelfItemDTO
-    - getUserByEmail(email: String) User
-}
+    class BookshelfServiceImpl {
+        <<service>>
+        ⠀
+        ⠀⠀
+        - bookshelfRepository : BookshelfRepository
+        - userRepository : UserRepository
+        - chapterRepository : ChapterRepository
+        - userChapterActivityRepository : UserChapterActivityRepository
+        + getBookshelfPage(email: String, filter: String, query: String, sort: String, page: int, size: int) BookshelfPageDTO
+        - mapToBookshelfItem(user: User, bookshelf: Bookshelf) BookshelfItemDTO
+    }
 
-class BookshelfRepository {
-    <<repository>>
-    + findAllByUserWithNovel(user: User) List~Bookshelf~*
-    + countByNovelId(novelId: Integer) long*
-}
+    class BookshelfPageDTO {
+        <<dto>>
+        ⠀
+        ⠀⠀
+        - items : List~BookshelfItemDTO~
+        - totalCount : long
+        - readingCount : long
+        - completedCount : long
+        - currentPage : int
+        - totalPages : int
+    }
 
-class ChapterRepository {
-    <<repository>>
-    + countByNovelIdAndIsDeletedFalse(novelId: Integer) long*
-    + existsByNovelIdAndPriceGreaterThanAndIsDeletedFalse(novelId: Integer, price: Integer) boolean*
-}
+    class BookshelfItemDTO {
+        <<dto>>
+        ⠀
+        ⠀⠀
+        - novelId : Integer
+        - slug : String
+        - title : String
+        - author : String
+        - coverUrl : String
+        - totalChapters : int
+        - currentChapterNumber : int
+        - progressPercentage : int
+        - readUrl : String
+    }
 
-class UserChapterActivityRepository {
-    <<repository>>
-    + findFirstByUserAndChapter_NovelAndIsReadTrueOrderByReadAtDescChapter_ChapterNumberDesc(user: User, novel: Novel) Optional~UserChapterActivity~*
-    + countByUserAndChapter_NovelAndIsReadTrue(user: User, novel: Novel) long*
-}
+    class BookshelfRepository {
+        <<repository>>
+        ⠀
+        ⠀⠀
+        + findAllByUserWithNovel(user: User) List~Bookshelf~*
+    }
 
-class BookshelfPageDTO {
-    <<dto>>
-    - items : List~BookshelfItemDTO~
-    - totalCount : long
-    - readingCount : long
-    - completedCount : long
-    - currentPage : int
-    - totalPages : int
-    - pageSize : int
-    - hasPrevious : boolean
-    - hasNext : boolean
-    - currentFilter : String
-    - searchQuery : String
-    - currentSort : String
-    - popularCategories : List~Category~
-}
+    class UserRepository {
+        <<repository>>
+        ⠀
+        ⠀⠀
+        + findByEmail(email: String) Optional~User~*
+    }
 
-class BookshelfItemDTO {
-    <<dto>>
-    - novelId : Integer
-    - slug : String
-    - title : String
-    - author : String
-    - coverUrl : String
-    - status : String
-    - categories : List~String~
-    - totalChapters : int
-    - currentChapterNumber : int
-    - progressPercentage : int
-    - isCompleted : boolean
-    - isCaughtUp : boolean
-    - hasVipChapters : boolean
-    - addedAt : LocalDateTime
-    - relativeTime : String
-    - readUrl : String
-}
+    class ChapterRepository {
+        <<repository>>
+        ⠀
+        ⠀⠀
+        + countByNovelIdAndIsDeletedFalse(novelId: Integer) long*
+        + existsByNovelIdAndPriceGreaterThanAndIsDeletedFalse(novelId: Integer, price: Integer) boolean*
+    }
 
-class UserProfileDTO {
-    <<dto>>
-    - id : Integer
-    - fullName : String
-    - email : String
-    - avatarUrl : String
-    - walletBalance : Integer
-    - createdAt : LocalDateTime
-    - isEmailVerified : boolean
-}
+    class UserChapterActivityRepository {
+        <<repository>>
+        ⠀
+        ⠀⠀
+        + findFirstByUserAndChapter_NovelAndIsReadTrueOrderByReadAtDescChapter_ChapterNumberDesc(user: User, novel: Novel) Optional~UserChapterActivity~*
+        + countByUserAndChapter_NovelAndIsReadTrue(user: User, novel: Novel) long*
+    }
 
-class Bookshelf {
-    <<entity>>
-    - id : Integer
-    - user : User
-    - novel : Novel
-    - addedAt : LocalDateTime
-}
+    class Bookshelf {
+        <<entity>>
+        ⠀
+        ⠀⠀
+        - id : Integer
+        - user : User
+        - novel : Novel
+        - addedAt : LocalDateTime
+    }
 
-class Novel {
-    <<entity>>
-    - id : Integer
-    - title : String
-    - slug : String
-    - author : String
-    - coverUrl : String
-    - status : String
-}
+    class Novel {
+        <<entity>>
+        ⠀
+        ⠀⠀
+        - id : Integer
+        - title : String
+        - slug : String
+        - author : String
+        - coverUrl : String
+        - status : String
+    }
 
-class User {
-    <<entity>>
-    - id : Integer
-    - email : String
-    - fullName : String
-    - walletBalance : Integer
-}
+    class User {
+        <<entity>>
+        ⠀
+        ⠀⠀
+        - id : Integer
+        - email : String
+        - fullName : String
+    }
 
-BookshelfController --> BookshelfService
-BookshelfServiceImpl ..|> BookshelfService
+    class UserChapterActivity {
+        <<entity>>
+        ⠀
+        ⠀⠀
+        - id : Integer
+        - user : User
+        - isRead : Boolean
+        - readAt : LocalDateTime
+    }
 
-BookshelfServiceImpl --> BookshelfRepository
-BookshelfServiceImpl --> ChapterRepository
-BookshelfServiceImpl --> UserChapterActivityRepository
+    BookshelfController --> BookshelfService
+    BookshelfController ..> BookshelfPageDTO
+    BookshelfServiceImpl ..|> BookshelfService
+    BookshelfService ..> BookshelfPageDTO
+    BookshelfServiceImpl --> BookshelfRepository
+    BookshelfServiceImpl --> UserRepository
+    BookshelfServiceImpl --> ChapterRepository
+    BookshelfServiceImpl --> UserChapterActivityRepository
+    BookshelfServiceImpl ..> BookshelfPageDTO
+    BookshelfServiceImpl ..> BookshelfItemDTO
+    BookshelfServiceImpl ..> Bookshelf
+    BookshelfServiceImpl ..> User
+    BookshelfServiceImpl ..> Novel
+    BookshelfServiceImpl ..> UserChapterActivity
+    BookshelfPageDTO --> BookshelfItemDTO
+    BookshelfRepository ..> Bookshelf
+    BookshelfRepository ..> User
+    UserRepository ..> User
+    UserChapterActivityRepository ..> UserChapterActivity
+    UserChapterActivityRepository ..> User
+    UserChapterActivityRepository ..> Novel
+    Bookshelf --> User
+    Bookshelf --> Novel
+    UserChapterActivity --> User
 
-BookshelfController ..> BookshelfPageDTO
-BookshelfController ..> UserProfileDTO
-BookshelfServiceImpl ..> BookshelfPageDTO
-BookshelfPageDTO *-- BookshelfItemDTO
-
-Bookshelf --> User
-Bookshelf --> Novel
-
-classDef default fill:#FFFFFF,stroke:#000000,stroke-width:1px,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,stroke-width:1px,color:#000000

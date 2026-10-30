@@ -1,0 +1,109 @@
+@startuml sq_uc27_save_reading_progress
+<style>
+    sequenceDiagram{
+        FontSize 16
+
+        arrow {
+            ' Set the maximum width of the text on arrows
+            MaximumWidth 300
+        }
+        actor{
+            BackgroundColor white
+            LineThickness 1.0
+        }
+        participant{
+            BackgroundColor white
+            RoundCorner 0
+        }
+        database{
+            BackgroundColor white
+        }
+        groupHeader{
+            BackgroundColor white
+        }
+        referenceHeader{
+            BackgroundColor white
+        }
+        reference{
+            BackgroundColor white
+        }
+    }
+</style>
+
+hide footbox
+mainframe Save Reading Progress
+
+actor Member as act
+participant "ChapterReaderPage" as view
+participant "BookshelfController" as ctrl <<controller>>
+participant ":BookshelfService" as svc
+participant ":UserChapterActivity" as ett
+participant ":UserRepository" as user_repo
+participant ":ChapterRepository" as chapter_repo
+participant ":UserChapterActivityRepository" as activity_repo
+database Database as db
+
+act ++
+
+act -> view++: Scroll chapter content (>= 95% threshold) or short chapter fully displayed
+view -> view++: Save scroll percentage and latest chapter to localStorage
+view--
+
+view -> ctrl++: POST /api/user/reading/complete-chapter
+
+ctrl -> ctrl++: Validate authentication and chapterId payload
+ctrl--
+alt User is not authenticated
+    ctrl -->> view: Return ResponseEntity.status(401)
+    view -->> act: Keep local progress in localStorage only
+else Missing chapterId in payload
+    ctrl -->> view: Return ResponseEntity.badRequest()
+    view -->> act: Ignore invalid progress request
+else Authenticated with valid chapterId
+    ctrl -> svc++: recordChapterRead(email, chapterId)
+
+    svc -> user_repo++: findByEmail(email)
+    user_repo -> db++: Execute query
+    db -->> user_repo: Return user data
+    db--
+    user_repo -->> svc: Return user entity
+    user_repo--
+
+    svc -> chapter_repo++: findById(chapterId)
+    chapter_repo -> db++: Execute query
+    db -->> chapter_repo: Return chapter data
+    db--
+    chapter_repo -->> svc: Return chapter entity
+    chapter_repo--
+
+    svc -> activity_repo++: findByUserAndChapter(user, chapter)
+    activity_repo -> db++: Execute query
+    db -->> activity_repo: Return activity data
+    db--
+    activity_repo -->> svc: Return activity entity
+    activity_repo--
+
+    svc -> svc++: Check if UserChapterActivity record exists
+    svc--
+    alt Activity record already exists
+        svc -> svc++: Update isRead = true and readAt = now
+        svc--
+    else Activity record does not exist
+        svc -> ett++: Call UserChapterActivity(user, chapter, true, now)
+        ett -->> svc--: Return activity entity
+    end
+
+    svc -> activity_repo++: save(activity)
+    activity_repo -> db++: Save changes to database
+    db -->> activity_repo: Return saved activity
+    db--
+    activity_repo -->> svc: Return saved activity
+    activity_repo--
+
+    svc -->> ctrl--: Return result
+    ctrl -->> view--: Return ResponseEntity.ok()
+    view -->> act--: Update reading progress indicator
+end
+
+@enduml
+

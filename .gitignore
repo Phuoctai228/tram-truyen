@@ -56,3 +56,6 @@ scratch/
 diagrams/out/
 docs/demo_data/
 /.vs
+out
+
+plantuml/plantuml.jar

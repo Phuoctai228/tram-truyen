@@ -83,6 +83,8 @@ public class DailyCheckinServiceImpl implements DailyCheckinService {
 
         long totalCheckinDays = userDailyCheckinRepository.countByUser(user);
         int walletBalance = user.getWalletBalance() != null ? user.getWalletBalance() : 0;
+        Long totalRewardCoins = userDailyCheckinRepository.sumRewardCoinByUser(user);
+        int totalRewards = totalRewardCoins != null ? totalRewardCoins.intValue() : 0;
 
         // Build 7-day roadmap
         List<DayRoadmapItemDTO> roadmap = buildRoadmap(currentCycleDay, isCheckedInToday);
@@ -97,7 +99,7 @@ public class DailyCheckinServiceImpl implements DailyCheckinService {
                 .todayReward(todayReward)
                 .isCheckedInToday(isCheckedInToday)
                 .walletBalance(walletBalance)
-                .totalRewardCoins((int) totalCheckinDays * 10) // approximate or computed
+                .totalRewardCoins(totalRewards)
                 .roadmap(roadmap)
                 .build();
     }

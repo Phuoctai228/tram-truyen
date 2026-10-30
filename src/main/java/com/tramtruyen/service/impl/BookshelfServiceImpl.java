@@ -219,31 +219,17 @@ public class BookshelfServiceImpl implements BookshelfService {
     @Override
     @Transactional
     public void recordChapterRead(String email, Integer chapterId) {
-        try {
-            User user = getUserByEmail(email);
-            Optional<Chapter> chapterOpt = chapterRepository.findById(chapterId);
-            if (chapterOpt.isEmpty()) {
-                return;
-            }
-            Chapter chapter = chapterOpt.get();
-            Optional<UserChapterActivity> activityOpt = userChapterActivityRepository.findByUserAndChapter(user, chapter);
-            UserChapterActivity activity;
-            if (activityOpt.isPresent()) {
-                activity = activityOpt.get();
-                activity.setIsRead(true);
-                activity.setReadAt(LocalDateTime.now());
-            } else {
-                activity = UserChapterActivity.builder()
+        User user = getUserByEmail(email);
+        Chapter chapter = chapterRepository.findById(chapterId)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy chương truyện"));
+        UserChapterActivity activity = userChapterActivityRepository.findByUserAndChapter(user, chapter)
+                .orElseGet(() -> UserChapterActivity.builder()
                         .user(user)
                         .chapter(chapter)
-                        .isRead(true)
-                        .readAt(LocalDateTime.now())
-                        .build();
-            }
-            userChapterActivityRepository.save(activity);
-        } catch (Exception ignored) {
-            // Fail-safe: do not block chapter reading
-        }
+                        .build());
+        activity.setIsRead(true);
+        activity.setReadAt(LocalDateTime.now());
+        userChapterActivityRepository.save(activity);
     }
 
     @Override

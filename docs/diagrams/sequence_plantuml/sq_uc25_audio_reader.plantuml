@@ -1,0 +1,118 @@
+﻿@startuml sq_uc25_audio_reader
+<style>
+    sequenceDiagram{
+        FontSize 16
+
+        arrow {
+            ' Set the maximum width of the text on arrows
+            MaximumWidth 300
+        }
+        actor{
+            BackgroundColor white
+            LineThickness 1.0
+        }
+        participant{
+            BackgroundColor white
+            RoundCorner 0
+        }
+        database{
+            BackgroundColor white
+        }
+        groupHeader{
+            BackgroundColor white
+        }
+        referenceHeader{
+            BackgroundColor white
+        }
+        reference{
+            BackgroundColor white
+        }
+    }
+</style>
+
+hide footbox
+mainframe Audio Reader
+
+actor Member as act
+participant "ChapterReaderPage" as view
+participant "NovelController" as ctrl <<controller>>
+participant ":NovelService" as novel_svc
+participant ":ChapterService" as chapter_svc
+participant ":ChapterAccessService" as access_svc
+participant ":ChapterAccessPolicy" as policy
+participant ":ChapterPreviewBuilder" as preview_builder
+participant ":ChapterAccessDTO" as access_dto
+participant ":NovelRepository" as novel_repo
+participant ":ChapterRepository" as chapter_repo
+participant "WebSpeechAPI" as tts
+database Database as db
+
+act ++
+
+act -> view++: Open chapter reading page
+view -> ctrl++: GET /truyen/{slug}/chuong-{chapterNumber}
+
+ctrl -> novel_svc++: getPublicNovelBySlug(slug)
+novel_svc -> novel_repo++: findBySlugAndIsDeletedFalseAndStatusNot(slug, "ARCHIVED")
+novel_repo -> db++: Execute query
+db -->> novel_repo: Return novel entity
+db--
+novel_repo -->> novel_svc: Return novel entity
+novel_repo--
+novel_svc -->> ctrl--: Return novel
+
+ctrl -> chapter_svc++: getPublicChapter(novelId, chapterNumber)
+chapter_svc -> chapter_repo++: findByNovelIdAndChapterNumberAndIsDeletedFalseAndStatusIn(novelId, chapterNumber, publicStatuses)
+chapter_repo -> db++: Execute query
+db -->> chapter_repo: Return chapter entity
+db--
+chapter_repo -->> chapter_svc: Return chapter entity
+chapter_repo--
+chapter_svc -->> ctrl--: Return chapter
+
+ctrl -> access_svc++: checkAccess(novel, chapter, authentication)
+access_svc -> policy++: resolve(chapter, loggedIn, privileged, alreadyUnlocked, walletBalance)
+policy -->> access_svc--: Return accessStatus
+access_svc -> preview_builder++: splitParagraphs(content)
+preview_builder -->> access_svc--: Return paragraphs
+access_svc -> access_dto++: Call ChapterAccessDTO(status, readable, paragraphs)
+access_dto -->> access_svc--: Return chapterAccessDTO
+access_svc -->> ctrl--: Return chapterAccessDTO
+
+ctrl -->> view--: Return "novel/reading"
+view -->> act: Display readable chapter content and floating toolbar
+
+act -> view: Click "Nghe đọc" (volume_up) button
+view -> view++: Check browser SpeechSynthesis support
+view--
+alt Browser does not support SpeechSynthesis
+    view -->> act: Display unsupported browser alert message
+else Browser supports SpeechSynthesis
+    view -> tts++: getVoices()
+    tts -->> view--: Return available system voices
+
+    view -> view++: Check if Vietnamese voice ("vi") is available
+    view--
+    opt Vietnamese voice not installed
+        view -->> act: Display Vietnamese voice installation guide warning
+    end
+
+    view -> view++: Split chapter paragraphs into sentences
+    view--
+    view -->> act: Display floating audio player panel
+
+    act -> view: Click Play button (or adjust voice/speed)
+    view -> tts++: cancel()
+    tts -->> view--: Return result
+
+    view -> view++: Highlight current sentence and scroll into view
+    view--
+
+    view -> tts++: speak(SpeechSynthesisUtterance)
+    tts -->> view--: Synthesize speech audio and emit onend event
+
+    view -->> act--: Play chapter audio with sentence karaoke highlighting
+end
+
+@enduml
+

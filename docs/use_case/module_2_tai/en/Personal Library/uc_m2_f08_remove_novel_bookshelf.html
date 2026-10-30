@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>UC-19 Remove Novel from Bookshelf</title>
+    <title>UC-19-Remove Novel from Bookshelf</title>
 </head>
 <body>
 <div class="uc-container" style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
@@ -13,70 +13,70 @@
             color: black !important;
         }
     </style>
-    <table style="border-collapse: collapse; width: 100%; border: 1.5pt solid black;">
+    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 25%;">UC ID and Name:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-19 Remove Novel from Bookshelf</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">UC ID and Name:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-19-Remove Novel from Bookshelf</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Created By:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 25%;">TaiTP</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 25%;">Date Created:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 25%;">2026-09-18</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Created By:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">TaiTP</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Date Created:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-18</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Primary Actor:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;">Member</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Secondary Actors:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;">None</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Primary Actor:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Member</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Secondary Actors:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">None</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Trigger:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Member clicks the "Xóa khỏi Tủ sách" button or trash icon on a novel item.</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Trigger:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Member clicks the "delete" icon on a novel card in the Bookshelf (or clicks "Đã lưu trong Tủ sách" on the novel details page / active "bookmark" icon on the reading toolbar).</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Description:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Allows a member to unfollow a novel and remove it from their personal bookshelf, stopping progress tracking for that specific book.</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Description:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Allows an authenticated Member to remove a bookmarked novel from their personal Bookshelf while preserving their chapter reading progress and reading history.</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Preconditions:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>PRE-1. The novel must currently exist in the member's bookshelf.</p></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Preconditions:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> Member is logged into the system.</p><p><b>PRE-2.</b> The target novel is currently in the Member's Bookshelf.</p></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Postconditions:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>POST-1. The novel is deleted from the member's bookshelf records.</p></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Postconditions:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> The bookshelf record linking the Member and the novel is deleted from the database.</p><p><b>POST-2.</b> The Member's chapter reading history and progress in user_chapter_activities remain intact.</p></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Normal Flow:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>A. Remove Successfully</p><ol><li>Member clicks the "Xóa khỏi Tủ sách" button or trash icon.</li><li>The system retrieves the current actor's session data.</li><li>The system renders a confirmation modal.</li><li>Member clicks the "Xác nhận" button.</li><li>The system deletes the corresponding bookmark record from the database.</li><li>The system removes the novel item from the UI dynamically.</li><li>The system displays a success notification message.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Normal Flow:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Remove Novel from Bookshelf Successfully</b></p><ol><li>Member accesses the personal Bookshelf page.</li><li>Member clicks the "delete" icon on a novel card.</li><li>The system displays a confirmation modal informing the Member that reading progress will remain stored in Reading History.</li><li>Member clicks the "Xóa khỏi tủ sách" button in the modal.</li><li>The system validates the Member's authentication session.</li><li>The system deletes the bookshelf record matching the Member and novel ID from the database.</li><li>The system reloads the Bookshelf view and displays a toast notification confirming the removal.</li></ol></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Alternative Flows:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>A.4 Cancel Deletion</p><ol><li>Member clicks the "Hủy" button on the confirmation modal.</li><li>The system closes the modal without making any changes.</li><li>Back to step 1.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Alternative Flows:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.2 Remove Directly from Novel Details or Reading Page</b></p><ol><li>Member clicks the "Đã lưu trong Tủ sách" button on the novel details page or the active "bookmark" icon on the reading toolbar.</li><li>The system validates the session and deletes the bookshelf record without opening a confirmation modal.</li><li>The system updates the button state to "Thêm vào Tủ sách" (or inactive "bookmark" icon).</li></ol><p><b>A.4 Cancel Removal</b></p><ol><li>Member clicks the "Hủy" button or clicks outside the confirmation modal.</li><li>The system closes the confirmation modal without deleting the record.</li><li>Back to step 1.</li></ol></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Exceptions:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>EX-1 Session Invalid (Not Logged In)</p><ol><li>The system displays an authentication error message.</li><li>The system redirects the user to the login page.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Exceptions:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Session Invalid (Not Logged In)</b></p><ol><li>The system displays an authentication error message.</li><li>The system redirects the user to the login page.</li></ol><p><b>EX-6 Database Deletion Failure</b></p><ol><li>The system fails to delete the bookshelf record due to a database error.</li><li>The system displays an error toast notification.</li></ol></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Priority:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High, Must Have</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Priority:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Medium, Should Have</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Frequency of Use:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Frequency of Use:</td>
             <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Medium</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Business Rules:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Business Rules:</td>
             <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">BR-15</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Other Information:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">None</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Other Information:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Removing a novel from the Bookshelf only deletes the row in the bookshelves table; all records in user_chapter_activities (read status, timestamps, and unlocked VIP chapters) are preserved.</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Assumptions:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Member has a stable internet connection.</li></ul></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Assumptions:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Member has stable internet connection.</li></ul></td>
         </tr>
     </table>
 </div>

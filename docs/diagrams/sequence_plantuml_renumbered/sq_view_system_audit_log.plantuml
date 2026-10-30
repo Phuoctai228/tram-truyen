@@ -1,0 +1,127 @@
+@startuml sq_view_system_audit_log
+<style>
+    sequenceDiagram{
+        FontSize 16
+        LineColor black
+
+        arrow {
+            ' Set the maximum width of the text on arrows
+            MaximumWidth 300
+            LineColor black
+        }
+        actor{
+            BackgroundColor white
+            LineColor black
+            LineThickness 1.0
+        }
+        participant{
+            BackgroundColor white
+            LineColor black
+            RoundCorner 0
+        }
+        database{
+            BackgroundColor white
+            LineColor black
+        }
+        lifeLine{
+            LineColor black
+        }
+        group{
+            LineColor black
+        }
+        groupHeader{
+            BackgroundColor white
+            LineColor black
+        }
+        referenceHeader{
+            BackgroundColor white
+            LineColor black
+        }
+        reference{
+            BackgroundColor white
+            LineColor black
+        }
+    }
+</style>
+
+hide footbox
+mainframe Xem nhật ký hệ thống (UC-53)
+
+actor "Admin / Staff" as adm
+participant "AuditLogListPage" as list_view
+participant "AuditLogDetailPage" as detail_view
+participant "SystemAuditLogAdminController" as ctrl <<controller>>
+participant ":SystemAuditLogService" as svc
+participant ":SystemAuditLogRepository" as audit_repo
+participant ":UserRepository" as user_repo
+participant "AuditLogFieldFormatter" as fmt <<utility>>
+database Database as db
+
+adm ++
+
+alt Luồng 1: Xem danh sách nhật ký (Lọc và phân trang)
+    adm -> list_view++:0.1. Chọn bộ lọc (từ khóa, nhóm hành động, vai trò, thời gian, trang)
+    list_view -> ctrl--:0.1.1. GET /admin/audit-logs (keyword, actionGroup, performerRole, timeRange, page, size)
+    activate ctrl
+
+    ctrl -> svc++:0.1.2. getAuditLogsFiltered(keyword, actionGroup, performerRole, timeRange, startDate, endDate, page, size)
+    svc -> db++:0.1.3. Execute query with filters & pagination
+    db -->> svc:0.1.4. Return Page<SystemAuditLogDTO>
+    db--
+    svc -->> ctrl:0.1.5. Return logPage
+    svc--
+
+    ctrl -> svc++:0.1.6. getStats()
+    svc -> db++:0.1.7. Count total logs, today logs, active admins (24h)
+    db -->> svc:0.1.8. Return stats counts
+    db--
+    svc -->> ctrl:0.1.9. Return SystemAuditLogStatsDTO
+    svc--
+
+    ctrl -> svc++:0.1.10. getActiveActionGroups()
+    svc -->> ctrl--:0.1.11. Return action groups
+
+    ctrl -->> list_view:0.1.12. Render admin/audit-logs/index (stats, logs, filterQuery, model)
+    activate list_view
+    list_view -->> adm:0.1.13. Display audit log table & 3 summary stat cards
+    deactivate list_view
+
+else Luồng 2: Xem chi tiết bản ghi nhật ký
+    adm -> list_view++:0.2. Click "Chi tiết" (#LOG-{id})
+    list_view -> ctrl--:0.2.1. GET /admin/audit-logs/{id}
+    activate ctrl
+
+    ctrl -> svc++:0.2.2. getAuditLogDetail(logId)
+
+    svc -> audit_repo++:0.2.3. findById(logId)
+    audit_repo -> db++:0.2.4. SELECT * FROM system_audit_logs WHERE id = ?
+    db -->> audit_repo:0.2.5. Return log record
+    db--
+    audit_repo -->> svc:0.2.6. Return SystemAuditLog
+    audit_repo--
+
+    svc -> user_repo++:0.2.7. findById(adminId)
+    user_repo -> db++:0.2.8. SELECT * FROM users WHERE id = ?
+    db -->> user_repo:0.2.9. Return user
+    db--
+    user_repo -->> svc:0.2.10. Return User
+    user_repo--
+
+    svc -> fmt++:0.2.11. computeFieldDiffs(rawOld, rawNew)
+    fmt -->> svc--:0.2.12. Return List<AuditLogFieldDiffDTO>
+
+    svc -> fmt++:0.2.13. resolveTargetUrl(targetEntity)
+    fmt -->> svc--:0.2.14. Return targetUrl
+
+    svc -->> ctrl--:0.2.15. Return SystemAuditLogDetailDTO
+
+    ctrl -->> detail_view:0.2.16. Render admin/audit-logs/detail (detail, returnFilterParams)
+    activate detail_view
+    detail_view -->> adm:0.2.17. Display admin info, timestamp, field diffs (Before/After)
+    deactivate detail_view
+end
+
+deactivate ctrl
+deactivate adm
+
+@enduml

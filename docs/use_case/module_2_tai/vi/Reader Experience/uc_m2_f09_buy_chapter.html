@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>UC-26 Mở Khóa Chương Trả Phí</title>
+    <title>UC-26-Mở Khóa Chương VIP</title>
 </head>
 <body>
 <div class="uc-container" style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
@@ -13,70 +13,70 @@
             color: black !important;
         }
     </style>
-    <table style="border-collapse: collapse; width: 100%; border: 1.5pt solid black;">
+    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 25%;">Mã và Tên UC:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-26 Mở Khóa Chương Trả Phí</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Mã và Tên UC:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-26-Mở Khóa Chương VIP</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Người tạo:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 25%;">TaiTP</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 25%;">Ngày tạo:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 25%;">2026-09-18</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Người tạo:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">TaiTP</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Ngày tạo:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-18</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Tác nhân chính:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;">Member</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Tác nhân phụ:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;">Không có</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Tác nhân chính:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Member</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Tác nhân phụ:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Không có</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Kích hoạt (Trigger):</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Member nhấn nút "Mở khóa" trên lớp phủ của một chương VIP đang bị khóa.</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Kích hoạt (Trigger):</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Member truy cập vào một chương VIP đang bị khóa (hệ thống tự động bật hộp thoại mở khóa VIP) hoặc nhấn vào nút "Mở khóa chương" trên khung khóa VIP.</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Mô tả (Description):</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Xử lý logic giao dịch để mua quyền truy cập vĩnh viễn vào một chương VIP bằng số dư Coin của thành viên. Sử dụng khóa cơ sở dữ liệu nghiêm ngặt để ngăn chặn tình trạng tương tranh (race conditions) và tiêu tiền hai lần.</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Mô tả (Description):</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cho phép Member đã đăng nhập sử dụng số dư Coin trong ví để mua và mở khóa vĩnh viễn quyền đọc một chương truyện VIP có trả phí.</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Điều kiện tiên quyết:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>PRE-1. Chương phải được đánh dấu là PUBLISHED_VIP.</p><p>PRE-2. Người dùng phải được xác thực với vai trò Member.</p></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Điều kiện tiên quyết:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> Member đã đăng nhập vào hệ thống.</p><p><b>PRE-2.</b> Chương mục tiêu là chương VIP đã xuất bản và có giá Coin lớn hơn 0.</p><p><b>PRE-3.</b> Member chưa mở khóa chương này trước đó.</p></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Điều kiện hậu quyết:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>POST-1. Số dư Coin bị trừ và chương được mở khóa vĩnh viễn cho thành viên.</p></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Điều kiện hậu quyết:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> Số Coin tương ứng với giá chương bị trừ khỏi ví của Member và giao dịch được ghi vào bảng coin_transactions.</p><p><b>POST-2.</b> Bản ghi hoạt động chương của Member được đánh dấu đã mở khóa (isUnlocked = true) cùng số Coin đã trả (pricePaid) và thời điểm mở khóa (unlockedAt).</p><p><b>POST-3.</b> Toàn bộ nội dung của chương VIP được hiển thị cho Member.</p></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Luồng cơ bản:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>A. Mua chương thành công</p><ol><li>Member nhấn nút "Mở khóa" trên lớp phủ của một chương VIP.</li><li>Hệ thống trích xuất dữ liệu phiên làm việc của tác nhân hiện tại.</li><li>Hệ thống truy xuất số dư Coin hiện tại của thành viên.</li><li>Hệ thống xác thực số dư Coin lớn hơn hoặc bằng giá của chương.</li><li>Hệ thống thực thi giao dịch cơ sở dữ liệu để trừ giá trị Coin, tạo nhật ký giao dịch và tạo bản ghi mở khóa.</li><li>Hệ thống làm mới trang và kết xuất giao diện đọc đã mở khóa.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Luồng cơ bản:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Mở khóa chương VIP thành công</b></p><ol><li>Member truy cập trang chương VIP bị khóa và mở hộp thoại mở khóa chương VIP (hoặc nhấn "Mở khóa chương").</li><li>Hệ thống hiển thị hộp thoại mở khóa VIP gồm giá chương, số dư Coin hiện tại của Member và nút "Mở khóa".</li><li>Member nhấn nút "Mở khóa" để xác nhận mua chương.</li><li>Hệ thống kiểm tra tính hợp lệ của chương và thiết lập khóa bi quan (pessimistic write lock) trên bản ghi người dùng của Member.</li><li>Hệ thống kiểm tra xác nhận Member chưa mở khóa chương này và tổng số dư Coin đủ để thanh toán.</li><li>Hệ thống trừ số Coin tương ứng khỏi ví của Member, ghi nhận lịch sử giao dịch CHAPTER_UNLOCK và lưu trạng thái mở khóa vào bảng user_chapter_activities trong cùng một giao dịch ACID.</li><li>Hệ thống chuyển hướng Member về lại trang đọc chương kèm thông báo thành công và hiển thị toàn bộ nội dung chương.</li></ol></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Luồng thay thế:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>A.4 Số dư không đủ</p><ol><li>Hệ thống xác định số dư Coin của thành viên thấp hơn giá của chương.</li><li>Hệ thống hiển thị thông báo lỗi về việc không đủ số dư.</li><li>Hệ thống hiển thị nút "Nạp ngay" liên kết đến trang thanh toán.</li><li>Quay lại bước 1.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Luồng thay thế:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.2 Số dư Coin không đủ</b></p><ol><li>Hệ thống xác định số dư Coin của Member nhỏ hơn giá chương khi hiển thị hộp thoại mở khóa VIP.</li><li>Hệ thống hiển thị số Coin còn thiếu, gợi ý các gói nạp phù hợp và hiển thị nút "Nạp Coin Ngay" thay cho biểu mẫu mở khóa.</li><li>Member nhấn "Nạp Coin Ngay" để chuyển sang trang nạp Coin, hoặc nhấn "Để sau" để đóng hộp thoại.</li></ol><p><b>A.3 Hủy hộp thoại mở khóa</b></p><ol><li>Member nhấn nút "Hủy" hoặc biểu tượng "close" trên hộp thoại mở khóa VIP.</li><li>Hệ thống đóng hộp thoại và giữ Member ở lại màn hình xem trước chương.</li><li>Quay lại bước 1.</li></ol><p><b>A.5 Chương đã được mở khóa từ trước</b></p><ol><li>Hệ thống phát hiện chương đã được mở khóa cho Member trong quá trình xử lý giao dịch.</li><li>Hệ thống bỏ qua việc trừ Coin và chuyển hướng Member trực tiếp tới nội dung chương.</li></ol></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Ngoại lệ (Exceptions):</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>EX-1 Phiên đăng nhập không hợp lệ</p><ol><li>Hệ thống hiển thị thông báo lỗi xác thực.</li><li>Hệ thống chuyển hướng người dùng đến trang đăng nhập.</li></ol><p>EX-5 Lỗi tương tranh</p><ol><li>Hệ thống gặp lỗi hết thời gian chờ cơ sở dữ liệu.</li><li>Hệ thống hoàn tác mọi thay đổi đang chờ xử lý.</li><li>Hệ thống hiển thị thông báo lỗi chung.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Ngoại lệ (Exceptions):</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Phiên không hợp lệ (Chưa đăng nhập)</b></p><ol><li>Guest nhấn "Đăng nhập ngay" trên hộp thoại VIP hoặc gửi yêu cầu mở khóa khi chưa đăng nhập.</li><li>Hệ thống chuyển hướng người dùng đến trang đăng nhập.</li></ol><p><b>EX-6 Lỗi giao dịch thanh toán</b></p><ol><li>Xảy ra lỗi cơ sở dữ liệu hoặc số dư không đủ trong quá trình trừ Coin.</li><li>Hệ thống hoàn tác (rollback) toàn bộ giao dịch và chuyển hướng về lại trang chương kèm thông báo lỗi.</li></ol></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Mức độ ưu tiên:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Critical, Must Have</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Mức độ ưu tiên:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High, Must Have</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Tần suất sử dụng:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Tần suất sử dụng:</td>
             <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cao</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Quy tắc nghiệp vụ:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">BR-20, BR-21</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Quy tắc nghiệp vụ:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">BR-06, BR-12, BR-20, BR-21</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Thông tin khác:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Không có.</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Thông tin khác:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Hộp thoại mở khóa còn cung cấp tùy chọn "Tự động mở khóa các chương VIP tiếp theo của tác phẩm này" được lưu trong localStorage của trình duyệt.</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Giả định:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Thành viên có kết nối internet ổn định.</li></ul></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Giả định:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Member có kết nối internet ổn định.</li></ul></td>
         </tr>
     </table>
 </div>

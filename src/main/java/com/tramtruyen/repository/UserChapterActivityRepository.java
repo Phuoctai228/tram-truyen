@@ -27,6 +27,15 @@ public interface UserChapterActivityRepository extends JpaRepository<UserChapter
 
     Page<UserChapterActivity> findAllByUserAndIsReadTrueOrderByReadAtDesc(User user, Pageable pageable);
 
+    /**
+     * Retrieves reading history entries (chapters accessed by the user) ordered by most recent access time.
+     *
+     * @param user     owner of the history
+     * @param pageable paging information
+     * @return page of activities whose readAt is set
+     */
+    Page<UserChapterActivity> findAllByUserAndReadAtIsNotNullOrderByReadAtDesc(User user, Pageable pageable);
+
     Optional<UserChapterActivity> findByUserAndChapterId(User user, Integer chapterId);
 
     Optional<UserChapterActivity> findByUserAndChapterIdAndIsUnlockedTrue(User user, Integer chapterId);

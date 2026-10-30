@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>UC-27 Lưu Tiến Độ Đọc</title>
+    <title>UC-27-Lưu Tiến Độ Đọc</title>
 </head>
 <body>
 <div class="uc-container" style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
@@ -13,70 +13,70 @@
             color: black !important;
         }
     </style>
-    <table style="border-collapse: collapse; width: 100%; border: 1.5pt solid black;">
+    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 25%;">Mã và Tên UC:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-27 Lưu Tiến Độ Đọc</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Mã và Tên UC:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-27-Lưu Tiến Độ Đọc</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Người tạo:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 25%;">TaiTP</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 25%;">Ngày tạo:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 25%;">2026-09-18</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Người tạo:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">TaiTP</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Ngày tạo:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-18</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Tác nhân chính:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;">Member</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Tác nhân phụ:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;">Không có</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Tác nhân chính:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Member</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Tác nhân phụ:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Không có</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Kích hoạt (Trigger):</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Member tải thành công và đọc một chương trên giao diện đọc.</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Kích hoạt (Trigger):</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Member cuộn trang đọc một chương miễn phí hoặc đã mở khóa và đạt tối thiểu 95% chiều dài nội dung chương, hoặc xem một chương ngắn có toàn bộ nội dung hiển thị trọn vẹn trong khung nhìn.</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Mô tả (Description):</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Tự động theo dõi và lưu lại tiến độ đọc của thành viên (tỷ lệ phần trăm và ID chương mới nhất) ở chế độ chạy ngầm trong khi họ đang đọc truyện, nhằm cập nhật đánh dấu (bookmark) trong tủ sách.</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Mô tả (Description):</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cho phép hệ thống tự động lưu vị trí cuộn trang cục bộ vào localStorage của trình duyệt và gửi yêu cầu bất đồng bộ lên máy chủ để đánh dấu hoàn thành chương (isRead = true kèm thời gian readAt) khi Member cuộn đạt tối thiểu 95% nội dung chương hoặc khi nội dung chương ngắn hiển thị trọn vẹn trong khung nhìn (Viewport).</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Điều kiện tiên quyết:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>PRE-1. Nội dung chương phải được tải thành công.</p><p>PRE-2. Người dùng phải được xác thực với vai trò Member.</p></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Điều kiện tiên quyết:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> Member đã đăng nhập và đang đọc một chương miễn phí hoặc đã mở khóa.</p></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Điều kiện hậu quyết:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>POST-1. Tiến độ đọc của thành viên được đồng bộ hóa với cơ sở dữ liệu.</p></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Điều kiện hậu quyết:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> Bản ghi hoạt động chương của Member được đánh dấu đã đọc cùng mốc thời gian mới nhất trong cơ sở dữ liệu, đồng thời cập nhật Lịch sử đọc và tiến độ hoàn thành trong Tủ sách.</p></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Luồng cơ bản:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>A. Lưu tiến độ thành công</p><ol><li>Member đọc một chương trên giao diện đọc.</li><li>Hệ thống trích xuất dữ liệu phiên làm việc của tác nhân hiện tại.</li><li>Hệ thống xác định vị trí của chương hiện tại so với tổng số chương đã xuất bản.</li><li>Hệ thống tính toán tỷ lệ phần trăm tiến độ đọc tổng thể.</li><li>Hệ thống thực thi tiến trình ngầm để cập nhật bản ghi lưu truyện trong cơ sở dữ liệu với dữ liệu tiến độ mới.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Luồng cơ bản:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Lưu tiến độ đọc tự động thành công</b></p><ol><li>Member cuộn xem nội dung chương trên trang đọc truyện.</li><li>Trình khách cập nhật thanh tiến trình đọc trên cùng và lưu tỷ lệ phần trăm cuộn trang cùng thông tin chương đọc gần nhất vào localStorage.</li><li>Khi tỷ lệ cuộn trang đạt từ 95% trở lên, trình khách gửi một yêu cầu bất đồng bộ chứa ID chương về máy chủ.</li><li>Hệ thống xác thực phiên đăng nhập của Member và truy xuất thông tin chương tương ứng.</li><li>Hệ thống tạo mới hoặc cập nhật bản ghi hoạt động chương của Member, đặt cờ đã đọc (isRead = true) và cập nhật thời gian đọc (readAt) thành thời điểm hiện tại.</li><li>Hệ thống trả về phản hồi thành công ngầm mà không làm gián đoạn trải nghiệm đọc của Member.</li></ol></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Luồng thay thế:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>Không có</p></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Luồng thay thế:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.1 Khôi phục vị trí cuộn trang khi mở lại chương</b></p><ol><li>Member mở lại một chương có vị trí cuộn trang đã lưu trong khoảng từ 3% đến 95% ở localStorage.</li><li>Hệ thống tự động cuộn trang đến vị trí đã lưu và hiển thị thông báo nhỏ cho biết đã khôi phục vị trí đọc trước đó.</li><li>Quay lại bước 1.</li></ol><p><b>A.2 Hoàn thành chương ngắn hiển thị trọn vẹn trong khung nhìn</b></p><ol><li>Member mở một chương có nội dung ngắn hiển thị hoàn toàn trong màn hình mà không cần cuộn trang.</li><li>Trình khách tự động xác định đáy nội dung nằm trong khung nhìn, cập nhật thanh tiến trình thành 100% hoàn thành và kích hoạt yêu cầu lưu hoàn thành chương lên máy chủ.</li></ol></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Ngoại lệ (Exceptions):</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>EX-1 Phiên bản không hợp lệ (Chưa đăng nhập)</p><ol><li>Hệ thống nhận được phản hồi không có quyền truy cập khi thực thi tiến trình ngầm.</li><li>Hệ thống hủy bỏ việc cập nhật tiến độ mà không làm gián đoạn trải nghiệm đọc.</li></ol><p>EX-5 Lỗi mạng</p><ol><li>Hệ thống gặp sự cố mạng khi cập nhật tiến độ ngầm.</li><li>Hệ thống lưu dữ liệu cập nhật vào hàng đợi cục bộ.</li><li>Hệ thống thử đồng bộ lại vào lần tương tác tiếp theo.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Ngoại lệ (Exceptions):</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Phiên không hợp lệ (Chưa đăng nhập)</b></p><ol><li>Hệ thống phát hiện yêu cầu đồng bộ trạng thái hoàn thành chương từ người dùng chưa đăng nhập.</li><li>Hệ thống trả về mã từ chối xác thực và trình khách chỉ lưu tiến độ cục bộ trên trình duyệt mà không làm gián đoạn việc đọc.</li></ol><p><b>EX-2 Ngoại lệ chương ngắn không cuộn trang</b></p><ol><li>Nội dung chương quá ngắn hoặc khoảng cách cuộn trang còn lại không đáng kể (&le; 80px do padding đáy).</li><li>Trình khách tự động nhận diện chương ngắn, hiển thị 100% tiến độ và gửi yêu cầu hoàn thành chương lên máy chủ sau khi tải trang hoặc khi Member nhấn chuyển sang chương tiếp theo ("Chương sau").</li></ol><p><b>EX-5 Lỗi đồng bộ ngầm</b></p><ol><li>Yêu cầu cập nhật bất đồng bộ lên máy chủ thất bại do mất kết nối mạng hoặc lỗi máy chủ.</li><li>Trình khách tự động bỏ qua lỗi ngầm để không làm gián đoạn việc đọc của Member.</li></ol></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Mức độ ưu tiên:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Medium, Must Have</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Mức độ ưu tiên:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Medium, Should Have</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Tần suất sử dụng:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Tần suất sử dụng:</td>
             <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Rất cao</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Quy tắc nghiệp vụ:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">BR-13</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Quy tắc nghiệp vụ:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">BR-13, BR-14</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Thông tin khác:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Quá trình diễn ra hoàn toàn không đồng bộ ở chế độ nền.</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Thông tin khác:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Sự kiện đánh dấu hoàn thành chương được kích hoạt 1 lần cho mỗi lượt tải trang khi cuộn đạt tối thiểu 95%.</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Giả định:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Thành viên duy trì kết nối internet ổn định trong khi đọc.</li></ul></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Giả định:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Member có kết nối internet ổn định.</li></ul></td>
         </tr>
     </table>
 </div>

@@ -19,6 +19,15 @@ public interface ReadingHistoryService {
     Page<ReadingHistoryItemDTO> getReadingHistory(String email, int page, int size);
 
     /**
+     * Records that the user has accessed (opened) a chapter by updating its last access time.
+     * Does not change the chapter completion flag (isRead).
+     *
+     * @param email user email
+     * @param chapterId chapter ID
+     */
+    void recordChapterAccess(String email, Integer chapterId);
+
+    /**
      * Removes a specific chapter from the user's reading history without revoking VIP unlock.
      *
      * @param email user email

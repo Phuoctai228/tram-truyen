@@ -409,4 +409,44 @@ body.theme-blue #audio-player-panel button:not(#audio-toggle):hover {
     background-color: #cedee9 !important;
 }
 
+/* =========================================================================
+   Soft Pastel Karaoke Reading Highlights (Tông màu nhạt, êm mắt)
+   ========================================================================= */
+.karaoke-sentence {
+    transition: background-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+    border-radius: 4px;
+    padding: 1px 3px;
+    margin: 0 -1px;
+}
+
+/* 1. Mặc định & Theme Sáng: Tông vàng ấm/hổ phách nhạt pastel */
+.karaoke-sentence.active,
+body.theme-light .karaoke-sentence.active {
+    background-color: rgba(254, 215, 170, 0.45) !important;
+    color: #7c2d12 !important;
+    box-shadow: 0 0 0 1.5px rgba(249, 115, 22, 0.22) !important;
+}
+
+/* 2. Theme Sepia (Giấy cũ): Tông ngà ấm hài hòa */
+body.theme-sepia .karaoke-sentence.active {
+    background-color: rgba(217, 119, 6, 0.18) !important;
+    color: #451a03 !important;
+    box-shadow: 0 0 0 1.5px rgba(217, 119, 6, 0.18) !important;
+}
+
+/* 3. Theme Dark (Tối): Tông vàng mờ ấm, không chói mắt */
+body.theme-dark .karaoke-sentence.active {
+    background-color: rgba(245, 158, 11, 0.2) !important;
+    color: #fef08a !important;
+    box-shadow: 0 0 0 1.5px rgba(245, 158, 11, 0.28) !important;
+}
+
+/* 4. Theme Blue (Dịu mắt): Tông xanh nhạt dịu nhẹ */
+body.theme-blue .karaoke-sentence.active {
+    background-color: rgba(186, 230, 253, 0.5) !important;
+    color: #075985 !important;
+    box-shadow: 0 0 0 1.5px rgba(56, 189, 248, 0.22) !important;
+}
+
+
 

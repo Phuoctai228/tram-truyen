@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SDS - UC-28: View Reading History</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            line-height: 1.5;
+            color: #000000;
+            margin: 20px 30px;
+            background-color: #ffffff;
+        }
+        h2 { font-size: 15pt; font-weight: bold; color: #000000; margin-bottom: 8px; }
+        h3 { font-size: 13pt; font-weight: bold; font-style: italic; color: #000000; margin-top: 16px; margin-bottom: 8px; }
+        p { margin: 6px 0; font-family: 'Times New Roman', Times, serif; font-size: 12pt; color: #000000; }
+        .class-title { font-family: 'Times New Roman', Times, serif; font-size: 12pt; font-weight: bold; font-style: italic; color: #000000; margin-top: 14px; margin-bottom: 4px; }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            table-layout: fixed;
+            margin: 8px 0 18px 0;
+            border: 1px solid #000000;
+            color: #000000;
+        }
+        th, td {
+            border: 1px solid #000000;
+            padding: 6px 10px;
+            text-align: left;
+            vertical-align: top;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            color: #000000;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-word;
+        }
+        th {
+            background-color: #fbe5d6;
+            font-weight: bold;
+            color: #000000;
+        }
+        .col-no { width: 6%; text-align: center; color: #000000; }
+        .col-method { width: 28%; font-weight: bold; color: #000000; }
+        .col-desc { width: 66%; color: #000000; }
+        .sql-item { margin-top: 12px; margin-bottom: 4px; font-weight: bold; color: #000000; }
+        .sql-block {
+            margin: 4px 0 14px 0;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            color: #000000;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>10. View Reading History (UC-28)</h2>
+
+    <h3>b. Class Specifications</h3>
+
+    <p class="class-title"><b><i>UserController Class</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">viewHistory</td>
+                <td class="col-desc">
+                    <b>- Input:</b> page: int, size: int, authentication: Authentication, model: Model.<br>
+                    <b>- Output:</b> String (View name "user/history" or redirect to "/login").<br>
+                    <b>- Internal Method Processing:</b> Handles GET /user/history request. Validates user authentication, fetches paginated reading history records via readingHistoryService.getReadingHistory(email, page, size), binds historyPage, currentPage, and totalPages to the model, and renders the reading history page.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">removeHistoryItem</td>
+                <td class="col-desc">
+                    <b>- Input:</b> chapterId: Integer, authentication: Authentication, redirectAttributes: RedirectAttributes.<br>
+                    <b>- Output:</b> String (Redirect URL "redirect:/user/history").<br>
+                    <b>- Internal Method Processing:</b> Handles POST /user/history/remove request to delete a single chapter from the user's reading history. Calls readingHistoryService.removeHistoryItem(email, chapterId), sets a flash notification message, and redirects back to /user/history.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">03</td>
+                <td class="col-method">clearHistory</td>
+                <td class="col-desc">
+                    <b>- Input:</b> authentication: Authentication, redirectAttributes: RedirectAttributes.<br>
+                    <b>- Output:</b> String (Redirect URL "redirect:/user/history").<br>
+                    <b>- Internal Method Processing:</b> Handles POST /user/history/clear request to clear all reading history entries for the authenticated user via readingHistoryService.clearHistory(email), attaches a flash confirmation message, and redirects to /user/history.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>ReadingHistoryService Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">getReadingHistory</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String, page: int, size: int.<br>
+                    <b>- Output:</b> Page&lt;ReadingHistoryItemDTO&gt;.<br>
+                    <b>- Internal Method Processing:</b> Retrieves a paginated list of chapters read by the user, ordered by most recent read timestamp.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">recordChapterAccess</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String, chapterId: Integer.<br>
+                    <b>- Output:</b> void.<br>
+                    <b>- Internal Method Processing:</b> Records that the user has opened a readable chapter by updating its last access time (readAt) without changing the completion flag (isRead). Invoked by NovelController when a logged-in member opens a readable chapter.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">03</td>
+                <td class="col-method">removeHistoryItem</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String, chapterId: Integer.<br>
+                    <b>- Output:</b> void.<br>
+                    <b>- Internal Method Processing:</b> Removes a single chapter from the user's reading history while preserving VIP chapter unlock ownership if applicable.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">03</td>
+                <td class="col-method">clearHistory</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String.<br>
+                    <b>- Output:</b> void.<br>
+                    <b>- Internal Method Processing:</b> Clears all reading history items for the specified user while preserving any purchased VIP chapter unlocks.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>ReadingHistoryServiceImpl Class</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">getReadingHistory</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String, page: int, size: int.<br>
+                    <b>- Output:</b> Page&lt;ReadingHistoryItemDTO&gt;.<br>
+                    <b>- Internal Method Processing:</b> Resolves the User via userRepository.findByEmail(email), creates a PageRequest, queries userChapterActivityRepository.findAllByUserAndReadAtIsNotNullOrderByReadAtDesc(user, pageable), and maps each UserChapterActivity entity to ReadingHistoryItemDTO via mapToHistoryDTO().
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">recordChapterAccess</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String, chapterId: Integer.<br>
+                    <b>- Output:</b> void.<br>
+                    <b>- Internal Method Processing:</b> Resolves the User and Chapter, finds or instantiates UserChapterActivity via userChapterActivityRepository.findByUserAndChapter(user, chapter), updates readAt to current timestamp without modifying isRead, and saves the activity.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">03</td>
+                <td class="col-method">removeHistoryItem</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String, chapterId: Integer.<br>
+                    <b>- Output:</b> void.<br>
+                    <b>- Internal Method Processing:</b> Resolves the User and locates the activity via userChapterActivityRepository.findByUserAndChapterId(user, chapterId). If isUnlocked == true, resets isRead = false and readAt = null and saves the entity so the user does not lose VIP chapter ownership; otherwise deletes the activity record via userChapterActivityRepository.delete(activity).
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">04</td>
+                <td class="col-method">clearHistory</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String.<br>
+                    <b>- Output:</b> void.<br>
+                    <b>- Internal Method Processing:</b> Fetches all read activities for the user via userChapterActivityRepository.findAllByUserAndReadAtIsNotNullOrderByReadAtDesc(user, Pageable.unpaged()). Iterates through each record: if isUnlocked == true, resets isRead = false and readAt = null and saves; otherwise deletes the record.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">05</td>
+                <td class="col-method">mapToHistoryDTO</td>
+                <td class="col-desc">
+                    <b>- Input:</b> activity: UserChapterActivity.<br>
+                    <b>- Output:</b> ReadingHistoryItemDTO.<br>
+                    <b>- Internal Method Processing:</b> Extracts novel metadata (ID, title, slug, author, cover URL), chapter metadata (ID, number, title, VIP flag), and readAt timestamp from the UserChapterActivity entity into a ReadingHistoryItemDTO.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>UserRepository Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">findByEmail</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String.<br>
+                    <b>- Output:</b> Optional&lt;User&gt;.<br>
+                    <b>- Internal Method Processing:</b> Retrieves the user entity by email address.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>UserChapterActivityRepository Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">findAllByUserAndReadAtIsNotNullOrderByReadAtDesc</td>
+                <td class="col-desc">
+                    <b>- Input:</b> user: User, pageable: Pageable.<br>
+                    <b>- Output:</b> Page&lt;UserChapterActivity&gt;.<br>
+                    <b>- Internal Method Processing:</b> Queries all chapter activity records where read_at IS NOT NULL (chapters accessed) for the given user, sorted by read_at DESC.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">findByUserAndChapterId</td>
+                <td class="col-desc">
+                    <b>- Input:</b> user: User, chapterId: Integer.<br>
+                    <b>- Output:</b> Optional&lt;UserChapterActivity&gt;.<br>
+                    <b>- Internal Method Processing:</b> Finds a specific user-chapter activity record by user entity and chapter ID.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">03</td>
+                <td class="col-method">save</td>
+                <td class="col-desc">
+                    <b>- Input:</b> activity: UserChapterActivity.<br>
+                    <b>- Output:</b> UserChapterActivity.<br>
+                    <b>- Internal Method Processing:</b> Updates the activity record (setting is_read = FALSE and read_at = NULL) when clearing reading history for an unlocked VIP chapter.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">04</td>
+                <td class="col-method">delete</td>
+                <td class="col-desc">
+                    <b>- Input:</b> activity: UserChapterActivity.<br>
+                    <b>- Output:</b> void.<br>
+                    <b>- Internal Method Processing:</b> Deletes the activity record when removing reading history for a regular (non-unlocked) chapter.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>d. Database Queries</h3>
+
+    <p class="sql-item">1. Retrieve authenticated user by email</p>
+    <div class="sql-block">SELECT id, email, full_name, status
+FROM users
+WHERE email = ?;</div>
+
+    <p class="sql-item">2. Retrieve paginated reading history with chapter and novel details</p>
+    <div class="sql-block">SELECT uca.id, uca.user_id, uca.chapter_id, uca.is_read, uca.read_at, uca.is_unlocked,
+       c.chapter_number, c.title AS chapter_title, c.price,
+       n.id AS novel_id, n.title AS novel_title, n.slug AS novel_slug, n.author, n.cover_url
+FROM user_chapter_activities uca
+INNER JOIN chapters c ON uca.chapter_id = c.id
+INNER JOIN novels n ON c.novel_id = n.id
+WHERE uca.user_id = ?
+  AND uca.read_at IS NOT NULL
+ORDER BY uca.read_at DESC
+LIMIT ? OFFSET ?;</div>
+
+    <p class="sql-item">3. Find user chapter activity by user ID and chapter ID</p>
+    <div class="sql-block">SELECT id, user_id, chapter_id, is_read, read_at, is_unlocked, price_paid, unlocked_at
+FROM user_chapter_activities
+WHERE user_id = ?
+  AND chapter_id = ?;</div>
+
+    <p class="sql-item">4. Reset reading flag while preserving VIP unlock record</p>
+    <div class="sql-block">UPDATE user_chapter_activities
+SET is_read = FALSE,
+    read_at = NULL
+WHERE id = ?;</div>
+
+    <p class="sql-item">5. Delete reading history record for non-VIP chapter</p>
+    <div class="sql-block">DELETE FROM user_chapter_activities
+WHERE id = ?;</div>
+
+</body>
+</html>

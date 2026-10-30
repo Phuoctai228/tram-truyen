@@ -1,0 +1,111 @@
+@startuml sq_uc20_add_novel_to_bookshelf
+<style>
+    sequenceDiagram{
+        FontSize 16
+
+        arrow {
+            ' Set the maximum width of the text on arrows
+            MaximumWidth 300
+        }
+        actor{
+            BackgroundColor white
+            LineThickness 1.0
+        }
+        participant{
+            BackgroundColor white
+            RoundCorner 0
+        }
+        database{
+            BackgroundColor white
+        }
+        groupHeader{
+            BackgroundColor white
+        }
+        referenceHeader{
+            BackgroundColor white
+        }
+        reference{
+            BackgroundColor white
+        }
+    }
+</style>
+
+hide footbox
+mainframe Add Novel to Bookshelf
+
+actor Member as act
+participant "NovelDetailPage" as view
+participant "LoginPage" as r_view
+participant "BookshelfController" as ctrl <<controller>>
+participant ":BookshelfService" as svc
+participant ":Bookshelf" as ett
+participant ":UserRepository" as user_repo
+participant ":NovelRepository" as novel_repo
+participant ":BookshelfRepository" as bookshelf_repo
+database Database as db
+
+act ++
+
+act -> view++: 1. Click "Thêm vào Tủ sách"
+view -> ctrl++: 2. POST /user/bookshelf/{novelId}
+
+ctrl -> ctrl++: 3. Check authentication status
+ctrl--
+opt User is not authenticated
+    ctrl -->> r_view: 4. Redirect to /login
+    activate r_view
+    r_view -->> act: 5. Display login page
+    deactivate r_view
+end
+
+ctrl -> svc++: 6. addNovelToBookshelf(email, novelId)
+
+svc -> user_repo++: 7. findByEmail(email)
+user_repo -> db++: 8. Execute query
+db -->> user_repo: 9. Return user data
+db--
+user_repo -->> svc: 10. Return user entity
+user_repo--
+
+svc -> novel_repo++: 11. findByIdAndIsDeletedFalse(novelId)
+novel_repo -> db++: 12. Execute query
+db -->> novel_repo: 13. Return novel data
+db--
+novel_repo -->> svc: 14. Return novel entity
+novel_repo--
+
+svc -> bookshelf_repo++: 15. existsByUserAndNovel(user, novel)
+bookshelf_repo -> db++: 16. Execute query
+db -->> bookshelf_repo: 17. Return boolean result
+db--
+bookshelf_repo -->> svc: 18. Return exists
+bookshelf_repo--
+
+svc -> svc++: 19. Validate novel existence and check duplicate bookshelf entry
+svc--
+alt Novel not found
+    svc -->> ctrl: 20. throw ResourceNotFoundException
+    ctrl -->> view: 21. Redirect to /novel/{novelId}
+    view -->> act: 22. Display error message
+else Novel already in bookshelf
+    svc -->> ctrl: 23. throw DuplicateResourceException
+    ctrl -->> view: 24. Redirect to /novel/{novelId}
+    view -->> act: 25. Display error message
+else Valid new bookshelf entry
+    svc -> ett++: 26. Call Bookshelf(user, novel)
+    ett -->> svc--: 27. Return bookshelf entity
+
+    svc -> bookshelf_repo++: 28. save(bookshelf)
+    bookshelf_repo -> db++: 29. Save changes to database
+    db -->> bookshelf_repo: 30. Return saved bookshelf
+    db--
+    bookshelf_repo -->> svc: 31. Return saved bookshelf
+    bookshelf_repo--
+
+    svc -->> ctrl--: 32. Return result
+    ctrl -->> view--: 33. Redirect to /novel/{novelId}
+    view -->> act--: 34. Display updated bookshelf status and success message
+end
+
+@enduml
+

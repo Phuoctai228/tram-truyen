@@ -1,0 +1,214 @@
+@startuml sq_ban_enable_user
+<style>
+    sequenceDiagram{
+        FontSize 16
+        LineColor black
+
+        arrow {
+            ' Set the maximum width of the text on arrows
+            MaximumWidth 300
+            LineColor black
+        }
+        actor{
+            BackgroundColor white
+            LineColor black
+            LineThickness 1.0
+        }
+        participant{
+            BackgroundColor white
+            LineColor black
+            RoundCorner 0
+        }
+        database{
+            BackgroundColor white
+            LineColor black
+        }
+        lifeLine{
+            LineColor black
+        }
+        group{
+            LineColor black
+        }
+        groupHeader{
+            BackgroundColor white
+            LineColor black
+        }
+        referenceHeader{
+            BackgroundColor white
+            LineColor black
+        }
+        reference{
+            BackgroundColor white
+            LineColor black
+        }
+    }
+</style>
+
+hide footbox
+mainframe Khóa / Mở khóa tài khoản (UC-50)
+
+actor Admin as adm
+participant "UserListPage" as view
+participant "UserAdminController" as ctrl <<controller>>
+participant ":UserManagementService" as svc
+participant ":AccountLockService" as lock_svc
+participant ":UserRepository" as user_repo
+participant ":Notification" as notif_ett
+participant ":SystemAuditLog" as audit_ett
+participant ":NotificationRepository" as notif_repo
+participant ":SystemAuditLogRepository" as audit_repo
+database Database as db
+
+adm ++
+
+alt Luồng 1: Admin khóa tài khoản (Ban User)
+    adm -> view++: Select reason, duration, note and click "Xác nhận khóa"
+    view -> ctrl--: POST /admin/users/{id}/ban (BanUserRequest)
+    activate ctrl
+
+    ctrl -> ctrl++: getAdminId(authentication)
+    ctrl--
+
+    ctrl -> ctrl++: getClientIp(httpRequest)
+    ctrl--
+
+    ctrl -> svc++: banUser(adminId, request, clientIp)
+
+    svc -> user_repo++: findById(targetUserId)
+    user_repo -> db++: Execute query
+    db -->> user_repo: Return target user
+    db--
+    user_repo -->> svc: Return user entity
+    user_repo--
+
+    svc -> svc++: Set user.status = "BANNED"
+    svc--
+
+    svc -> user_repo++: save(user)
+    user_repo -> db++: Update users SET status = 'BANNED'
+    db -->> user_repo: Return saved user
+    db--
+    user_repo -->> svc: Return saved user
+    user_repo--
+
+    svc -> audit_ett++: Call SystemAuditLog.builder()
+    audit_ett -->> svc--: Return auditLog entity
+
+    svc -> audit_repo++: save(auditLog)
+    audit_repo -> db++: Insert into system_audit_logs (actionType = "BAN_USER")
+    db -->> audit_repo: Return saved audit log
+    db--
+    audit_repo -->> svc: Return saved audit log
+    audit_repo--
+
+    svc -> notif_ett++: [If sendNotification == true] Call Notification.builder()
+    notif_ett -->> svc--: Return notification entity
+
+    svc -> notif_repo++: [If sendNotification == true] save(notification)
+    notif_repo -> db++: Insert into notifications
+    db -->> notif_repo: Return saved notification
+    db--
+    notif_repo -->> svc: Return saved notification
+    notif_repo--
+
+    svc -->> ctrl--: Return void
+
+    ctrl -->> view--: Redirect /admin/users with successMessage
+    activate view
+    view -->> adm: Display success toast and update user status to BANNED
+    deactivate view
+
+else Luồng 2: Admin mở khóa tài khoản (Unban User)
+    adm -> view++: Enter unban note and click "Mở khóa ngay"
+    view -> ctrl--: POST /admin/users/{id}/unban (UnbanUserRequest)
+    activate ctrl
+
+    ctrl -> ctrl++: getAdminId(authentication)
+    ctrl--
+
+    ctrl -> ctrl++: getClientIp(httpRequest)
+    ctrl--
+
+    ctrl -> svc++: unbanUser(adminId, request, clientIp)
+
+    svc -> user_repo++: findById(targetUserId)
+    user_repo -> db++: Execute query
+    db -->> user_repo: Return target user
+    db--
+    user_repo -->> svc: Return user entity
+    user_repo--
+
+    svc -> svc++: Update user.status = "ACTIVE"
+    svc--
+
+    svc -> user_repo++: save(user)
+    user_repo -> db++: Update users SET status = 'ACTIVE'
+    db -->> user_repo: Return saved user
+    db--
+    user_repo -->> svc: Return saved user
+    user_repo--
+
+    svc -> audit_ett++: Call SystemAuditLog.builder()
+    audit_ett -->> svc--: Return auditLog entity
+
+    svc -> audit_repo++: save(auditLog)
+    audit_repo -> db++: Insert into system_audit_logs (actionType = "UNBAN_USER")
+    db -->> audit_repo: Return saved audit log
+    db--
+    audit_repo -->> svc: Return saved audit log
+    audit_repo--
+
+    svc -> notif_ett++: [If sendNotification == true] Call Notification.builder()
+    notif_ett -->> svc--: Return notification entity
+
+    svc -> notif_repo++: [If sendNotification == true] save(notification)
+    notif_repo -> db++: Insert into notifications
+    db -->> notif_repo: Return saved notification
+    db--
+    notif_repo -->> svc: Return saved notification
+    notif_repo--
+
+    svc -->> ctrl--: Return void
+
+    ctrl -->> view--: Redirect /admin/users with successMessage
+    activate view
+    view -->> adm: Display success toast and update user status to ACTIVE
+    deactivate view
+end
+
+deactivate adm
+
+group Luồng 3: Tác vụ mở khóa tự động (AUTO_UNBAN)
+    [o-> lock_svc++: checkAndAutoUnban(user)
+
+    lock_svc -> audit_repo++: findFirstByTargetEntityAndTargetIdAndActionTypeOrderByCreatedAtDesc("USERS", user.getId(), "BAN_USER")
+    audit_repo -> db++: SELECT * FROM system_audit_logs WHERE target_entity = 'USERS' AND target_id = ? AND action_type = 'BAN_USER' ORDER BY created_at DESC
+    db -->> audit_repo: Return banLog
+    db--
+    audit_repo -->> lock_svc: Return Optional<SystemAuditLog>
+    audit_repo--
+
+    lock_svc -> lock_svc++: [If ban expired] user.setStatus("ACTIVE")
+    lock_svc--
+
+    lock_svc -> user_repo++: [If ban expired] save(user)
+    user_repo -> db++: Update user status to ACTIVE
+    db -->> user_repo: Return saved user
+    db--
+    user_repo -->> lock_svc: Return saved user
+    user_repo--
+
+    lock_svc -> audit_ett++: [If ban expired] Call SystemAuditLog.builder()
+    audit_ett -->> lock_svc--: Return auditLog entity
+
+    lock_svc -> audit_repo++: [If ban expired] save(auditLog)
+    audit_repo -> db++: Insert into system_audit_logs (actionType = "AUTO_UNBAN", performer = system.scheduler@internal)
+    db -->> audit_repo: Return saved audit log
+    db--
+    audit_repo -->> lock_svc: Return saved audit log
+    audit_repo--
+
+    [<-- lock_svc--: Return isUnbanned (boolean)
+end
+
+@enduml

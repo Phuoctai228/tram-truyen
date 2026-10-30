@@ -1,0 +1,151 @@
+@startuml sq_report_content
+<style>
+    sequenceDiagram{
+        FontSize 16
+        LineColor black
+
+        arrow {
+            ' Set the maximum width of the text on arrows
+            MaximumWidth 300
+            LineColor black
+        }
+        actor{
+            BackgroundColor white
+            LineColor black
+            LineThickness 1.0
+        }
+        participant{
+            BackgroundColor white
+            LineColor black
+            RoundCorner 0
+        }
+        database{
+            BackgroundColor white
+            LineColor black
+        }
+        lifeLine{
+            LineColor black
+        }
+        group{
+            LineColor black
+        }
+        groupHeader{
+            BackgroundColor white
+            LineColor black
+        }
+        referenceHeader{
+            BackgroundColor white
+            LineColor black
+        }
+        reference{
+            BackgroundColor white
+            LineColor black
+        }
+    }
+</style>
+
+hide footbox
+mainframe Report Content (UC-21)
+
+actor Member as act
+participant "ReportContentModal" as view
+participant "LoginPage" as login_view
+participant "ReportController" as ctrl <<controller>>
+participant ":ReportService" as svc
+participant ":ContentReport" as rpt_ett
+participant ":UserRepository" as user_repo
+participant ":ChapterRepository" as chap_repo
+participant ":ContentReportRepository" as rpt_repo
+database Database as db
+
+act ++
+
+act -> view++:1. Select issue type, enter description and click "Gửi báo cáo"
+view -> ctrl--:2. POST /reports/content (ReportContentRequest)
+activate ctrl
+
+ctrl -> ctrl++:3. isAuthenticated(authentication)
+ctrl--
+
+opt User is not authenticated
+    ctrl -->> view:3.1. Return 401 UNAUTHORIZED (error message)
+    activate view
+    view -> login_view++:3.1.1. Redirect to /login
+    login_view -->> act:3.1.2. Display login page
+    deactivate login_view
+    deactivate view
+end
+
+opt Validation error (BindingResult has errors)
+    ctrl -->> view:3.2. Return 400 BAD REQUEST (validation error message)
+    activate view
+    view -->> act:3.2.1. Display error message on modal
+    deactivate view
+end
+
+ctrl -> ctrl++:4. getUserId(authentication)
+ctrl--
+
+ctrl -> svc++:5. reportContent(userId, request)
+
+svc -> user_repo++:6. findById(userId)
+user_repo -> db++:7. Execute query
+db -->> user_repo:8. Return user data
+db--
+user_repo -->> svc:9. Return user entity
+user_repo--
+
+svc -> chap_repo++:10. findById(chapterId)
+chap_repo -> db++:11. Execute query
+db -->> chap_repo:12. Return chapter data
+db--
+chap_repo -->> svc:13. Return chapter entity
+chap_repo--
+
+alt Chapter not found or not published/deleted
+    svc -->> ctrl:13.1. Throw IllegalArgumentException("Chương không còn khả dụng để báo cáo")
+    ctrl -->> view:13.1.1. Return 400 BAD REQUEST (error message)
+    activate view
+    view -->> act:13.1.2. Display error message on modal
+    deactivate view
+else Already reported (status "RECEIVED")
+    svc -> rpt_repo++:13.2. existsByUserIdAndChapterIdAndStatusIn(userId, chapterId, ["RECEIVED"])
+    rpt_repo -> db++:13.2.1. Execute query
+    db -->> rpt_repo:13.2.2. Return true
+    db--
+    rpt_repo -->> svc:13.2.3. Return true
+    rpt_repo--
+
+    svc -->> ctrl:13.2.4. Throw IllegalStateException("Vấn đề này đang được xem xét")
+    ctrl -->> view:13.2.5. Return 409 CONFLICT (error message)
+    activate view
+    view -->> act:13.2.6. Display duplicate report warning
+    deactivate view
+else Not yet reported
+    svc -> rpt_repo++:13.3. existsByUserIdAndChapterIdAndStatusIn(userId, chapterId, ["RECEIVED"])
+    rpt_repo -> db++:13.3.1. Execute query
+    db -->> rpt_repo:13.3.2. Return false
+    db--
+    rpt_repo -->> svc:13.3.3. Return false
+    rpt_repo--
+
+    svc -> rpt_ett++:13.3.4. Call ContentReport.builder()
+    rpt_ett -->> svc--:13.3.5. Return contentReport entity
+
+    svc -> rpt_repo++:13.3.6. save(report)
+    rpt_repo -> db++:13.3.7. Save content report to database
+    db -->> rpt_repo:13.3.8. Return saved report
+    db--
+    rpt_repo -->> svc:13.3.9. Return saved report
+    rpt_repo--
+
+    svc -->> ctrl--:13.3.10. Return void
+
+    ctrl -->> view--:13.3.11. Return 200 OK ({"success": true, "message": "Báo cáo nội dung chương của bạn đã được gửi..."})
+    deactivate ctrl
+    activate view
+    view -->> act--:13.3.12. Close modal and display success toast
+    deactivate view
+end
+
+@enduml

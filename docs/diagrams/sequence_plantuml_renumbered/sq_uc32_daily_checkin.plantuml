@@ -1,0 +1,197 @@
+@startuml sq_uc32_daily_checkin
+<style>
+    sequenceDiagram{
+        FontSize 16
+
+        arrow {
+            ' Set the maximum width of the text on arrows
+            MaximumWidth 300
+        }
+        actor{
+            BackgroundColor white
+            LineThickness 1.0
+        }
+        participant{
+            BackgroundColor white
+            RoundCorner 0
+        }
+        database{
+            BackgroundColor white
+        }
+        groupHeader{
+            BackgroundColor white
+        }
+        referenceHeader{
+            BackgroundColor white
+        }
+        reference{
+            BackgroundColor white
+        }
+    }
+</style>
+
+hide footbox
+mainframe Daily Check-in
+
+actor Member as act
+participant "DailyCheckinPage" as view
+participant "LoginPage" as r_view
+participant "UserController" as ctrl <<controller>>
+participant ":DailyCheckinService" as checkin_svc
+participant ":WalletService" as wallet_svc
+participant ":DailyCheckinStatusDTO" as status_dto
+participant ":UserDailyCheckin" as checkin_ett
+participant ":Transaction" as tx_ett
+participant ":DailyCheckinResultDTO" as result_dto
+participant ":UserRepository" as user_repo
+participant ":UserDailyCheckinRepository" as checkin_repo
+participant ":TransactionRepository" as tx_repo
+database Database as db
+
+act ++
+
+act -> view++: 1. Access daily check-in page
+view -> ctrl++: 2. GET /user/checkin
+
+ctrl -> ctrl++: 3. Check authentication status
+ctrl--
+opt User is not authenticated
+    ctrl -->> r_view: 4. Redirect to /login?redirect=/user/checkin
+    activate r_view
+    r_view -->> act: 5. Display login page
+    deactivate r_view
+end
+
+ctrl -> checkin_svc++: 6. getCheckinStatus(email)
+
+checkin_svc -> user_repo++: 7. findByEmail(email)
+user_repo -> db++: 8. Execute query
+db -->> user_repo: 9. Return user data
+db--
+user_repo -->> checkin_svc: 10. Return user entity
+user_repo--
+
+checkin_svc -> checkin_repo++: 11. findByUserAndCheckinDate(user, today)
+checkin_repo -> db++: 12. Execute query
+db -->> checkin_repo: 13. Return todayCheckin data
+db--
+checkin_repo -->> checkin_svc: 14. Return todayCheckin
+checkin_repo--
+
+checkin_svc -> checkin_repo++: 15. findTopByUserOrderByCheckinDateDesc(user)
+checkin_repo -> db++: 16. Execute query
+db -->> checkin_repo: 17. Return latestCheckin data
+db--
+checkin_repo -->> checkin_svc: 18. Return latestCheckin
+checkin_repo--
+
+checkin_svc -> checkin_repo++: 19. countByUser(user)
+checkin_repo -> db++: 20. Execute query
+db -->> checkin_repo: 21. Return totalCheckinDays
+db--
+checkin_repo -->> checkin_svc: 22. Return totalCheckinDays
+checkin_repo--
+
+checkin_svc -> checkin_svc++: 23. Calculate streak cycle and build 7-day reward roadmap
+checkin_svc--
+
+checkin_svc -> status_dto++: 24. Call DailyCheckinStatusDTO(streakCount, todayReward, roadmap)
+status_dto -->> checkin_svc--: 25. Return checkinStatusDTO
+
+checkin_svc -->> ctrl--: 26. Return checkinStatusDTO
+
+ctrl -->> view--: 27. Return "user/checkin"
+view -->> act: 28. Display check-in status and 7-day reward roadmap
+
+act -> view: 29. Click "Điểm danh nhận ngay"
+view -> ctrl++: 30. POST /user/checkin
+
+ctrl -> checkin_svc++: 31. performCheckin(email)
+
+checkin_svc -> user_repo++: 32. findByEmail(email)
+user_repo -> db++: 33. Execute query
+db -->> user_repo: 34. Return user data
+db--
+user_repo -->> checkin_svc: 35. Return user entity
+user_repo--
+
+checkin_svc -> checkin_repo++: 36. existsByUserAndCheckinDate(user, today)
+checkin_repo -> db++: 37. Execute query
+db -->> checkin_repo: 38. Return boolean result
+db--
+checkin_repo -->> checkin_svc: 39. Return alreadyCheckedIn
+checkin_repo--
+
+checkin_svc -> checkin_svc++: 40. Check if user already checked in today
+checkin_svc--
+alt Already checked in today
+    checkin_svc -->> ctrl: 41. throw DuplicateResourceException
+    ctrl -->> view: 42. Redirect to /user/checkin
+    view -->> act: 43. Display already checked-in warning message
+else Not checked in today
+    checkin_svc -> checkin_repo++: 44. findTopByUserOrderByCheckinDateDesc(user)
+    checkin_repo -> db++: 45. Execute query
+    db -->> checkin_repo: 46. Return latestCheckin data
+    db--
+    checkin_repo -->> checkin_svc: 47. Return latestCheckin
+    checkin_repo--
+
+    checkin_svc -> checkin_svc++: 48. Calculate newStreak and rewardCoins (+5 to +30 Coin)
+    checkin_svc--
+
+    checkin_svc -> checkin_ett++: 49. Call UserDailyCheckin(user, today, rewardCoins, newStreak)
+    checkin_ett -->> checkin_svc--: 50. Return checkin entity
+
+    checkin_svc -> checkin_repo++: 51. save(checkin)
+    checkin_repo -> db++: 52. Save changes to database
+    db -->> checkin_repo: 53. Return saved checkin
+    db--
+    checkin_repo -->> checkin_svc: 54. Return saved checkin
+    checkin_repo--
+
+    checkin_svc -> wallet_svc++: 55. addCoins(user, rewardCoins, "GIFT_COIN", checkinId, description)
+
+    wallet_svc -> user_repo++: 56. findByIdWithLock(userId)
+    user_repo -> db++: 57. Execute query
+    db -->> user_repo: 58. Return locked user data
+    db--
+    user_repo -->> wallet_svc: 59. Return lockedUser entity
+    user_repo--
+
+    wallet_svc -> user_repo++: 60. save(lockedUser)
+    user_repo -> db++: 61. Save changes to database
+    db -->> user_repo: 62. Return updated user
+    db--
+    user_repo -->> wallet_svc: 63. Return updated user
+    user_repo--
+
+    wallet_svc -> tx_ett++: 64. Call Transaction(lockedUser, rewardCoins, newBalance, "GIFT_COIN")
+    tx_ett -->> wallet_svc--: 65. Return transaction entity
+
+    wallet_svc -> tx_repo++: 66. save(tx)
+    tx_repo -> db++: 67. Save changes to database
+    db -->> tx_repo: 68. Return saved transaction
+    db--
+    tx_repo -->> wallet_svc: 69. Return saved transaction
+    tx_repo--
+
+    wallet_svc -->> checkin_svc--: 70. Return result
+
+    checkin_svc -> wallet_svc++: 71. getBalance(email)
+    wallet_svc -> user_repo++: 72. findByEmail(email)
+    user_repo -> db++: 73. Execute query
+    db -->> user_repo: 74. Return user entity
+    db--
+    user_repo -->> wallet_svc: 75. Return user entity
+    user_repo--
+    wallet_svc -->> checkin_svc--: 76. Return newBalance
+
+    checkin_svc -> result_dto++: 77. Call DailyCheckinResultDTO(rewardCoins, newStreak, newBalance)
+    result_dto -->> checkin_svc--: 78. Return dailyCheckinResultDTO
+
+    checkin_svc -->> ctrl--: 79. Return dailyCheckinResultDTO
+    ctrl -->> view--: 80. Redirect to /user/checkin
+    view -->> act--: 81. Display reward notification and updated Coin balance
+end
+
+@enduml

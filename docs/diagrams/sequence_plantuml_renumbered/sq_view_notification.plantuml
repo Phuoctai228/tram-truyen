@@ -1,0 +1,167 @@
+@startuml sq_view_notification
+<style>
+    sequenceDiagram{
+        FontSize 16
+        LineColor black
+
+        arrow {
+            ' Set the maximum width of the text on arrows
+            MaximumWidth 300
+            LineColor black
+        }
+        actor{
+            BackgroundColor white
+            LineColor black
+            LineThickness 1.0
+        }
+        participant{
+            BackgroundColor white
+            LineColor black
+            RoundCorner 0
+        }
+        database{
+            BackgroundColor white
+            LineColor black
+        }
+        lifeLine{
+            LineColor black
+        }
+        group{
+            LineColor black
+        }
+        groupHeader{
+            BackgroundColor white
+            LineColor black
+        }
+        referenceHeader{
+            BackgroundColor white
+            LineColor black
+        }
+        reference{
+            BackgroundColor white
+            LineColor black
+        }
+    }
+</style>
+
+hide footbox
+mainframe View Notification (UC-31)
+
+actor Member as act
+participant "NotificationPage" as view
+participant "LoginPage" as login_view
+participant "UserNotificationController" as ctrl <<controller>>
+participant ":BookshelfService" as book_svc
+participant ":NotificationService" as svc
+participant ":NotificationRepository" as notif_repo
+participant ":UserRepository" as user_repo
+database Database as db
+
+act ++
+
+act -> view++:1. Click "Thông báo" from header
+view -> ctrl--:2. GET /user/notifications?tab=all
+activate ctrl
+
+ctrl -> ctrl++:3. isAuthenticated(authentication)
+ctrl--
+
+opt User is not authenticated
+    ctrl -->> login_view:3.1. Redirect to /login?redirect=/user/notifications
+    activate login_view
+    login_view -->> act:3.1.1. Display login page
+    deactivate login_view
+end
+
+ctrl -> ctrl++:4. getUserId(authentication)
+ctrl--
+
+ctrl -> book_svc++:5. getUserProfile(email)
+book_svc -> user_repo++:6. findByEmail(email)
+user_repo -> db++:7. Execute query
+db -->> user_repo:8. Return user data
+db--
+user_repo -->> book_svc:9. Return user entity
+user_repo--
+book_svc -->> ctrl--:10. Return userProfileDTO
+
+ctrl -> svc++:11. getUserNotifications(userId, "all", 0, 8)
+svc -> notif_repo++:12. findGeneralNotifications(userId, "Phản hồi về báo cáo", pageable)
+notif_repo -> db++:13. Execute query
+db -->> notif_repo:14. Return notification page
+db--
+notif_repo -->> svc:15. Return notification page
+notif_repo--
+svc -->> ctrl--:16. Return notificationsPage
+
+ctrl -> svc++:17. getUnreadCount(userId)
+svc -> notif_repo++:18. countUnreadByUserId(userId)
+notif_repo -> db++:19. Execute query
+db -->> notif_repo:20. Return unread count
+db--
+notif_repo -->> svc:21. Return unread count
+notif_repo--
+svc -->> ctrl--:22. Return unreadCount
+
+ctrl -->> view--:23. Return "user/notifications"
+activate view
+view -->> act:24. Display notification list and detail panel
+deactivate view
+
+opt User clicks "Đánh dấu tất cả đã đọc"
+    act -> view++:24.2. Click "Đánh dấu đã đọc tất cả"
+    view -> ctrl--:24.2.1. POST /user/notifications/mark-all-read
+    activate ctrl
+
+    ctrl -> svc++:24.2.2. markAllAsRead(userId)
+    svc -> notif_repo++:24.2.3. markAllAsReadByUserId(userId)
+    notif_repo -> db++:24.2.4. Update is_read = true for user notifications
+    db -->> notif_repo:24.2.5. Return updated rows
+    db--
+    notif_repo -->> svc:24.2.6. Return count
+    notif_repo--
+    svc -->> ctrl--:24.2.7. Return void
+
+    ctrl -->> view--:24.2.8. Redirect /user/notifications
+    activate view
+    view -->> act:24.2.9. Display updated notification list with 0 unread badge
+    deactivate view
+end
+
+act -> view++:25. Click "Xóa" on notification item
+view -> ctrl--:26. POST /user/notifications/{id}/delete
+activate ctrl
+
+ctrl -> svc++:27. deleteNotification(id, userId)
+svc -> notif_repo++:28. findById(id)
+notif_repo -> db++:29. Execute query
+db -->> notif_repo:30. Return notification
+db--
+notif_repo -->> svc:31. Return notification
+notif_repo--
+
+opt Notification is system-wide (userId == null) or not owned
+    svc -->> ctrl:31.3. Throw IllegalArgumentException("Không thể xóa thông báo này")
+    ctrl -->> view:31.3.1. Redirect /user/notifications with errorMessage
+    activate view
+    view -->> act:31.3.2. Display delete error toast
+    deactivate view
+end
+
+svc -> notif_repo++:32. delete(notification)
+notif_repo -> db++:33. Delete record from notifications
+db -->> notif_repo:34. Return void
+db--
+notif_repo -->> svc:35. Return void
+notif_repo--
+svc -->> ctrl--:36. Return void
+
+ctrl -->> view--:37. Redirect /user/notifications with successMessage
+activate view
+view -->> act--:38. Remove notification card and display success toast
+deactivate view
+
+deactivate ctrl
+deactivate act
+
+@enduml

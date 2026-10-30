@@ -1,0 +1,97 @@
+classDiagram
+direction LR
+
+class UserAdminController["«controller»<br/>UserAdminController"] {
+    - userManagementService : UserManagementService
+    - userRepository : UserRepository
+    + assignRole(request: AssignRoleRequest, bindingResult: BindingResult, authentication: Authentication, httpRequest: HttpServletRequest, redirectAttributes: RedirectAttributes) String
+}
+
+class UserManagementService["«service interface»<br/>UserManagementService"] {
+    + assignRole(adminId: Integer, request: AssignRoleRequest, ipAddress: String) void*
+}
+
+class UserManagementServiceImpl["«service»<br/>UserManagementServiceImpl"] {
+    - userRepository : UserRepository
+    - roleRepository : RoleRepository
+    - systemAuditLogRepository : SystemAuditLogRepository
+    - notificationRepository : NotificationRepository
+    - objectMapper : ObjectMapper
+    + assignRole(adminId: Integer, request: AssignRoleRequest, ipAddress: String) void
+}
+
+class UserRepository["«repository»<br/>UserRepository"] {
+    + findById(id: Integer) Optional~User~*
+    + save(user: User) User*
+}
+
+class RoleRepository["«repository»<br/>RoleRepository"] {
+    + findByName(name: String) Optional~Role~*
+    + save(role: Role) Role*
+}
+
+class SystemAuditLogRepository["«repository»<br/>SystemAuditLogRepository"] {
+    + save(auditLog: SystemAuditLog) SystemAuditLog*
+}
+
+class NotificationRepository["«repository»<br/>NotificationRepository"] {
+    + save(notification: Notification) Notification*
+}
+
+class AssignRoleRequest["«dto»<br/>AssignRoleRequest"] {
+    - userId : Integer
+    - hasStaffRole : Boolean
+}
+
+class User["«entity»<br/>User"] {
+    - id : Integer
+    - email : String
+    - fullName : String
+    - status : String
+}
+
+class Role["«entity»<br/>Role"] {
+    - id : Integer
+    - name : String
+}
+
+class SystemAuditLog["«entity»<br/>SystemAuditLog"] {
+    - id : Integer
+    - adminId : Integer
+    - actionType : String
+    - targetEntity : String
+    - targetId : Integer
+    - oldValue : String
+    - newValue : String
+    - ipAddress : String
+    - createdAt : LocalDateTime
+}
+
+class Notification["«entity»<br/>Notification"] {
+    - id : Integer
+    - userId : Integer
+    - title : String
+    - content : String
+    - isRead : Boolean
+    - createdAt : LocalDateTime
+}
+
+UserAdminController --> UserManagementService
+UserAdminController --> UserRepository
+UserManagementService <|.. UserManagementServiceImpl
+UserManagementServiceImpl --> UserRepository
+UserManagementServiceImpl --> RoleRepository
+UserManagementServiceImpl --> SystemAuditLogRepository
+UserManagementServiceImpl --> NotificationRepository
+UserAdminController ..> AssignRoleRequest
+UserManagementService ..> AssignRoleRequest
+UserManagementServiceImpl ..> AssignRoleRequest
+UserManagementServiceImpl ..> User
+UserManagementServiceImpl ..> Role
+UserManagementServiceImpl ..> SystemAuditLog
+UserManagementServiceImpl ..> Notification
+SystemAuditLogRepository ..> SystemAuditLog
+NotificationRepository ..> Notification
+User --> Role
+
+classDef default fill:#FFFFFF,stroke:#000000,stroke-width:1px,color:#000000

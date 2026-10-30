@@ -1,0 +1,88 @@
+classDiagram
+direction LR
+
+class UserNotificationController["«controller»<br/>UserNotificationController"] {
+    - notificationService : NotificationService
+    - bookshelfService : BookshelfService
+    - userRepository : UserRepository
+    + viewNotifications(authentication: Authentication, tab: String, page: String, size: String, selectedIdParam: String, model: Model) String
+    + markAllAsRead(authentication: Authentication, tab: String, page: int, redirectAttributes: RedirectAttributes) String
+    + markAsRead(id: Integer, authentication: Authentication) ResponseEntity~?~
+    + deleteNotification(id: Integer, authentication: Authentication, tab: String, page: int, redirectAttributes: RedirectAttributes) String
+}
+
+class NotificationService["«service interface»<br/>NotificationService"] {
+    + getUserNotifications(userId: Integer, tab: String, page: int, size: int) Page~NotificationDTO~*
+    + getNotificationDetail(notificationId: Integer, userId: Integer) NotificationDTO*
+    + getUnreadCount(userId: Integer) long*
+    + markAllAsRead(userId: Integer) void*
+    + markAsRead(notificationId: Integer, userId: Integer) void*
+    + deleteNotification(notificationId: Integer, userId: Integer) void*
+}
+
+class BookshelfService["«service interface»<br/>BookshelfService"] {
+    + getUserProfile(email: String) UserProfileDTO*
+}
+
+class NotificationServiceImpl["«service»<br/>NotificationServiceImpl"] {
+    - notificationRepository : NotificationRepository
+    - userRepository : UserRepository
+    + getUserNotifications(userId: Integer, tab: String, page: int, size: int) Page~NotificationDTO~
+    + getNotificationDetail(notificationId: Integer, userId: Integer) NotificationDTO
+    + getUnreadCount(userId: Integer) long
+    + markAllAsRead(userId: Integer) void
+    + markAsRead(notificationId: Integer, userId: Integer) void
+    + deleteNotification(notificationId: Integer, userId: Integer) void
+}
+
+class NotificationRepository["«repository»<br/>NotificationRepository"] {
+    + findGeneralNotifications(userId: Integer, reportPrefix: String, pageable: Pageable) Page~Notification~*
+    + findReportNotifications(userId: Integer, reportPrefix: String, pageable: Pageable) Page~Notification~*
+    + countUnreadByUserId(userId: Integer) long*
+    + markAllAsReadByUserId(userId: Integer) int*
+    + findById(id: Integer) Optional~Notification~*
+    + delete(notification: Notification) void*
+}
+
+class UserRepository["«repository»<br/>UserRepository"] {
+    + findByEmail(email: String) Optional~User~*
+}
+
+class NotificationDTO["«dto»<br/>NotificationDTO"] {
+    - id : Integer
+    - userId : Integer
+    - title : String
+    - content : String
+    - isRead : Boolean
+    - createdAt : LocalDateTime
+}
+
+class UserProfileDTO["«dto»<br/>UserProfileDTO"] {
+    - fullName : String
+    - email : String
+    - avatarUrl : String
+}
+
+class Notification["«entity»<br/>Notification"] {
+    - id : Integer
+    - userId : Integer
+    - title : String
+    - content : String
+    - isRead : Boolean
+    - createdAt : LocalDateTime
+}
+
+UserNotificationController --> NotificationService
+UserNotificationController --> BookshelfService
+UserNotificationController --> UserRepository
+NotificationService <|.. NotificationServiceImpl
+NotificationServiceImpl --> NotificationRepository
+NotificationServiceImpl --> UserRepository
+UserNotificationController ..> NotificationDTO
+UserNotificationController ..> UserProfileDTO
+NotificationService ..> NotificationDTO
+NotificationServiceImpl ..> NotificationDTO
+NotificationServiceImpl ..> Notification
+NotificationRepository ..> Notification
+
+classDef default fill:#FFFFFF,stroke:#000000,stroke-width:1px,color:#000000

@@ -1,0 +1,116 @@
+@startuml sq_login
+<style>
+    sequenceDiagram{
+        FontSize 16
+
+        arrow {
+            ' Set the maximum width of the text on arrows
+            MaximumWidth 300
+        }
+        actor{
+            BackgroundColor white
+            LineThickness 1.0
+        }
+        participant{
+            BackgroundColor white
+            RoundCorner 0
+        }
+        database{
+            BackgroundColor white
+        }
+        groupHeader{
+            BackgroundColor white
+        }
+        referenceHeader{
+            BackgroundColor white
+        }
+        reference{
+            BackgroundColor white
+        }
+    }
+</style>
+
+hide footbox
+mainframe Login Local
+
+actor Guest as act
+participant "LoginPage" as view
+participant "HomePage" as r_view
+participant "AccountLockedPage" as locked_view
+participant "SecurityFilterChain" as sec
+participant ":CustomUserDetailsService" as user_details_svc
+participant ":PasswordEncoder" as encoder
+participant ":AccountLockService" as lock_svc
+participant ":CustomAuthenticationSuccessHandler" as success_handler
+participant ":CustomAuthenticationFailureHandler" as failure_handler
+participant ":CustomUserDetails" as details
+participant ":AccountLockedInfoDTO" as locked_dto
+participant ":UserRepository" as user_repo
+participant ":SystemAuditLogRepository" as audit_repo
+database Database as db
+
+act ++
+
+act -> view++:1. Submit login credentials
+view -> sec++:2. POST /login
+
+sec -> user_details_svc++:3. loadUserByUsername(email)
+
+user_details_svc -> user_repo++:4. findByEmail(email)
+user_repo -> db++:5. Execute query
+db -->> user_repo:6. Return user data
+db--
+user_repo -->> user_details_svc:7. Return user entity
+user_repo--
+
+user_details_svc -> details++:8. Call CustomUserDetails(user)
+details -->> user_details_svc--:9. Return userDetails
+
+user_details_svc -->> sec--:10. Return userDetails
+
+sec -> encoder++:11. matches(password, encodedPassword)
+encoder -->> sec--:12. Return passwordMatches
+
+sec -> sec++:13. Validate credentials and account status
+sec--
+alt Invalid credentials
+    sec -> failure_handler++:13.1. onAuthenticationFailure(request, response, BadCredentialsException)
+    failure_handler -->> sec--:13.1.1. Return result
+    sec -->> view:13.1.2. Redirect to /login?error
+    view -->> act:13.1.3. Display invalid credentials error message
+else Account pending verification
+    sec -> failure_handler++:13.2. onAuthenticationFailure(request, response, DisabledException)
+    failure_handler -->> sec--:13.2.1. Return result
+    sec -->> view:13.2.2. Redirect to /login?error=disabled
+    view -->> act--:13.2.3. Display unverified account error message
+else Account banned
+    sec -> failure_handler++:13.3. onAuthenticationFailure(request, response, LockedException)
+    failure_handler -> lock_svc++:13.3.1. buildAccountLockedInfo(email)
+
+    lock_svc -> audit_repo++:13.3.2. findFirstByTargetEntityAndTargetIdAndActionTypeOrderByCreatedAtDesc("USERS", id, "BAN_USER")
+    audit_repo -> db++:13.3.3. Execute query
+    db -->> audit_repo:13.3.4. Return ban audit log
+    db--
+    audit_repo -->> lock_svc:13.3.5. Return ban audit log
+    audit_repo--
+
+    lock_svc -> locked_dto++:13.3.6. Call AccountLockedInfoDTO(...)
+    locked_dto -->> lock_svc--:13.3.7. Return lockedInfo
+
+    lock_svc -->> failure_handler--:13.3.8. Return lockedInfo
+    failure_handler -->> sec--:13.3.9. Return result
+
+    sec -->> locked_view:13.3.10. Redirect to /account-locked
+    activate locked_view
+    locked_view -->> act:13.3.11. Display account locked page
+    deactivate locked_view
+else Valid credentials and active account
+    sec -> success_handler++:13.4. onAuthenticationSuccess(request, response, authentication)
+    success_handler -->> sec--:13.4.1. Return result
+
+    sec -->> r_view--:13.4.2. Redirect to /
+    activate r_view
+    r_view -->> act--:13.4.3. Display home page
+end
+
+@enduml
