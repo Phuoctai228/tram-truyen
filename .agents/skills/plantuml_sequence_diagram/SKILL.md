@@ -63,35 +63,55 @@ Every `.plantuml` file must start with standard styling and settings for a clean
 ```plantuml
 @startuml
 <style>
+    root {
+        LineColor black
+    }
     sequenceDiagram{
+        LineColor black
         FontSize 16
 
         arrow {
+            LineColor black
             ' Set the maximum width of the text on arrows
             MaximumWidth 300
         }
         actor{
+            LineColor black
             BackgroundColor white
             LineThickness 1.0
         }
         participant{
+            LineColor black
             BackgroundColor white
             RoundCorner 0
         }
         database{
+            LineColor black
+            BackgroundColor white
+        }
+        lifeLine{
+            LineColor black
+            BackgroundColor white
+        }
+        group{
+            LineColor black
             BackgroundColor white
         }
         groupHeader{
+            LineColor black
             BackgroundColor white
         }
         referenceHeader{
+            LineColor black
             BackgroundColor white
         }
         reference{
+            LineColor black
             BackgroundColor white
         }
     }
 </style>
+skinparam monochrome true
 
 hide footbox
 ```
@@ -441,35 +461,55 @@ The following diagram demonstrates standard view mediation, security/validation 
 ```plantuml
 @startuml sq_register_account
 <style>
+    root {
+        LineColor black
+    }
     sequenceDiagram{
+        LineColor black
         FontSize 16
 
         arrow {
+            LineColor black
             ' Set the maximum width of the text on arrows
             MaximumWidth 300
         }
         actor{
+            LineColor black
             BackgroundColor white
             LineThickness 1.0
         }
         participant{
+            LineColor black
             BackgroundColor white
             RoundCorner 0
         }
         database{
+            LineColor black
+            BackgroundColor white
+        }
+        lifeLine{
+            LineColor black
+            BackgroundColor white
+        }
+        group{
+            LineColor black
             BackgroundColor white
         }
         groupHeader{
+            LineColor black
             BackgroundColor white
         }
         referenceHeader{
+            LineColor black
             BackgroundColor white
         }
         reference{
+            LineColor black
             BackgroundColor white
         }
     }
 </style>
+skinparam monochrome true
 
 hide footbox
 mainframe Register Account
@@ -572,14 +612,20 @@ For a REST API use case (e.g., Chapter Unlock via API), the client-side view int
 ```plantuml
 @startuml sq_unlock_chapter
 <style>
+    root {
+        LineColor black
+    }
     sequenceDiagram{
+        LineColor black
         FontSize 16
-        arrow { MaximumWidth 300 }
-        actor{ BackgroundColor white; LineThickness 1.0 }
-        participant{ BackgroundColor white; RoundCorner 0 }
-        database{ BackgroundColor white }
+        arrow { LineColor black; MaximumWidth 300 }
+        actor{ LineColor black; BackgroundColor white; LineThickness 1.0 }
+        participant{ LineColor black; BackgroundColor white; RoundCorner 0 }
+        database{ LineColor black; BackgroundColor white }
+        lifeLine{ LineColor black; BackgroundColor white }
     }
 </style>
+skinparam monochrome true
 
 hide footbox
 mainframe Unlock Chapter
