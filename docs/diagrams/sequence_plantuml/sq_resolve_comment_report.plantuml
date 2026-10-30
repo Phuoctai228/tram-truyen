@@ -1,0 +1,194 @@
+@startuml sq_resolve_comment_report
+<style>
+    sequenceDiagram{
+        FontSize 16
+        LineColor black
+
+        arrow {
+            ' Set the maximum width of the text on arrows
+            MaximumWidth 300
+            LineColor black
+        }
+        actor{
+            BackgroundColor white
+            LineColor black
+            LineThickness 1.0
+        }
+        participant{
+            BackgroundColor white
+            LineColor black
+            RoundCorner 0
+        }
+        database{
+            BackgroundColor white
+            LineColor black
+        }
+        lifeLine{
+            LineColor black
+        }
+        group{
+            LineColor black
+        }
+        groupHeader{
+            BackgroundColor white
+            LineColor black
+        }
+        referenceHeader{
+            BackgroundColor white
+            LineColor black
+        }
+        reference{
+            BackgroundColor white
+            LineColor black
+        }
+    }
+</style>
+
+hide footbox
+mainframe Resolve Comment Report (UC-43)
+
+actor "Admin / Staff" as adm
+participant "ReportListPage" as view
+participant "ReportAdminController" as ctrl <<controller>>
+participant ":ReportService" as svc
+participant ":CommentReportRepository" as rpt_repo
+participant ":CommentRepository" as cmt_repo
+participant ":Notification" as notif_ett
+participant ":SystemAuditLog" as audit_ett
+participant ":NotificationRepository" as notif_repo
+participant ":SystemAuditLogRepository" as audit_repo
+database Database as db
+
+adm ++
+
+adm -> view++: Select decision, action (HIDE / NO_CHANGE), enter note and submit
+view -> ctrl--: POST /admin/reports/comment/{id}/resolve (ResolveReportRequest)
+activate ctrl
+
+ctrl -> ctrl++: getAdminId(authentication)
+ctrl--
+
+ctrl -> ctrl++: getClientIp(httpRequest)
+ctrl--
+
+ctrl -> svc++: resolveCommentReport(adminId, reportId, request, clientIp)
+
+svc -> rpt_repo++: findById(reportId)
+rpt_repo -> db++: Execute query
+db -->> rpt_repo: Return report
+db--
+rpt_repo -->> svc: Return commentReport
+rpt_repo--
+
+opt Report status != "RECEIVED"
+    svc -->> ctrl: Throw IllegalStateException("Báo cáo đã được xử lý trước đó")
+    ctrl -->> view: Redirect /admin/reports with errorMessage
+    activate view
+    view -->> adm: Display error alert banner
+    deactivate view
+end
+
+alt Decision == "REJECTED"
+    svc -> svc++: Set report.status = "REJECTED"
+    svc--
+
+    svc -> rpt_repo++: save(report)
+    rpt_repo -> db++: Update comment_reports SET status = 'REJECTED'
+    db -->> rpt_repo: Return saved report
+    db--
+    rpt_repo -->> svc: Return saved report
+    rpt_repo--
+
+    svc -> notif_ett++: Call Notification.builder()
+    notif_ett -->> svc--: Return notification entity
+
+    svc -> notif_repo++: save(notification)
+    notif_repo -> db++: Insert rejection feedback notification
+    db -->> notif_repo: Return saved notification
+    db--
+    notif_repo -->> svc: Return saved notification
+    notif_repo--
+
+    svc -> audit_ett++: Call SystemAuditLog.builder()
+    audit_ett -->> svc--: Return auditLog entity
+
+    svc -> audit_repo++: save(auditLog)
+    audit_repo -> db++: Insert into system_audit_logs (REJECT_COMMENT_REPORT)
+    db -->> audit_repo: Return saved audit log
+    db--
+    audit_repo -->> svc: Return saved audit log
+    audit_repo--
+
+    svc -->> ctrl: Return void
+    ctrl -->> view: Redirect /admin/reports with successMessage
+    activate view
+    view -->> adm: Display rejection success toast
+    deactivate view
+else Decision == "PROCESSED"
+    opt Action == "HIDE"
+        svc -> cmt_repo++: save(comment)
+        cmt_repo -> db++: Update comments SET status = 'HIDDEN' WHERE id = commentId
+        db -->> cmt_repo: Return updated comment
+        db--
+        cmt_repo -->> svc: Return updated comment
+        cmt_repo--
+
+        loop BFS traverse child replies by parent ID layer
+            svc -> cmt_repo++: findByParentIdIn(currentLayer)
+            cmt_repo -> db++: SELECT * FROM comments WHERE parent_id IN (...)
+            db -->> cmt_repo: Return child reply list
+            db--
+            cmt_repo -->> svc: Return child reply list
+            cmt_repo--
+        end
+
+        svc -> cmt_repo++: updateStatusForIds(idsToUpdate, "HIDDEN", now)
+        cmt_repo -> db++: UPDATE comments SET status = 'HIDDEN' WHERE id IN (...)
+        db -->> cmt_repo: Return updated rows count
+        db--
+        cmt_repo -->> svc: Return count
+        cmt_repo--
+    end
+
+    svc -> svc++: Set report.status = "PROCESSED"
+    svc--
+
+    svc -> rpt_repo++: save(report)
+    rpt_repo -> db++: Update comment_reports SET status = 'PROCESSED'
+    db -->> rpt_repo: Return saved report
+    db--
+    rpt_repo -->> svc: Return saved report
+    rpt_repo--
+
+    svc -> notif_ett++: Call Notification.builder()
+    notif_ett -->> svc--: Return notification entity
+
+    svc -> notif_repo++: save(notification)
+    notif_repo -> db++: Insert resolution feedback notification
+    db -->> notif_repo: Return saved notification
+    db--
+    notif_repo -->> svc: Return saved notification
+    notif_repo--
+
+    svc -> audit_ett++: Call SystemAuditLog.builder()
+    audit_ett -->> svc--: Return auditLog entity
+
+    svc -> audit_repo++: save(auditLog)
+    audit_repo -> db++: Insert into system_audit_logs (RESOLVE_COMMENT_REPORT)
+    db -->> audit_repo: Return saved audit log
+    db--
+    audit_repo -->> svc: Return saved audit log
+    audit_repo--
+
+    svc -->> ctrl--: Return void
+
+    ctrl -->> view--: Redirect /admin/reports with successMessage
+    deactivate ctrl
+    activate view
+    view -->> adm--: Display resolution success toast and update table status
+    deactivate view
+end
+
+deactivate adm
+
+@enduml

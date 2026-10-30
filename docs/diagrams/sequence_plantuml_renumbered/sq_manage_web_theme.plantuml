@@ -1,0 +1,212 @@
+@startuml sq_manage_web_theme
+<style>
+    sequenceDiagram{
+        FontSize 16
+        LineColor black
+
+        arrow {
+            ' Set the maximum width of the text on arrows
+            MaximumWidth 300
+            LineColor black
+        }
+        actor{
+            BackgroundColor white
+            LineColor black
+            LineThickness 1.0
+        }
+        participant{
+            BackgroundColor white
+            LineColor black
+            RoundCorner 0
+        }
+        database{
+            BackgroundColor white
+            LineColor black
+        }
+        lifeLine{
+            LineColor black
+        }
+        group{
+            LineColor black
+        }
+        groupHeader{
+            BackgroundColor white
+            LineColor black
+        }
+        referenceHeader{
+            BackgroundColor white
+            LineColor black
+        }
+        reference{
+            BackgroundColor white
+            LineColor black
+        }
+    }
+</style>
+
+hide footbox
+mainframe Quản lý chủ đề giao diện (UC-52)
+
+actor Admin as adm
+participant "SettingsPage" as view
+participant "SystemSettingAdminController" as ctrl <<controller>>
+participant ":SystemSettingService" as svc
+participant ":MediaStorageService" as media_svc
+participant ":WebSettingRepository" as web_repo
+participant ":SystemSettingRepository" as st_repo
+participant ":SystemAuditLog" as audit_ett
+participant ":SystemAuditLogRepository" as audit_repo
+database Database as db
+
+adm ++
+
+alt Action: Activate Theme
+    adm -> view++:0.1. Click "Kích hoạt" on a theme card
+    view -> ctrl--:0.1.1. POST /admin/settings/themes/{id}/activate
+    activate ctrl
+
+    ctrl -> ctrl++:0.1.2. getAdminId(authentication)
+    ctrl--
+    ctrl -> ctrl++:0.1.3. getClientIp(httpRequest)
+    ctrl--
+
+    ctrl -> svc++:0.1.4. activateTheme(themeId, adminId, clientIp)
+
+    svc -> web_repo++:0.1.5. findById(themeId)
+    web_repo -> db++:0.1.6. SELECT * FROM web_settings WHERE id = ?
+    db -->> web_repo:0.1.7. Return theme
+    db--
+    web_repo -->> svc:0.1.8. Return WebSetting
+    web_repo--
+
+    svc -> web_repo++:0.1.9. deactivateAllActiveThemes()
+    web_repo -> db++:0.1.10. UPDATE web_settings SET is_active = false WHERE is_active = true
+    db -->> web_repo:0.1.11. Return updated count
+    db--
+    web_repo -->> svc:0.1.12. Return void
+    web_repo--
+
+    svc -> web_repo++:0.1.13. save(targetTheme)
+    web_repo -> db++:0.1.14. UPDATE web_settings SET is_active = true WHERE id = ?
+    db -->> web_repo:0.1.15. Return saved theme
+    db--
+    web_repo -->> svc:0.1.16. Return WebSetting
+    web_repo--
+
+    svc -> svc++:0.1.17. Invalidate cachedActiveTheme
+    svc--
+
+    svc -> audit_ett++:0.1.18. Call SystemAuditLog.builder()
+    audit_ett -->> svc--:0.1.19. Return auditLog entity
+
+    svc -> audit_repo++:0.1.20. save(auditLog)
+    audit_repo -> db++:0.1.21. Insert into system_audit_logs (ACTIVATE_WEB_THEME)
+    db -->> audit_repo:0.1.22. Return saved audit log
+    db--
+    audit_repo -->> svc:0.1.23. Return saved audit log
+    audit_repo--
+
+    svc -->> ctrl--:0.1.24. Return activated WebSetting
+    ctrl -->> view:0.1.25. Redirect /admin/settings with successMessage
+    activate view
+    view -->> adm:0.1.26. Display theme activation toast
+    deactivate view
+
+else Action: Create Theme
+    adm -> view++:0.2. Submit "Thêm giao diện" modal (name, folderPath, tokens, backgroundImage)
+    view -> ctrl--:0.2.1. POST /admin/settings/themes
+    activate ctrl
+
+    ctrl -> ctrl++:0.2.2. getAdminId(authentication)
+    ctrl--
+    ctrl -> ctrl++:0.2.3. getClientIp(httpRequest)
+    ctrl--
+
+    ctrl -> svc++:0.2.4. createTheme(name, folderPath, tokensJson, backgroundImage, bgOpacity, bgBlur, adminId, clientIp)
+
+    svc -> svc++:0.2.5. kiểm tra token trong whitelist
+    svc--
+    svc -> svc++:0.2.6. kiểm tra độ tương phản
+    svc--
+
+    svc -> media_svc++:0.2.7. [If background image supplied] uploadImage(backgroundImage)
+    media_svc -->> svc:0.2.8. Return Cloudinary secure URL
+    media_svc--
+
+    svc -> web_repo++:0.2.9. save(newTheme)
+    web_repo -> db++:0.2.10. INSERT INTO web_settings
+    db -->> web_repo:0.2.11. Return saved WebSetting
+    db--
+    web_repo -->> svc:0.2.12. Return WebSetting
+    web_repo--
+
+    svc -> st_repo++:0.2.13. save(tokensSetting)
+    st_repo -> db++:0.2.14. INSERT INTO system_settings (web_theme_tokens)
+    db -->> st_repo:0.2.15. Return saved setting
+    db--
+    st_repo -->> svc:0.2.16. Return saved setting
+    st_repo--
+
+    svc -> audit_ett++:0.2.17. Call SystemAuditLog.builder()
+    audit_ett -->> svc--:0.2.18. Return auditLog entity
+
+    svc -> audit_repo++:0.2.19. save(auditLog)
+    audit_repo -> db++:0.2.20. Insert into system_audit_logs (CREATE_WEB_THEME)
+    db -->> audit_repo:0.2.21. Return saved audit log
+    db--
+    audit_repo -->> svc:0.2.22. Return saved audit log
+    audit_repo--
+
+    svc -->> ctrl--:0.2.23. Return created WebSetting
+    ctrl -->> view:0.2.24. Redirect /admin/settings with successMessage
+    activate view
+    view -->> adm:0.2.25. Display theme creation toast
+    deactivate view
+
+else Action: Delete Theme
+    adm -> view++:0.3. Click "Xóa giao diện" on custom theme
+    view -> ctrl--:0.3.1. POST /admin/settings/themes/{id}/delete
+    activate ctrl
+
+    ctrl -> ctrl++:0.3.2. getAdminId(authentication)
+    ctrl--
+    ctrl -> ctrl++:0.3.3. getClientIp(httpRequest)
+    ctrl--
+
+    ctrl -> svc++:0.3.4. deleteTheme(id, adminId, clientIp)
+
+    svc -> web_repo++:0.3.5. findById(id)
+    web_repo -> db++:0.3.6. SELECT * FROM web_settings WHERE id = ?
+    db -->> web_repo:0.3.7. Return WebSetting
+    db--
+    web_repo -->> svc:0.3.8. Return WebSetting
+    web_repo--
+
+    svc -> web_repo++:0.3.9. delete(theme)
+    web_repo -> db++:0.3.10. DELETE FROM web_settings WHERE id = ?
+    db -->> web_repo:0.3.11. Return void
+    db--
+    web_repo -->> svc:0.3.12. Return void
+    web_repo--
+
+    svc -> audit_ett++:0.3.13. Call SystemAuditLog.builder()
+    audit_ett -->> svc--:0.3.14. Return auditLog entity
+
+    svc -> audit_repo++:0.3.15. save(auditLog)
+    audit_repo -> db++:0.3.16. Insert into system_audit_logs (DELETE_WEB_THEME)
+    db -->> audit_repo:0.3.17. Return saved audit log
+    db--
+    audit_repo -->> svc:0.3.18. Return saved audit log
+    audit_repo--
+
+    svc -->> ctrl--:0.3.19. Return void
+    ctrl -->> view:0.3.20. Redirect /admin/settings with successMessage
+    activate view
+    view -->> adm:0.3.21. Display deletion success toast
+    deactivate view
+end
+
+deactivate ctrl
+deactivate adm
+
+@enduml

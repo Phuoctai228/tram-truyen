@@ -1,0 +1,82 @@
+classDiagram
+direction LR
+
+class ReportController["«controller»<br/>ReportController"] {
+    - reportService : ReportService
+    - userRepository : UserRepository
+    + reportContent(request: ReportContentRequest, bindingResult: BindingResult, authentication: Authentication) ResponseEntity~?~
+}
+
+class ReportService["«service interface»<br/>ReportService"] {
+    + reportContent(userId: Integer, request: ReportContentRequest) void*
+}
+
+class ReportServiceImpl["«service»<br/>ReportServiceImpl"] {
+    - chapterRepository : ChapterRepository
+    - contentReportRepository : ContentReportRepository
+    - userRepository : UserRepository
+    + reportContent(userId: Integer, request: ReportContentRequest) void
+}
+
+class ContentReportRepository["«repository»<br/>ContentReportRepository"] {
+    + existsByUserIdAndChapterIdAndStatusIn(userId: Integer, chapterId: Integer, statuses: Collection~String~) boolean*
+    + save(report: ContentReport) ContentReport*
+}
+
+class ChapterRepository["«repository»<br/>ChapterRepository"] {
+    + findById(id: Integer) Optional~Chapter~*
+}
+
+class UserRepository["«repository»<br/>UserRepository"] {
+    + findById(id: Integer) Optional~User~*
+    + findByEmail(email: String) Optional~User~*
+}
+
+class ReportContentRequest["«dto»<br/>ReportContentRequest"] {
+    - chapterId : Integer
+    - issueType : String
+    - description : String
+}
+
+class ContentReport["«entity»<br/>ContentReport"] {
+    - id : Integer
+    - user : User
+    - chapter : Chapter
+    - reason : String
+    - status : String
+    - adminNote : String
+    - resolver : User
+    - createdAt : LocalDateTime
+    - processedAt : LocalDateTime
+}
+
+class Chapter["«entity»<br/>Chapter"] {
+    - id : Integer
+    - chapterNumber : Integer
+    - title : String
+    - content : String
+    - status : String
+    - isDeleted : Boolean
+}
+
+class User["«entity»<br/>User"] {
+    - id : Integer
+    - email : String
+    - fullName : String
+    - status : String
+}
+
+ReportController --> ReportService
+ReportController --> UserRepository
+ReportService <|.. ReportServiceImpl
+ReportServiceImpl --> ContentReportRepository
+ReportServiceImpl --> ChapterRepository
+ReportServiceImpl --> UserRepository
+ReportController ..> ReportContentRequest
+ReportService ..> ReportContentRequest
+ReportServiceImpl ..> ReportContentRequest
+ReportServiceImpl ..> ContentReport
+ContentReport --> User
+ContentReport --> Chapter
+
+classDef default fill:#FFFFFF,stroke:#000000,stroke-width:1px,color:#000000

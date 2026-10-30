@@ -1,0 +1,151 @@
+@startuml sq_report_comment
+<style>
+    sequenceDiagram{
+        FontSize 16
+        LineColor black
+
+        arrow {
+            ' Set the maximum width of the text on arrows
+            MaximumWidth 300
+            LineColor black
+        }
+        actor{
+            BackgroundColor white
+            LineColor black
+            LineThickness 1.0
+        }
+        participant{
+            BackgroundColor white
+            LineColor black
+            RoundCorner 0
+        }
+        database{
+            BackgroundColor white
+            LineColor black
+        }
+        lifeLine{
+            LineColor black
+        }
+        group{
+            LineColor black
+        }
+        groupHeader{
+            BackgroundColor white
+            LineColor black
+        }
+        referenceHeader{
+            BackgroundColor white
+            LineColor black
+        }
+        reference{
+            BackgroundColor white
+            LineColor black
+        }
+    }
+</style>
+
+hide footbox
+mainframe Report Comment (UC-22)
+
+actor Member as act
+participant "ReportCommentModal" as view
+participant "LoginPage" as login_view
+participant "ReportController" as ctrl <<controller>>
+participant ":ReportService" as svc
+participant ":CommentReport" as rpt_ett
+participant ":UserRepository" as user_repo
+participant ":CommentRepository" as cmt_repo
+participant ":CommentReportRepository" as rpt_repo
+database Database as db
+
+act ++
+
+act -> view++: Select violation type, enter description and click "Gửi báo cáo"
+view -> ctrl--: POST /reports/comment (ReportCommentRequest)
+activate ctrl
+
+ctrl -> ctrl++: isAuthenticated(authentication)
+ctrl--
+
+opt User is not authenticated
+    ctrl -->> view: Return 401 UNAUTHORIZED (error message)
+    activate view
+    view -> login_view++: Redirect to /login
+    login_view -->> act: Display login page
+    deactivate login_view
+    deactivate view
+end
+
+opt Validation error (BindingResult has errors)
+    ctrl -->> view: Return 400 BAD REQUEST (validation error message)
+    activate view
+    view -->> act: Display error message on modal
+    deactivate view
+end
+
+ctrl -> ctrl++: getUserId(authentication)
+ctrl--
+
+ctrl -> svc++: reportComment(userId, request)
+
+svc -> user_repo++: findById(userId)
+user_repo -> db++: Execute query
+db -->> user_repo: Return user data
+db--
+user_repo -->> svc: Return user entity
+user_repo--
+
+svc -> cmt_repo++: findById(commentId)
+cmt_repo -> db++: Execute query
+db -->> cmt_repo: Return comment data
+db--
+cmt_repo -->> svc: Return comment entity
+cmt_repo--
+
+alt Comment not found or status != "VISIBLE"
+    svc -->> ctrl: Throw IllegalArgumentException("Bình luận không khả dụng")
+    ctrl -->> view: Return 400 BAD REQUEST (error message)
+    activate view
+    view -->> act: Display error message on modal
+    deactivate view
+else Already reported (status "RECEIVED")
+    svc -> rpt_repo++: existsByUserIdAndCommentIdAndStatusIn(userId, commentId, ["RECEIVED"])
+    rpt_repo -> db++: Execute query
+    db -->> rpt_repo: Return true
+    db--
+    rpt_repo -->> svc: Return true
+    rpt_repo--
+
+    svc -->> ctrl: Throw IllegalStateException("Bạn đã gửi báo cáo cho bình luận này và đang chờ xử lý")
+    ctrl -->> view: Return 409 CONFLICT (error message)
+    activate view
+    view -->> act: Display duplicate report warning
+    deactivate view
+else Not yet reported
+    svc -> rpt_repo++: existsByUserIdAndCommentIdAndStatusIn(userId, commentId, ["RECEIVED"])
+    rpt_repo -> db++: Execute query
+    db -->> rpt_repo: Return false
+    db--
+    rpt_repo -->> svc: Return false
+    rpt_repo--
+
+    svc -> rpt_ett++: Call CommentReport.builder()
+    rpt_ett -->> svc--: Return commentReport entity
+
+    svc -> rpt_repo++: save(report)
+    rpt_repo -> db++: Save comment report to database
+    db -->> rpt_repo: Return saved report
+    db--
+    rpt_repo -->> svc: Return saved report
+    rpt_repo--
+
+    svc -->> ctrl--: Return void
+
+    ctrl -->> view--: Return 200 OK ({"success": true, "message": "Báo cáo bình luận của bạn đã được gửi..."})
+    deactivate ctrl
+    activate view
+    view -->> act--: Close modal and display success toast
+    deactivate view
+end
+
+@enduml

@@ -41,7 +41,7 @@
                     </h1>
                     <p class="text-sm text-[#75695d] mt-0.5">
                         Điều chỉnh tỷ giá tiền tệ số, thông tin pháp lý công bố, chính sách vận hành và kích hoạt chủ đề
-                        giao diện nền tảng Trạm Truyện (UC-07 / UC-52).
+                        giao diện nền tảng Trạm Truyện.
                     </p>
                 </div>
 
@@ -108,16 +108,6 @@
                                     th:classappend="${#fields.hasErrors('vndToCoinRate') ? 'border-red-500 ring-1 ring-red-500' : 'border-[#eae2d5]'}">
                             </div>
                         </div>
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="text-[#8a7664] italic">
-                                ⓘ 1.000 VNĐ quy đổi ra số Coin nhận được tương ứng.
-                            </span>
-                            <span id="ratePreviewBadge"
-                                class="font-bold text-[#875200] bg-[#f8ede3] px-2.5 py-1 rounded-lg"
-                                th:text="'Tương đương: 1 Coin = ' + (${settings.vndToCoinRate != null && settings.vndToCoinRate > 0 ? 1000 / settings.vndToCoinRate : 100}) + 'đ'">
-                                Tương đương: 1 Coin = 100đ
-                            </span>
-                        </div>
                         <p th:if="${#fields.hasErrors('vndToCoinRate')}" th:errors="*{vndToCoinRate}"
                             class="text-xs font-medium text-red-500 mt-1"></p>
                     </div>
@@ -139,7 +129,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="text-xs font-bold text-[#2b2118] block mb-1.5">Hotline hỗ trợ độc giả
-                                (contact_phone) <span class="required-star text-red-500">*</span></label>
+                                <span class="required-star text-red-500">*</span></label>
                             <div class="relative">
                                 <span
                                     class="material-symbols-outlined absolute left-3.5 top-3 text-[#8a7664] text-[18px]">call</span>
@@ -156,7 +146,7 @@
 
                         <div>
                             <label class="text-xs font-bold text-[#2b2118] block mb-1.5">Email tiếp nhận hỗ trợ & bản
-                                quyền (support_email) <span class="required-star text-red-500">*</span></label>
+                                quyền<span class="required-star text-red-500">*</span></label>
                             <div class="relative">
                                 <span
                                     class="material-symbols-outlined absolute left-3.5 top-3 text-[#8a7664] text-[18px]">mail</span>
@@ -255,11 +245,6 @@
                             diện đang áp dụng sẽ hiển thị với toàn bộ độc giả và thành viên.</p>
                     </div>
                     <div class="flex items-center gap-3">
-                        <div
-                            class="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-[#f4ece1] text-[#6b5849] shrink-0">
-                            <span class="material-symbols-outlined text-[16px]">verified</span>
-                            <span>Luôn có 1 giao diện hoạt động</span>
-                        </div>
                         <button type="button" onclick="openAddThemeModal()"
                             class="px-3.5 py-1.5 rounded-lg bg-[#875200] hover:bg-[#6c4100] text-white text-xs font-bold transition-all shadow-sm flex items-center gap-1.5">
                             <span class="material-symbols-outlined text-[16px]">add</span>
@@ -1340,15 +1325,10 @@
     <div th:replace="~{admin/fragments/layout :: flash-toast}"></div>
 
     <!-- Thymeleaf Error Bridge for Themes (UC-52) -->
-    <div id="themeFormErrorBridge" class="hidden"
-         th:if="${themeFormError}"
-         th:data-reopen="${reopenModal}"
-         th:data-failed-id="${failedThemeId}"
-         th:data-failed-name="${failedName}"
-         th:data-failed-folder="${failedFolderPath}"
-         th:data-failed-tokens="${failedTokensJson}"
-         th:data-failed-opacity="${failedBgOpacity}"
-         th:data-failed-blur="${failedBgBlur}"></div>
+    <div id="themeFormErrorBridge" class="hidden" th:if="${themeFormError}" th:data-reopen="${reopenModal}"
+        th:data-failed-id="${failedThemeId}" th:data-failed-name="${failedName}"
+        th:data-failed-folder="${failedFolderPath}" th:data-failed-tokens="${failedTokensJson}"
+        th:data-failed-opacity="${failedBgOpacity}" th:data-failed-blur="${failedBgBlur}"></div>
 
     <script th:src="@{/js/admin/theme-color.js(v='1.0')}" defer></script>
     <script th:src="@{/js/admin/theme-modal.js(v='1.0')}" defer></script>

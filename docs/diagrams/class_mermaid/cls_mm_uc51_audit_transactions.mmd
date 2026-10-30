@@ -1,0 +1,50 @@
+classDiagram
+direction LR
+
+class TransactionAuditAdminController["«controller»<br/>TransactionAuditAdminController"] {
+    - transactionAuditService : TransactionAuditService
+    + showAuditPage(startDate: String, endDate: String, type: String, orderCode: String, email: String, page: String, size: String, model: Model) String
+}
+
+class TransactionAuditService["«service interface»<br/>TransactionAuditService"] {
+    + getAuditStats() TransactionAuditStatsDTO*
+    + getAuditTransactions(startDate: String, endDate: String, type: String, orderCode: String, email: String, page: int, size: int) Page~TransactionAuditDTO~*
+}
+
+class TransactionAuditServiceImpl["«service»<br/>TransactionAuditServiceImpl"] {
+    - jdbcTemplate : NamedParameterJdbcTemplate
+    - objectMapper : ObjectMapper
+    + getAuditStats() TransactionAuditStatsDTO
+    + getAuditTransactions(startDate: String, endDate: String, type: String, orderCode: String, email: String, page: int, size: int) Page~TransactionAuditDTO~
+}
+
+class TransactionAuditDTO["«dto»<br/>TransactionAuditDTO"] {
+    - sourceType : String
+    - orderCode : String
+    - displayCode : String
+    - userName : String
+    - userEmail : String
+    - type : String
+    - coinAmount : Integer
+    - amountVnd : Integer
+    - status : String
+}
+
+class TransactionAuditStatsDTO["«dto»<br/>TransactionAuditStatsDTO"] {
+    - totalTopupVnd : Long
+    - totalCoinIssued : Long
+    - totalCoinSpent : Long
+    - totalTransactionsCount : Long
+    - successTopupOrdersCount : Long
+}
+
+TransactionAuditAdminController --> TransactionAuditService
+TransactionAuditService <|.. TransactionAuditServiceImpl
+TransactionAuditAdminController ..> TransactionAuditDTO
+TransactionAuditAdminController ..> TransactionAuditStatsDTO
+TransactionAuditService ..> TransactionAuditDTO
+TransactionAuditService ..> TransactionAuditStatsDTO
+TransactionAuditServiceImpl ..> TransactionAuditDTO
+TransactionAuditServiceImpl ..> TransactionAuditStatsDTO
+
+classDef default fill:#FFFFFF,stroke:#000000,stroke-width:1px,color:#000000

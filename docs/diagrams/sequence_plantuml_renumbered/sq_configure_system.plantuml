@@ -1,0 +1,120 @@
+@startuml sq_configure_system
+<style>
+    sequenceDiagram{
+        FontSize 16
+        LineColor black
+
+        arrow {
+            ' Set the maximum width of the text on arrows
+            MaximumWidth 300
+            LineColor black
+        }
+        actor{
+            BackgroundColor white
+            LineColor black
+            LineThickness 1.0
+        }
+        participant{
+            BackgroundColor white
+            LineColor black
+            RoundCorner 0
+        }
+        database{
+            BackgroundColor white
+            LineColor black
+        }
+        lifeLine{
+            LineColor black
+        }
+        group{
+            LineColor black
+        }
+        groupHeader{
+            BackgroundColor white
+            LineColor black
+        }
+        referenceHeader{
+            BackgroundColor white
+            LineColor black
+        }
+        reference{
+            BackgroundColor white
+            LineColor black
+        }
+    }
+</style>
+
+hide footbox
+mainframe Cấu hình hệ thống & chính sách (UC-52)
+
+actor Admin as adm
+participant "SettingsPage" as view
+participant "SystemSettingAdminController" as ctrl <<controller>>
+participant ":SystemSettingService" as svc
+participant ":SystemSettingRepository" as st_repo
+participant ":SystemAuditLog" as audit_ett
+participant ":SystemAuditLogRepository" as audit_repo
+database Database as db
+
+adm ++
+
+adm -> view++:1. Enter settings (vndToCoinRate, hotline, email, terms, privacy) and click Save
+view -> ctrl--:2. POST /admin/settings (SystemSettingsDTO)
+activate ctrl
+
+ctrl -> ctrl++:3. getAdminId(authentication)
+ctrl--
+
+ctrl -> ctrl++:4. getClientIp(httpRequest)
+ctrl--
+
+ctrl -> svc++:5. updateSettings(adminId, settingsDTO, clientIp)
+
+loop For each setting key
+    svc -> st_repo++:6. findBySettingKey(key)
+    st_repo -> db++:7. SELECT * FROM system_settings WHERE setting_key = ?
+    db -->> st_repo:8. Return current setting
+    db--
+    st_repo -->> svc:9. Return Optional<SystemSetting>
+    st_repo--
+end
+
+opt Changes detected in at least one setting
+loop For each changed setting
+        svc -> st_repo++:9.1. save(setting)
+        st_repo -> db++:9.1.1. INSERT / UPDATE system_settings
+        db -->> st_repo:9.1.2. Return saved setting
+        db--
+        st_repo -->> svc:9.1.3. Return saved setting
+        st_repo--
+end
+
+    svc -> audit_ett++:9.1.4. Call SystemAuditLog.builder()
+    audit_ett -->> svc--:9.1.5. Return auditLog entity
+
+    svc -> audit_repo++:9.1.6. save(auditLog)
+    audit_repo -> db++:9.1.7. Insert into system_audit_logs (UPDATE_SYSTEM_SETTINGS)
+    db -->> audit_repo:9.1.8. Return saved audit log
+    db--
+    audit_repo -->> svc:9.1.9. Return saved audit log
+    audit_repo--
+end
+
+svc -->> ctrl--:10. Return changed (boolean)
+
+alt changed == true
+    ctrl -->> view:10.1. Redirect /admin/settings with successMessage
+    activate view
+    view -->> adm:10.1.1. Display update success banner
+    deactivate view
+else changed == false
+    ctrl -->> view:10.2. Redirect /admin/settings with infoMessage
+    activate view
+    view -->> adm:10.2.1. Display "No changes detected" info message
+    deactivate view
+end
+
+deactivate ctrl
+deactivate adm
+
+@enduml

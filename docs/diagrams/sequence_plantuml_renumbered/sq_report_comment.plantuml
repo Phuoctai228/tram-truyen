@@ -1,0 +1,151 @@
+@startuml sq_report_comment
+<style>
+    sequenceDiagram{
+        FontSize 16
+        LineColor black
+
+        arrow {
+            ' Set the maximum width of the text on arrows
+            MaximumWidth 300
+            LineColor black
+        }
+        actor{
+            BackgroundColor white
+            LineColor black
+            LineThickness 1.0
+        }
+        participant{
+            BackgroundColor white
+            LineColor black
+            RoundCorner 0
+        }
+        database{
+            BackgroundColor white
+            LineColor black
+        }
+        lifeLine{
+            LineColor black
+        }
+        group{
+            LineColor black
+        }
+        groupHeader{
+            BackgroundColor white
+            LineColor black
+        }
+        referenceHeader{
+            BackgroundColor white
+            LineColor black
+        }
+        reference{
+            BackgroundColor white
+            LineColor black
+        }
+    }
+</style>
+
+hide footbox
+mainframe Report Comment (UC-22)
+
+actor Member as act
+participant "ReportCommentModal" as view
+participant "LoginPage" as login_view
+participant "ReportController" as ctrl <<controller>>
+participant ":ReportService" as svc
+participant ":CommentReport" as rpt_ett
+participant ":UserRepository" as user_repo
+participant ":CommentRepository" as cmt_repo
+participant ":CommentReportRepository" as rpt_repo
+database Database as db
+
+act ++
+
+act -> view++:1. Select violation type, enter description and click "Gửi báo cáo"
+view -> ctrl--:2. POST /reports/comment (ReportCommentRequest)
+activate ctrl
+
+ctrl -> ctrl++:3. isAuthenticated(authentication)
+ctrl--
+
+opt User is not authenticated
+    ctrl -->> view:3.1. Return 401 UNAUTHORIZED (error message)
+    activate view
+    view -> login_view++:3.1.1. Redirect to /login
+    login_view -->> act:3.1.2. Display login page
+    deactivate login_view
+    deactivate view
+end
+
+opt Validation error (BindingResult has errors)
+    ctrl -->> view:3.2. Return 400 BAD REQUEST (validation error message)
+    activate view
+    view -->> act:3.2.1. Display error message on modal
+    deactivate view
+end
+
+ctrl -> ctrl++:4. getUserId(authentication)
+ctrl--
+
+ctrl -> svc++:5. reportComment(userId, request)
+
+svc -> user_repo++:6. findById(userId)
+user_repo -> db++:7. Execute query
+db -->> user_repo:8. Return user data
+db--
+user_repo -->> svc:9. Return user entity
+user_repo--
+
+svc -> cmt_repo++:10. findById(commentId)
+cmt_repo -> db++:11. Execute query
+db -->> cmt_repo:12. Return comment data
+db--
+cmt_repo -->> svc:13. Return comment entity
+cmt_repo--
+
+alt Comment not found or status != "VISIBLE"
+    svc -->> ctrl:13.1. Throw IllegalArgumentException("Bình luận không khả dụng")
+    ctrl -->> view:13.1.1. Return 400 BAD REQUEST (error message)
+    activate view
+    view -->> act:13.1.2. Display error message on modal
+    deactivate view
+else Already reported (status "RECEIVED")
+    svc -> rpt_repo++:13.2. existsByUserIdAndCommentIdAndStatusIn(userId, commentId, ["RECEIVED"])
+    rpt_repo -> db++:13.2.1. Execute query
+    db -->> rpt_repo:13.2.2. Return true
+    db--
+    rpt_repo -->> svc:13.2.3. Return true
+    rpt_repo--
+
+    svc -->> ctrl:13.2.4. Throw IllegalStateException("Bạn đã gửi báo cáo cho bình luận này và đang chờ xử lý")
+    ctrl -->> view:13.2.5. Return 409 CONFLICT (error message)
+    activate view
+    view -->> act:13.2.6. Display duplicate report warning
+    deactivate view
+else Not yet reported
+    svc -> rpt_repo++:13.3. existsByUserIdAndCommentIdAndStatusIn(userId, commentId, ["RECEIVED"])
+    rpt_repo -> db++:13.3.1. Execute query
+    db -->> rpt_repo:13.3.2. Return false
+    db--
+    rpt_repo -->> svc:13.3.3. Return false
+    rpt_repo--
+
+    svc -> rpt_ett++:13.3.4. Call CommentReport.builder()
+    rpt_ett -->> svc--:13.3.5. Return commentReport entity
+
+    svc -> rpt_repo++:13.3.6. save(report)
+    rpt_repo -> db++:13.3.7. Save comment report to database
+    db -->> rpt_repo:13.3.8. Return saved report
+    db--
+    rpt_repo -->> svc:13.3.9. Return saved report
+    rpt_repo--
+
+    svc -->> ctrl--:13.3.10. Return void
+
+    ctrl -->> view--:13.3.11. Return 200 OK ({"success": true, "message": "Báo cáo bình luận của bạn đã được gửi..."})
+    deactivate ctrl
+    activate view
+    view -->> act--:13.3.12. Close modal and display success toast
+    deactivate view
+end
+
+@enduml

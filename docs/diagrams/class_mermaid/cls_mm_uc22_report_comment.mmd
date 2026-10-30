@@ -1,0 +1,83 @@
+classDiagram
+direction LR
+
+class ReportController["«controller»<br/>ReportController"] {
+    - reportService : ReportService
+    - userRepository : UserRepository
+    + reportComment(request: ReportCommentRequest, bindingResult: BindingResult, authentication: Authentication) ResponseEntity~?~
+}
+
+class ReportService["«service interface»<br/>ReportService"] {
+    + reportComment(userId: Integer, request: ReportCommentRequest) void*
+}
+
+class ReportServiceImpl["«service»<br/>ReportServiceImpl"] {
+    - commentRepository : CommentRepository
+    - commentReportRepository : CommentReportRepository
+    - userRepository : UserRepository
+    + reportComment(userId: Integer, request: ReportCommentRequest) void
+}
+
+class CommentReportRepository["«repository»<br/>CommentReportRepository"] {
+    + existsByUserIdAndCommentIdAndStatusIn(userId: Integer, commentId: Integer, statuses: Collection~String~) boolean*
+    + save(report: CommentReport) CommentReport*
+}
+
+class CommentRepository["«repository»<br/>CommentRepository"] {
+    + findById(id: Integer) Optional~Comment~*
+}
+
+class UserRepository["«repository»<br/>UserRepository"] {
+    + findById(id: Integer) Optional~User~*
+    + findByEmail(email: String) Optional~User~*
+}
+
+class ReportCommentRequest["«dto»<br/>ReportCommentRequest"] {
+    - commentId : Integer
+    - violationType : String
+    - description : String
+}
+
+class CommentReport["«entity»<br/>CommentReport"] {
+    - id : Integer
+    - user : User
+    - comment : Comment
+    - reason : String
+    - status : String
+    - adminNote : String
+    - resolver : User
+    - createdAt : LocalDateTime
+    - processedAt : LocalDateTime
+}
+
+class Comment["«entity»<br/>Comment"] {
+    - id : Integer
+    - user : User
+    - content : String
+    - status : String
+    - createdAt : LocalDateTime
+    - updatedAt : LocalDateTime
+}
+
+class User["«entity»<br/>User"] {
+    - id : Integer
+    - email : String
+    - fullName : String
+    - status : String
+}
+
+ReportController --> ReportService
+ReportController --> UserRepository
+ReportService <|.. ReportServiceImpl
+ReportServiceImpl --> CommentReportRepository
+ReportServiceImpl --> CommentRepository
+ReportServiceImpl --> UserRepository
+ReportController ..> ReportCommentRequest
+ReportService ..> ReportCommentRequest
+ReportServiceImpl ..> ReportCommentRequest
+ReportServiceImpl ..> CommentReport
+CommentReport --> User
+CommentReport --> Comment
+Comment --> User
+
+classDef default fill:#FFFFFF,stroke:#000000,stroke-width:1px,color:#000000

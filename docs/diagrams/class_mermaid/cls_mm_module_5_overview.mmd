@@ -1,0 +1,311 @@
+classDiagram
+direction LR
+
+class ReportController["«controller»<br/>ReportController"] {
+    - reportService : ReportService
+    - userRepository : UserRepository
+    + reportComment(request: ReportCommentRequest, bindingResult: BindingResult, authentication: Authentication) ResponseEntity~?~
+    + reportContent(request: ReportContentRequest, bindingResult: BindingResult, authentication: Authentication) ResponseEntity~?~
+}
+
+class ReportAdminController["«controller»<br/>ReportAdminController"] {
+    - reportService : ReportService
+    - userRepository : UserRepository
+    + listReports(tab: String, status: String, page: String, size: String, model: Model) String
+    + resolveCommentReport(id: Integer, request: ResolveReportRequest, bindingResult: BindingResult, currentStatus: String, page: int, authentication: Authentication, httpRequest: HttpServletRequest, redirectAttributes: RedirectAttributes) String
+    + resolveContentReport(id: Integer, request: ResolveReportRequest, bindingResult: BindingResult, currentStatus: String, page: int, authentication: Authentication, httpRequest: HttpServletRequest, redirectAttributes: RedirectAttributes) String
+}
+
+class UserNotificationController["«controller»<br/>UserNotificationController"] {
+    - notificationService : NotificationService
+    - bookshelfService : BookshelfService
+    - userRepository : UserRepository
+    + viewNotifications(authentication: Authentication, tab: String, page: String, size: String, selectedIdParam: String, model: Model) String
+    + markAllAsRead(authentication: Authentication, tab: String, page: int, redirectAttributes: RedirectAttributes) String
+    + markAsRead(id: Integer, authentication: Authentication) ResponseEntity~?~
+}
+
+class NotificationAdminController["«controller»<br/>NotificationAdminController"] {
+    - notificationService : NotificationService
+    - userRepository : UserRepository
+    + showSendNotificationPage(page: String, size: String, model: Model) String
+    + sendNotification(request: SendNotificationRequest, bindingResult: BindingResult, authentication: Authentication, httpRequest: HttpServletRequest, redirectAttributes: RedirectAttributes) String
+}
+
+class UserAdminController["«controller»<br/>UserAdminController"] {
+    - userManagementService : UserManagementService
+    - userRepository : UserRepository
+    + listUsers(keyword: String, role: String, status: String, page: String, size: String, authentication: Authentication, model: Model) String
+    + assignRole(request: AssignRoleRequest, bindingResult: BindingResult, authentication: Authentication, httpRequest: HttpServletRequest, redirectAttributes: RedirectAttributes) String
+    + banUser(request: BanUserRequest, bindingResult: BindingResult, authentication: Authentication, httpRequest: HttpServletRequest, redirectAttributes: RedirectAttributes) String
+    + unbanUser(request: UnbanUserRequest, bindingResult: BindingResult, authentication: Authentication, httpRequest: HttpServletRequest, redirectAttributes: RedirectAttributes) String
+}
+
+class TransactionAuditAdminController["«controller»<br/>TransactionAuditAdminController"] {
+    - transactionAuditService : TransactionAuditService
+    + showAuditPage(startDate: String, endDate: String, type: String, orderCode: String, email: String, page: String, size: String, model: Model) String
+    + getIpnLogs(orderCode: String) ResponseEntity~List~PaymentLogDTO~~
+}
+
+class SystemSettingAdminController["«controller»<br/>SystemSettingAdminController"] {
+    - systemSettingService : SystemSettingService
+    - userRepository : UserRepository
+    + showSettingsPage(model: Model) String
+    + saveSettings(settingsDTO: SystemSettingsDTO, bindingResult: BindingResult, authentication: Authentication, httpRequest: HttpServletRequest, redirectAttributes: RedirectAttributes) String
+    + activateTheme(id: Integer, authentication: Authentication, httpRequest: HttpServletRequest, redirectAttributes: RedirectAttributes) String
+    + deleteTheme(id: Integer, authentication: Authentication, httpRequest: HttpServletRequest, redirectAttributes: RedirectAttributes) String
+}
+
+class SystemAuditLogAdminController["«controller»<br/>SystemAuditLogAdminController"] {
+    - systemAuditLogService : SystemAuditLogService
+    + showAuditLogPage(keyword: String, actionGroup: String, performerRole: String, timeRange: String, startDate: String, endDate: String, onlyAdmin: Boolean, performer: String, page: String, size: String, model: Model) String
+    + showAuditLogDetail(id: String, page: String, size: String, keyword: String, actionGroup: String, performerRole: String, timeRange: String, startDate: String, endDate: String, redirectAttributes: RedirectAttributes, model: Model) String
+}
+
+class ReportService["«service interface»<br/>ReportService"] {
+    + reportComment(userId: Integer, request: ReportCommentRequest) void*
+    + reportContent(userId: Integer, request: ReportContentRequest) void*
+    + resolveCommentReport(adminId: Integer, reportId: Integer, request: ResolveReportRequest, clientIp: String) void*
+    + resolveContentReport(adminId: Integer, reportId: Integer, request: ResolveReportRequest, clientIp: String) void*
+}
+
+class NotificationService["«service interface»<br/>NotificationService"] {
+    + getUserNotifications(userId: Integer, tab: String, page: int, size: int) Page~NotificationDTO~*
+    + sendNotification(senderAdminId: Integer, request: SendNotificationRequest, clientIp: String) void*
+    + markAllAsRead(userId: Integer) void*
+    + markAsRead(notificationId: Integer, userId: Integer) void*
+}
+
+class UserManagementService["«service interface»<br/>UserManagementService"] {
+    + getUsers(keyword: String, role: String, status: String, page: int, size: int) Page~UserManagementDTO~*
+    + assignRole(adminId: Integer, request: AssignRoleRequest, ipAddress: String) void*
+    + banUser(adminId: Integer, request: BanUserRequest, ipAddress: String) void*
+    + unbanUser(adminId: Integer, request: UnbanUserRequest, ipAddress: String) void*
+}
+
+class TransactionAuditService["«service interface»<br/>TransactionAuditService"] {
+    + getAuditTransactions(startDate: String, endDate: String, type: String, orderCode: String, email: String, page: int, size: int) Page~TransactionAuditDTO~*
+    + getIpnLogsByOrderCode(orderCode: String) List~PaymentLogDTO~*
+}
+
+class SystemSettingService["«service interface»<br/>SystemSettingService"] {
+    + getSettings() SystemSettingsDTO*
+    + updateSettings(adminId: Integer, dto: SystemSettingsDTO, clientIp: String) boolean*
+    + activateTheme(themeId: Integer, adminId: Integer, clientIp: String) WebSetting*
+    + deleteTheme(id: Integer, adminId: Integer, clientIp: String) void*
+}
+
+class SystemAuditLogService["«service interface»<br/>SystemAuditLogService"] {
+    + getStats() SystemAuditLogStatsDTO*
+    + getAuditLogsFiltered(keyword: String, actionGroup: String, performerRole: String, timeRange: String, startDate: String, endDate: String, page: int, size: int) Page~SystemAuditLogDTO~*
+    + getAuditLogDetail(logId: Integer) SystemAuditLogDetailDTO*
+}
+
+class AccountLockService["«service»<br/>AccountLockService"] {
+    - userRepository : UserRepository
+    - systemAuditLogRepository : SystemAuditLogRepository
+    + checkAndAutoUnban(user: User) boolean
+}
+
+class ReportServiceImpl["«service»<br/>ReportServiceImpl"] {
+    - commentRepository : CommentRepository
+    - commentReportRepository : CommentReportRepository
+    - chapterRepository : ChapterRepository
+    - contentReportRepository : ContentReportRepository
+    - userRepository : UserRepository
+    - notificationRepository : NotificationRepository
+    - systemAuditLogRepository : SystemAuditLogRepository
+}
+
+class NotificationServiceImpl["«service»<br/>NotificationServiceImpl"] {
+    - notificationRepository : NotificationRepository
+    - userRepository : UserRepository
+    - systemAuditLogRepository : SystemAuditLogRepository
+}
+
+class UserManagementServiceImpl["«service»<br/>UserManagementServiceImpl"] {
+    - userRepository : UserRepository
+    - roleRepository : RoleRepository
+    - systemAuditLogRepository : SystemAuditLogRepository
+    - notificationRepository : NotificationRepository
+}
+
+class TransactionAuditServiceImpl["«service»<br/>TransactionAuditServiceImpl"] {
+    - paymentLogRepository : PaymentLogRepository
+}
+
+class SystemSettingServiceImpl["«service»<br/>SystemSettingServiceImpl"] {
+    - systemSettingRepository : SystemSettingRepository
+    - webSettingRepository : WebSettingRepository
+    - systemAuditLogRepository : SystemAuditLogRepository
+    - userRepository : UserRepository
+}
+
+class SystemAuditLogServiceImpl["«service»<br/>SystemAuditLogServiceImpl"] {
+    - systemAuditLogRepository : SystemAuditLogRepository
+    - userRepository : UserRepository
+}
+
+class CommentReportRepository["«repository»<br/>CommentReportRepository"] {
+    + findById(id: Integer) Optional~CommentReport~*
+    + save(report: CommentReport) CommentReport*
+}
+
+class ContentReportRepository["«repository»<br/>ContentReportRepository"] {
+    + findById(id: Integer) Optional~ContentReport~*
+    + save(report: ContentReport) ContentReport*
+}
+
+class NotificationRepository["«repository»<br/>NotificationRepository"] {
+    + findUserAndSystemNotifications(userId: Integer, pageable: Pageable) Page~Notification~*
+    + countUnreadByUserId(userId: Integer) long*
+    + save(notification: Notification) Notification*
+}
+
+class UserRepository["«repository»<br/>UserRepository"] {
+    + findById(id: Integer) Optional~User~*
+    + findByEmail(email: String) Optional~User~*
+    + save(user: User) User*
+}
+
+class RoleRepository["«repository»<br/>RoleRepository"] {
+    + findById(id: Integer) Optional~Role~*
+    + save(role: Role) Role*
+}
+
+class PaymentLogRepository["«repository»<br/>PaymentLogRepository"] {
+    + findAll(pageable: Pageable) Page~PaymentLog~*
+}
+
+class SystemSettingRepository["«repository»<br/>SystemSettingRepository"] {
+    + findBySettingKey(settingKey: String) Optional~SystemSetting~*
+    + save(setting: SystemSetting) SystemSetting*
+}
+
+class WebSettingRepository["«repository»<br/>WebSettingRepository"] {
+    + findById(id: Integer) Optional~WebSetting~*
+    + save(theme: WebSetting) WebSetting*
+}
+
+class SystemAuditLogRepository["«repository»<br/>SystemAuditLogRepository"] {
+    + save(auditLog: SystemAuditLog) SystemAuditLog*
+    + findById(id: Integer) Optional~SystemAuditLog~*
+}
+
+class CommentReport["«entity»<br/>CommentReport"] {
+    - id : Integer
+    - user : User
+    - comment : Comment
+    - reason : String
+    - status : String
+    - adminNote : String
+    - resolver : User
+}
+
+class ContentReport["«entity»<br/>ContentReport"] {
+    - id : Integer
+    - user : User
+    - chapter : Chapter
+    - reason : String
+    - status : String
+    - adminNote : String
+    - resolver : User
+}
+
+class Notification["«entity»<br/>Notification"] {
+    - id : Integer
+    - userId : Integer
+    - title : String
+    - content : String
+    - isRead : Boolean
+    - createdAt : LocalDateTime
+}
+
+class User["«entity»<br/>User"] {
+    - id : Integer
+    - email : String
+    - fullName : String
+    - status : String
+    - walletBalance : Integer
+    - roles : Set~Role~
+}
+
+class Role["«entity»<br/>Role"] {
+    - id : Integer
+    - name : String
+}
+
+class PaymentLog["«entity»<br/>PaymentLog"] {
+    - id : Integer
+    - orderCode : String
+    - rawPayload : String
+    - ipAddress : String
+    - status : String
+    - createdAt : LocalDateTime
+}
+
+class SystemSetting["«entity»<br/>SystemSetting"] {
+    - settingKey : String
+    - settingValue : String
+    - description : String
+    - updatedBy : Integer
+    - updatedAt : LocalDateTime
+}
+
+class WebSetting["«entity»<br/>WebSetting"] {
+    - id : Integer
+    - name : String
+    - folderPath : String
+    - isActive : Boolean
+    - uploadedBy : Integer
+}
+
+class SystemAuditLog["«entity»<br/>SystemAuditLog"] {
+    - id : Integer
+    - adminId : Integer
+    - actionType : String
+    - targetEntity : String
+    - targetId : Integer
+    - oldValue : String
+    - newValue : String
+    - ipAddress : String
+    - createdAt : LocalDateTime
+}
+
+ReportController --> ReportService
+ReportAdminController --> ReportService
+UserNotificationController --> NotificationService
+NotificationAdminController --> NotificationService
+UserAdminController --> UserManagementService
+TransactionAuditAdminController --> TransactionAuditService
+SystemSettingAdminController --> SystemSettingService
+SystemAuditLogAdminController --> SystemAuditLogService
+ReportService <|.. ReportServiceImpl
+NotificationService <|.. NotificationServiceImpl
+UserManagementService <|.. UserManagementServiceImpl
+TransactionAuditService <|.. TransactionAuditServiceImpl
+SystemSettingService <|.. SystemSettingServiceImpl
+SystemAuditLogService <|.. SystemAuditLogServiceImpl
+ReportServiceImpl --> CommentReportRepository
+ReportServiceImpl --> ContentReportRepository
+ReportServiceImpl --> NotificationRepository
+ReportServiceImpl --> SystemAuditLogRepository
+NotificationServiceImpl --> NotificationRepository
+NotificationServiceImpl --> SystemAuditLogRepository
+UserManagementServiceImpl --> UserRepository
+UserManagementServiceImpl --> RoleRepository
+UserManagementServiceImpl --> SystemAuditLogRepository
+UserManagementServiceImpl --> NotificationRepository
+AccountLockService --> UserRepository
+AccountLockService --> SystemAuditLogRepository
+TransactionAuditServiceImpl --> PaymentLogRepository
+SystemSettingServiceImpl --> SystemSettingRepository
+SystemSettingServiceImpl --> WebSettingRepository
+SystemSettingServiceImpl --> SystemAuditLogRepository
+SystemAuditLogServiceImpl --> SystemAuditLogRepository
+CommentReport --> User
+ContentReport --> User
+User --> Role
+SystemAuditLog --> User : adminId
+
+classDef default fill:#FFFFFF,stroke:#000000,stroke-width:1px,color:#000000

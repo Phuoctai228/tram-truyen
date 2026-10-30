@@ -1,0 +1,104 @@
+classDiagram
+direction LR
+
+class NotificationAdminController["«controller»<br/>NotificationAdminController"] {
+    - notificationService : NotificationService
+    - userRepository : UserRepository
+    + showSendNotificationPage(page: String, size: String, model: Model) String
+    + sendNotification(request: SendNotificationRequest, bindingResult: BindingResult, authentication: Authentication, httpRequest: HttpServletRequest, redirectAttributes: RedirectAttributes) String
+    + searchRecipients(keyword: String) ResponseEntity~List~UserRecipientDTO~~
+}
+
+class NotificationService["«service interface»<br/>NotificationService"] {
+    + sendNotification(senderAdminId: Integer, request: SendNotificationRequest, clientIp: String) void*
+    + searchRecipients(keyword: String) List~UserRecipientDTO~*
+    + getRecentNotifications(page: int, size: int) Page~NotificationDTO~*
+}
+
+class NotificationServiceImpl["«service»<br/>NotificationServiceImpl"] {
+    - notificationRepository : NotificationRepository
+    - userRepository : UserRepository
+    - systemAuditLogRepository : SystemAuditLogRepository
+    - objectMapper : ObjectMapper
+    + sendNotification(senderAdminId: Integer, request: SendNotificationRequest, clientIp: String) void
+    + searchRecipients(keyword: String) List~UserRecipientDTO~
+    + getRecentNotifications(page: int, size: int) Page~NotificationDTO~
+}
+
+class NotificationRepository["«repository»<br/>NotificationRepository"] {
+    + save(notification: Notification) Notification*
+}
+
+class SystemAuditLogRepository["«repository»<br/>SystemAuditLogRepository"] {
+    + save(auditLog: SystemAuditLog) SystemAuditLog*
+}
+
+class UserRepository["«repository»<br/>UserRepository"] {
+    + findById(id: Integer) Optional~User~*
+    + findTop10ByFullNameContainingIgnoreCaseOrEmailContainingIgnoreCase(fullName: String, email: String) List~User~*
+}
+
+class SendNotificationRequest["«dto»<br/>SendNotificationRequest"] {
+    - scope : String
+    - recipientId : Integer
+    - recipientName : String
+    - recipientEmail : String
+    - title : String
+    - content : String
+}
+
+class UserRecipientDTO["«dto»<br/>UserRecipientDTO"] {
+    - id : Integer
+    - fullName : String
+    - email : String
+    - avatarUrl : String
+}
+
+class NotificationDTO["«dto»<br/>NotificationDTO"] {
+    - id : Integer
+    - userId : Integer
+    - title : String
+    - content : String
+    - isRead : Boolean
+    - createdAt : LocalDateTime
+}
+
+class Notification["«entity»<br/>Notification"] {
+    - id : Integer
+    - userId : Integer
+    - title : String
+    - content : String
+    - isRead : Boolean
+    - createdAt : LocalDateTime
+}
+
+class SystemAuditLog["«entity»<br/>SystemAuditLog"] {
+    - id : Integer
+    - adminId : Integer
+    - actionType : String
+    - targetEntity : String
+    - targetId : Integer
+    - oldValue : String
+    - newValue : String
+    - ipAddress : String
+    - createdAt : LocalDateTime
+}
+
+NotificationAdminController --> NotificationService
+NotificationAdminController --> UserRepository
+NotificationService <|.. NotificationServiceImpl
+NotificationServiceImpl --> NotificationRepository
+NotificationServiceImpl --> UserRepository
+NotificationServiceImpl --> SystemAuditLogRepository
+NotificationAdminController ..> SendNotificationRequest
+NotificationAdminController ..> UserRecipientDTO
+NotificationAdminController ..> NotificationDTO
+NotificationService ..> SendNotificationRequest
+NotificationService ..> UserRecipientDTO
+NotificationService ..> NotificationDTO
+NotificationServiceImpl ..> Notification
+NotificationServiceImpl ..> SystemAuditLog
+NotificationRepository ..> Notification
+SystemAuditLogRepository ..> SystemAuditLog
+
+classDef default fill:#FFFFFF,stroke:#000000,stroke-width:1px,color:#000000
