@@ -72,6 +72,10 @@ public class UserStatusCheckFilter extends OncePerRequestFilter {
             try {
                 userRepository.findWalletBalanceById(userId)
                         .ifPresent(b -> userDetails.getUser().setWalletBalance(b));
+                userRepository.findAvatarUrlById(userId)
+                        .ifPresent(a -> userDetails.getUser().setAvatarUrl(a));
+                userRepository.findFullNameById(userId)
+                        .ifPresent(fn -> userDetails.getUser().setFullName(fn));
             } catch (Exception ignored) {
             }
         }

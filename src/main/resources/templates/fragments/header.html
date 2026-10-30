@@ -159,11 +159,11 @@
                                 sec:authentication="principal.user.fullName"></span>
                             <div
                                 class="w-10 h-10 rounded-full bg-primary overflow-hidden flex items-center justify-center shadow-sm border border-outline-variant">
-                                <img th:if="${#authentication.principal.user.avatarUrl != null}"
+                                <img th:if="${#authentication.principal.user.avatarUrl != null and !#strings.isEmpty(#authentication.principal.user.avatarUrl)}"
                                     th:src="${#authentication.principal.user.avatarUrl}" alt="Avatar"
                                     onerror="this.onerror=null;this.src='/images/default-avatar.jpg';"
                                     class="w-full h-full object-cover">
-                                <img th:unless="${#authentication.principal.user.avatarUrl != null}"
+                                <img th:unless="${#authentication.principal.user.avatarUrl != null and !#strings.isEmpty(#authentication.principal.user.avatarUrl)}"
                                     src="/images/default-avatar.jpg" alt="Avatar" class="w-full h-full object-cover">
                             </div>
                         </button>

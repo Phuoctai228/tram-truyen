@@ -37,6 +37,7 @@ public class UserServiceImpl implements UserService {
         }
 
         userRepository.save(user);
+        syncSecurityContextUser(user);
     }
 
     @Override
@@ -51,5 +52,20 @@ public class UserServiceImpl implements UserService {
         
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
+    }
+
+    private void syncSecurityContextUser(User updatedUser) {
+        if (updatedUser == null || updatedUser.getId() == null) return;
+        try {
+            org.springframework.security.core.Authentication auth =
+                    org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null && auth.getPrincipal() instanceof com.tramtruyen.security.CustomUserDetails cud) {
+                if (cud.getUser() != null && updatedUser.getId().equals(cud.getUser().getId())) {
+                    cud.getUser().setFullName(updatedUser.getFullName());
+                    cud.getUser().setAvatarUrl(updatedUser.getAvatarUrl());
+                }
+            }
+        } catch (Exception ignored) {
+        }
     }
 }
