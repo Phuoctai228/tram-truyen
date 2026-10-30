@@ -1,0 +1,132 @@
+@startuml sq_uc28_view_reading_history
+<style>
+    sequenceDiagram{
+        FontSize 16
+
+        arrow {
+            ' Set the maximum width of the text on arrows
+            MaximumWidth 300
+        }
+        actor{
+            BackgroundColor white
+            LineThickness 1.0
+        }
+        participant{
+            BackgroundColor white
+            RoundCorner 0
+        }
+        database{
+            BackgroundColor white
+        }
+        groupHeader{
+            BackgroundColor white
+        }
+        referenceHeader{
+            BackgroundColor white
+        }
+        reference{
+            BackgroundColor white
+        }
+    }
+</style>
+
+hide footbox
+mainframe View Reading History
+
+actor Member as act
+participant "ReadingHistoryPage" as view
+participant "LoginPage" as r_view
+participant "UserController" as ctrl <<controller>>
+participant ":ReadingHistoryService" as history_svc
+participant ":ReadingHistoryItemDTO" as history_dto
+participant ":UserRepository" as user_repo
+participant ":UserChapterActivityRepository" as activity_repo
+database Database as db
+
+act ++
+
+act -> view++: 1. Access reading history page
+view -> ctrl++: 2. GET /user/history?page={page}&size={size}
+
+ctrl -> ctrl++: 3. Check authentication status
+ctrl--
+alt User is not authenticated
+    ctrl -->> r_view: 4. Redirect to /login?redirect=/user/history
+    activate r_view
+    r_view -->> act: 5. Display login page
+    deactivate r_view
+else User is authenticated
+    ctrl -> history_svc++: 6. getReadingHistory(email, page, size)
+
+    history_svc -> user_repo++: 7. findByEmail(email)
+    user_repo -> db++: 8. Execute query
+    db -->> user_repo: 9. Return user data
+    db--
+    user_repo -->> history_svc: 10. Return user entity
+    user_repo--
+
+    history_svc -> activity_repo++: 11. findAllByUserAndReadAtIsNotNullOrderByReadAtDesc(user, pageable)
+    activity_repo -> db++: 12. Execute query
+    db -->> activity_repo: 13. Return paged read activities
+    db--
+    activity_repo -->> history_svc: 14. Return paged read activities
+    activity_repo--
+
+    history_svc -> history_dto++: 15. Call ReadingHistoryItemDTO(activity, chapter, novel)
+    history_dto -->> history_svc--: 16. Return readingHistoryItemDTO
+
+    history_svc -->> ctrl--: 17. Return historyPage
+
+    ctrl -->> view--: 18. Return "user/history"
+    view -->> act: 19. Display paginated reading history list
+
+    view -> view++: 20. Check if user removes history item
+    view--
+    opt Remove history item
+        act -> view: 21. Click remove item button
+        view -> ctrl++: 22. POST /user/history/remove/{chapterId}
+
+        ctrl -> history_svc++: 23. removeHistoryItem(email, chapterId)
+
+        history_svc -> user_repo++: 24. findByEmail(email)
+        user_repo -> db++: 25. Execute query
+        db -->> user_repo: 26. Return user entity
+        db--
+        user_repo -->> history_svc: 27. Return user entity
+        user_repo--
+
+        history_svc -> activity_repo++: 28. findByUserAndChapterId(user, chapterId)
+        activity_repo -> db++: 29. Execute query
+        db -->> activity_repo: 30. Return activity entity
+        db--
+        activity_repo -->> history_svc: 31. Return activity entity
+        activity_repo--
+
+        history_svc -> history_svc++: 32. Check if chapter is unlocked VIP
+        history_svc--
+        alt Chapter is unlocked VIP (preserve VIP ownership)
+            history_svc -> history_svc++: 33. Reset isRead = false and readAt = null
+            history_svc--
+            history_svc -> activity_repo++: 34. save(activity)
+            activity_repo -> db++: 35. Save changes to database
+            db -->> activity_repo: 36. Return updated activity
+            db--
+            activity_repo -->> history_svc: 37. Return updated activity
+            activity_repo--
+        else Free chapter
+            history_svc -> activity_repo++: 38. delete(activity)
+            activity_repo -> db++: 39. Save changes to database
+            db -->> activity_repo: 40. Return result
+            db--
+            activity_repo -->> history_svc: 41. Return result
+            activity_repo--
+        end
+
+        history_svc -->> ctrl--: 42. Return result
+        ctrl -->> view--: 43. Redirect to /user/history
+        view -->> act: 44. Display updated reading history
+    end
+    deactivate view
+end
+
+@enduml

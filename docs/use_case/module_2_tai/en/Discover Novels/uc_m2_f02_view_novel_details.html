@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>UC-10 View Novel Details</title>
+    <title>UC-10-View Novel Details</title>
 </head>
 <body>
 <div class="uc-container" style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
@@ -13,70 +13,70 @@
             color: black !important;
         }
     </style>
-    <table style="border-collapse: collapse; width: 100%; border: 1.5pt solid black;">
+    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 25%;">UC ID and Name:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-10 View Novel Details</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">UC ID and Name:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-10-View Novel Details</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Created By:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 25%;">TaiTP</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 25%;">Date Created:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 25%;">2026-09-18</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Created By:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">TaiTP</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Date Created:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-18</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Primary Actor:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;">Guest, Member, Staff, Admin</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Secondary Actors:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;">None</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Primary Actor:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Guest, Member, Staff, Admin</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Secondary Actors:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">None</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Trigger:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Actor clicks on a novel card or title from any list view.</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Trigger:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Actor clicks on a novel card or title link from the homepage, category list, search results, leaderboard, bookshelf, or reading history.</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Description:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Displays comprehensive metadata about a single novel, including its synopsis, average rating, and a paginated list of its chapters. Provides interaction points for reading, bookmarking, and reviewing.</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Description:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Allows the actor to view comprehensive details of a specific novel, including its cover image, author, categories, status, total views, favorite count, rating summary, synopsis, full published chapter list (withVIP indicators and sort order toggle), same-author novels, and community reviews/comments.</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Preconditions:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>PRE-1. The requested novel must exist in the database and have a public status.</p></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Preconditions:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> The requested novel exists in the database, is not soft-deleted, and is not archived.</p></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Postconditions:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>POST-1. The actor is presented with the novel details and chapter index.</p></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Postconditions:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> The actor views the novel details, chapter list, ratings, and comments.</p></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Normal Flow:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>A. View Details Successfully</p><ol><li>Actor accesses the novel details page.</li><li>The system extracts the unique novel identifier from the request.</li><li>The system retrieves the novel's core metadata.</li><li>The system calculates the novel's average rating and total view count.</li><li>The system retrieves the paginated list of published chapters for the novel.</li><li>The system determines the access status for each retrieved chapter.</li><li>7a. The system triggers an asynchronous background job to increment the novel's total view count.</li><li>The system retrieves the current actor's session data.</li><li>The system checks if the actor has bookmarked the novel.</li><li>The system renders the novel details page, displaying descriptive metadata, the chapter list, and action buttons ("Đọc chương đầu", "Thêm vào Tủ sách").</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Normal Flow:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. View Novel Details Successfully</b></p><ol><li>Actor accesses a specific novel's detail page.</li><li>The system retrieves the novel metadata by slug and verifies its public visibility.</li><li>The system retrieves the list of published chapters for the novel ordered by chapter number ascending.</li><li>The system retrieves the current actor's session data to determine bookshelf bookmark status, last read chapter, and unlocked VIP chapters.</li><li>The system retrieves the novel's favorite count, rating summary, community comments, and other novels by the same author.</li><li>The system renders the novel metadata, synopsis, action buttons ("Đọc truyện" or "Đọc tiếp chương X" / "Đọc từ đầu", and "Thêm vào Tủ sách" or "Đã lưu trong Tủ sách"), chapter list with sort toggle ("Cũ → Mới"), same-author recommendations, ratings, and comments.</li></ol></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Alternative Flows:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>A.9 Already Bookmarked</p><ol><li>The system determines the actor is an authenticated Member and has bookmarked the novel.</li><li>The system prepares the action button state as "Xóa khỏi Tủ sách".</li><li>Back to step 10.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Alternative Flows:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.3 Novel Has No Chapters</b></p><ol><li>The system determines there are no published chapters for the novel.</li><li>The system disables the reading button ("Chưa có chương") and displays an empty chapter list message.</li><li>Back to step 1.</li></ol><p><b>A.6 Toggle Chapter Sort Order</b></p><ol><li>Actor clicks the chapter sort button ("Cũ → Mới" or "Mới → Cũ").</li><li>The system reverses the display order of the chapter list on the page.</li><li>Back to step 6.</li></ol></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Exceptions:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p>EX-3 Novel Not Found</p><ol><li>The system determines the requested novel ID does not exist, has been deleted, or has an unpublished status.</li><li>The system displays a 404 error page.</li></ol></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Exceptions:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-2 Novel Not Found or Unavailable</b></p><ol><li>The system determines the requested novel slug does not exist, has been soft-deleted, or is archived.</li><li>The system throws a resource not found error and displays the 404 error page.</li></ol></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Priority:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Priority:</td>
             <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High, Must Have</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Frequency of Use:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Frequency of Use:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Very High</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Business Rules:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">BR-11</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Business Rules:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">BR-03, BR-04, BR-11</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Other Information:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UI display varies depending on the actor's role (Guest/Member vs Staff/Admin).</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Other Information:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">If an authenticated Member has previously read a chapter of the novel, the primary button displays "Đọc tiếp chương X" alongside a secondary "Đọc từ đầu" button; otherwise, it displays "Đọc truyện".<br/>VIP chapters display a "VIP" badge, coin price, or "Đã mở" status if already unlocked by the Member.</td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px; text-align: right;">Assumptions:</td>
-            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Actor has a stable internet connection.</li></ul></td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Assumptions:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Actor has stable internet connection.</li></ul></td>
         </tr>
     </table>
 </div>

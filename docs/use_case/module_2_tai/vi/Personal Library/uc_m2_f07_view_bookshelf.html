@@ -1,135 +1,84 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
     <meta charset="UTF-8">
-    <title>UC-18 Xem Tủ Sách</title>
+    <title>UC-18-Xem Tủ Sách</title>
 </head>
-
 <body>
-    <div class="uc-container"
-        style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
-        <style>
-            .uc-container,
-            .uc-container table,
-            .uc-container tr,
-            .uc-container td,
-            .uc-container th,
-            .uc-container p,
-            .uc-container ol,
-            .uc-container ul,
-            .uc-container li,
-            .uc-container span,
-            .uc-container strong,
-            .uc-container b {
-                font-family: 'Calibri', sans-serif !important;
-                font-size: 11pt !important;
-                color: black !important;
-            }
-        </style>
-        <table style="border-collapse: collapse; width: 100%; border: 1.5pt solid black;">
-            <tr>
-                <td style="border: 1px solid black; padding: 5px; text-align: right; width: 25%;">Mã và Tên UC:</td>
-                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-18 Xem Tủ Sách</td>
-            </tr>
-            <tr>
-                <td style="border: 1px solid black; padding: 5px; text-align: right;">Người tạo:</td>
-                <td style="border: 1px solid black; padding: 5px; text-align: left; width: 25%;">TaiTP</td>
-                <td style="border: 1px solid black; padding: 5px; text-align: right; width: 25%;">Ngày tạo:</td>
-                <td style="border: 1px solid black; padding: 5px; text-align: left; width: 25%;">2026-09-18</td>
-            </tr>
-            <tr>
-                <td style="border: 1px solid black; padding: 5px; text-align: right;">Tác nhân chính:</td>
-                <td style="border: 1px solid black; padding: 5px; text-align: left;">Member</td>
-                <td style="border: 1px solid black; padding: 5px; text-align: right;">Tác nhân phụ:</td>
-                <td style="border: 1px solid black; padding: 5px; text-align: left;">Không có</td>
-            </tr>
-            <tr>
-                <td style="border: 1px solid black; padding: 5px; text-align: right;">Kích hoạt (Trigger):</td>
-                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Member điều hướng đến
-                    phần Tủ sách từ menu hồ sơ người dùng.</td>
-            </tr>
-            <tr>
-                <td style="border: 1px solid black; padding: 5px; text-align: right;">Mô tả (Description):</td>
-                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Hiển thị danh sách tất
-                    cả các truyện mà thành viên đã lưu, hiển thị tiến độ đọc hiện tại và cung cấp liên kết nhanh để đọc
-                    tiếp.</td>
-            </tr>
-            <tr>
-                <td style="border: 1px solid black; padding: 5px; text-align: right;">Điều kiện tiên quyết:</td>
-                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
-                    <p>PRE-1. Người dùng phải được xác thực với vai trò Member.</p>
-                </td>
-            </tr>
-            <tr>
-                <td style="border: 1px solid black; padding: 5px; text-align: right;">Điều kiện hậu quyết:</td>
-                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
-                    <p>POST-1. Tác nhân xem được tủ sách cá nhân của họ.</p>
-                </td>
-            </tr>
-            <tr>
-                <td style="border: 1px solid black; padding: 5px; text-align: right;">Luồng cơ bản:</td>
-                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
-                    <p>A. Xem tủ sách thành công</p>
-                    <ol>
-                        <li>Member nhấn vào liên kết "Tủ sách" trong menu điều hướng.</li>
-                        <li>Hệ thống trích xuất dữ liệu phiên làm việc của tác nhân hiện tại.</li>
-                        <li>Hệ thống truy xuất tất cả các bản ghi tủ sách của thành viên từ cơ sở dữ liệu.</li>
-                        <li>Hệ thống truy xuất thông tin mô tả (tiêu đề, ảnh bìa, chương mới nhất) cho mỗi truyện đã
-                            lưu.</li>
-                        <li>Hệ thống tính toán tỷ lệ tiến độ đọc dựa trên chương đã đọc so với tổng số chương.</li>
-                        <li>Hệ thống kết xuất trang tủ sách, hiển thị danh sách truyện cùng thanh tiến độ và nút "Đọc
-                            tiếp".</li>
-                    </ol>
-                </td>
-            </tr>
-            <tr>
-                <td style="border: 1px solid black; padding: 5px; text-align: right;">Luồng thay thế:</td>
-                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
-                    <p>A.3 Tủ sách trống</p>
-                    <ol>
-                        <li>Hệ thống xác định thành viên không có bản ghi tủ sách nào.</li>
-                        <li>Hệ thống hiển thị hình ảnh minh họa trạng thái trống với thông báo mô tả phù hợp.</li>
-                        <li>Quay lại bước 1.</li>
-                    </ol>
-                </td>
-            </tr>
-            <tr>
-                <td style="border: 1px solid black; padding: 5px; text-align: right;">Ngoại lệ (Exceptions):</td>
-                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
-                    <p>EX-1 Phiên đăng nhập không hợp lệ</p>
-                    <ol>
-                        <li>Hệ thống hiển thị thông báo lỗi xác thực.</li>
-                        <li>Hệ thống chuyển hướng người dùng đến trang đăng nhập.</li>
-                    </ol>
-                </td>
-            </tr>
-            <tr>
-                <td style="border: 1px solid black; padding: 5px; text-align: right;">Mức độ ưu tiên:</td>
-                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High, Must Have</td>
-            </tr>
-            <tr>
-                <td style="border: 1px solid black; padding: 5px; text-align: right;">Tần suất sử dụng:</td>
-                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cao</td>
-            </tr>
-            <tr>
-                <td style="border: 1px solid black; padding: 5px; text-align: right;">Quy tắc nghiệp vụ:</td>
-                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">BR-15</td>
-            </tr>
-            <tr>
-                <td style="border: 1px solid black; padding: 5px; text-align: right;">Thông tin khác:</td>
-                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Không có.</td>
-            </tr>
-            <tr>
-                <td style="border: 1px solid black; padding: 5px; text-align: right;">Giả định:</td>
-                <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">
-                    <ul>
-                        <li>Thành viên có kết nối internet ổn định.</li>
-                    </ul>
-                </td>
-            </tr>
-        </table>
-    </div>
+<div class="uc-container" style="font-family: 'Calibri', sans-serif; font-size: 11pt; background-color: transparent; color: black;">
+    <style>
+        .uc-container, .uc-container table, .uc-container tr, .uc-container td, .uc-container th, .uc-container p, .uc-container ol, .uc-container ul, .uc-container li, .uc-container span, .uc-container strong, .uc-container b {
+            font-family: 'Calibri', sans-serif !important;
+            font-size: 11pt !important;
+            color: black !important;
+        }
+    </style>
+    <table style="border-collapse: collapse; width: 100%; border: 1px solid black;">
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Mã và Tên UC:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">UC-18-Xem Tủ Sách</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Người tạo:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">TaiTP</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Ngày tạo:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">2026-09-18</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Tác nhân chính:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Member</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Tác nhân phụ:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left; width: 30%;">Không có</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Kích hoạt (Trigger):</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Member chọn "Tủ sách" trên thanh điều hướng chính hoặc chọn "Tủ sách của tôi" ở thanh bên trang cá nhân.</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Mô tả (Description):</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Cho phép Member đã đăng nhập xem danh sách truyện trong Tủ sách cá nhân kèm thống kê tổng quan (tổng số truyện, đang đọc, đã xong), thanh tiến độ hoàn thành, lọc theo trạng thái đọc, tìm kiếm theo từ khóa, sắp xếp và phân trang (8 truyện/trang).</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Điều kiện tiên quyết:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>PRE-1.</b> Member đã đăng nhập vào hệ thống.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Điều kiện hậu quyết:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>POST-1.</b> Member xem được danh sách truyện phân trang trong Tủ sách cùng tiến độ đọc được tính toán động của từng truyện.</p></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Luồng cơ bản:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A. Xem Tủ sách thành công</b></p><ol><li>Member truy cập vào trang Tủ sách cá nhân.</li><li>Hệ thống xác thực phiên đăng nhập của Member.</li><li>Hệ thống truy xuất toàn bộ các bộ truyện chưa bị xóa mềm trong Tủ sách của Member cùng dữ liệu hoạt động đọc chương của Member.</li><li>Hệ thống tính toán số chương đã đọc, tổng số chương đã xuất bản, tỷ lệ phần trăm hoàn thành, chương đọc gần nhất, trạng thái đọc cho từng truyện và số liệu thống kê tổng quan.</li><li>Hệ thống áp dụng bộ lọc trạng thái, từ khóa tìm kiếm, thứ tự sắp xếp (mặc định theo thời gian thêm vào gần nhất) và phân trang 8 truyện mỗi trang.</li><li>Hệ thống hiển thị thống kê Tủ sách, các tab lọc ("Tất cả", "Đang đọc", "Đã xong"), ô tìm kiếm, hộp chọn sắp xếp, danh sách thẻ truyện kèm thanh tiến độ và nút hành động ("Đọc tiếp", "Chờ chương mới", hoặc "Đọc lại"), cùng thanh phân trang.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Luồng thay thế:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>A.3 Tủ sách trống hoặc không khớp bộ lọc</b></p><ol><li>Hệ thống xác định Tủ sách chưa có truyện nào hoặc không có truyện nào khớp với bộ lọc/từ khóa hiện tại.</li><li>Hệ thống hiển thị giao diện trạng thái trống kèm nút "Khám phá truyện ngay" (hoặc "Xem tất cả truyện trong tủ" khi đang lọc).</li><li>Quay lại bước 1.</li></ol><p><b>A.6.1 Lọc, tìm kiếm hoặc sắp xếp Tủ sách</b></p><ol><li>Member nhấn vào tab trạng thái ("Tất cả", "Đang đọc", "Đã xong"), nhập từ khóa vào ô tìm kiếm, hoặc chọn tiêu chí sắp xếp ("Mới đọc gần đây", "Tên truyện A - Z", "Tiến độ cao nhất").</li><li>Hệ thống tải lại trang Tủ sách theo bộ lọc, từ khóa và cách sắp xếp đã chọn.</li><li>Quay lại bước 1.</li></ol><p><b>A.6.2 Chuyển trang Tủ sách</b></p><ol><li>Member nhấn vào số trang hoặc nút "chevron_left" / "chevron_right" trên thanh phân trang.</li><li>Hệ thống tải trang danh sách gồm 8 truyện tương ứng.</li><li>Quay lại bước 1.</li></ol><p><b>A.6.3 Tiếp tục đọc từ Tủ sách</b></p><ol><li>Member nhấn vào nút "Đọc tiếp" hoặc "Đọc lại" trên thẻ truyện.</li><li>Hệ thống chuyển hướng Member đến trang đọc chương truyện tương ứng.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Ngoại lệ (Exceptions):</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><p><b>EX-1 Phiên không hợp lệ (Chưa đăng nhập)</b></p><ol><li>Hệ thống hiển thị thông báo lỗi xác thực.</li><li>Hệ thống chuyển hướng người dùng đến trang đăng nhập.</li></ol><p><b>EX-3 Lỗi kết nối cơ sở dữ liệu</b></p><ol><li>Hệ thống không thể truy xuất danh sách Tủ sách do lỗi cơ sở dữ liệu.</li><li>Hệ thống ghi nhận lỗi và hiển thị thông báo lỗi.</li></ol></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Mức độ ưu tiên:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">High, Must Have</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Tần suất sử dụng:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Rất cao</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Quy tắc nghiệp vụ:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">BR-13, BR-15</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Thông tin khác:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3">Phân trang cố định 8 truyện mỗi trang.<br/>Nếu truyện đang ra (ONGOING) và Member đã đọc hết tất cả các chương đã xuất bản, nút hành động sẽ bị vô hiệu hóa với nhãn "Chờ chương mới".</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px; text-align: right; width: 20%;">Giả định:</td>
+            <td style="border: 1px solid black; padding: 5px; text-align: left;" colspan="3"><ul><li>Member có kết nối internet ổn định.</li></ul></td>
+        </tr>
+    </table>
+</div>
 </body>
-
 </html>

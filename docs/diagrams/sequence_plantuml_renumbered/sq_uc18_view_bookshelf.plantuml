@@ -1,0 +1,124 @@
+@startuml sq_uc18_view_bookshelf
+<style>
+    sequenceDiagram{
+        FontSize 16
+
+        arrow {
+            ' Set the maximum width of the text on arrows
+            MaximumWidth 300
+        }
+        actor{
+            BackgroundColor white
+            LineThickness 1.0
+        }
+        participant{
+            BackgroundColor white
+            RoundCorner 0
+        }
+        database{
+            BackgroundColor white
+        }
+        groupHeader{
+            BackgroundColor white
+        }
+        referenceHeader{
+            BackgroundColor white
+        }
+        reference{
+            BackgroundColor white
+        }
+    }
+</style>
+
+hide footbox
+mainframe View Bookshelf
+
+actor Member as act
+participant "BookshelfPage" as view
+participant "LoginPage" as r_view
+participant "BookshelfController" as ctrl <<controller>>
+participant ":BookshelfService" as svc
+participant ":BookshelfItemDTO" as item_dto
+participant ":BookshelfPageDTO" as page_dto
+participant ":UserRepository" as user_repo
+participant ":BookshelfRepository" as bookshelf_repo
+participant ":ChapterRepository" as chapter_repo
+participant ":UserChapterActivityRepository" as activity_repo
+database Database as db
+
+act ++
+
+act -> view++: 1. Access bookshelf page
+view -> ctrl++: 2. GET /user/bookshelf
+
+ctrl -> ctrl++: 3. Check authentication status
+ctrl--
+alt User is not authenticated
+    ctrl -->> r_view: 4. Redirect to /login?redirect=/user/bookshelf
+    activate r_view
+    r_view -->> act: 5. Display login page
+    deactivate r_view
+else User is authenticated
+    ctrl -> svc++: 6. getBookshelfPage(email, filter, q, sort, page, 8)
+
+    svc -> user_repo++: 7. findByEmail(email)
+    user_repo -> db++: 8. Execute query
+    db -->> user_repo: 9. Return user data
+    db--
+    user_repo -->> svc: 10. Return user entity
+    user_repo--
+
+    svc -> bookshelf_repo++: 11. findAllByUserWithNovel(user)
+    bookshelf_repo -> db++: 12. Execute query
+    db -->> bookshelf_repo: 13. Return bookshelf entries
+    db--
+    bookshelf_repo -->> svc: 14. Return bookshelf entries
+    bookshelf_repo--
+
+    svc -> chapter_repo++: 15. countByNovelIdAndIsDeletedFalse(novelId)
+    chapter_repo -> db++: 16. Execute query
+    db -->> chapter_repo: 17. Return totalChapters
+    db--
+    chapter_repo -->> svc: 18. Return totalChapters
+    chapter_repo--
+
+    svc -> chapter_repo++: 19. existsByNovelIdAndPriceGreaterThanAndIsDeletedFalse(novelId, 0)
+    chapter_repo -> db++: 20. Execute query
+    db -->> chapter_repo: 21. Return hasVip
+    db--
+    chapter_repo -->> svc: 22. Return hasVip
+    chapter_repo--
+
+    svc -> activity_repo++: 23. findFirstByUserAndChapter_NovelAndIsReadTrueOrderByReadAtDescChapter_ChapterNumberDesc(user, novel)
+    activity_repo -> db++: 24. Execute query
+    db -->> activity_repo: 25. Return latest read activity
+    db--
+    activity_repo -->> svc: 26. Return latest read activity
+    activity_repo--
+
+    svc -> activity_repo++: 27. countByUserAndChapter_NovelAndIsReadTrue(user, novel)
+    activity_repo -> db++: 28. Execute query
+    db -->> activity_repo: 29. Return readCount
+    db--
+    activity_repo -->> svc: 30. Return readCount
+    activity_repo--
+
+    svc -> svc++: 31. Calculate progressPercentage, isCompleted, isCaughtUp, and readUrl
+    svc--
+
+    svc -> item_dto++: 32. Call BookshelfItemDTO(novel, progressPercentage, readUrl)
+    item_dto -->> svc--: 33. Return bookshelfItemDTO
+
+    svc -> svc++: 34. Filter by query and status tab, sort, and paginate (8 items/page)
+    svc--
+
+    svc -> page_dto++: 35. Call BookshelfPageDTO(pagedItems, counts, pagination)
+    page_dto -->> svc--: 36. Return bookshelfPageDTO
+
+    svc -->> ctrl--: 37. Return bookshelfPageDTO
+
+    ctrl -->> view--: 38. Return "user/bookshelf"
+    view -->> act--: 39. Display bookshelf items, reading progress, and statistics
+end
+
+@enduml

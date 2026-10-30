@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SDS - UC-18: View Bookshelf</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            line-height: 1.5;
+            color: #000000;
+            margin: 20px 30px;
+            background-color: #ffffff;
+        }
+        h2 { font-size: 15pt; font-weight: bold; color: #000000; margin-bottom: 8px; }
+        h3 { font-size: 13pt; font-weight: bold; font-style: italic; color: #000000; margin-top: 16px; margin-bottom: 8px; }
+        p { margin: 6px 0; font-family: 'Times New Roman', Times, serif; font-size: 12pt; color: #000000; }
+        .class-title { font-family: 'Times New Roman', Times, serif; font-size: 12pt; font-weight: bold; font-style: italic; color: #000000; margin-top: 14px; margin-bottom: 4px; }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            table-layout: fixed;
+            margin: 8px 0 18px 0;
+            border: 1px solid #000000;
+            color: #000000;
+        }
+        th, td {
+            border: 1px solid #000000;
+            padding: 6px 10px;
+            text-align: left;
+            vertical-align: top;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            color: #000000;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-word;
+        }
+        th {
+            background-color: #fbe5d6;
+            font-weight: bold;
+            color: #000000;
+        }
+        .col-no { width: 6%; text-align: center; color: #000000; }
+        .col-method { width: 28%; font-weight: bold; color: #000000; }
+        .col-desc { width: 66%; color: #000000; }
+        .sql-item { margin-top: 12px; margin-bottom: 4px; font-weight: bold; color: #000000; }
+        .sql-block {
+            margin: 4px 0 14px 0;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            color: #000000;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>4. View Bookshelf (UC-18)</h2>
+
+    <h3>b. Class Specifications</h3>
+
+    <p class="class-title"><b><i>BookshelfController Class</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">viewBookshelf</td>
+                <td class="col-desc">
+                    <b>- Input:</b> filter: String, q: String, sort: String, page: int, authentication: Authentication, model: Model.<br>
+                    <b>- Output:</b> String (View name "user/bookshelf" or redirect to "/login?redirect=/user/bookshelf").<br>
+                    <b>- Internal Method Processing:</b> Handles GET /user/bookshelf request. Verifies that the user is authenticated; if not, redirects to the login page. Invokes bookshelfService.getBookshelfPage(email, filter, q, sort, page, 8) to fetch filtered, sorted, and paginated bookshelf items (8 items per page) along with reading statistics, adds bookshelfPage to the Model, and returns the "user/bookshelf" view.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>BookshelfService Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">getBookshelfPage</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String, filter: String, query: String, sort: String, page: int, size: int.<br>
+                    <b>- Output:</b> BookshelfPageDTO.<br>
+                    <b>- Internal Method Processing:</b> Retrieves the member's personal bookshelf page with reading progress percentages, tab filtering, keyword search, sorting, and pagination.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>BookshelfServiceImpl Class</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">getBookshelfPage</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String, filter: String, query: String, sort: String, page: int, size: int.<br>
+                    <b>- Output:</b> BookshelfPageDTO.<br>
+                    <b>- Internal Method Processing:</b> Retrieves the User by email via userRepository.findByEmail() and fetches all saved bookshelf records with their associated non-deleted novels via bookshelfRepository.findAllByUserWithNovel(user). Maps each entry to a BookshelfItemDTO using mapToBookshelfItem(). Computes summary counts (totalCount, readingCount, completedCount), applies keyword search on title/author, filters by status tab (ALL, READING, COMPLETED), sorts by recent, name, or progress, paginates the list (8 items/page), and returns a BookshelfPageDTO.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">mapToBookshelfItem</td>
+                <td class="col-desc">
+                    <b>- Input:</b> user: User, bookshelf: Bookshelf.<br>
+                    <b>- Output:</b> BookshelfItemDTO.<br>
+                    <b>- Internal Method Processing:</b> Queries chapterRepository.countByNovelIdAndIsDeletedFalse() for total chapters and existsByNovelIdAndPriceGreaterThanAndIsDeletedFalse() for VIP badge detection. Queries userChapterActivityRepository for the latest read chapter and total read chapter count. Calculates progressPercentage (0–100%), completion flags (isCompleted, isCaughtUp), and target readUrl, then constructs and returns a BookshelfItemDTO.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>UserRepository Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">findByEmail</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String.<br>
+                    <b>- Output:</b> Optional&lt;User&gt;.<br>
+                    <b>- Internal Method Processing:</b> Retrieves the authenticated member's User entity by email.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>BookshelfRepository Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">findAllByUserWithNovel</td>
+                <td class="col-desc">
+                    <b>- Input:</b> user: User.<br>
+                    <b>- Output:</b> List&lt;Bookshelf&gt;.<br>
+                    <b>- Internal Method Processing:</b> Executes a JPQL JOIN FETCH query to load all bookshelf entries of the user along with their active (non-deleted) Novel entities ordered by added_at descending.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>ChapterRepository Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">countByNovelIdAndIsDeletedFalse</td>
+                <td class="col-desc">
+                    <b>- Input:</b> novelId: Integer.<br>
+                    <b>- Output:</b> long.<br>
+                    <b>- Internal Method Processing:</b> Counts the total number of non-deleted chapters belonging to the novel.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">existsByNovelIdAndPriceGreaterThanAndIsDeletedFalse</td>
+                <td class="col-desc">
+                    <b>- Input:</b> novelId: Integer, price: Integer (0).<br>
+                    <b>- Output:</b> boolean.<br>
+                    <b>- Internal Method Processing:</b> Checks whether the novel contains any non-deleted chapter with a price greater than 0 (VIP chapter).
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>UserChapterActivityRepository Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">findFirstByUserAndChapter_NovelAndIsReadTrueOrderByReadAtDescChapter_ChapterNumberDesc</td>
+                <td class="col-desc">
+                    <b>- Input:</b> user: User, novel: Novel.<br>
+                    <b>- Output:</b> Optional&lt;UserChapterActivity&gt;.<br>
+                    <b>- Internal Method Processing:</b> Retrieves the most recent read chapter activity of the user for the given novel to determine the current chapter bookmark.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">countByUserAndChapter_NovelAndIsReadTrue</td>
+                <td class="col-desc">
+                    <b>- Input:</b> user: User, novel: Novel.<br>
+                    <b>- Output:</b> long.<br>
+                    <b>- Internal Method Processing:</b> Counts the number of chapters read by the user in the specified novel to compute reading progress percentage.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>d. Database Queries</h3>
+
+    <p class="sql-item">1. Retrieve authenticated user by email</p>
+    <div class="sql-block">SELECT id, email, full_name, avatar_url, wallet_balance, status, created_at
+FROM users
+WHERE email = ?;</div>
+
+    <p class="sql-item">2. Retrieve all bookshelf entries with active novels for the user</p>
+    <div class="sql-block">SELECT b.id, b.user_id, b.novel_id, b.added_at,
+       n.id AS novel_id, n.title, n.slug, n.author, n.cover_url, n.status, n.is_deleted
+FROM bookshelves b
+INNER JOIN novels n ON b.novel_id = n.id
+WHERE b.user_id = ?
+  AND n.is_deleted = FALSE
+ORDER BY b.added_at DESC;</div>
+
+    <p class="sql-item">3. Count total non-deleted chapters of a novel</p>
+    <div class="sql-block">SELECT COUNT(id)
+FROM chapters
+WHERE novel_id = ?
+  AND is_deleted = FALSE;</div>
+
+    <p class="sql-item">4. Check if novel has paid VIP chapters</p>
+    <div class="sql-block">SELECT EXISTS (
+    SELECT 1
+    FROM chapters
+    WHERE novel_id = ?
+      AND price &gt; 0
+      AND is_deleted = FALSE
+);</div>
+
+    <p class="sql-item">5. Retrieve latest read chapter activity for a novel</p>
+    <div class="sql-block">SELECT uca.id, uca.user_id, uca.chapter_id, uca.is_read, uca.read_at,
+       c.chapter_number, c.title
+FROM user_chapter_activities uca
+INNER JOIN chapters c ON uca.chapter_id = c.id
+WHERE uca.user_id = ?
+  AND c.novel_id = ?
+  AND uca.is_read = TRUE
+ORDER BY uca.read_at DESC, c.chapter_number DESC
+LIMIT 1;</div>
+
+    <p class="sql-item">6. Count chapters read by user for a novel</p>
+    <div class="sql-block">SELECT COUNT(uca.id)
+FROM user_chapter_activities uca
+INNER JOIN chapters c ON uca.chapter_id = c.id
+WHERE uca.user_id = ?
+  AND c.novel_id = ?
+  AND uca.is_read = TRUE;</div>
+
+</body>
+</html>

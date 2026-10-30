@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SDS - UC-25: Audio Reader</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            line-height: 1.5;
+            color: #000000;
+            margin: 20px 30px;
+            background-color: #ffffff;
+        }
+        h2 { font-size: 15pt; font-weight: bold; color: #000000; margin-bottom: 8px; }
+        h3 { font-size: 13pt; font-weight: bold; font-style: italic; color: #000000; margin-top: 16px; margin-bottom: 8px; }
+        p { margin: 6px 0; font-family: 'Times New Roman', Times, serif; font-size: 12pt; color: #000000; }
+        .class-title { font-family: 'Times New Roman', Times, serif; font-size: 12pt; font-weight: bold; font-style: italic; color: #000000; margin-top: 14px; margin-bottom: 4px; }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            table-layout: fixed;
+            margin: 8px 0 18px 0;
+            border: 1px solid #000000;
+            color: #000000;
+        }
+        th, td {
+            border: 1px solid #000000;
+            padding: 6px 10px;
+            text-align: left;
+            vertical-align: top;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            color: #000000;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-word;
+        }
+        th {
+            background-color: #fbe5d6;
+            font-weight: bold;
+            color: #000000;
+        }
+        .col-no { width: 6%; text-align: center; color: #000000; }
+        .col-method { width: 28%; font-weight: bold; color: #000000; }
+        .col-desc { width: 66%; color: #000000; }
+        .sql-item { margin-top: 12px; margin-bottom: 4px; font-weight: bold; color: #000000; }
+        .sql-block {
+            margin: 4px 0 14px 0;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            color: #000000;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>7. Audio Reader (UC-25)</h2>
+
+    <h3>b. Class Specifications</h3>
+
+    <p class="class-title"><b><i>NovelController Class</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">readChapterBySlug</td>
+                <td class="col-desc">
+                    <b>- Input:</b> slug: String, chapterNumber: Integer, authentication: Authentication, request: HttpServletRequest, model: Model.<br>
+                    <b>- Output:</b> String (View name "novel/reading").<br>
+                    <b>- Internal Method Processing:</b> Handles GET /truyen/{slug}/chuong-{chapterNumber} request. Retrieves the public novel via novelService.getPublicNovelBySlug(slug) and published chapter via chapterService.getPublicChapter(novelId, chapterNumber). Evaluates chapter access permissions via chapterAccessService.checkAccess(novel, chapter, authentication). Supplies readable chapter paragraphs (paragraphs) and unlock flag (isChapterUnlocked) to the "novel/reading" view so the client-side Web Speech API (SpeechSynthesis) audio player can synthesize Vietnamese speech with sentence-level karaoke highlighting.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>NovelService Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">getPublicNovelBySlug</td>
+                <td class="col-desc">
+                    <b>- Input:</b> slug: String.<br>
+                    <b>- Output:</b> Novel.<br>
+                    <b>- Internal Method Processing:</b> Retrieves an active, non-archived novel entity by its URL slug.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>NovelServiceImpl Class</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">getPublicNovelBySlug</td>
+                <td class="col-desc">
+                    <b>- Input:</b> slug: String.<br>
+                    <b>- Output:</b> Novel.<br>
+                    <b>- Internal Method Processing:</b> Queries novelRepository.findBySlugAndIsDeletedFalseAndStatusNot(slug, "ARCHIVED") and returns the public novel or throws ResourceNotFoundException.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>ChapterService Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">getPublicChapter</td>
+                <td class="col-desc">
+                    <b>- Input:</b> novelId: Integer, chapterNumber: Integer.<br>
+                    <b>- Output:</b> Chapter.<br>
+                    <b>- Internal Method Processing:</b> Retrieves a published chapter entity by novel ID and chapter number.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>ChapterServiceImpl Class</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">getPublicChapter</td>
+                <td class="col-desc">
+                    <b>- Input:</b> novelId: Integer, chapterNumber: Integer.<br>
+                    <b>- Output:</b> Chapter.<br>
+                    <b>- Internal Method Processing:</b> Queries chapterRepository.findByNovelIdAndChapterNumberAndIsDeletedFalseAndStatusIn(novelId, chapterNumber, PUBLIC_STATUSES), sanitizes the chapter text, and returns the Chapter entity.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>ChapterAccessService Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">checkAccess</td>
+                <td class="col-desc">
+                    <b>- Input:</b> novel: Novel, chapter: Chapter, authentication: Authentication.<br>
+                    <b>- Output:</b> ChapterAccessDTO.<br>
+                    <b>- Internal Method Processing:</b> Verifies whether the chapter is readable (free or unlocked VIP) and returns the text paragraphs for audio synthesis.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>ChapterAccessServiceImpl Class</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">checkAccess</td>
+                <td class="col-desc">
+                    <b>- Input:</b> novel: Novel, chapter: Chapter, authentication: Authentication.<br>
+                    <b>- Output:</b> ChapterAccessDTO.<br>
+                    <b>- Internal Method Processing:</b> Invokes chapterAccessPolicy.resolve() to determine if the user has full reading/listening access. When readable, calls chapterPreviewBuilder.splitParagraphs(content) to segment the chapter into clean paragraphs and returns a ChapterAccessDTO.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>ChapterPreviewBuilder Class</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">splitParagraphs</td>
+                <td class="col-desc">
+                    <b>- Input:</b> content: String.<br>
+                    <b>- Output:</b> List&lt;String&gt;.<br>
+                    <b>- Internal Method Processing:</b> Splits chapter text into non-empty paragraph blocks rendered in the DOM for sentence-by-sentence TTS playback and karaoke highlighting.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">buildPreviewParagraphs</td>
+                <td class="col-desc">
+                    <b>- Input:</b> content: String, previewLimit: int.<br>
+                    <b>- Output:</b> List&lt;String&gt;.<br>
+                    <b>- Internal Method Processing:</b> Builds a limited preview paragraph list when a paid VIP chapter has not been unlocked (audio reader toolbar is disabled in locked state).
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>ChapterAccessPolicy Class</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">isPaid</td>
+                <td class="col-desc">
+                    <b>- Input:</b> chapter: Chapter.<br>
+                    <b>- Output:</b> boolean.<br>
+                    <b>- Internal Method Processing:</b> Checks if the chapter has status PUBLISHED_VIP and price greater than 0.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">isPrivileged</td>
+                <td class="col-desc">
+                    <b>- Input:</b> roleNames: Set&lt;String&gt;.<br>
+                    <b>- Output:</b> boolean.<br>
+                    <b>- Internal Method Processing:</b> Returns true if the authenticated user has ROLE_ADMIN or ROLE_STAFF.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">03</td>
+                <td class="col-method">resolve</td>
+                <td class="col-desc">
+                    <b>- Input:</b> chapter: Chapter, loggedIn: boolean, privileged: boolean, alreadyUnlocked: boolean, walletBalance: int.<br>
+                    <b>- Output:</b> ChapterAccessStatus.<br>
+                    <b>- Internal Method Processing:</b> Resolves whether the chapter is readable (FREE, STAFF_BYPASS, or UNLOCKED) so the Audio Reader feature can be enabled.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>NovelRepository Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">findBySlugAndIsDeletedFalseAndStatusNot</td>
+                <td class="col-desc">
+                    <b>- Input:</b> slug: String, status: String.<br>
+                    <b>- Output:</b> Optional&lt;Novel&gt;.<br>
+                    <b>- Internal Method Processing:</b> Queries the database for a non-deleted, non-archived novel matching the given slug.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>ChapterRepository Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">findByNovelIdAndChapterNumberAndIsDeletedFalseAndStatusIn</td>
+                <td class="col-desc">
+                    <b>- Input:</b> novelId: Integer, chapterNumber: Integer, statuses: List&lt;String&gt;.<br>
+                    <b>- Output:</b> Optional&lt;Chapter&gt;.<br>
+                    <b>- Internal Method Processing:</b> Queries the database for a non-deleted published chapter by novel ID and chapter number.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>d. Database Queries</h3>
+
+    <p class="sql-item">1. Retrieve public novel by slug</p>
+    <div class="sql-block">SELECT id, title, slug, author, status, is_deleted
+FROM novels
+WHERE slug = ?
+  AND is_deleted = FALSE
+  AND status &lt;&gt; 'ARCHIVED';</div>
+
+    <p class="sql-item">2. Retrieve published chapter content for Audio TTS playback</p>
+    <div class="sql-block">SELECT id, novel_id, chapter_number, title, content, price, status, is_deleted
+FROM chapters
+WHERE novel_id = ?
+  AND chapter_number = ?
+  AND is_deleted = FALSE
+  AND status IN ('PUBLISHED_REGULAR', 'PUBLISHED_VIP', 'PUBLISHED');</div>
+
+</body>
+</html>

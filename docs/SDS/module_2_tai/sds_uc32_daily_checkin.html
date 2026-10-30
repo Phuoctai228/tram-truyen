@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SDS - UC-32: Daily Check-in</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            line-height: 1.5;
+            color: #000000;
+            margin: 20px 30px;
+            background-color: #ffffff;
+        }
+        h2 { font-size: 15pt; font-weight: bold; color: #000000; margin-bottom: 8px; }
+        h3 { font-size: 13pt; font-weight: bold; font-style: italic; color: #000000; margin-top: 16px; margin-bottom: 8px; }
+        p { margin: 6px 0; font-family: 'Times New Roman', Times, serif; font-size: 12pt; color: #000000; }
+        .class-title { font-family: 'Times New Roman', Times, serif; font-size: 12pt; font-weight: bold; font-style: italic; color: #000000; margin-top: 14px; margin-bottom: 4px; }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            table-layout: fixed;
+            margin: 8px 0 18px 0;
+            border: 1px solid #000000;
+            color: #000000;
+        }
+        th, td {
+            border: 1px solid #000000;
+            padding: 6px 10px;
+            text-align: left;
+            vertical-align: top;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            color: #000000;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-word;
+        }
+        th {
+            background-color: #fbe5d6;
+            font-weight: bold;
+            color: #000000;
+        }
+        .col-no { width: 6%; text-align: center; color: #000000; }
+        .col-method { width: 28%; font-weight: bold; color: #000000; }
+        .col-desc { width: 66%; color: #000000; }
+        .sql-item { margin-top: 12px; margin-bottom: 4px; font-weight: bold; color: #000000; }
+        .sql-block {
+            margin: 4px 0 14px 0;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            color: #000000;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>11. Daily Check-in (UC-32)</h2>
+
+    <h3>b. Class Specifications</h3>
+
+    <p class="class-title"><b><i>UserController Class</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">viewCheckin</td>
+                <td class="col-desc">
+                    <b>- Input:</b> authentication: Authentication, model: Model.<br>
+                    <b>- Output:</b> String (View name "user/checkin" or redirect to "/login").<br>
+                    <b>- Internal Method Processing:</b> Handles GET /user/checkin request. Verifies user authentication, retrieves current check-in streak and 7-day roadmap via dailyCheckinService.getCheckinStatus(email) and wallet balance via walletService.getBalance(email), binds them to the model, and renders the check-in page.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">getCheckinStatusApi</td>
+                <td class="col-desc">
+                    <b>- Input:</b> authentication: Authentication.<br>
+                    <b>- Output:</b> ResponseEntity&lt;DailyCheckinStatusDTO&gt;.<br>
+                    <b>- Internal Method Processing:</b> Handles GET /user/checkin/api/status AJAX request for the check-in popup widget. Returns HTTP 401 if unauthenticated; otherwise returns HTTP 200 with the user's DailyCheckinStatusDTO.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">03</td>
+                <td class="col-method">performCheckin</td>
+                <td class="col-desc">
+                    <b>- Input:</b> authentication: Authentication, request: HttpServletRequest, redirectAttributes: RedirectAttributes.<br>
+                    <b>- Output:</b> Object (ResponseEntity&lt;DailyCheckinResultDTO&gt; for AJAX or redirect URL String).<br>
+                    <b>- Internal Method Processing:</b> Handles POST /user/checkin request. Verifies user authentication, executes the daily check-in reward claim via dailyCheckinService.performCheckin(email), and returns the DailyCheckinResultDTO as JSON (for AJAX requests) or sets flash attributes and redirects to /user/checkin.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>DailyCheckinService Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">getCheckinStatus</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String.<br>
+                    <b>- Output:</b> DailyCheckinStatusDTO.<br>
+                    <b>- Internal Method Processing:</b> Retrieves the user's current check-in state, consecutive day streak, and 7-day reward roadmap.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">performCheckin</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String.<br>
+                    <b>- Output:</b> DailyCheckinResultDTO.<br>
+                    <b>- Internal Method Processing:</b> Records today's check-in, calculates the streak reward Coins, credits the user's wallet, and returns the check-in result.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>DailyCheckinServiceImpl Class</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">getCheckinStatus</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String.<br>
+                    <b>- Output:</b> DailyCheckinStatusDTO.<br>
+                    <b>- Internal Method Processing:</b> Resolves the User by email, checks if a record exists for today via checkinRepository.findByUserAndCheckinDate(user, today), and inspects the most recent check-in via checkinRepository.findTopByUserOrderByCheckinDateDesc(user). Determines the active 1..7 cycle day (resetting to Day 1 if the streak was broken or completed Day 7), counts total check-in days via checkinRepository.countByUser(user), sums accumulated reward coins via checkinRepository.sumRewardCoinByUser(user), constructs the 7-day roadmap via buildRoadmap(), and returns DailyCheckinStatusDTO.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">performCheckin</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String.<br>
+                    <b>- Output:</b> DailyCheckinResultDTO.<br>
+                    <b>- Internal Method Processing:</b> Resolves the User by email and checks checkinRepository.existsByUserAndCheckinDate(user, today); if already checked in today, returns an unsuccessful DailyCheckinResultDTO. Otherwise, inspects yesterday's check-in via checkinRepository.findByUserAndCheckinDate(user, yesterday) to compute newStreak (1 to 7), determines rewardCoin (15 Coins on Day 7, 5 Coins on Days 1-6), saves the new UserDailyCheckin record, credits the user's wallet via walletService.addCoins(user, rewardCoin, "GIFT_COIN", checkinId, description), and returns the updated DailyCheckinResultDTO.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">03</td>
+                <td class="col-method">buildRoadmap</td>
+                <td class="col-desc">
+                    <b>- Input:</b> currentCycleDay: int, isCheckedInToday: boolean.<br>
+                    <b>- Output:</b> List&lt;DayRoadmapItemDTO&gt;.<br>
+                    <b>- Internal Method Processing:</b> Generates the 7-day check-in roadmap items (Days 1-6 with 5 Coins, Day 7 with 15 Coins) and assigns each day's status (CLAIMED, TODAY, or UPCOMING).
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>WalletService Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">addCoins</td>
+                <td class="col-desc">
+                    <b>- Input:</b> user: User, amount: int, transactionType: String, referenceId: Integer, description: String.<br>
+                    <b>- Output:</b> void.<br>
+                    <b>- Internal Method Processing:</b> Credits Coins to the user's wallet balance and records a ledger transaction.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">getBalance</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String.<br>
+                    <b>- Output:</b> int.<br>
+                    <b>- Internal Method Processing:</b> Retrieves the current Coin balance of the user.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>WalletServiceImpl Class</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">addCoins</td>
+                <td class="col-desc">
+                    <b>- Input:</b> user: User, amount: int, transactionType: String, referenceId: Integer, description: String.<br>
+                    <b>- Output:</b> void.<br>
+                    <b>- Internal Method Processing:</b> Acquires a pessimistic write lock on the user row via userRepository.findByIdWithLock(userId), adds amount to walletBalance, saves the updated user via userRepository.save(lockedUser), and inserts a Transaction record with type = "GIFT_COIN" via transactionRepository.save(tx).
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">getBalance</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String.<br>
+                    <b>- Output:</b> int.<br>
+                    <b>- Internal Method Processing:</b> Looks up the User by email and returns their walletBalance (defaulting to 0 if null).
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>UserRepository Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">findByEmail</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String.<br>
+                    <b>- Output:</b> Optional&lt;User&gt;.<br>
+                    <b>- Internal Method Processing:</b> Finds a user entity by email address.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">findByIdWithLock</td>
+                <td class="col-desc">
+                    <b>- Input:</b> id: Integer.<br>
+                    <b>- Output:</b> Optional&lt;User&gt;.<br>
+                    <b>- Internal Method Processing:</b> Queries the user by ID with a PESSIMISTIC_WRITE lock (SELECT ... FOR UPDATE) before updating wallet balance.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">03</td>
+                <td class="col-method">save</td>
+                <td class="col-desc">
+                    <b>- Input:</b> user: User.<br>
+                    <b>- Output:</b> User.<br>
+                    <b>- Internal Method Processing:</b> Persists the updated wallet_balance to the users table.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>UserDailyCheckinRepository Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">findByUserAndCheckinDate</td>
+                <td class="col-desc">
+                    <b>- Input:</b> user: User, checkinDate: LocalDate.<br>
+                    <b>- Output:</b> Optional&lt;UserDailyCheckin&gt;.<br>
+                    <b>- Internal Method Processing:</b> Retrieves the user's check-in record for a specific calendar date (today or yesterday).
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">findTopByUserOrderByCheckinDateDesc</td>
+                <td class="col-desc">
+                    <b>- Input:</b> user: User.<br>
+                    <b>- Output:</b> Optional&lt;UserDailyCheckin&gt;.<br>
+                    <b>- Internal Method Processing:</b> Retrieves the user's most recent check-in record ordered by checkin_date DESC.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">03</td>
+                <td class="col-method">existsByUserAndCheckinDate</td>
+                <td class="col-desc">
+                    <b>- Input:</b> user: User, checkinDate: LocalDate.<br>
+                    <b>- Output:</b> boolean.<br>
+                    <b>- Internal Method Processing:</b> Checks whether the user has already checked in on the specified date.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">04</td>
+                <td class="col-method">countByUser</td>
+                <td class="col-desc">
+                    <b>- Input:</b> user: User.<br>
+                    <b>- Output:</b> long.<br>
+                    <b>- Internal Method Processing:</b> Counts the total number of daily check-ins completed by the user.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">05</td>
+                <td class="col-method">sumRewardCoinByUser</td>
+                <td class="col-desc">
+                    <b>- Input:</b> user: User.<br>
+                    <b>- Output:</b> Long.<br>
+                    <b>- Internal Method Processing:</b> Calculates the total accumulated reward coins earned by the user across all daily check-ins.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">06</td>
+                <td class="col-method">save</td>
+                <td class="col-desc">
+                    <b>- Input:</b> checkin: UserDailyCheckin.<br>
+                    <b>- Output:</b> UserDailyCheckin.<br>
+                    <b>- Internal Method Processing:</b> Inserts a new daily check-in record into the user_daily_checkins table.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>TransactionRepository Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">save</td>
+                <td class="col-desc">
+                    <b>- Input:</b> transaction: Transaction.<br>
+                    <b>- Output:</b> Transaction.<br>
+                    <b>- Internal Method Processing:</b> Inserts a new reward Coin ledger transaction (type = 'GIFT_COIN') into the transactions table.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>d. Database Queries</h3>
+
+    <p class="sql-item">1. Retrieve authenticated user by email</p>
+    <div class="sql-block">SELECT id, email, full_name, wallet_balance, status
+FROM users
+WHERE email = ?;</div>
+
+    <p class="sql-item">2. Find user check-in record for a specific date</p>
+    <div class="sql-block">SELECT id, user_id, checkin_date, reward_coin, streak_count, created_at
+FROM user_daily_checkins
+WHERE user_id = ?
+  AND checkin_date = ?;</div>
+
+    <p class="sql-item">3. Retrieve most recent check-in record for streak calculation</p>
+    <div class="sql-block">SELECT id, user_id, checkin_date, reward_coin, streak_count, created_at
+FROM user_daily_checkins
+WHERE user_id = ?
+ORDER BY checkin_date DESC
+LIMIT 1;</div>
+
+    <p class="sql-item">4. Count total check-in days for user</p>
+    <div class="sql-block">SELECT COUNT(id)
+FROM user_daily_checkins
+WHERE user_id = ?;</div>
+
+    <p class="sql-item">5. Calculate total accumulated check-in reward coins for user</p>
+    <div class="sql-block">SELECT COALESCE(SUM(reward_coin), 0)
+FROM user_daily_checkins
+WHERE user_id = ?;</div>
+
+    <p class="sql-item">6. Check if user has already checked in today</p>
+    <div class="sql-block">SELECT EXISTS (
+    SELECT 1
+    FROM user_daily_checkins
+    WHERE user_id = ?
+      AND checkin_date = CURRENT_DATE
+);</div>
+
+    <p class="sql-item">7. Insert new daily check-in record</p>
+    <div class="sql-block">INSERT INTO user_daily_checkins (user_id, checkin_date, reward_coin, streak_count, created_at)
+VALUES (?, CURRENT_DATE, ?, ?, CURRENT_TIMESTAMP)
+RETURNING id;</div>
+
+    <p class="sql-item">8. Lock user row before crediting check-in reward Coins</p>
+    <div class="sql-block">SELECT id, email, full_name, wallet_balance, status
+FROM users
+WHERE id = ?
+FOR UPDATE;</div>
+
+    <p class="sql-item">9. Update user wallet balance with reward Coins</p>
+    <div class="sql-block">UPDATE users
+SET wallet_balance = ?,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = ?;</div>
+
+    <p class="sql-item">10. Insert GIFT_COIN reward transaction into wallet ledger</p>
+    <div class="sql-block">INSERT INTO transactions (user_id, amount, balance_after, type, reference_id, description, created_at)
+VALUES (?, ?, ?, 'GIFT_COIN', ?, ?, CURRENT_TIMESTAMP)
+RETURNING id;</div>
+
+</body>
+</html>

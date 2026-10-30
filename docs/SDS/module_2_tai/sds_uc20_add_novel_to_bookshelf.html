@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SDS - UC-20: Add Novel to Bookshelf</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            line-height: 1.5;
+            color: #000000;
+            margin: 20px 30px;
+            background-color: #ffffff;
+        }
+        h2 { font-size: 15pt; font-weight: bold; color: #000000; margin-bottom: 8px; }
+        h3 { font-size: 13pt; font-weight: bold; font-style: italic; color: #000000; margin-top: 16px; margin-bottom: 8px; }
+        p { margin: 6px 0; font-family: 'Times New Roman', Times, serif; font-size: 12pt; color: #000000; }
+        .class-title { font-family: 'Times New Roman', Times, serif; font-size: 12pt; font-weight: bold; font-style: italic; color: #000000; margin-top: 14px; margin-bottom: 4px; }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            table-layout: fixed;
+            margin: 8px 0 18px 0;
+            border: 1px solid #000000;
+            color: #000000;
+        }
+        th, td {
+            border: 1px solid #000000;
+            padding: 6px 10px;
+            text-align: left;
+            vertical-align: top;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            color: #000000;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-word;
+        }
+        th {
+            background-color: #fbe5d6;
+            font-weight: bold;
+            color: #000000;
+        }
+        .col-no { width: 6%; text-align: center; color: #000000; }
+        .col-method { width: 28%; font-weight: bold; color: #000000; }
+        .col-desc { width: 66%; color: #000000; }
+        .sql-item { margin-top: 12px; margin-bottom: 4px; font-weight: bold; color: #000000; }
+        .sql-block {
+            margin: 4px 0 14px 0;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            color: #000000;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>6. Add Novel to Bookshelf (UC-20)</h2>
+
+    <h3>b. Class Specifications</h3>
+
+    <p class="class-title"><b><i>BookshelfController Class</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">addNovelToBookshelf</td>
+                <td class="col-desc">
+                    <b>- Input:</b> novelId: Integer, source: String, authentication: Authentication, redirectAttributes: RedirectAttributes.<br>
+                    <b>- Output:</b> String (Redirect URL).<br>
+                    <b>- Internal Method Processing:</b> Handles POST /user/bookshelf/{novelId} request. Checks whether the user is authenticated; if not, redirects to /login. Invokes bookshelfService.addNovelToBookshelf(email, novelId), attaches a success or error flash message to redirectAttributes, and redirects back to the source page (e.g., /novel/{novelId} or homepage).
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">toggleBookshelfAjax</td>
+                <td class="col-desc">
+                    <b>- Input:</b> novelId: Integer, authentication: Authentication.<br>
+                    <b>- Output:</b> ResponseEntity&lt;?&gt;.<br>
+                    <b>- Internal Method Processing:</b> Handles POST /api/user/bookshelf/{novelId}/toggle AJAX request. Validates authentication, checks if the novel is already in the bookshelf via bookshelfService.isNovelInBookshelf(email, novelId), and if not present, calls bookshelfService.addNovelToBookshelf(email, novelId) and returns a JSON response with inBookshelf: true.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>BookshelfService Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">addNovelToBookshelf</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String, novelId: Integer.<br>
+                    <b>- Output:</b> void.<br>
+                    <b>- Internal Method Processing:</b> Adds the specified novel to the authenticated member's personal bookshelf.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">isNovelInBookshelf</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String, novelId: Integer.<br>
+                    <b>- Output:</b> boolean.<br>
+                    <b>- Internal Method Processing:</b> Checks whether the specified novel already exists in the member's bookshelf.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>BookshelfServiceImpl Class</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">addNovelToBookshelf</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String, novelId: Integer.<br>
+                    <b>- Output:</b> void.<br>
+                    <b>- Internal Method Processing:</b> Retrieves the User by email via userRepository.findByEmail(email) and the active Novel by ID via novelRepository.findByIdAndIsDeletedFalse(novelId) (throwing ResourceNotFoundException if not found). Checks for duplicate bookmarking via bookshelfRepository.existsByUserAndNovel(user, novel) and throws DuplicateResourceException if already present. Otherwise, instantiates a new Bookshelf(user, novel) entity and persists it via bookshelfRepository.save(bookshelf).
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">isNovelInBookshelf</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String, novelId: Integer.<br>
+                    <b>- Output:</b> boolean.<br>
+                    <b>- Internal Method Processing:</b> Retrieves the User and Novel entities and returns the boolean result of bookshelfRepository.existsByUserAndNovel(user, novel).
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>BookshelfRepository Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">existsByUserAndNovel</td>
+                <td class="col-desc">
+                    <b>- Input:</b> user: User, novel: Novel.<br>
+                    <b>- Output:</b> boolean.<br>
+                    <b>- Internal Method Processing:</b> Checks whether a bookshelf record already exists for the specified user and novel pair.
+                </td>
+            </tr>
+            <tr>
+                <td class="col-no">02</td>
+                <td class="col-method">save</td>
+                <td class="col-desc">
+                    <b>- Input:</b> bookshelf: Bookshelf.<br>
+                    <b>- Output:</b> Bookshelf.<br>
+                    <b>- Internal Method Processing:</b> Inserts the new Bookshelf record into the bookshelves table.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>UserRepository Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">findByEmail</td>
+                <td class="col-desc">
+                    <b>- Input:</b> email: String.<br>
+                    <b>- Output:</b> Optional&lt;User&gt;.<br>
+                    <b>- Internal Method Processing:</b> Retrieves the authenticated member's User entity by email address.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="class-title"><b><i>NovelRepository Interface</i></b></p>
+    <table>
+        <colgroup>
+            <col class="col-no">
+            <col class="col-method">
+            <col class="col-desc">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="col-no">No</th>
+                <th class="col-method">Method</th>
+                <th class="col-desc">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="col-no">01</td>
+                <td class="col-method">findByIdAndIsDeletedFalse</td>
+                <td class="col-desc">
+                    <b>- Input:</b> id: Integer.<br>
+                    <b>- Output:</b> Optional&lt;Novel&gt;.<br>
+                    <b>- Internal Method Processing:</b> Finds the non-deleted Novel entity by its primary key ID.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>d. Database Queries</h3>
+
+    <p class="sql-item">1. Retrieve authenticated user by email</p>
+    <div class="sql-block">SELECT id, email, full_name, status
+FROM users
+WHERE email = ?;</div>
+
+    <p class="sql-item">2. Retrieve active novel by ID</p>
+    <div class="sql-block">SELECT id, title, slug, author, status, is_deleted
+FROM novels
+WHERE id = ?
+  AND is_deleted = FALSE;</div>
+
+    <p class="sql-item">3. Check if novel already exists in user's bookshelf</p>
+    <div class="sql-block">SELECT EXISTS (
+    SELECT 1
+    FROM bookshelves
+    WHERE user_id = ?
+      AND novel_id = ?
+);</div>
+
+    <p class="sql-item">4. Insert new bookshelf entry</p>
+    <div class="sql-block">INSERT INTO bookshelves (user_id, novel_id, added_at)
+VALUES (?, ?, CURRENT_TIMESTAMP)
+RETURNING id, user_id, novel_id, added_at;</div>
+
+</body>
+</html>
