@@ -41,7 +41,8 @@ public class UserStatusCheckFilter extends OncePerRequestFilter {
                 || "/login".equals(path)
                 || "/logout".equals(path)
                 || "/register".equals(path)
-                || "/verify-otp".equals(path);
+                || "/verify-otp".equals(path)
+                || "/resend-otp".equals(path);
     }
 
     @Override

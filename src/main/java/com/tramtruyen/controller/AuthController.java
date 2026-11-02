@@ -112,14 +112,34 @@ public class AuthController {
     }
 
     @GetMapping("/verify-otp")
-    public String showVerifyOtpPage(@org.springframework.web.bind.annotation.RequestParam("email") String email, Model model) {
+    public String showVerifyOtpPage(@RequestParam("email") String email,
+                                    @RequestParam(value = "resent", required = false) Boolean resent,
+                                    Model model) {
         model.addAttribute("email", email);
+        if (Boolean.TRUE.equals(resent) && !model.containsAttribute("successMessage")) {
+            model.addAttribute("successMessage", "Tài khoản chưa được kích hoạt. Mã OTP mới đã được gửi đến email của bạn.");
+        }
         return "authentication/verify-otp";
     }
 
+    @PostMapping("/resend-otp")
+    public String resendOtp(@RequestParam("email") String email,
+                            RedirectAttributes redirectAttributes) {
+        try {
+            authService.resendVerificationOtp(email);
+            redirectAttributes.addFlashAttribute("successMessage", "Mã OTP mới đã được gửi đến email của bạn.");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("errorMessage", "Đã xảy ra lỗi hệ thống: " + e.getMessage());
+        }
+        return "redirect:/verify-otp?email=" + email;
+    }
+
     @PostMapping("/verify-otp")
-    public String processVerifyOtp(@org.springframework.web.bind.annotation.RequestParam("email") String email,
-                                   @org.springframework.web.bind.annotation.RequestParam("otpCode") String otpCode,
+    public String processVerifyOtp(@RequestParam("email") String email,
+                                   @RequestParam("otpCode") String otpCode,
                                    Model model,
                                    RedirectAttributes redirectAttributes) {
         try {
@@ -156,7 +176,7 @@ public class AuthController {
     }
 
     @PostMapping("/forgot-password")
-    public String processForgotPassword(@org.springframework.web.bind.annotation.RequestParam("email") String email,
+    public String processForgotPassword(@RequestParam("email") String email,
                                         Model model,
                                         RedirectAttributes redirectAttributes) {
         try {
@@ -174,14 +194,14 @@ public class AuthController {
     }
 
     @GetMapping("/forgot-password/verify-otp")
-    public String showForgotPasswordVerifyOtpPage(@org.springframework.web.bind.annotation.RequestParam("email") String email, Model model) {
+    public String showForgotPasswordVerifyOtpPage(@RequestParam("email") String email, Model model) {
         model.addAttribute("email", email);
         return "authentication/forgot-password-verify-otp";
     }
 
     @PostMapping("/forgot-password/verify-otp")
-    public String processForgotPasswordVerifyOtp(@org.springframework.web.bind.annotation.RequestParam("email") String email,
-                                                 @org.springframework.web.bind.annotation.RequestParam("otpCode") String otpCode,
+    public String processForgotPasswordVerifyOtp(@RequestParam("email") String email,
+                                                 @RequestParam("otpCode") String otpCode,
                                                  Model model,
                                                  HttpServletRequest request) {
         try {
@@ -211,8 +231,8 @@ public class AuthController {
     }
 
     @PostMapping("/forgot-password/reset")
-    public String processResetPassword(@org.springframework.web.bind.annotation.RequestParam("newPassword") String newPassword,
-                                       @org.springframework.web.bind.annotation.RequestParam("confirmPassword") String confirmPassword,
+    public String processResetPassword(@RequestParam("newPassword") String newPassword,
+                                       @RequestParam("confirmPassword") String confirmPassword,
                                        HttpServletRequest request,
                                        Model model,
                                        RedirectAttributes redirectAttributes) {
