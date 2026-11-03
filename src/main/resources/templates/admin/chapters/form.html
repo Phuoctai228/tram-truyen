@@ -27,9 +27,12 @@
                     data-chapter-form>
                     <div class="form-grid chapter-fields">
                         <div class="form-field">
-                            <label for="chapterNumber">Số chương</label>
+                            <label for="chapterNumber">STT chương</label>
                             <input id="chapterNumber" type="number" min="1" th:field="*{chapterNumber}"
                                 placeholder="Ví dụ: 1">
+                            <small th:if="${pageTitle == 'Tạo chương mới'}" class="field-hint">
+                                Hệ thống tự động điền số trống tiếp theo; bạn vẫn có thể chỉnh sửa.
+                            </small>
                             <small class="field-error" th:errors="*{chapterNumber}"></small>
                         </div>
                         <div class="form-field">
