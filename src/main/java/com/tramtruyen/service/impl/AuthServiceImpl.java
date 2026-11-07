@@ -66,18 +66,44 @@ public class AuthServiceImpl implements AuthService {
 
         user = userRepository.save(user);
 
-        // Generate OTP
+        // Generate and send OTP
+        createAndSendVerificationOtp(user);
+    }
+
+    @Override
+    @Transactional
+    public void resendVerificationOtp(String email) {
+        if (email == null || email.isBlank()) {
+            throw new IllegalArgumentException("Email không được để trống.");
+        }
+
+        User user = userRepository.findByEmail(email.trim())
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy tài khoản với email này."));
+
+        if ("ACTIVE".equalsIgnoreCase(user.getStatus())) {
+            throw new IllegalArgumentException("Tài khoản đã được kích hoạt.");
+        }
+
+        if ("BANNED".equalsIgnoreCase(user.getStatus())) {
+            throw new IllegalArgumentException("Tài khoản đã bị khóa, không thể gửi mã xác thực.");
+        }
+
+        createAndSendVerificationOtp(user);
+    }
+
+    private void createAndSendVerificationOtp(User user) {
+        tokenRepository.deleteByUser(user);
+
         String otp = String.format("%06d", new Random().nextInt(1000000));
-        
+
         EmailVerificationToken token = EmailVerificationToken.builder()
                 .user(user)
                 .otpCode(otp)
                 .expiryDate(LocalDateTime.now().plusMinutes(15))
                 .build();
-                
+
         tokenRepository.save(token);
 
-        // Send Email
         emailService.sendOtpEmail(user.getEmail(), otp);
     }
 
