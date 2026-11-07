@@ -15,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -56,6 +57,43 @@ class ChapterServiceImplTest {
         assertThat(result.getStatus()).isEqualTo("DRAFT");
         assertThat(result.getPrice()).isZero();
         verify(chapterRepository).save(any());
+    }
+
+    @Test
+    void getNextAvailableChapterNumberStartsAtOneForEmptyNovel() {
+        Novel novel = Novel.builder().id(1).isDeleted(false).build();
+        when(novelRepository.findByIdAndIsDeletedFalse(1)).thenReturn(Optional.of(novel));
+        when(chapterRepository.findAllByNovelIdAndIsDeletedFalseOrderByChapterNumberAsc(1))
+                .thenReturn(List.of());
+
+        assertThat(chapterService.getNextAvailableChapterNumber(1)).isEqualTo(1);
+    }
+
+    @Test
+    void getNextAvailableChapterNumberReturnsFirstGap() {
+        Novel novel = Novel.builder().id(1).isDeleted(false).build();
+        when(novelRepository.findByIdAndIsDeletedFalse(1)).thenReturn(Optional.of(novel));
+        when(chapterRepository.findAllByNovelIdAndIsDeletedFalseOrderByChapterNumberAsc(1))
+                .thenReturn(List.of(
+                        com.tramtruyen.entity.Chapter.builder().chapterNumber(1).build(),
+                        com.tramtruyen.entity.Chapter.builder().chapterNumber(2).build(),
+                        com.tramtruyen.entity.Chapter.builder().chapterNumber(4).build()));
+
+        assertThat(chapterService.getNextAvailableChapterNumber(1)).isEqualTo(3);
+    }
+
+    @Test
+    void getNextAvailableChapterNumberReusesSoftDeletedNumber() {
+        Novel novel = Novel.builder().id(1).isDeleted(false).build();
+        when(novelRepository.findByIdAndIsDeletedFalse(1)).thenReturn(Optional.of(novel));
+        when(chapterRepository.findAllByNovelIdAndIsDeletedFalseOrderByChapterNumberAsc(1))
+                .thenReturn(List.of(
+                        com.tramtruyen.entity.Chapter.builder().chapterNumber(1).build(),
+                        com.tramtruyen.entity.Chapter.builder().chapterNumber(2).build(),
+                        com.tramtruyen.entity.Chapter.builder().chapterNumber(3).build(),
+                        com.tramtruyen.entity.Chapter.builder().chapterNumber(4).build()));
+
+        assertThat(chapterService.getNextAvailableChapterNumber(1)).isEqualTo(5);
     }
 
     @Test

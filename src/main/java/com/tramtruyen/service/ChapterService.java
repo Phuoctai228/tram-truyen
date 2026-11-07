@@ -11,6 +11,14 @@ public interface ChapterService {
 
     List<Chapter> findNovelChapters(Integer novelId);
 
+    /**
+     * Finds the smallest positive chapter number not used by an active chapter.
+     *
+     * @param novelId the novel whose chapter numbers should be inspected
+     * @return the next available positive chapter number
+     */
+    int getNextAvailableChapterNumber(Integer novelId);
+
     Chapter createChapter(Integer novelId, ChapterForm form);
 
     Chapter createChapter(Integer novelId, ChapterForm form, ChapterSaveAction action);
