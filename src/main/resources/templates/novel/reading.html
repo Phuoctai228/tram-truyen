@@ -54,50 +54,42 @@
   th:data-novel-slug="${novel.slug}" th:data-chapter-number="${chapter.chapterNumber}"
   th:data-is-unlocked="${isChapterUnlocked}" th:data-is-vip="${isVip}" th:data-can-afford="${canAfford}"
   th:data-logged-in="${isLoggedIn}">
-  <header class="fixed top-0 w-full z-50 backdrop-blur-md shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
-    <div class="h-14 max-w-5xl mx-auto px-4 sm:px-6 flex items-center gap-4">
-      <div class="flex items-center gap-3 min-w-0">
-        <a class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors flex items-center justify-center"
-          th:href="@{/truyen/{slug}(slug=${novel.slug})}">
+  <header class="fixed top-0 w-full z-50 backdrop-blur-md bg-surface/90 border-b border-outline-variant/15 shadow-[0_1px_8px_rgba(0,0,0,0.03)]">
+    <div class="h-14 max-w-5xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-2 min-w-0">
+        <a class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors flex items-center justify-center shrink-0"
+          th:href="@{/truyen/{slug}(slug=${novel.slug})}" title="Quay lại truyện">
           <span class="material-symbols-outlined text-[20px]">arrow_back</span>
         </a>
-        <div class="flex flex-col truncate">
-          <span class="font-label-lg text-label-lg text-on-surface truncate" th:text="${novel.title}">Trang Đọc
-            Sách</span>
-          <span class="font-label-sm text-label-sm text-outline truncate"
-            th:text="'Chương ' + ${chapter.chapterNumber}">Chương Đang Đọc</span>
-        </div>
       </div>
     </div>
   </header>
 
   <main class="w-full pt-14 min-h-screen">
     <div class="flex flex-col w-full relative">
-      <aside class="sticky top-14 z-40 w-full backdrop-blur-md transition-all shadow-[0_1px_3px_rgba(0,0,0,0.03)]">
-        <div class="max-w-4xl mx-auto px-6 h-11 flex items-center justify-between">
-          <div class="flex items-center gap-3 min-w-0">
-            <span
-              class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-container text-on-tertiary-container font-label-sm text-label-sm">
-              <span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span> Đang đọc
-            </span>
-            <span class="font-label-md text-label-md truncate" th:text="${novel.title}">Title</span>
-          </div>
-        </div>
-      </aside>
+      <div class="relative z-10 w-full max-w-[720px] mx-auto px-5 sm:px-8 pt-6 sm:pt-8 pb-36">
+        <header class="mb-10 text-left">
+          <!-- Breadcrumb Navigation -->
+          <nav class="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-[13px] font-medium text-outline mb-3 flex-wrap" aria-label="Breadcrumb">
+            <a class="hover:text-primary transition-colors flex items-center gap-1" th:href="@{/}">
+              <span class="material-symbols-outlined text-[15px]">home</span>
+              <span>Trang chủ</span>
+            </a>
+            <span class="text-outline-variant/60">/</span>
+            <a class="hover:text-primary transition-colors truncate max-w-[200px] sm:max-w-[320px]"
+              th:href="@{/truyen/{slug}(slug=${novel.slug})}" th:text="${novel.title}">Mục Thần Ký</a>
+            <span class="text-outline-variant/60">/</span>
+            <span class="text-outline font-medium" th:text="'Chương ' + ${chapter.chapterNumber}">Chương 1</span>
+          </nav>
 
-      <main class="relative z-10 w-full max-w-[720px] mx-auto px-5 sm:px-8 pt-10 pb-36">
-        <header class="mb-12 text-left">
-          <div class="flex items-center gap-2 mb-3">
-            <span class="font-label-md text-label-md text-primary font-bold uppercase tracking-widest"
-              th:text="${novel.title}">Novel</span>
-            <span class="w-1 h-1 rounded-full bg-outline-variant"></span>
-            <span class="font-label-md text-label-md text-tertiary" th:text="'Tác giả: ' + ${novel.author}">Tác
-              giả</span>
-          </div>
-          <h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight mb-4 leading-snug"
+          <h1 class="font-headline-xl text-2xl sm:text-3xl lg:text-[34px] font-bold text-on-surface tracking-tight mb-2.5 leading-snug"
             th:text="${chapter.title}">
             Chương 1
           </h1>
+          <p class="text-xs sm:text-sm text-tertiary flex items-center gap-1">
+            <span class="material-symbols-outlined text-[15px]">person</span>
+            <span th:text="'Tác giả: ' + ${novel.author}">Tác giả: Trạch Trư</span>
+          </p>
         </header>
 
         <div class="relative reader-content-wrapper" id="reader-content-wrapper"
@@ -129,7 +121,7 @@
               </th:block>
             </th:block>
 
-            <!-- Khi chương VIP bị khóa: Không hiển thị nội dung đọc thử, chỉ hiển thị Paywall Card -->
+            <!-- Khi chương VIP bị khóa:  chỉ hiển thị Paywall Card -->
             <th:block th:if="${!isChapterUnlocked}">
               <!-- In-flow VIP Paywall Section (If Chapter is Locked) -->
               <div class="relative pt-4 pb-12 select-none" id="vip-paywall-container">
@@ -158,26 +150,6 @@
                     <span class="material-symbols-outlined text-[18px]">key</span>
                     <span th:text="'Mở khóa chương (' + ${chapter.price} + ' Coin)'">Mở khóa chương</span>
                   </button>
-
-                  <div class="flex items-center justify-center gap-1.5 text-[11px] text-[#8c7a6b] mt-4">
-                    <span class="material-symbols-outlined text-[15px] text-[#874b02]">verified_user</span>
-                    <span>Đã đọc một lần, lưu vĩnh viễn trong tủ sách</span>
-                  </div>
-                </div>
-              </div>
-            </th:block>
-
-                  <!-- Action Button -->
-                  <button type="button" onclick="openVipUnlockModal()"
-                    class="w-full sm:w-auto px-8 py-3.5 bg-[#874b02] hover:bg-[#723e00] text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all inline-flex items-center justify-center gap-2 text-sm">
-                    <span class="material-symbols-outlined text-[18px]">key</span>
-                    <span th:text="'Mở khóa chương (' + ${chapter.price} + ' Coin)'">Mở khóa chương</span>
-                  </button>
-
-                  <div class="flex items-center justify-center gap-1.5 text-[11px] text-[#8c7a6b] mt-4">
-                    <span class="material-symbols-outlined text-[15px] text-[#874b02]">verified_user</span>
-                    <span>Đã đọc một lần, lưu vĩnh viễn trong tủ sách</span>
-                  </div>
                 </div>
               </div>
             </th:block>
@@ -206,7 +178,7 @@
           </button>
         </div>
 
-      </main>
+      </div>
 
       <!-- Floating Vertical Toolbar (Right side - Chuẩn docln/Hako) -->
       <nav id="reading-vertical-toolbar"
@@ -1008,6 +980,23 @@
   </main>
 
   <script>
+    // 0. Global VIP Modal Functions (Immediately defined for reliable click handling)
+    window.openVipUnlockModal = function () {
+      const modal = document.getElementById('vipUnlockModal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      }
+    };
+
+    window.closeVipUnlockModal = function () {
+      const modal = document.getElementById('vipUnlockModal');
+      if (modal) {
+        modal.classList.remove('flex');
+        modal.classList.add('hidden');
+      }
+    };
+
     (function () {
       // 1. High-Water Mark Progress Bar & Database Completion Sync
       const bodyEl = document.body;
@@ -1371,8 +1360,6 @@
 
       // Initialize
       applySettings();
-      restoreSavedScrollPosition();
-      window.addEventListener('load', restoreSavedScrollPosition);
 
       // Listeners
       const fontSizeSlider = document.getElementById('setting-font-size');
