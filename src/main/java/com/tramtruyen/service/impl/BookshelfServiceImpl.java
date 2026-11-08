@@ -199,6 +199,11 @@ public class BookshelfServiceImpl implements BookshelfService {
 
         for (Chapter chapter : chapters) {
             Optional<UserChapterActivity> activityOpt = userChapterActivityRepository.findByUserAndChapter(user, chapter);
+            boolean isVipLocked = (chapter.getPrice() != null && chapter.getPrice() > 0)
+                    && (activityOpt.isEmpty() || !Boolean.TRUE.equals(activityOpt.get().getIsUnlocked()));
+            if (isVipLocked) {
+                continue;
+            }
             UserChapterActivity activity;
             if (activityOpt.isPresent()) {
                 activity = activityOpt.get();
@@ -222,6 +227,17 @@ public class BookshelfServiceImpl implements BookshelfService {
         User user = getUserByEmail(email);
         Chapter chapter = chapterRepository.findById(chapterId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy chương truyện"));
+
+        // Locked VIP chapter cannot be marked as read
+        if (chapter.getPrice() != null && chapter.getPrice() > 0) {
+            boolean isUnlocked = userChapterActivityRepository.findByUserAndChapter(user, chapter)
+                    .map(act -> Boolean.TRUE.equals(act.getIsUnlocked()))
+                    .orElse(false);
+            if (!isUnlocked) {
+                return;
+            }
+        }
+
         UserChapterActivity activity = userChapterActivityRepository.findByUserAndChapter(user, chapter)
                 .orElseGet(() -> UserChapterActivity.builder()
                         .user(user)
@@ -244,9 +260,17 @@ public class BookshelfServiceImpl implements BookshelfService {
             if (chapterOpt.isEmpty()) {
                 return false;
             }
-            return userChapterActivityRepository.findByUserAndChapter(user, chapterOpt.get())
-                    .map(act -> Boolean.TRUE.equals(act.getIsRead()))
-                    .orElse(false);
+            Chapter chapter = chapterOpt.get();
+            Optional<UserChapterActivity> activityOpt = userChapterActivityRepository.findByUserAndChapter(user, chapter);
+            if (activityOpt.isEmpty()) {
+                return false;
+            }
+            UserChapterActivity activity = activityOpt.get();
+            // If it's a VIP chapter and not unlocked, it cannot be considered read
+            if (chapter.getPrice() != null && chapter.getPrice() > 0 && !Boolean.TRUE.equals(activity.getIsUnlocked())) {
+                return false;
+            }
+            return Boolean.TRUE.equals(activity.getIsRead());
         } catch (Exception e) {
             return false;
         }

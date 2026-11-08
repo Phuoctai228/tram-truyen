@@ -54,50 +54,42 @@
   th:data-novel-slug="${novel.slug}" th:data-chapter-number="${chapter.chapterNumber}"
   th:data-is-unlocked="${isChapterUnlocked}" th:data-is-vip="${isVip}" th:data-can-afford="${canAfford}"
   th:data-logged-in="${isLoggedIn}">
-  <header class="fixed top-0 w-full z-50 backdrop-blur-md shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
-    <div class="h-14 max-w-5xl mx-auto px-4 sm:px-6 flex items-center gap-4">
-      <div class="flex items-center gap-3 min-w-0">
-        <a class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors flex items-center justify-center"
-          th:href="@{/truyen/{slug}(slug=${novel.slug})}">
+  <header class="fixed top-0 w-full z-50 backdrop-blur-md bg-surface/90 border-b border-outline-variant/15 shadow-[0_1px_8px_rgba(0,0,0,0.03)]">
+    <div class="h-14 max-w-5xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-2 min-w-0">
+        <a class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors flex items-center justify-center shrink-0"
+          th:href="@{/truyen/{slug}(slug=${novel.slug})}" title="Quay lại truyện">
           <span class="material-symbols-outlined text-[20px]">arrow_back</span>
         </a>
-        <div class="flex flex-col truncate">
-          <span class="font-label-lg text-label-lg text-on-surface truncate" th:text="${novel.title}">Trang Đọc
-            Sách</span>
-          <span class="font-label-sm text-label-sm text-outline truncate"
-            th:text="'Chương ' + ${chapter.chapterNumber}">Chương Đang Đọc</span>
-        </div>
       </div>
     </div>
   </header>
 
   <main class="w-full pt-14 min-h-screen">
     <div class="flex flex-col w-full relative">
-      <aside class="sticky top-14 z-40 w-full backdrop-blur-md transition-all shadow-[0_1px_3px_rgba(0,0,0,0.03)]">
-        <div class="max-w-4xl mx-auto px-6 h-11 flex items-center justify-between">
-          <div class="flex items-center gap-3 min-w-0">
-            <span
-              class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-container text-on-tertiary-container font-label-sm text-label-sm">
-              <span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span> Đang đọc
-            </span>
-            <span class="font-label-md text-label-md truncate" th:text="${novel.title}">Title</span>
-          </div>
-        </div>
-      </aside>
+      <div class="relative z-10 w-full max-w-[720px] mx-auto px-5 sm:px-8 pt-6 sm:pt-8 pb-36">
+        <header class="mb-10 text-left">
+          <!-- Breadcrumb Navigation -->
+          <nav class="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-[13px] font-medium text-outline mb-3 flex-wrap" aria-label="Breadcrumb">
+            <a class="hover:text-primary transition-colors flex items-center gap-1" th:href="@{/}">
+              <span class="material-symbols-outlined text-[15px]">home</span>
+              <span>Trang chủ</span>
+            </a>
+            <span class="text-outline-variant/60">/</span>
+            <a class="hover:text-primary transition-colors truncate max-w-[200px] sm:max-w-[320px]"
+              th:href="@{/truyen/{slug}(slug=${novel.slug})}" th:text="${novel.title}">Mục Thần Ký</a>
+            <span class="text-outline-variant/60">/</span>
+            <span class="text-outline font-medium" th:text="'Chương ' + ${chapter.chapterNumber}">Chương 1</span>
+          </nav>
 
-      <main class="relative z-10 w-full max-w-[720px] mx-auto px-5 sm:px-8 pt-10 pb-36">
-        <header class="mb-12 text-left">
-          <div class="flex items-center gap-2 mb-3">
-            <span class="font-label-md text-label-md text-primary font-bold uppercase tracking-widest"
-              th:text="${novel.title}">Novel</span>
-            <span class="w-1 h-1 rounded-full bg-outline-variant"></span>
-            <span class="font-label-md text-label-md text-tertiary" th:text="'Tác giả: ' + ${novel.author}">Tác
-              giả</span>
-          </div>
-          <h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight mb-4 leading-snug"
+          <h1 class="font-headline-xl text-2xl sm:text-3xl lg:text-[34px] font-bold text-on-surface tracking-tight mb-2.5 leading-snug"
             th:text="${chapter.title}">
             Chương 1
           </h1>
+          <p class="text-xs sm:text-sm text-tertiary flex items-center gap-1">
+            <span class="material-symbols-outlined text-[15px]">person</span>
+            <span th:text="'Tác giả: ' + ${novel.author}">Tác giả: Trạch Trư</span>
+          </p>
         </header>
 
         <div class="relative reader-content-wrapper" id="reader-content-wrapper"
@@ -129,20 +121,10 @@
               </th:block>
             </th:block>
 
-            <!-- Khi chương VIP bị khóa: Chỉ hiển thị các đoạn đọc thử (server-side masked) và Paywall Card -->
+            <!-- Khi chương VIP bị khóa:  chỉ hiển thị Paywall Card -->
             <th:block th:if="${!isChapterUnlocked}">
-              <th:block th:each="para : ${paragraphs}">
-                <div th:if="${!#strings.isEmpty(#strings.trim(para))}" class="indent-8 text-justify mb-6"
-                  th:utext="${para}">Nội dung</div>
-              </th:block>
-
               <!-- In-flow VIP Paywall Section (If Chapter is Locked) -->
-              <div class="relative pt-6 pb-12 mt-6 select-none" id="vip-paywall-container">
-                <!-- Gradient Fade Over Preview Content -->
-                <div
-                  class="absolute -top-28 left-0 right-0 h-28 bg-gradient-to-b from-transparent to-surface pointer-events-none">
-                </div>
-
+              <div class="relative pt-4 pb-12 select-none" id="vip-paywall-container">
                 <!-- In-flow Paywall Card matching image10.png theme -->
                 <div
                   class="rounded-3xl p-6 sm:p-8 text-center border border-[#ecd9c2] bg-[#fdfaf6] shadow-xl max-w-lg mx-auto relative z-10 transition-all">
@@ -155,7 +137,7 @@
                   </h3>
 
                   <p class="text-sm text-[#5d4a3b] mb-6 leading-relaxed">
-                    Bạn đang xem bản đọc thử. Hãy mở khóa <strong class="text-[#2d1b09]">Chương <span
+                    Hãy mở khóa <strong class="text-[#2d1b09]">Chương <span
                         th:text="${chapter.chapterNumber}">1</span>: <span th:text="${chapter.title}">Tiêu
                         đề</span></strong> với giá <strong class="text-[#874b02]"
                       th:text="${chapter.price} + ' Coin'">50
@@ -168,11 +150,6 @@
                     <span class="material-symbols-outlined text-[18px]">key</span>
                     <span th:text="'Mở khóa chương (' + ${chapter.price} + ' Coin)'">Mở khóa chương</span>
                   </button>
-
-                  <div class="flex items-center justify-center gap-1.5 text-[11px] text-[#8c7a6b] mt-4">
-                    <span class="material-symbols-outlined text-[15px] text-[#874b02]">verified_user</span>
-                    <span>Đã đọc một lần, lưu vĩnh viễn trong tủ sách</span>
-                  </div>
                 </div>
               </div>
             </th:block>
@@ -201,7 +178,7 @@
           </button>
         </div>
 
-      </main>
+      </div>
 
       <!-- Floating Vertical Toolbar (Right side - Chuẩn docln/Hako) -->
       <nav id="reading-vertical-toolbar"
@@ -894,11 +871,11 @@
             <div class="w-full flex items-center justify-between text-label-sm font-label-sm text-tertiary">
               <span th:text="'Chương ' + ${chapter.chapterNumber}">Chương</span>
               <span class="font-semibold text-primary" id="progress-percent"
-                th:text="${isChapterRead ? '100% hoàn thành' : '0% hoàn thành'}">0% hoàn thành</span>
+                th:text="${isChapterUnlocked and isChapterRead ? '100% hoàn thành' : '0% hoàn thành'}">0% hoàn thành</span>
             </div>
             <div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden relative cursor-pointer group">
               <div class="h-full bg-primary rounded-full transition-all duration-150"
-                th:style="${isChapterRead ? 'width: 100%' : 'width: 0%'}" id="reading-bar"></div>
+                th:style="${isChapterUnlocked and isChapterRead ? 'width: 100%' : 'width: 0%'}" id="reading-bar"></div>
             </div>
           </div>
 
@@ -1003,66 +980,37 @@
   </main>
 
   <script>
+    // 0. Global VIP Modal Functions (Immediately defined for reliable click handling)
+    window.openVipUnlockModal = function () {
+      const modal = document.getElementById('vipUnlockModal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      }
+    };
+
+    window.closeVipUnlockModal = function () {
+      const modal = document.getElementById('vipUnlockModal');
+      if (modal) {
+        modal.classList.remove('flex');
+        modal.classList.add('hidden');
+      }
+    };
+
     (function () {
       // 1. High-Water Mark Progress Bar & Database Completion Sync
       const bodyEl = document.body;
       const chapterId = bodyEl.getAttribute('data-chapter-id');
-      const isInitiallyRead = bodyEl.getAttribute('data-is-read') === 'true';
       const novelSlug = bodyEl.getAttribute('data-novel-slug') || '';
       const chapterNumber = bodyEl.getAttribute('data-chapter-number');
+      const isUnlocked = bodyEl.getAttribute('data-is-unlocked') !== 'false';
+      const isInitiallyRead = isUnlocked && (bodyEl.getAttribute('data-is-read') === 'true');
 
       const chapterStorageKey = chapterId ? ('tramtruyen_scroll_ch_' + chapterId) : null;
       const novelStorageKey = novelSlug ? ('tramtruyen_last_read_' + novelSlug) : null;
 
-      // Check stored progress in localStorage synchronously
-      let storedChapterData = null;
-      if (chapterStorageKey) {
-        try {
-          const raw = localStorage.getItem(chapterStorageKey);
-          if (raw) storedChapterData = JSON.parse(raw);
-        } catch (e) {
-          console.warn('Cannot parse stored chapter progress', e);
-        }
-      }
-
-      // Check if chapter was permanently completed (from DB is_read or localStorage)
-      const isPermanentlyCompleted = isInitiallyRead || !!(storedChapterData && (storedChapterData.isFinished || storedChapterData.percent >= 95));
-
-      let maxProgress = 0;
-      // Only the DB flag decides whether completion was already persisted; localStorage may be stale
-      // (read while logged out, another account, or after clearing history)
-      let hasSavedComplete = isInitiallyRead;
-
       const progressBar = document.getElementById('reading-bar');
       const progressLabel = document.getElementById('progress-percent');
-
-      // Check if all chapter content fits entirely within the visible viewport (Short Chapter Edge Case)
-      function isContentFullyVisible() {
-        const isUnlocked = bodyEl.getAttribute('data-is-unlocked') !== 'false';
-        if (!isUnlocked) return false; // Never auto-complete if chapter is locked VIP
-        const readerBody = document.getElementById('reader-body');
-        if (!readerBody) return false;
-        const rect = readerBody.getBoundingClientRect();
-        return rect.bottom <= (window.innerHeight || document.documentElement.clientHeight);
-      }
-
-      function isShortChapter() {
-        const isUnlocked = bodyEl.getAttribute('data-is-unlocked') !== 'false';
-        if (!isUnlocked) return false;
-        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        // Either the reader body ends within the viewport or the remaining scroll distance is negligible (<= 80px)
-        return isContentFullyVisible() || height <= 80;
-      }
-
-      function calculateCurrentScroll() {
-        const winScroll = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop;
-        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        // Short chapters without a scrollbar or fully fitting on screen are treated as 100% read
-        if (isShortChapter()) {
-          return 100;
-        }
-        return height > 0 ? Math.min(100, Math.max(0, Math.round((winScroll / height) * 100))) : 100;
-      }
 
       function updateProgressBarUI(pct) {
         if (progressBar && progressLabel) {
@@ -1072,230 +1020,278 @@
         }
       }
 
-      function saveChapterCompletionToDatabase() {
-        const isUnlocked = bodyEl.getAttribute('data-is-unlocked') !== 'false';
-        if (!isUnlocked) return; // Do not record 100% completion if chapter is locked VIP
-        if (hasSavedComplete || !chapterId) return;
-        hasSavedComplete = true;
-
-        const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
-        const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content') || 'X-CSRF-TOKEN';
-
-        fetch('/api/user/reading/complete-chapter', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            ...(csrfToken && { [csrfHeader]: csrfToken })
-          },
-          body: JSON.stringify({ chapterId: parseInt(chapterId) })
-        }).catch(err => console.error('Failed to save chapter progress:', err));
-      }
-
-      // Initial progress render
-      if (isPermanentlyCompleted) {
-        maxProgress = 100;
-      } else if (storedChapterData && typeof storedChapterData.percent === 'number' && storedChapterData.percent > 0) {
-        maxProgress = Math.max(storedChapterData.percent, calculateCurrentScroll());
+      if (!isUnlocked) {
+        // Locked VIP chapter: progress is strictly 0%, do not calculate or record progress on scroll
+        updateProgressBarUI(0);
+        if (chapterStorageKey) {
+          try {
+            localStorage.removeItem(chapterStorageKey);
+          } catch (e) {}
+        }
+        window.saveReadingProgressBeforeLeave = function () {
+          // No-op for locked chapters
+        };
       } else {
-        maxProgress = calculateCurrentScroll();
-      }
-      updateProgressBarUI(maxProgress);
-
-      // Sync completion to DB once layout is final (short chapters, or completed in localStorage but not in DB)
-      function checkAndPersistCompletion() {
-        if (!isPermanentlyCompleted) {
-          maxProgress = Math.max(maxProgress, calculateCurrentScroll());
+        // Unlocked / Free chapter: normal scroll progress calculation and persistence
+        let storedChapterData = null;
+        if (chapterStorageKey) {
+          try {
+            const raw = localStorage.getItem(chapterStorageKey);
+            if (raw) storedChapterData = JSON.parse(raw);
+          } catch (e) {
+            console.warn('Cannot parse stored chapter progress', e);
+          }
         }
-        if (maxProgress >= 95 && !hasSavedComplete) {
-          maxProgress = 100;
-          updateProgressBarUI(100);
-          saveChapterCompletionToDatabase();
-          saveScrollProgressToLocalStorage();
+
+        // Check if chapter was permanently completed (from DB is_read or localStorage)
+        const isPermanentlyCompleted = isInitiallyRead || !!(storedChapterData && (storedChapterData.isFinished || storedChapterData.percent >= 95));
+
+        let maxProgress = 0;
+        let hasSavedComplete = isInitiallyRead;
+
+        // Check if all chapter content fits entirely within the visible viewport (Short Chapter Edge Case)
+        function isContentFullyVisible() {
+          const readerBody = document.getElementById('reader-body');
+          if (!readerBody) return false;
+          const rect = readerBody.getBoundingClientRect();
+          return rect.bottom <= (window.innerHeight || document.documentElement.clientHeight);
         }
-      }
 
-      window.addEventListener('load', function () {
-        checkAndPersistCompletion();
-        // Re-check after 1 second in case fonts/styles slightly adjusted layout
-        setTimeout(checkAndPersistCompletion, 1000);
-      });
+        function isShortChapter() {
+          const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+          return isContentFullyVisible() || height <= 80;
+        }
 
-      window.addEventListener('resize', function () {
-        if (isShortChapter() && maxProgress < 100) {
+        function calculateCurrentScroll() {
+          const winScroll = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop;
+          const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+          if (isShortChapter()) {
+            return 100;
+          }
+          return height > 0 ? Math.min(100, Math.max(0, Math.round((winScroll / height) * 100))) : 100;
+        }
+
+        function saveChapterCompletionToDatabase() {
+          if (hasSavedComplete || !chapterId) return;
+          hasSavedComplete = true;
+
+          const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+          const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content') || 'X-CSRF-TOKEN';
+
+          fetch('/api/user/reading/complete-chapter', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              ...(csrfToken && { [csrfHeader]: csrfToken })
+            },
+            body: JSON.stringify({ chapterId: parseInt(chapterId) })
+          }).catch(err => console.error('Failed to save chapter progress:', err));
+        }
+
+        // Initial progress render
+        if (isPermanentlyCompleted) {
           maxProgress = 100;
-          updateProgressBarUI(100);
+        } else if (storedChapterData && typeof storedChapterData.percent === 'number' && storedChapterData.percent > 0) {
+          maxProgress = Math.max(storedChapterData.percent, calculateCurrentScroll());
+        } else {
+          maxProgress = calculateCurrentScroll();
+        }
+        updateProgressBarUI(maxProgress);
+
+        // Sync completion to DB once layout is final (short chapters, or completed in localStorage but not in DB)
+        function checkAndPersistCompletion() {
+          if (!isPermanentlyCompleted) {
+            maxProgress = Math.max(maxProgress, calculateCurrentScroll());
+          }
+          if (maxProgress >= 95 && !hasSavedComplete) {
+            maxProgress = 100;
+            updateProgressBarUI(100);
+            saveChapterCompletionToDatabase();
+            saveScrollProgressToLocalStorage();
+          }
+        }
+
+        window.addEventListener('load', function () {
           checkAndPersistCompletion();
-        }
-      });
+          // Re-check after 1 second in case fonts/styles slightly adjusted layout
+          setTimeout(checkAndPersistCompletion, 1000);
+        });
 
-      // LocalStorage Reading Progress Management
-      function saveScrollProgressToLocalStorage() {
-        if (!chapterId || !chapterStorageKey) return;
-        const currentScrolled = calculateCurrentScroll();
-        const isFinished = hasSavedComplete || isPermanentlyCompleted || currentScrolled >= 95 || maxProgress >= 95;
-        const effectivePercent = isFinished ? 100 : Math.min(94, Math.max(currentScrolled, maxProgress));
+        window.addEventListener('resize', function () {
+          if (isShortChapter() && maxProgress < 100) {
+            maxProgress = 100;
+            updateProgressBarUI(100);
+            checkAndPersistCompletion();
+          }
+        });
 
-        try {
-          const scrollData = {
-            chapterId: parseInt(chapterId),
-            chapterNumber: parseInt(chapterNumber || 0),
-            percent: effectivePercent,
-            isFinished: isFinished,
-            updatedAt: Date.now()
-          };
-          localStorage.setItem(chapterStorageKey, JSON.stringify(scrollData));
+        // LocalStorage Reading Progress Management
+        function saveScrollProgressToLocalStorage() {
+          if (!chapterId || !chapterStorageKey) return;
+          const currentScrolled = calculateCurrentScroll();
+          const isFinished = hasSavedComplete || isPermanentlyCompleted || currentScrolled >= 95 || maxProgress >= 95;
+          const effectivePercent = isFinished ? 100 : Math.min(94, Math.max(currentScrolled, maxProgress));
 
-          if (novelStorageKey) {
-            localStorage.setItem(novelStorageKey, JSON.stringify({
-              novelSlug: novelSlug,
+          try {
+            const scrollData = {
               chapterId: parseInt(chapterId),
               chapterNumber: parseInt(chapterNumber || 0),
-              readUrl: window.location.pathname,
               percent: effectivePercent,
               isFinished: isFinished,
               updatedAt: Date.now()
-            }));
+            };
+            localStorage.setItem(chapterStorageKey, JSON.stringify(scrollData));
+
+            if (novelStorageKey) {
+              localStorage.setItem(novelStorageKey, JSON.stringify({
+                novelSlug: novelSlug,
+                chapterId: parseInt(chapterId),
+                chapterNumber: parseInt(chapterNumber || 0),
+                readUrl: window.location.pathname,
+                percent: effectivePercent,
+                isFinished: isFinished,
+                updatedAt: Date.now()
+              }));
+            }
+          } catch (e) {
+            // Ignore localStorage errors
           }
-        } catch (e) {
-          // Ignore localStorage errors
-        }
-      }
-
-      let scrollDebounceTimer = null;
-      window.addEventListener('scroll', function () {
-        const currentScrolled = calculateCurrentScroll();
-
-        // High-water mark: only increases, never regresses when scrolling back up!
-        if (!isPermanentlyCompleted && currentScrolled > maxProgress) {
-          maxProgress = currentScrolled;
         }
 
-        updateProgressBarUI(maxProgress);
+        let scrollDebounceTimer = null;
+        window.addEventListener('scroll', function () {
+          const currentScrolled = calculateCurrentScroll();
 
-        // When reaching completion (>= 95% or 100%)
-        if (maxProgress >= 95 && !hasSavedComplete) {
-          maxProgress = 100;
-          // hasSavedComplete is set inside saveChapterCompletionToDatabase() (setting it here would block the API call)
-          updateProgressBarUI(100);
-          saveChapterCompletionToDatabase();
-        }
+          // High-water mark: only increases, never regresses when scrolling back up!
+          if (!isPermanentlyCompleted && currentScrolled > maxProgress) {
+            maxProgress = currentScrolled;
+          }
 
-        clearTimeout(scrollDebounceTimer);
-        scrollDebounceTimer = setTimeout(saveScrollProgressToLocalStorage, 250);
-      }, { passive: true });
+          updateProgressBarUI(maxProgress);
 
-      // Save scroll on page exit or visibility change
-      window.addEventListener('beforeunload', saveScrollProgressToLocalStorage);
-      window.addEventListener('pagehide', saveScrollProgressToLocalStorage);
-      document.addEventListener('visibilitychange', function () {
-        if (document.visibilityState === 'hidden') {
-          saveScrollProgressToLocalStorage();
-        }
-      });
+          // When reaching completion (>= 95% or 100%)
+          if (maxProgress >= 95 && !hasSavedComplete) {
+            maxProgress = 100;
+            updateProgressBarUI(100);
+            saveChapterCompletionToDatabase();
+          }
 
-      // Navigation handler before leaving (e.g. clicking "Chương sau")
-      window.saveReadingProgressBeforeLeave = function () {
-        const currentScrolled = calculateCurrentScroll();
-        const shortChapter = isShortChapter();
-        // Mark complete if the reader reached >= 95% OR entire content fits on screen (short chapter)
-        if ((currentScrolled >= 95 || maxProgress >= 95 || shortChapter) && !hasSavedComplete) {
-          maxProgress = 100;
-          // hasSavedComplete is set inside saveChapterCompletionToDatabase() (setting it here would block the API call)
-          updateProgressBarUI(100);
-          saveChapterCompletionToDatabase();
-        }
-        // Save actual high-water mark progress without artificially jumping to 100%
-        saveScrollProgressToLocalStorage();
-      };
+          clearTimeout(scrollDebounceTimer);
+          scrollDebounceTimer = setTimeout(saveScrollProgressToLocalStorage, 250);
+        }, { passive: true });
 
-      function showResumeToast(pct) {
-        let toast = document.getElementById('resume-reading-toast');
-        if (!toast) {
-          toast = document.createElement('div');
-          toast.id = 'resume-reading-toast';
-          toast.className = 'fixed bottom-6 right-6 z-50 bg-surface-container-highest/95 backdrop-blur-md text-on-surface border border-outline-variant/30 rounded-2xl shadow-xl px-4 py-3 flex items-center gap-3 transition-all duration-300 transform translate-y-4 opacity-0 select-none';
-          toast.innerHTML = `
-            <div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
-              <span class="material-symbols-outlined text-[18px]">bookmark</span>
-            </div>
-            <div class="text-xs">
-              <p class="font-medium text-on-surface">Đang đọc tiếp ở vị trí <span class="font-bold text-primary">${pct}%</span></p>
-              <button type="button" id="btn-scroll-to-top" class="text-primary hover:underline text-[11px] font-semibold mt-0.5">Về đầu trang</button>
-            </div>
-            <button type="button" id="btn-close-resume-toast" class="ml-2 text-on-surface-variant hover:text-on-surface transition-colors">
-              <span class="material-symbols-outlined text-[16px]">close</span>
-            </button>
-          `;
-          document.body.appendChild(toast);
-
-          document.getElementById('btn-scroll-to-top')?.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            toast.classList.add('translate-y-4', 'opacity-0');
-            setTimeout(() => toast.remove(), 300);
+        // Save scroll on page exit or visibility change
+        window.addEventListener('beforeunload', saveScrollProgressToLocalStorage);
+        window.addEventListener('pagehide', saveScrollProgressToLocalStorage);
+        document.addEventListener('visibilitychange', function () {
+          if (document.visibilityState === 'hidden') {
             saveScrollProgressToLocalStorage();
-          });
-
-          document.getElementById('btn-close-resume-toast')?.addEventListener('click', () => {
-            toast.classList.add('translate-y-4', 'opacity-0');
-            setTimeout(() => toast.remove(), 300);
-          });
-        }
-
-        requestAnimationFrame(() => {
-          toast.classList.remove('translate-y-4', 'opacity-0');
-          toast.classList.add('translate-y-0', 'opacity-100');
+          }
         });
 
-        setTimeout(() => {
-          if (toast && toast.parentNode) {
-            toast.classList.add('translate-y-4', 'opacity-0');
-            setTimeout(() => toast.remove(), 300);
+        // Navigation handler before leaving (e.g. clicking "Chương sau")
+        window.saveReadingProgressBeforeLeave = function () {
+          const currentScrolled = calculateCurrentScroll();
+          const shortChapter = isShortChapter();
+          // Mark complete if the reader reached >= 95% OR entire content fits on screen (short chapter)
+          if ((currentScrolled >= 95 || maxProgress >= 95 || shortChapter) && !hasSavedComplete) {
+            maxProgress = 100;
+            updateProgressBarUI(100);
+            saveChapterCompletionToDatabase();
           }
-        }, 5000);
-      }
+          // Save actual high-water mark progress without artificially jumping to 100%
+          saveScrollProgressToLocalStorage();
+        };
 
-      function restoreSavedScrollPosition() {
-        if (!chapterId || !chapterStorageKey) return;
-        try {
-          if (!storedChapterData) {
-            const raw = localStorage.getItem(chapterStorageKey);
-            if (raw) storedChapterData = JSON.parse(raw);
-          }
-          const data = storedChapterData;
-          if (data && typeof data.percent === 'number' && data.percent >= 2 && data.percent < 95 && !data.isFinished && !isPermanentlyCompleted) {
-            const executeScroll = () => {
-              const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-              if (height > 0) {
-                const targetY = Math.round((data.percent / 100) * height);
-                window.scrollTo({ top: targetY, behavior: 'instant' });
-                if (data.percent > maxProgress) {
-                  maxProgress = data.percent;
-                }
-                updateProgressBarUI(maxProgress);
-                showResumeToast(data.percent);
-              }
-            };
+        function showResumeToast(pct) {
+          let toast = document.getElementById('resume-reading-toast');
+          if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'resume-reading-toast';
+            toast.className = 'fixed bottom-6 right-6 z-50 bg-surface-container-highest/95 backdrop-blur-md text-on-surface border border-outline-variant/30 rounded-2xl shadow-xl px-4 py-3 flex items-center gap-3 transition-all duration-300 transform translate-y-4 opacity-0 select-none';
+            toast.innerHTML = `
+              <div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-[18px]">bookmark</span>
+              </div>
+              <div class="text-xs">
+                <p class="font-medium text-on-surface">Đang đọc tiếp ở vị trí <span class="font-bold text-primary">${pct}%</span></p>
+                <button type="button" id="btn-scroll-to-top" class="text-primary hover:underline text-[11px] font-semibold mt-0.5">Về đầu trang</button>
+              </div>
+              <button type="button" id="btn-close-resume-toast" class="ml-2 text-on-surface-variant hover:text-on-surface transition-colors">
+                <span class="material-symbols-outlined text-[16px]">close</span>
+              </button>
+            `;
+            document.body.appendChild(toast);
 
-            if ('scrollRestoration' in history) {
-              history.scrollRestoration = 'manual';
-            }
+            document.getElementById('btn-scroll-to-top')?.addEventListener('click', () => {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+              toast.classList.add('translate-y-4', 'opacity-0');
+              setTimeout(() => toast.remove(), 300);
+              saveScrollProgressToLocalStorage();
+            });
 
-            requestAnimationFrame(() => {
-              executeScroll();
-              if (document.fonts && document.fonts.ready) {
-                document.fonts.ready.then(() => {
-                  requestAnimationFrame(executeScroll);
-                });
-              }
+            document.getElementById('btn-close-resume-toast')?.addEventListener('click', () => {
+              toast.classList.add('translate-y-4', 'opacity-0');
+              setTimeout(() => toast.remove(), 300);
             });
           }
-        } catch (e) {
-          console.warn('Cannot restore scroll position:', e);
-        }
-      }
 
-      // Restore scroll position if previously reading this chapter
-      restoreSavedScrollPosition();
+          requestAnimationFrame(() => {
+            toast.classList.remove('translate-y-4', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+          });
+
+          setTimeout(() => {
+            if (toast && toast.parentNode) {
+              toast.classList.add('translate-y-4', 'opacity-0');
+              setTimeout(() => toast.remove(), 300);
+            }
+          }, 5000);
+        }
+
+        function restoreSavedScrollPosition() {
+          if (!chapterId || !chapterStorageKey) return;
+          try {
+            if (!storedChapterData) {
+              const raw = localStorage.getItem(chapterStorageKey);
+              if (raw) storedChapterData = JSON.parse(raw);
+            }
+            const data = storedChapterData;
+            if (data && typeof data.percent === 'number' && data.percent >= 2 && data.percent < 95 && !data.isFinished && !isPermanentlyCompleted) {
+              const executeScroll = () => {
+                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                if (height > 0) {
+                  const targetY = Math.round((data.percent / 100) * height);
+                  window.scrollTo({ top: targetY, behavior: 'instant' });
+                  if (data.percent > maxProgress) {
+                    maxProgress = data.percent;
+                  }
+                  updateProgressBarUI(maxProgress);
+                  showResumeToast(data.percent);
+                }
+              };
+
+              if ('scrollRestoration' in history) {
+                history.scrollRestoration = 'manual';
+              }
+
+              requestAnimationFrame(() => {
+                executeScroll();
+                if (document.fonts && document.fonts.ready) {
+                  document.fonts.ready.then(() => {
+                    requestAnimationFrame(executeScroll);
+                  });
+                }
+              });
+            }
+          } catch (e) {
+            console.warn('Cannot restore scroll position:', e);
+          }
+        }
+
+        // Restore scroll position if previously reading this chapter
+        restoreSavedScrollPosition();
+      }
 
       // 2. Reading Settings & LocalStorage
       const article = document.getElementById('reader-body');
@@ -1364,8 +1360,6 @@
 
       // Initialize
       applySettings();
-      restoreSavedScrollPosition();
-      window.addEventListener('load', restoreSavedScrollPosition);
 
       // Listeners
       const fontSizeSlider = document.getElementById('setting-font-size');
@@ -1488,6 +1482,11 @@
       }
 
       function openPlayerPanel() {
+        const isUnlocked = bodyEl.getAttribute('data-is-unlocked') !== 'false';
+        if (!isUnlocked) {
+          if (typeof openVipUnlockModal === 'function') openVipUnlockModal();
+          return;
+        }
         playerPanel.classList.remove('translate-y-6', 'opacity-0', 'pointer-events-none');
         playerPanel.classList.add('translate-y-0', 'opacity-100', 'pointer-events-auto');
         isPanelOpen = true;
@@ -1915,6 +1914,11 @@
       window.toggleAudioPanel = function () {
         if (!synth) {
           alert("Trình duyệt của bạn không hỗ trợ tính năng đọc âm thanh.");
+          return;
+        }
+        const isUnlocked = bodyEl.getAttribute('data-is-unlocked') !== 'false';
+        if (!isUnlocked) {
+          if (typeof openVipUnlockModal === 'function') openVipUnlockModal();
           return;
         }
         if (isPanelOpen) closePlayerPanel();
