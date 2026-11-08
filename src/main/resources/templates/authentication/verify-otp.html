@@ -88,9 +88,14 @@
                 </button>
             </form>
 
-            <div class="mt-6 text-center font-body-md text-body-md text-tertiary">
-                Chưa nhận được mã? 
-                <a href="#" class="text-primary-container font-semibold hover:underline ml-1 transition-colors">Gửi lại ngay</a>
+            <div class="mt-6 text-center font-body-md text-body-md text-tertiary flex items-center justify-center gap-1">
+                <span>Chưa nhận được mã?</span>
+                <form th:action="@{/resend-otp}" method="post" class="inline">
+                    <input type="hidden" name="email" th:value="${email}">
+                    <button type="submit" class="text-primary-container font-semibold hover:underline transition-colors bg-transparent border-0 p-0 cursor-pointer">
+                        Gửi lại ngay
+                    </button>
+                </form>
             </div>
         </div>
     </div>

@@ -30,6 +30,8 @@
                             <label for="chapterNumber">Số chương</label>
                             <input id="chapterNumber" type="number" min="1" th:field="*{chapterNumber}"
                                 placeholder="Ví dụ: 1">
+                            <small th:if="${pageTitle == 'Tạo chương mới'}" class="field-hint">
+                            </small>
                             <small class="field-error" th:errors="*{chapterNumber}"></small>
                         </div>
                         <div class="form-field">

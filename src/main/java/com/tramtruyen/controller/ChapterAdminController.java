@@ -47,7 +47,9 @@ public class ChapterAdminController {
                              RedirectAttributes redirectAttributes) {
         try {
             model.addAttribute("novel", novelService.getEditableNovel(novelId));
-            model.addAttribute("chapterForm", new ChapterForm());
+            ChapterForm chapterForm = new ChapterForm();
+            chapterForm.setChapterNumber(chapterService.getNextAvailableChapterNumber(novelId));
+            model.addAttribute("chapterForm", chapterForm);
             model.addAttribute("pageTitle", "Tạo chương mới");
             model.addAttribute("formAction", "/admin/novels/" + novelId + "/chapters");
             return "admin/chapters/form";

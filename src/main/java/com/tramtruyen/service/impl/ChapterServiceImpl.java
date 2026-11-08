@@ -63,6 +63,23 @@ public class ChapterServiceImpl implements ChapterService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public int getNextAvailableChapterNumber(Integer novelId) {
+        findActiveNovel(novelId);
+        List<Chapter> chapters = chapterRepository
+                .findAllByNovelIdAndIsDeletedFalseOrderByChapterNumberAsc(novelId);
+        int nextChapterNumber = 1;
+        for (Chapter chapter : chapters) {
+            if (chapter.getChapterNumber() != null && chapter.getChapterNumber() == nextChapterNumber) {
+                nextChapterNumber++;
+            } else if (chapter.getChapterNumber() != null && chapter.getChapterNumber() > nextChapterNumber) {
+                break;
+            }
+        }
+        return nextChapterNumber;
+    }
+
+    @Override
     @Transactional
     public Chapter createChapter(Integer novelId, ChapterForm form) {
         return createChapter(novelId, form, ChapterSaveAction.DRAFT);
