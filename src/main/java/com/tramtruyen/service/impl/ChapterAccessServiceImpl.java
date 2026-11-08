@@ -95,7 +95,7 @@ public class ChapterAccessServiceImpl implements ChapterAccessService {
         if (readable) {
             paragraphs = chapterPreviewBuilder.splitParagraphs(chapter.getContent());
         } else {
-            paragraphs = chapterPreviewBuilder.buildPreview(chapter.getContent());
+            paragraphs = List.of();
         }
 
         List<CoinPackageDTO> suggestedPackages = List.of();

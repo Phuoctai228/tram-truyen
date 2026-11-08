@@ -361,6 +361,11 @@ public class NovelController {
         com.tramtruyen.dto.ChapterAccessDTO access =
                 chapterAccessService.checkAccess(novel, chapter, authentication);
 
+        // If chapter is locked/unreadable, force isChapterRead to false
+        if (!access.isReadable()) {
+            isChapterRead = false;
+        }
+
         // Record reading history (UC-28) only when the member can actually read the chapter
         if (isLoggedIn && access.isReadable()) {
             recordReadingHistory(authentication.getName(), chapter.getId());
