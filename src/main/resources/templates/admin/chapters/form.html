@@ -31,7 +31,6 @@
                             <input id="chapterNumber" type="number" min="1" th:field="*{chapterNumber}"
                                 placeholder="Ví dụ: 1">
                             <small th:if="${pageTitle == 'Tạo chương mới'}" class="field-hint">
-                                Hệ thống tự động điền số trống tiếp theo; bạn vẫn có thể chỉnh sửa.
                             </small>
                             <small class="field-error" th:errors="*{chapterNumber}"></small>
                         </div>
