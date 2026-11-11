@@ -571,16 +571,17 @@
                 onclick="selectTopupPackage(this)" th:classappend="${stat.first ? 'selected' : ''}"
                 class="vip-package-card group">
                 <!-- Best Fit or Bonus Badge -->
-                <div class="flex justify-end mb-1">
+                <div class="flex justify-end mb-1 min-h-[18px]">
                   <span th:if="${pkg.bestFit}" class="vip-badge-bestfit">
                     <span class="material-symbols-outlined text-[11px]">star</span>
                     <span>PHÙ HỢP</span>
                   </span>
-                  <span th:unless="${pkg.bestFit}"
-                    class="text-[10px] text-[#c2410c] font-bold flex items-center gap-0.5">
-                    <span class="material-symbols-outlined text-[13px]">local_fire_department</span>
-                    <span th:if="${pkg.badgeText != null}" th:text="${pkg.badgeText}">Hot</span>
-                  </span>
+
+
+
+
+
+
                 </div>
 
                 <!-- Coin Amount & Price -->
@@ -588,8 +589,8 @@
                 </div>
                 <div class="text-xs text-[#8c7a6b] mt-0.5"
                   th:text="${#numbers.formatInteger(pkg.price, 0, 'POINT')} + ' đ'">50.000 đ</div>
-                <div th:if="${pkg.bonusCoin > 0}" class="text-[11px] text-[#c2410c] font-semibold mt-1"
-                  th:text="'+' + ${pkg.bonusCoin} + ' Tặng'">+5 Tặng</div>
+
+
               </div>
             </div>
           </div>

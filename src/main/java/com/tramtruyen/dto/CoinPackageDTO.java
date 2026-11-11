@@ -19,6 +19,7 @@ public class CoinPackageDTO {
     private Integer baseCoin;
     private Integer bonusCoin;
     private String badgeText;
+    private String status;
     @Builder.Default
     private boolean bestFit = false;
 }
