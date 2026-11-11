@@ -208,24 +208,13 @@ public class LeaderboardServiceImpl implements LeaderboardService {
             primaryCategory = novel.getCategories().iterator().next().getName();
         }
 
-        // Realistic rank change calculation: baseline rank vs current timeframe rank
+        // Rank change calculation: baseline rank vs current timeframe rank
         String trendType;
         String trendText;
         if ("all".equals(timeframe)) {
-            // For all-time, compare with slight steady movements
-            if (currentRank == 1) {
-                trendType = "STABLE";
-                trendText = "•";
-            } else if (currentRank <= 4) {
-                trendType = "UP";
-                trendText = "+1";
-            } else if (currentRank == 7 || currentRank == 9) {
-                trendType = "DOWN";
-                trendText = "-1";
-            } else {
-                trendType = "STABLE";
-                trendText = "•";
-            }
+            // For all-time, this serves as the global baseline, so trend is steady/neutral
+            trendType = "STABLE";
+            trendText = "•";
         } else {
             // In day/week/month: delta = baselineRank - currentRank
             int rankDiff = baselineRank - currentRank;

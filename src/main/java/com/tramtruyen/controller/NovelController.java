@@ -56,6 +56,7 @@ public class NovelController {
             @RequestParam(required = false) String q,
             @RequestParam(required = false) List<Integer> categories,
             @RequestParam(required = false) String status,
+            @RequestParam(required = false) String vip,
             @RequestParam(required = false) String chapterRange,
             @RequestParam(required = false) Double minRating,
             @RequestParam(defaultValue = "0") int page,
@@ -83,7 +84,7 @@ public class NovelController {
                 org.springframework.data.domain.Sort.Direction.ASC : org.springframework.data.domain.Sort.Direction.DESC;
         org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(page, size, org.springframework.data.domain.Sort.by(direction, sortParams[0]));
 
-        org.springframework.data.domain.Page<Novel> results = novelService.advancedSearch(q, categories, status, minChapters, maxChapters, minRating, pageable);
+        org.springframework.data.domain.Page<Novel> results = novelService.advancedSearch(q, categories, status, vip, minChapters, maxChapters, minRating, pageable);
         
         model.addAttribute("novelPage", results);
         model.addAttribute("novels", results.getContent());
@@ -93,6 +94,7 @@ public class NovelController {
         // Pass back current filters for UI state
         model.addAttribute("selectedCategories", categories != null ? categories : new java.util.ArrayList<>());
         model.addAttribute("selectedStatus", status);
+        model.addAttribute("selectedVip", vip);
         model.addAttribute("selectedChapterRange", chapterRange);
         model.addAttribute("selectedMinRating", minRating);
         model.addAttribute("currentSort", sort);
