@@ -973,6 +973,7 @@
       const title = document.getElementById('generalDeleteTitle');
       const subTitle = document.getElementById('generalDeleteSubTitle');
       const desc = document.getElementById('generalDeleteDesc');
+      const previewBox = document.getElementById('generalDeletePreviewBox');
       const snippetType = document.getElementById('generalDeleteSnippetType');
       const snippetText = document.getElementById('generalDeleteSnippetText');
       const snippetIcon = document.getElementById('generalDeleteSnippetIcon');
@@ -982,6 +983,7 @@
       if (title) title.textContent = 'Xóa ' + type + '?';
       if (subTitle) subTitle.textContent = 'Thao tác bình luận';
       if (desc) desc.textContent = 'Bạn có chắc chắn muốn xóa ' + type + ' này không? Các phản hồi liên quan (nếu có) cũng sẽ bị xóa vĩnh viễn.';
+      if (previewBox) previewBox.classList.remove('hidden');
       if (snippetType) snippetType.textContent = type;
       if (snippetText) snippetText.textContent = content ? ('“' + content + '”') : 'Không có nội dung trích dẫn';
       if (snippetIcon) snippetIcon.textContent = 'forum';
@@ -1003,13 +1005,19 @@
       let reviewText = '';
       if (card) {
         const textEl = card.querySelector('.review-display-text');
-        if (textEl) reviewText = textEl.textContent.trim();
+        if (textEl) {
+          const raw = textEl.textContent.trim();
+          if (raw && raw !== 'Người dùng không để lại nhận xét.') {
+            reviewText = raw;
+          }
+        }
       }
 
       const form = document.getElementById('generalDeleteForm');
       const title = document.getElementById('generalDeleteTitle');
       const subTitle = document.getElementById('generalDeleteSubTitle');
       const desc = document.getElementById('generalDeleteDesc');
+      const previewBox = document.getElementById('generalDeletePreviewBox');
       const snippetType = document.getElementById('generalDeleteSnippetType');
       const snippetText = document.getElementById('generalDeleteSnippetText');
       const snippetIcon = document.getElementById('generalDeleteSnippetIcon');
@@ -1019,9 +1027,17 @@
       if (title) title.textContent = 'Xóa đánh giá của bạn?';
       if (subTitle) subTitle.textContent = 'Thao tác đánh giá';
       if (desc) desc.textContent = 'Bạn có chắc chắn muốn xóa đánh giá của mình không? Sau khi xóa, bạn có thể thực hiện đánh giá và chấm điểm lại.';
-      if (snippetType) snippetType.textContent = 'Đánh giá truyện';
-      if (snippetText) snippetText.textContent = reviewText ? ('“' + reviewText + '”') : 'Đánh giá không kèm nhận xét văn bản';
-      if (snippetIcon) snippetIcon.textContent = 'star';
+      
+      if (reviewText) {
+        if (previewBox) previewBox.classList.remove('hidden');
+        if (snippetType) snippetType.textContent = 'Đánh giá truyện';
+        if (snippetText) snippetText.textContent = '“' + reviewText + '”';
+        if (snippetIcon) snippetIcon.textContent = 'star';
+      } else {
+        // Nếu không có nhận xét văn bản, ẩn hẳn khung preview để modal gọn gàng sạch sẽ
+        if (previewBox) previewBox.classList.add('hidden');
+      }
+
       if (confirmBtnText) confirmBtnText.textContent = 'Xóa đánh giá';
 
       showGeneralDeleteModal();
