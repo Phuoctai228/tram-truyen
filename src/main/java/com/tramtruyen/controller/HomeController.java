@@ -14,6 +14,7 @@ public class HomeController {
     private final HomeService homeService;
     private final com.tramtruyen.service.BookshelfService bookshelfService;
     private final com.tramtruyen.service.SystemSettingService systemSettingService;
+    private final com.tramtruyen.service.LeaderboardService leaderboardService;
 
     @GetMapping("/")
     public String home(org.springframework.security.core.Authentication authentication, Model model) {
@@ -27,16 +28,44 @@ public class HomeController {
         model.addAttribute("newNovels", homePageData.getNewNovels());
         
         java.util.List<com.tramtruyen.dto.NovelSummaryDTO> hotList = homePageData.getHotNovels();
-        java.util.List<com.tramtruyen.dto.NovelSummaryDTO> heroNovels = (hotList != null && hotList.size() > 5)
-                ? hotList.subList(0, 5)
-                : (hotList != null ? hotList : java.util.Collections.emptyList());
+        java.util.List<com.tramtruyen.dto.NovelSummaryDTO> heroNovels = java.util.Collections.emptyList();
+        
+        if (hotList != null && !hotList.isEmpty()) {
+            java.util.Map<Integer, com.tramtruyen.dto.NovelSummaryDTO> summaryMap = hotList.stream()
+                    .collect(java.util.stream.Collectors.toMap(com.tramtruyen.dto.NovelSummaryDTO::getId, dto -> dto, (existing, replacing) -> existing));
+            
+            java.util.List<com.tramtruyen.dto.LeaderboardItemDTO> weekTopItems = leaderboardService.getLeaderboardItems("week", 5);
+            java.util.List<com.tramtruyen.dto.NovelSummaryDTO> sortedHeroes = new java.util.ArrayList<>();
+            java.util.Set<Integer> addedIds = new java.util.HashSet<>();
+
+            if (weekTopItems != null) {
+                for (com.tramtruyen.dto.LeaderboardItemDTO item : weekTopItems) {
+                    if (item.getNovelId() != null && summaryMap.containsKey(item.getNovelId())) {
+                        sortedHeroes.add(summaryMap.get(item.getNovelId()));
+                        addedIds.add(item.getNovelId());
+                    }
+                }
+            }
+
+            // Fallback: nếu chưa đủ 5 truyện từ leaderboard tuần, bổ sung từ hotList gốc
+            for (com.tramtruyen.dto.NovelSummaryDTO dto : hotList) {
+                if (sortedHeroes.size() >= 5) break;
+                if (!addedIds.contains(dto.getId())) {
+                    sortedHeroes.add(dto);
+                    addedIds.add(dto.getId());
+                }
+            }
+
+            heroNovels = sortedHeroes;
+        }
+
         model.addAttribute("heroNovels", heroNovels);
         
         boolean heroInBookshelf = false;
         if (authentication != null && authentication.isAuthenticated()
                 && !(authentication instanceof org.springframework.security.authentication.AnonymousAuthenticationToken)) {
-            if (homePageData.getHotNovels() != null && !homePageData.getHotNovels().isEmpty()) {
-                Integer heroNovelId = homePageData.getHotNovels().get(0).getId();
+            if (!heroNovels.isEmpty()) {
+                Integer heroNovelId = heroNovels.get(0).getId();
                 heroInBookshelf = bookshelfService.isNovelInBookshelf(authentication.getName(), heroNovelId);
             }
         }
