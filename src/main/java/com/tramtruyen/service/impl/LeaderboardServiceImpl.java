@@ -140,23 +140,18 @@ public class LeaderboardServiceImpl implements LeaderboardService {
         }
 
         LocalDateTime since;
-        double ratio;
         switch (timeframe) {
             case "day":
                 since = LocalDateTime.now().minusDays(1);
-                ratio = 0.0006;
                 break;
             case "week":
                 since = LocalDateTime.now().minusDays(7);
-                ratio = 0.0035;
                 break;
             case "month":
                 since = LocalDateTime.now().minusDays(30);
-                ratio = 0.015;
                 break;
             default:
                 since = LocalDateTime.now().minusDays(7);
-                ratio = 0.0035;
                 break;
         }
 
@@ -188,16 +183,23 @@ public class LeaderboardServiceImpl implements LeaderboardService {
             }
         }
 
-        // 2. Fallback smoothly to realistic proportion of total views for remaining novels
+        // 2. Remaining novels with 0 real reading activity in this timeframe
         for (Novel n : allTimeNovels) {
             if (!activityCountMap.containsKey(n.getId())) {
-                int estimatedViews = (int) Math.round((n.getViews() != null ? n.getViews() : 0) * ratio);
-                list.add(new NovelRankData(n, Math.max(1, estimatedViews)));
+                list.add(new NovelRankData(n, 0));
             }
         }
 
-        // Sort by timeframe views descending
-        list.sort((a, b) -> Integer.compare(b.views, a.views));
+        // Sort by timeframe views descending. If views are equal, fallback to total all-time views descending
+        list.sort((a, b) -> {
+            int cmp = Integer.compare(b.views, a.views);
+            if (cmp != 0) {
+                return cmp;
+            }
+            int aAllTime = a.novel.getViews() != null ? a.novel.getViews() : 0;
+            int bAllTime = b.novel.getViews() != null ? b.novel.getViews() : 0;
+            return Integer.compare(bAllTime, aAllTime);
+        });
         return list;
     }
 

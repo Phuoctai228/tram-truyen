@@ -17,11 +17,7 @@ import java.util.List;
 public interface CommentRepository extends JpaRepository<Comment, Integer> {
 
 
-    List<Comment> findByNovelIdAndStatusOrderByCreatedAtDesc(Integer novelId, String status);
-
     List<Comment> findByNovelIdAndParentIsNullAndStatusOrderByCreatedAtDesc(Integer novelId, String status);
-
-    long countByNovelIdAndStatus(Integer novelId, String status);
 
     @Query("SELECT c FROM Comment c WHERE c.parent.id IN :parentIds")
     List<Comment> findByParentIdIn(@Param("parentIds") Collection<Integer> parentIds);
