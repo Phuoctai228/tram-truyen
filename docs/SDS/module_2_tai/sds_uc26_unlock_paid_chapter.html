@@ -44,11 +44,18 @@
         .col-no { width: 6%; text-align: center; color: #000000; }
         .col-method { width: 28%; font-weight: bold; color: #000000; }
         .col-desc { width: 66%; color: #000000; }
-        .sql-item { margin-top: 12px; margin-bottom: 4px; font-weight: bold; color: #000000; }
+        .sql-item {
+            margin-top: 12px;
+            margin-bottom: 4px;
+            font-family: 'Calibri', sans-serif;
+            font-size: 11pt;
+            font-weight: bold;
+            color: #000000;
+        }
         .sql-block {
-            margin: 4px 0 14px 0;
-            font-family: 'Times New Roman', Times, serif;
-            font-size: 12pt;
+            margin: 4px 0 12px 0;
+            font-family: 'Calibri', sans-serif;
+            font-size: 11pt;
             color: #000000;
             white-space: pre-wrap;
         }
@@ -261,7 +268,7 @@
                 <td class="col-desc">
                     <b>- Input:</b> email: String, chapterId: Integer, autoUnlockNext: Boolean.<br>
                     <b>- Output:</b> UnlockResultDTO.<br>
-                    <b>- Internal Method Processing:</b> Fetches the Chapter by ID and validates eligibility via validateChapterEligibility(chapter). Acquires a pessimistic write lock on the User via userRepository.findByEmailWithLock(email). If the user is privileged, already unlocked the chapter, or the chapter is free, returns a 0-Coin UnlockResultDTO. Otherwise, deducts the chapter price via walletService.deductCoins(lockedUser, price, "UNLOCK_CHAPTER", chapterId, description), records the unlock via markChapterUnlocked(), and returns the completed UnlockResultDTO.
+                    <b>- Internal Method Processing:</b> Fetches the Chapter by ID and validates eligibility via validateChapterEligibility(chapter). Retrieves the User entity via userRepository.findByEmail(email). If the user is privileged, already unlocked the chapter, or the chapter is free, returns a 0-Coin UnlockResultDTO. Otherwise, deducts the chapter price via walletService.deductCoins(user, price, "UNLOCK_CHAPTER", chapterId, description), records the unlock via markChapterUnlocked(), and returns the completed UnlockResultDTO.
                 </td>
             </tr>
             <tr>
@@ -342,7 +349,7 @@
                 <td class="col-desc">
                     <b>- Input:</b> user: User, amount: int, transactionType: String, referenceId: Integer, description: String.<br>
                     <b>- Output:</b> void.<br>
-                    <b>- Internal Method Processing:</b> Locks the user row using userRepository.findByIdWithLock(userId). Checks if walletBalance &gt;= amount; if insufficient, throws InsufficientBalanceException. Subtracts amount from walletBalance, saves the updated User via userRepository.save(lockedUser), creates a Transaction record with amount = -price and type = "UNLOCK_CHAPTER", and persists it via transactionRepository.save(tx).
+                    <b>- Internal Method Processing:</b> Checks if walletBalance &gt;= amount; if insufficient, throws InsufficientBalanceException. Subtracts amount from walletBalance, saves the updated User via userRepository.save(user), creates a Transaction record with amount = -price and type = "UNLOCK_CHAPTER", and persists it via transactionRepository.save(tx).
                 </td>
             </tr>
         </tbody>
@@ -468,29 +475,11 @@
                 <td class="col-desc">
                     <b>- Input:</b> email: String.<br>
                     <b>- Output:</b> Optional&lt;User&gt;.<br>
-                    <b>- Internal Method Processing:</b> Finds a user entity by email address.
+                    <b>- Internal Method Processing:</b> Finds a user entity by email address to check authentication and wallet balance.
                 </td>
             </tr>
             <tr>
                 <td class="col-no">02</td>
-                <td class="col-method">findByEmailWithLock</td>
-                <td class="col-desc">
-                    <b>- Input:</b> email: String.<br>
-                    <b>- Output:</b> Optional&lt;User&gt;.<br>
-                    <b>- Internal Method Processing:</b> Queries the user by email with a PESSIMISTIC_WRITE database lock (SELECT ... FOR UPDATE) to prevent concurrent double-spending.
-                </td>
-            </tr>
-            <tr>
-                <td class="col-no">03</td>
-                <td class="col-method">findByIdWithLock</td>
-                <td class="col-desc">
-                    <b>- Input:</b> id: Integer.<br>
-                    <b>- Output:</b> Optional&lt;User&gt;.<br>
-                    <b>- Internal Method Processing:</b> Queries the user by ID with a PESSIMISTIC_WRITE lock before deducting Coins.
-                </td>
-            </tr>
-            <tr>
-                <td class="col-no">04</td>
                 <td class="col-method">save</td>
                 <td class="col-desc">
                     <b>- Input:</b> user: User.<br>
@@ -567,61 +556,31 @@
     <h3>d. Database Queries</h3>
 
     <p class="sql-item">1. Retrieve public novel by slug</p>
-    <div class="sql-block">SELECT id, title, slug, status, is_deleted
-FROM novels
-WHERE slug = ?
-  AND is_deleted = FALSE
-  AND status &lt;&gt; 'ARCHIVED';</div>
+    <div class="sql-block">SELECT id, title, slug, status, is_deleted FROM novels WHERE slug = ? AND is_deleted = FALSE AND status &lt;&gt; 'ARCHIVED';</div>
 
     <p class="sql-item">2. Retrieve published chapter by novel ID and chapter number</p>
-    <div class="sql-block">SELECT id, novel_id, chapter_number, title, price, status, is_deleted
-FROM chapters
-WHERE novel_id = ?
-  AND chapter_number = ?
-  AND is_deleted = FALSE
-  AND status IN ('PUBLISHED_REGULAR', 'PUBLISHED_VIP', 'PUBLISHED');</div>
+    <div class="sql-block">SELECT id, novel_id, chapter_number, title, price, status, is_deleted FROM chapters WHERE novel_id = ? AND chapter_number = ? AND is_deleted = FALSE AND status IN ('PUBLISHED_REGULAR', 'PUBLISHED_VIP', 'PUBLISHED');</div>
 
     <p class="sql-item">3. Retrieve chapter by ID for eligibility check</p>
-    <div class="sql-block">SELECT id, novel_id, chapter_number, title, price, status, is_deleted
-FROM chapters
-WHERE id = ?;</div>
+    <div class="sql-block">SELECT id, novel_id, chapter_number, title, price, status, is_deleted FROM chapters WHERE id = ?;</div>
 
-    <p class="sql-item">4. Lock user row by email for concurrent purchase safety</p>
-    <div class="sql-block">SELECT id, email, full_name, wallet_balance, status
-FROM users
-WHERE email = ?
-FOR UPDATE;</div>
+    <p class="sql-item">4. Retrieve authenticated user by email</p>
+    <div class="sql-block">SELECT id, email, full_name, wallet_balance, status FROM users WHERE email = ?;</div>
 
     <p class="sql-item">5. Check existing user chapter activity</p>
-    <div class="sql-block">SELECT id, user_id, chapter_id, is_read, read_at, is_unlocked, price_paid, unlocked_at
-FROM user_chapter_activities
-WHERE user_id = ?
-  AND chapter_id = ?;</div>
+    <div class="sql-block">SELECT id, user_id, chapter_id, is_read, read_at, is_unlocked, price_paid, unlocked_at FROM user_chapter_activities WHERE user_id = ? AND chapter_id = ?;</div>
 
-    <p class="sql-item">6. Lock user row by ID before wallet deduction</p>
-    <div class="sql-block">SELECT id, email, full_name, wallet_balance, status
-FROM users
-WHERE id = ?
-FOR UPDATE;</div>
+    <p class="sql-item">6. Deduct Coin price from user wallet balance</p>
+    <div class="sql-block">UPDATE users SET wallet_balance = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?;</div>
 
-    <p class="sql-item">7. Deduct Coin price from user wallet balance</p>
-    <div class="sql-block">UPDATE users
-SET wallet_balance = ?,
-    updated_at = CURRENT_TIMESTAMP
-WHERE id = ?;</div>
+    <p class="sql-item">7. Insert UNLOCK_CHAPTER transaction into wallet ledger</p>
+    <div class="sql-block">INSERT INTO transactions (user_id, amount, balance_after, type, reference_id, description, created_at) VALUES (?, ?, ?, 'UNLOCK_CHAPTER', ?, ?, CURRENT_TIMESTAMP) RETURNING id;</div>
 
-    <p class="sql-item">8. Insert UNLOCK_CHAPTER transaction into wallet ledger</p>
-    <div class="sql-block">INSERT INTO transactions (user_id, amount, balance_after, type, reference_id, description, created_at)
-VALUES (?, ?, ?, 'UNLOCK_CHAPTER', ?, ?, CURRENT_TIMESTAMP)
-RETURNING id;</div>
+    <p class="sql-item">8. Record permanent VIP chapter unlock for new activity</p>
+    <div class="sql-block">INSERT INTO user_chapter_activities (user_id, chapter_id, is_unlocked, price_paid, unlocked_at) VALUES (?, ?, TRUE, ?, CURRENT_TIMESTAMP) RETURNING id;</div>
 
-    <p class="sql-item">9. Record permanent VIP chapter unlock for the user</p>
-    <div class="sql-block">INSERT INTO user_chapter_activities (user_id, chapter_id, is_unlocked, price_paid, unlocked_at)
-VALUES (?, ?, TRUE, ?, CURRENT_TIMESTAMP)
-ON CONFLICT (user_id, chapter_id)
-DO UPDATE SET is_unlocked = TRUE,
-              price_paid = EXCLUDED.price_paid,
-              unlocked_at = CURRENT_TIMESTAMP;</div>
+    <p class="sql-item">9. Update existing chapter activity to unlocked status</p>
+    <div class="sql-block">UPDATE user_chapter_activities SET is_unlocked = TRUE, price_paid = ?, unlocked_at = CURRENT_TIMESTAMP WHERE id = ?;</div>
 
 </body>
 </html>

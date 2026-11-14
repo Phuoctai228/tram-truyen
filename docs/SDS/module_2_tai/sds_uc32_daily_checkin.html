@@ -44,11 +44,18 @@
         .col-no { width: 6%; text-align: center; color: #000000; }
         .col-method { width: 28%; font-weight: bold; color: #000000; }
         .col-desc { width: 66%; color: #000000; }
-        .sql-item { margin-top: 12px; margin-bottom: 4px; font-weight: bold; color: #000000; }
+        .sql-item {
+            margin-top: 12px;
+            margin-bottom: 4px;
+            font-family: 'Calibri', sans-serif;
+            font-size: 11pt;
+            font-weight: bold;
+            color: #000000;
+        }
         .sql-block {
-            margin: 4px 0 14px 0;
-            font-family: 'Times New Roman', Times, serif;
-            font-size: 12pt;
+            margin: 4px 0 12px 0;
+            font-family: 'Calibri', sans-serif;
+            font-size: 11pt;
             color: #000000;
             white-space: pre-wrap;
         }
@@ -243,7 +250,7 @@
                 <td class="col-desc">
                     <b>- Input:</b> user: User, amount: int, transactionType: String, referenceId: Integer, description: String.<br>
                     <b>- Output:</b> void.<br>
-                    <b>- Internal Method Processing:</b> Acquires a pessimistic write lock on the user row via userRepository.findByIdWithLock(userId), adds amount to walletBalance, saves the updated user via userRepository.save(lockedUser), and inserts a Transaction record with type = "GIFT_COIN" via transactionRepository.save(tx).
+                    <b>- Internal Method Processing:</b> Credits reward Coins by adding amount to walletBalance, saves the updated user via userRepository.save(user), and inserts a Transaction record with type = "GIFT_COIN" via transactionRepository.save(tx).
                 </td>
             </tr>
             <tr>
@@ -284,15 +291,6 @@
             </tr>
             <tr>
                 <td class="col-no">02</td>
-                <td class="col-method">findByIdWithLock</td>
-                <td class="col-desc">
-                    <b>- Input:</b> id: Integer.<br>
-                    <b>- Output:</b> Optional&lt;User&gt;.<br>
-                    <b>- Internal Method Processing:</b> Queries the user by ID with a PESSIMISTIC_WRITE lock (SELECT ... FOR UPDATE) before updating wallet balance.
-                </td>
-            </tr>
-            <tr>
-                <td class="col-no">03</td>
                 <td class="col-method">save</td>
                 <td class="col-desc">
                     <b>- Input:</b> user: User.<br>
@@ -405,62 +403,31 @@
     <h3>d. Database Queries</h3>
 
     <p class="sql-item">1. Retrieve authenticated user by email</p>
-    <div class="sql-block">SELECT id, email, full_name, wallet_balance, status
-FROM users
-WHERE email = ?;</div>
+    <div class="sql-block">SELECT id, email, full_name, wallet_balance, status FROM users WHERE email = ?;</div>
 
     <p class="sql-item">2. Find user check-in record for a specific date</p>
-    <div class="sql-block">SELECT id, user_id, checkin_date, reward_coin, streak_count, created_at
-FROM user_daily_checkins
-WHERE user_id = ?
-  AND checkin_date = ?;</div>
+    <div class="sql-block">SELECT id, user_id, checkin_date, reward_coin, streak_count, created_at FROM user_daily_checkins WHERE user_id = ? AND checkin_date = ?;</div>
 
     <p class="sql-item">3. Retrieve most recent check-in record for streak calculation</p>
-    <div class="sql-block">SELECT id, user_id, checkin_date, reward_coin, streak_count, created_at
-FROM user_daily_checkins
-WHERE user_id = ?
-ORDER BY checkin_date DESC
-LIMIT 1;</div>
+    <div class="sql-block">SELECT id, user_id, checkin_date, reward_coin, streak_count, created_at FROM user_daily_checkins WHERE user_id = ? ORDER BY checkin_date DESC LIMIT 1;</div>
 
     <p class="sql-item">4. Count total check-in days for user</p>
-    <div class="sql-block">SELECT COUNT(id)
-FROM user_daily_checkins
-WHERE user_id = ?;</div>
+    <div class="sql-block">SELECT COUNT(id) FROM user_daily_checkins WHERE user_id = ?;</div>
 
     <p class="sql-item">5. Calculate total accumulated check-in reward coins for user</p>
-    <div class="sql-block">SELECT COALESCE(SUM(reward_coin), 0)
-FROM user_daily_checkins
-WHERE user_id = ?;</div>
+    <div class="sql-block">SELECT SUM(reward_coin) FROM user_daily_checkins WHERE user_id = ?;</div>
 
     <p class="sql-item">6. Check if user has already checked in today</p>
-    <div class="sql-block">SELECT EXISTS (
-    SELECT 1
-    FROM user_daily_checkins
-    WHERE user_id = ?
-      AND checkin_date = CURRENT_DATE
-);</div>
+    <div class="sql-block">SELECT EXISTS (SELECT 1 FROM user_daily_checkins WHERE user_id = ? AND checkin_date = CURRENT_DATE);</div>
 
     <p class="sql-item">7. Insert new daily check-in record</p>
-    <div class="sql-block">INSERT INTO user_daily_checkins (user_id, checkin_date, reward_coin, streak_count, created_at)
-VALUES (?, CURRENT_DATE, ?, ?, CURRENT_TIMESTAMP)
-RETURNING id;</div>
+    <div class="sql-block">INSERT INTO user_daily_checkins (user_id, checkin_date, reward_coin, streak_count, created_at) VALUES (?, CURRENT_DATE, ?, ?, CURRENT_TIMESTAMP) RETURNING id;</div>
 
-    <p class="sql-item">8. Lock user row before crediting check-in reward Coins</p>
-    <div class="sql-block">SELECT id, email, full_name, wallet_balance, status
-FROM users
-WHERE id = ?
-FOR UPDATE;</div>
+    <p class="sql-item">8. Update user wallet balance with reward Coins</p>
+    <div class="sql-block">UPDATE users SET wallet_balance = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?;</div>
 
-    <p class="sql-item">9. Update user wallet balance with reward Coins</p>
-    <div class="sql-block">UPDATE users
-SET wallet_balance = ?,
-    updated_at = CURRENT_TIMESTAMP
-WHERE id = ?;</div>
-
-    <p class="sql-item">10. Insert GIFT_COIN reward transaction into wallet ledger</p>
-    <div class="sql-block">INSERT INTO transactions (user_id, amount, balance_after, type, reference_id, description, created_at)
-VALUES (?, ?, ?, 'GIFT_COIN', ?, ?, CURRENT_TIMESTAMP)
-RETURNING id;</div>
+    <p class="sql-item">9. Insert GIFT_COIN reward transaction into wallet ledger</p>
+    <div class="sql-block">INSERT INTO transactions (user_id, amount, balance_after, type, reference_id, description, created_at) VALUES (?, ?, ?, 'GIFT_COIN', ?, ?, CURRENT_TIMESTAMP) RETURNING id;</div>
 
 </body>
 </html>

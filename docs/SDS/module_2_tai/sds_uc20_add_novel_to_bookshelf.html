@@ -44,11 +44,18 @@
         .col-no { width: 6%; text-align: center; color: #000000; }
         .col-method { width: 28%; font-weight: bold; color: #000000; }
         .col-desc { width: 66%; color: #000000; }
-        .sql-item { margin-top: 12px; margin-bottom: 4px; font-weight: bold; color: #000000; }
+        .sql-item {
+            margin-top: 12px;
+            margin-bottom: 4px;
+            font-family: 'Calibri', sans-serif;
+            font-size: 11pt;
+            font-weight: bold;
+            color: #000000;
+        }
         .sql-block {
-            margin: 4px 0 14px 0;
-            font-family: 'Times New Roman', Times, serif;
-            font-size: 12pt;
+            margin: 4px 0 12px 0;
+            font-family: 'Calibri', sans-serif;
+            font-size: 11pt;
             color: #000000;
             white-space: pre-wrap;
         }
@@ -261,28 +268,16 @@
     <h3>d. Database Queries</h3>
 
     <p class="sql-item">1. Retrieve authenticated user by email</p>
-    <div class="sql-block">SELECT id, email, full_name, status
-FROM users
-WHERE email = ?;</div>
+    <div class="sql-block">SELECT id, email, full_name, status FROM users WHERE email = ?;</div>
 
     <p class="sql-item">2. Retrieve active novel by ID</p>
-    <div class="sql-block">SELECT id, title, slug, author, status, is_deleted
-FROM novels
-WHERE id = ?
-  AND is_deleted = FALSE;</div>
+    <div class="sql-block">SELECT id, title, slug, author, status, is_deleted FROM novels WHERE id = ? AND is_deleted = FALSE;</div>
 
     <p class="sql-item">3. Check if novel already exists in user's bookshelf</p>
-    <div class="sql-block">SELECT EXISTS (
-    SELECT 1
-    FROM bookshelves
-    WHERE user_id = ?
-      AND novel_id = ?
-);</div>
+    <div class="sql-block">SELECT EXISTS (SELECT 1 FROM bookshelves WHERE user_id = ? AND novel_id = ?);</div>
 
     <p class="sql-item">4. Insert new bookshelf entry</p>
-    <div class="sql-block">INSERT INTO bookshelves (user_id, novel_id, added_at)
-VALUES (?, ?, CURRENT_TIMESTAMP)
-RETURNING id, user_id, novel_id, added_at;</div>
+    <div class="sql-block">INSERT INTO bookshelves (user_id, novel_id, added_at) VALUES (?, ?, CURRENT_TIMESTAMP) RETURNING id;</div>
 
 </body>
 </html>

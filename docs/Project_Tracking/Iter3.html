@@ -61,6 +61,21 @@
         padding: 0px 3px 0px 3px;
     }
 
+    .ritz .waffle .s10 {
+        border-bottom: 1px SOLID #000000;
+        border-right: 1px SOLID #000000;
+        background-color: #f7caac;
+        text-align: left;
+        font-weight: bold;
+        color: #000000;
+        font-family: Arial;
+        font-size: 10pt;
+        vertical-align: top;
+        white-space: nowrap;
+        direction: ltr;
+        padding: 0px 3px 0px 3px;
+    }
+
     .ritz .waffle .s1 {
         border-left: none;
         border-right: none;
@@ -75,41 +90,12 @@
         padding: 0px 3px 0px 3px;
     }
 
-    .ritz .waffle .s4 {
-        border-right: none;
-        background-color: #ffffff;
-        text-align: left;
-        font-style: italic;
-        color: #c00000;
-        font-family: Arial;
-        font-size: 10pt;
-        vertical-align: top;
-        white-space: nowrap;
-        direction: ltr;
-        padding: 0px 3px 0px 3px;
-    }
-
     .ritz .waffle .s6 {
         border-left: none;
         border-right: none;
         border-bottom: 1px SOLID #000000;
         background-color: #ffffff;
         text-align: left;
-        color: #000000;
-        font-family: Arial;
-        font-size: 10pt;
-        vertical-align: top;
-        white-space: nowrap;
-        direction: ltr;
-        padding: 0px 3px 0px 3px;
-    }
-
-    .ritz .waffle .s10 {
-        border-bottom: 1px SOLID #000000;
-        border-right: 1px SOLID #000000;
-        background-color: #f7caac;
-        text-align: left;
-        font-weight: bold;
         color: #000000;
         font-family: Arial;
         font-size: 10pt;
@@ -138,6 +124,21 @@
         background-color: #ffffff;
         text-align: left;
         color: #000000;
+        font-family: Arial;
+        font-size: 10pt;
+        vertical-align: top;
+        white-space: nowrap;
+        direction: ltr;
+        padding: 0px 3px 0px 3px;
+    }
+
+    .ritz .waffle .s4 {
+        border-right: none;
+        border-bottom: 1px SOLID #000000;
+        background-color: #ffffff;
+        text-align: left;
+        font-style: italic;
+        color: #c00000;
         font-family: Arial;
         font-size: 10pt;
         vertical-align: top;
@@ -274,29 +275,530 @@
                 <td class="freezebar-cell"></td>
                 <td class="freezebar-cell"></td>
                 <td class="freezebar-cell"></td>
-            </tr>
-            <tr style="height: 16px">
+            </tr>            <tr style="height: 16px">
                 <td class="s12">1</td>
-                <td class="s13">Screen/Function Name1</td>
-                <td class="s13">Feature Name1</td>
-                <td class="s14">This is short descripiton for the screen/function (2-3 sentences)</td>
-                <td class="s14">Tuấn Hà</td>
+                <td class="s13">UC-33: Create Novel</td>
+                <td class="s13">Novel &amp; Chapter CMS</td>
+                <td class="s14">Admin/Staff creates a new novel (title, original author, summary).</td>
+                <td class="s14">Kiệt</td>
                 <td class="s13">Done</td>
-                <td class="s13">II.3</td>
-                <td class="s13">III.5</td>
-                <td class="s13"></td>
-            </tr>
-            <tr style="height: 16px">
+                <td class="s13">II.4.1</td>
+                <td class="s13">III.1.1.a</td>
+                <td class="s13">Passed functional & validation testing: novel creation constraints, title length, and Cloudinary upload.</td>
+            </tr>            <tr style="height: 16px">
                 <td class="s12">2</td>
-                <td class="s13">Screen/Function Name2</td>
-                <td class="s13">Feature Name1</td>
-                <td class="s14">This is short descripiton for the screen/function (2-3 sentences)</td>
-                <td class="s14">Tử Vinh</td>
-                <td class="s13">To Do</td>
-                <td class="s13">II.1</td>
-                <td class="s13">III.4</td>
-                <td class="s13"></td>
-            </tr>
-        </tbody>
+                <td class="s13">UC-34: Update Novel</td>
+                <td class="s13">Novel &amp; Chapter CMS</td>
+                <td class="s14">Edit novel info, progress status (Ongoing/Completed) and upload new cover to Cloudinary.</td>
+                <td class="s14">Kiệt</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.4.2</td>
+                <td class="s13">III.1.1.b</td>
+                <td class="s13">Passed regression testing: partial metadata update, image replacement, and progress status transitions.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">3</td>
+                <td class="s13">UC-36: Archive Novel</td>
+                <td class="s13">Novel &amp; Chapter CMS</td>
+                <td class="s14">Change novel status to ARCHIVED to temporarily hide it from public listing.</td>
+                <td class="s14">Kiệt</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.4.3</td>
+                <td class="s13">III.1.1.c</td>
+                <td class="s13">Passed lifecycle status test: ARCHIVED status transition, public catalog exclusion, and direct URL access guard.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">4</td>
+                <td class="s13">UC-35: Delete Novel</td>
+                <td class="s13">Novel &amp; Chapter CMS</td>
+                <td class="s14">Soft delete novel (mark is_deleted = true, remove from active list).</td>
+                <td class="s14">Kiệt</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.4.4</td>
+                <td class="s13">III.1.1.d</td>
+                <td class="s13">Passed soft delete integrity test: is_deleted flag verification, cascading exclusion, and DB relation retention.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">5</td>
+                <td class="s13">UC-38: Create Chapter</td>
+                <td class="s13">Novel &amp; Chapter CMS</td>
+                <td class="s14">Admin/Staff adds a new chapter to the novel (title, index, chapter content).</td>
+                <td class="s14">Kiệt</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.5.1</td>
+                <td class="s13">III.1.2.a</td>
+                <td class="s13">Passed chapter creation test: sequential index validation, rich content parsing, and novel update timestamp bump.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">6</td>
+                <td class="s13">UC-39: Update Chapter</td>
+                <td class="s13">Novel &amp; Chapter CMS</td>
+                <td class="s14">Edit title, index or content of a published chapter.</td>
+                <td class="s14">Kiệt</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.5.2</td>
+                <td class="s13">III.1.2.b</td>
+                <td class="s13">Passed chapter editing test: text content updates, title changes, and audit timestamp tracking.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">7</td>
+                <td class="s13">UC-40: Lock/Unlock Chapter</td>
+                <td class="s13">Novel &amp; Chapter CMS</td>
+                <td class="s14">Change chapter status to LOCKED to temporarily hide it from public index.</td>
+                <td class="s14">Kiệt</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.5.3</td>
+                <td class="s13">III.1.2.c</td>
+                <td class="s13">Passed chapter locking test: LOCKED state toggle, public reader access restrictions, and admin bypass.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">8</td>
+                <td class="s13">UC-41: Delete Chapter</td>
+                <td class="s13">Novel &amp; Chapter CMS</td>
+                <td class="s14">Soft delete chapter (mark is_deleted = true, remove from novel index).</td>
+                <td class="s14">Kiệt</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.5.4</td>
+                <td class="s13">III.1.2.d</td>
+                <td class="s13">Passed chapter soft delete test: is_deleted flag assertion, reading navigation skipping, and chapter count update.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">9</td>
+                <td class="s13">UC-42: Configure Chapter</td>
+                <td class="s13">Novel &amp; Chapter CMS</td>
+                <td class="s14">Configure status (Draft / Published), assign VIP tag and set Coin price to unlock
+                    chapter.</td>
+                <td class="s14">Kiệt</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.5.5</td>
+                <td class="s13">III.1.2.e</td>
+                <td class="s13">Passed chapter pricing test: VIP price validation, free/paid status toggle, and Coin deduction criteria.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">10</td>
+                <td class="s13">UC-06: View Novel List</td>
+                <td class="s13">Reader Experience, Bookshelf &amp; VIP Unlock</td>
+                <td class="s14">Display public novel list on the system (Home, Category pages).</td>
+                <td class="s14">Tài</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.7.6</td>
+                <td class="s13">III.5.1.a</td>
+                <td class="s13">Passed homepage catalog test: novel grid responsive layout, pagination accuracy, and category card filtering.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">11</td>
+                <td class="s13">UC-10: View Novel Details</td>
+                <td class="s13">Reader Experience, Bookshelf &amp; VIP Unlock</td>
+                <td class="s14">View novel info, author, summary, chapter list, views and rating.</td>
+                <td class="s14">Tài</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.7.4</td>
+                <td class="s13">III.3.1.c</td>
+                <td class="s13">Passed novel detail view test: chapter list ordering, metadata display, author attribution, and average rating.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">12</td>
+                <td class="s13">UC-11: Read Chapter</td>
+                <td class="s13">Reader Experience, Bookshelf &amp; VIP Unlock</td>
+                <td class="s14">Reading interface (customizable font, size, background, scroll); auto-record read
+                    chapter.</td>
+                <td class="s14">Tài</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.11.1</td>
+                <td class="s13">III.5.1.b</td>
+                <td class="s13">Passed reader rendering test: chapter text formatting, font resizing, theme persistence, and keyboard navigation.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">13</td>
+                <td class="s13">UC-25: Audio Reader</td>
+                <td class="s13">Reader Experience, Bookshelf &amp; VIP Unlock</td>
+                <td class="s14">Audio player that automatically converts chapter text to speech, with adjustable speed.</td>
+                <td class="s14">Tài</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.11.2</td>
+                <td class="s13">III.5.1.b</td>
+                <td class="s13">Passed audio player test: Web Speech API synthesis, speech pitch/rate controls, and auto-scrolling synchronization.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">14</td>
+                <td class="s13">UC-27: Save Reading Progress</td>
+                <td class="s13">Reader Experience, Bookshelf &amp; VIP Unlock</td>
+                <td class="s14">Auto-calculate reading progress and save latest chapter bookmark for 'Read Next' button.</td>
+                <td class="s14">Tài</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.11.3</td>
+                <td class="s13">III.5.1.d</td>
+                <td class="s13">Passed bookmarking test: chapter read position saving, last read chapter persistence, and 'Continue Reading' link.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">15</td>
+                <td class="s13">UC-20: Add Novel to Bookshelf</td>
+                <td class="s13">Reader Experience, Bookshelf &amp; VIP Unlock</td>
+                <td class="s14">Save favorite novels to personal Bookshelf to follow updates.</td>
+                <td class="s14">Tài</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.10.3</td>
+                <td class="s13">III.7.1.b</td>
+                <td class="s13">Passed bookshelf addition test: authenticated user library sync, duplicate prevention, and count increment.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">16</td>
+                <td class="s13">UC-18: View Bookshelf</td>
+                <td class="s13">Reader Experience, Bookshelf &amp; VIP Unlock</td>
+                <td class="s14">Manage followed novels, display reading % and 'Read Next' jumping to unfinished chapter.</td>
+                <td class="s14">Tài</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.10.1</td>
+                <td class="s13">III.7.1.a</td>
+                <td class="s13">Passed bookshelf view test: paginated user library display, reading status sorting, and direct continue link.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">17</td>
+                <td class="s13">UC-19: Remove Novel from Bookshelf</td>
+                <td class="s13">Reader Experience, Bookshelf &amp; VIP Unlock</td>
+                <td class="s14">Unfollow or remove novel from personal Bookshelf.</td>
+                <td class="s14">Tài</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.10.2</td>
+                <td class="s13">III.7.1.c</td>
+                <td class="s13">Passed bookshelf removal test: library removal confirmation dialog, count decrement, and list refresh.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">18</td>
+                <td class="s13">UC-26: Unlock Paid Chapter</td>
+                <td class="s13">Reader Experience, Bookshelf &amp; VIP Unlock</td>
+                <td class="s14">Reader unlocks chapter, deduct Coin, check balance, concurrency safe, grant VIP access.</td>
+                <td class="s14">Tài</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.3.4</td>
+                <td class="s13">III.5.1.c</td>
+                <td class="s13">Passed VIP unlock security test: concurrency race condition testing, atomic Coin deduction, and permanent unlock.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">19</td>
+                <td class="s13">UC-28: View Reading History</td>
+                <td class="s13">Reader Experience, Bookshelf &amp; VIP Unlock</td>
+                <td class="s14">Reader looks up history of read chapters.</td>
+                <td class="s14">Tài</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.10.4</td>
+                <td class="s13">III.7.1.d</td>
+                <td class="s13">Passed reading history test: chronological chapter access log, history entry clearing, and timestamp formatting.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">20</td>
+                <td class="s13">UC-32: Daily Check-in</td>
+                <td class="s13">Reader Experience, Bookshelf &amp; VIP Unlock</td>
+                <td class="s14">Reader logs in and checks in daily to receive rewards (free Coins) to unlock novels.</td>
+                <td class="s14">Tài</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.12.1</td>
+                <td class="s13">III.10.1.a</td>
+                <td class="s13">Passed daily check-in test: once-per-day restriction, streak tracking, wallet credit, and notification dispatch.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">21</td>
+                <td class="s13">UC-01: Register Account</td>
+                <td class="s13">Auth, Security &amp; Payment</td>
+                <td class="s14">User creates new account, BCrypt encrypted password, pending email activation.</td>
+                <td class="s14">Ngọc</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.1.1</td>
+                <td class="s13">III.1.1.a</td>
+                <td class="s13">Passed registration security test: input sanitization, BCrypt hashing, duplicate email block, and verification flow.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">22</td>
+                <td class="s13">UC-02: Login</td>
+                <td class="s13">Auth, Security &amp; Payment</td>
+                <td class="s14">Login via Email and Password, Remember-Me, initialize Session and check active status.</td>
+                <td class="s14">Ngọc</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.1.3</td>
+                <td class="s13">III.1.1.c</td>
+                <td class="s13">Passed auth security test: correct credential login, invalid password rejection, lockout handling, and Remember-Me.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">23</td>
+                <td class="s13">UC-03: Login with Google</td>
+                <td class="s13">Auth, Security &amp; Payment</td>
+                <td class="s14">Integrate OAuth2 Client, auto map Google profile, create account and Coin wallet.</td>
+                <td class="s14">Ngọc</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.1.2</td>
+                <td class="s13">III.1.1.b</td>
+                <td class="s13">Passed Google OAuth2 test: callback exchange, user profile creation, wallet initialization, and session creation.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">24</td>
+                <td class="s13">UC-04: Logout</td>
+                <td class="s13">Auth, Security &amp; Payment</td>
+                <td class="s14">Invalidate Session, securely delete Cookies and redirect to homepage.</td>
+                <td class="s14">Ngọc</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.1.4</td>
+                <td class="s13">III.1.1.d</td>
+                <td class="s13">Passed session invalidation test: cookie destruction, Spring Security SecurityContext purge, and redirect to home.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">25</td>
+                <td class="s13">UC-05: Forgot Password</td>
+                <td class="s13">Auth, Security &amp; Payment</td>
+                <td class="s14">Send secure token via Email with expiry time to reset forgotten password.</td>
+                <td class="s14">Ngọc</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.1.5</td>
+                <td class="s13">III.1.1.e</td>
+                <td class="s13">Passed password reset test: expired token rejection, single-use token invalidation, and password update.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">26</td>
+                <td class="s13">UC-17: Change Password</td>
+                <td class="s13">Auth, Security &amp; Payment</td>
+                <td class="s14">Logged in user changes password (requires old password verification).</td>
+                <td class="s14">Ngọc</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.2.3</td>
+                <td class="s13">III.2.1.c</td>
+                <td class="s13">Passed password change test: current password validation, complexity enforcement, and re-authentication check.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">27</td>
+                <td class="s13">UC-15: View Profile</td>
+                <td class="s13">Auth, Security &amp; Payment</td>
+                <td class="s14">View personal account info, including current Coin wallet balance.</td>
+                <td class="s14">Ngọc</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.2.1</td>
+                <td class="s13">III.2.1.a</td>
+                <td class="s13">Passed profile dashboard test: user details display, roles verification, wallet balance accuracy, and activity stats.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">28</td>
+                <td class="s13">UC-29: View Coin History</td>
+                <td class="s13">Auth, Security &amp; Payment</td>
+                <td class="s14">View detailed Coin history (amount deposited, chapters/novels unlocked).</td>
+                <td class="s14">Ngọc</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.3.1</td>
+                <td class="s13">III.9.1.a</td>
+                <td class="s13">Passed coin audit test: deposit history ledger, purchase deduction records, pagination, and filter by transaction type.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">29</td>
+                <td class="s13">UC-16: Update Profile</td>
+                <td class="s13">Auth, Security &amp; Payment</td>
+                <td class="s14">Update display info, upload avatar to Cloudinary.</td>
+                <td class="s14">Ngọc</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.2.2</td>
+                <td class="s13">III.2.1.b</td>
+                <td class="s13">Passed profile edit test: display name update, Cloudinary avatar upload, and input sanitization.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">30</td>
+                <td class="s13">UC-30: Top-up Coin</td>
+                <td class="s13">Auth, Security &amp; Payment</td>
+                <td class="s14">Init VNPay sandbox URL, process IPN Webhook to verify tx and add Coins safely.</td>
+                <td class="s14">Ngọc</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.3.2</td>
+                <td class="s13">III.9.1.b</td>
+                <td class="s13">Passed payment gateway test: VNPay sandbox payment redirect, checksum verification, and idempotent IPN credit.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">31</td>
+                <td class="s13">UC-45: Create Category</td>
+                <td class="s13">Discovery, Category &amp; Community</td>
+                <td class="s14">Admin creates new category (Category Name, slug URL, Description).</td>
+                <td class="s14">Đạt</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.6.2</td>
+                <td class="s13">III.6.1.a</td>
+                <td class="s13">Passed category creation test: unique slug generation, duplicate name check, and category list refresh.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">32</td>
+                <td class="s13">UC-46: Update Category</td>
+                <td class="s13">Discovery, Category &amp; Community</td>
+                <td class="s14">Admin edits category name, slug or description.</td>
+                <td class="s14">Đạt</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.6.3</td>
+                <td class="s13">III.6.1.b</td>
+                <td class="s13">Passed category editing test: name/description update, slug immutability check, and cache eviction.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">33</td>
+                <td class="s13">UC-13: View Categories</td>
+                <td class="s13">Discovery, Category &amp; Community</td>
+                <td class="s14">Display list of categories on navigation bar and category page.</td>
+                <td class="s14">Đạt</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.6.1</td>
+                <td class="s13">III.6.1.a</td>
+                <td class="s13">Passed category list test: top navigation categories dropdown, index catalog display, and count badges.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">34</td>
+                <td class="s13">UC-47: Delete Category</td>
+                <td class="s13">Discovery, Category &amp; Community</td>
+                <td class="s14">Admin deletes category (check constraints, prevent deletion if novels exist).</td>
+                <td class="s14">Đạt</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.6.4</td>
+                <td class="s13">III.6.1.c</td>
+                <td class="s13">Passed category deletion test: foreign key constraint validation, active novel association block, and safe deletion.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">35</td>
+                <td class="s13">UC-37: Categorize Novel</td>
+                <td class="s13">Discovery, Category &amp; Community</td>
+                <td class="s14">Update multi-category links (Many-to-Many) for each novel.</td>
+                <td class="s14">Đạt</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.6.5</td>
+                <td class="s13">III.6.1.d</td>
+                <td class="s13">Passed novel categorizing test: multi-select category assignment, database join table assertion, and filter sync.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">36</td>
+                <td class="s13">UC-07: Search Novels</td>
+                <td class="s13">Discovery, Category &amp; Community</td>
+                <td class="s14">Dynamic query: keyword, author, multiple categories, novel status, VIP filter, chapter
+                    range.</td>
+                <td class="s14">Đạt</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.7.1</td>
+                <td class="s13">III.3.1.b</td>
+                <td class="s13">Passed search engine test: keyword matching against novel titles and authors, diacritic-insensitive search.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">37</td>
+                <td class="s13">UC-08: Filter Novels</td>
+                <td class="s13">Discovery, Category &amp; Community</td>
+                <td class="s14">Filter novel list by categories and release progress (Ongoing / Completed).</td>
+                <td class="s14">Đạt</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.7.2</td>
+                <td class="s13">III.3.1.a</td>
+                <td class="s13">Passed complex filter test: multi-category conjunction, completion status filter, and price tag filtering.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">38</td>
+                <td class="s13">UC-09: Sort Novels</td>
+                <td class="s13">Discovery, Category &amp; Community</td>
+                <td class="s14">Sort results by Recently Updated, Most Viewed, Highest Rated, Chapter Count, A-Z.</td>
+                <td class="s14">Đạt</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.7.3</td>
+                <td class="s13">III.3.1.a</td>
+                <td class="s13">Passed sorting test: sort by views (DESC), update date (DESC), rating (DESC), and title (ASC) verification.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">39</td>
+                <td class="s13">UC-14: View Leaderboards</td>
+                <td class="s13">Discovery, Category &amp; Community</td>
+                <td class="s14">View Top novels leaderboard by views: Daily, Weekly, Monthly, All Time.</td>
+                <td class="s14">Đạt</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.7.5</td>
+                <td class="s13">III.3.1.d</td>
+                <td class="s13">Passed leaderboard test: daily/weekly/monthly/all-time views and rating calculation accuracy.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">40</td>
+                <td class="s13">UC-23: Review Novel</td>
+                <td class="s13">Discovery, Category &amp; Community</td>
+                <td class="s14">Reader rates 1-5 stars and reviews; auto calculate average_rating, prevent spam vote.</td>
+                <td class="s14">Đạt</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.8.2</td>
+                <td class="s13">III.4.1.b</td>
+                <td class="s13">Passed rating & review test: 1-5 star selection, duplicate review update, and novel average score recalculation.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">41</td>
+                <td class="s13">UC-24: Create Comment</td>
+                <td class="s13">Discovery, Category &amp; Community</td>
+                <td class="s14">Post comment, discuss novel or chapter.</td>
+                <td class="s14">Đạt</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.8.3</td>
+                <td class="s13">III.4.1.a</td>
+                <td class="s13">Passed comment submission test: novel/chapter comment posting, HTML escaping (XSS guard), and anti-spam delay.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">42</td>
+                <td class="s13">UC-12: View Comments</td>
+                <td class="s13">Discovery, Category &amp; Community</td>
+                <td class="s14">View all reader comments with pagination on novel detail or chapter reading page.</td>
+                <td class="s14">Đạt</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.8.1</td>
+                <td class="s13">III.4.1.a</td>
+                <td class="s13">Passed comment stream test: paginated comment loading, author badge display, and timestamp formatting.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">43</td>
+                <td class="s13">UC-22: Report Comment</td>
+                <td class="s13">System Admin &amp; Moderation</td>
+                <td class="s14">Reader submits report for offensive, vulgar, spam or inappropriate comments.</td>
+                <td class="s14">Khánh</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.9.1</td>
+                <td class="s13">III.8.1.a</td>
+                <td class="s13">Passed comment report test: report dialog, violation reason selection, and duplicate report prevention.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">44</td>
+                <td class="s13">UC-21: Report Content</td>
+                <td class="s13">System Admin &amp; Moderation</td>
+                <td class="s14">Reader submits report for specific novel/chapter with errors, misinformation or
+                    violations.</td>
+                <td class="s14">Khánh</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.9.2</td>
+                <td class="s13">III.8.1.b</td>
+                <td class="s13">Passed content report test: reporting novel/chapter typos, errors, and copyright violations verified.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">45</td>
+                <td class="s13">UC-43: Resolve Reports</td>
+                <td class="s13">System Admin &amp; Moderation</td>
+                <td class="s14">Admin/Staff handles all reports centrally (Comment/Novel/Chapter), logs handler/result.</td>
+                <td class="s14">Khánh</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.9.3</td>
+                <td class="s13">III.8.1.c</td>
+                <td class="s13">Passed moderation workflow test: admin queue for comment/content reports, dismissal, and action logging.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">46</td>
+                <td class="s13">UC-44: Send Notification</td>
+                <td class="s13">System Admin &amp; Moderation</td>
+                <td class="s14">Admin/Staff drafts notice sending to entire system (All) or a specific user.</td>
+                <td class="s14">Khánh</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.13.1</td>
+                <td class="s13">III.8.2.a</td>
+                <td class="s13">Passed broadcast test: system-wide announcement dispatch and single-user direct notification verified.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">47</td>
+                <td class="s13">UC-31: View Notification</td>
+                <td class="s13">System Admin &amp; Moderation</td>
+                <td class="s14">Where readers receive system notifications, or feedback for their reports.</td>
+                <td class="s14">Khánh</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.13.2</td>
+                <td class="s13">III.8.2.b</td>
+                <td class="s13">Passed notification UI test: unread badge count, dropdown notifications, and mark-as-read functionality.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">48</td>
+                <td class="s13">UC-51: Audit Transactions</td>
+                <td class="s13">System Admin &amp; Moderation</td>
+                <td class="s14">Admin looks up entire Coin balance fluctuation history in the system.</td>
+                <td class="s14">Khánh</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.3.3</td>
+                <td class="s13">III.9.1.c</td>
+                <td class="s13">Passed transaction audit test: global coin fluctuation log, total revenue aggregation, and audit trail export.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">49</td>
+                <td class="s13">UC-52: Configure System</td>
+                <td class="s13">System Admin &amp; Moderation</td>
+                <td class="s14">Admin configures VND to Coin rate, admin contact info, terms of use, adds themes.</td>
+                <td class="s14">Khánh</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.14.1</td>
+                <td class="s13">III.8.2.c</td>
+                <td class="s13">Passed system config test: VND-to-Coin conversion rate update, terms of service update, and theme config.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">50</td>
+                <td class="s13">UC-49: View User List</td>
+                <td class="s13">System Admin &amp; Moderation</td>
+                <td class="s14">Admin looks up user accounts in system, search by email/name and filter by role.</td>
+                <td class="s14">Khánh</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.15.1</td>
+                <td class="s13">III.8.2.d</td>
+                <td class="s13">Passed user management test: admin user search, role filter, registration date sorting, and account status.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">51</td>
+                <td class="s13">UC-48: Assign Roles</td>
+                <td class="s13">System Admin &amp; Moderation</td>
+                <td class="s14">Admin assigns or revokes user roles (ROLE_STAFF, ROLE_ADMIN).</td>
+                <td class="s14">Khánh</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.15.3</td>
+                <td class="s13">III.8.3.a</td>
+                <td class="s13">Passed RBAC test: role assignment (ROLE_STAFF, ROLE_ADMIN), self-demotion block, and authorization refresh.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">52</td>
+                <td class="s13">UC-50: Ban/Enable User</td>
+                <td class="s13">System Admin &amp; Moderation</td>
+                <td class="s14">Admin disables (BANNED) or reactivates accounts violating community guidelines.</td>
+                <td class="s14">Khánh</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.15.2</td>
+                <td class="s13">III.8.3.b</td>
+                <td class="s13">Passed account ban test: BANNED status toggle, immediate session termination, and blocked login verification.</td>
+            </tr>        </tbody>
     </table>
 </div>

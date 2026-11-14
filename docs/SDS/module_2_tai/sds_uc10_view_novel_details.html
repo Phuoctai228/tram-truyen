@@ -44,11 +44,18 @@
         .col-no { width: 6%; text-align: center; color: #000000; }
         .col-method { width: 28%; font-weight: bold; color: #000000; }
         .col-desc { width: 66%; color: #000000; }
-        .sql-item { margin-top: 12px; margin-bottom: 4px; font-weight: bold; color: #000000; }
+        .sql-item {
+            margin-top: 12px;
+            margin-bottom: 4px;
+            font-family: 'Calibri', sans-serif;
+            font-size: 11pt;
+            font-weight: bold;
+            color: #000000;
+        }
         .sql-block {
-            margin: 4px 0 14px 0;
-            font-family: 'Times New Roman', Times, serif;
-            font-size: 12pt;
+            margin: 4px 0 12px 0;
+            font-family: 'Calibri', sans-serif;
+            font-size: 11pt;
             color: #000000;
             white-space: pre-wrap;
         }
@@ -504,74 +511,31 @@
     <h3>d. Database Queries</h3>
 
     <p class="sql-item">1. Retrieve public novel by slug</p>
-    <div class="sql-block">SELECT id, title, slug, author, summary, cover_url, status, is_deleted, uploader_id,
-       views, average_rating, rating_count, created_at, updated_at
-FROM novels
-WHERE slug = ?
-  AND is_deleted = FALSE
-  AND status &lt;&gt; 'ARCHIVED';</div>
+    <div class="sql-block">SELECT id, title, slug, author, summary, cover_url, status, is_deleted, uploader_id, views, average_rating, rating_count, created_at, updated_at FROM novels WHERE slug = ? AND is_deleted = FALSE AND status &lt;&gt; 'ARCHIVED';</div>
 
     <p class="sql-item">2. Verify public novel by ID</p>
-    <div class="sql-block">SELECT id, title, slug, author, summary, cover_url, status, is_deleted, uploader_id,
-       views, average_rating, rating_count, created_at, updated_at
-FROM novels
-WHERE id = ?
-  AND is_deleted = FALSE
-  AND status &lt;&gt; 'ARCHIVED';</div>
+    <div class="sql-block">SELECT id, title, slug, author, summary, cover_url, status, is_deleted, uploader_id, views, average_rating, rating_count, created_at, updated_at FROM novels WHERE id = ? AND is_deleted = FALSE AND status &lt;&gt; 'ARCHIVED';</div>
 
     <p class="sql-item">3. Retrieve all published chapters of the novel</p>
-    <div class="sql-block">SELECT id, novel_id, chapter_number, title, price, status, views, created_at, updated_at
-FROM chapters
-WHERE novel_id = ?
-  AND is_deleted = FALSE
-  AND status IN ('PUBLISHED_REGULAR', 'PUBLISHED_VIP', 'PUBLISHED')
-ORDER BY chapter_number ASC;</div>
+    <div class="sql-block">SELECT id, novel_id, chapter_number, title, price, status, views, created_at, updated_at FROM chapters WHERE novel_id = ? AND is_deleted = FALSE AND status IN ('PUBLISHED_REGULAR', 'PUBLISHED_VIP', 'PUBLISHED') ORDER BY chapter_number ASC;</div>
 
     <p class="sql-item">4. Retrieve authenticated user by email</p>
-    <div class="sql-block">SELECT id, email, password, full_name, avatar_url, wallet_balance, auth_provider, status, created_at, updated_at
-FROM users
-WHERE email = ?;</div>
+    <div class="sql-block">SELECT id, email, password, full_name, avatar_url, wallet_balance, auth_provider, status, created_at, updated_at FROM users WHERE email = ?;</div>
 
     <p class="sql-item">5. Check if novel is in user's bookshelf</p>
-    <div class="sql-block">SELECT EXISTS (
-    SELECT 1
-    FROM bookshelves
-    WHERE user_id = ?
-      AND novel_id = ?
-);</div>
+    <div class="sql-block">SELECT EXISTS (SELECT 1 FROM bookshelves WHERE user_id = ? AND novel_id = ?);</div>
 
     <p class="sql-item">6. Count read chapters of the novel for the user</p>
-    <div class="sql-block">SELECT COUNT(uca.id)
-FROM user_chapter_activities uca
-INNER JOIN chapters c ON uca.chapter_id = c.id
-WHERE uca.user_id = ?
-  AND c.novel_id = ?
-  AND uca.is_read = TRUE;</div>
+    <div class="sql-block">SELECT COUNT(uca.id) FROM user_chapter_activities uca INNER JOIN chapters c ON uca.chapter_id = c.id WHERE uca.user_id = ? AND c.novel_id = ? AND uca.is_read = TRUE;</div>
 
     <p class="sql-item">7. Retrieve latest read chapter activity for "Continue Reading"</p>
-    <div class="sql-block">SELECT uca.id, uca.user_id, uca.chapter_id, uca.is_read, uca.read_at,
-       c.chapter_number, c.title, c.status
-FROM user_chapter_activities uca
-INNER JOIN chapters c ON uca.chapter_id = c.id
-WHERE uca.user_id = ?
-  AND c.novel_id = ?
-  AND uca.is_read = TRUE
-ORDER BY uca.read_at DESC, c.chapter_number DESC
-LIMIT 1;</div>
+    <div class="sql-block">SELECT uca.id, uca.user_id, uca.chapter_id, uca.is_read, uca.read_at, c.chapter_number, c.title, c.status FROM user_chapter_activities uca INNER JOIN chapters c ON uca.chapter_id = c.id WHERE uca.user_id = ? AND c.novel_id = ? AND uca.is_read = TRUE ORDER BY uca.read_at DESC, c.chapter_number DESC LIMIT 1;</div>
 
     <p class="sql-item">8. Count total bookshelf favorites for the novel</p>
-    <div class="sql-block">SELECT COUNT(id)
-FROM bookshelves
-WHERE novel_id = ?;</div>
+    <div class="sql-block">SELECT COUNT(id) FROM bookshelves WHERE novel_id = ?;</div>
 
     <p class="sql-item">9. Retrieve top 5 novels by the same author</p>
-    <div class="sql-block">SELECT id, title, slug, author, summary, cover_url, status, views, average_rating, rating_count
-FROM novels
-WHERE LOWER(author) = LOWER(?)
-  AND id &lt;&gt; ?
-  AND is_deleted = FALSE
-ORDER BY views DESC
-LIMIT 5;</div>
+    <div class="sql-block">SELECT id, title, slug, author, summary, cover_url, status, views, average_rating, rating_count FROM novels WHERE LOWER(author) = LOWER(?) AND id &lt;&gt; ? AND is_deleted = FALSE ORDER BY views DESC LIMIT 5;</div>
 
 </body>
 </html>

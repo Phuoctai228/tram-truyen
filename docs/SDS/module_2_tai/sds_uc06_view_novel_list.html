@@ -44,11 +44,18 @@
         .col-no { width: 6%; text-align: center; color: #000000; }
         .col-method { width: 28%; font-weight: bold; color: #000000; }
         .col-desc { width: 66%; color: #000000; }
-        .sql-item { margin-top: 12px; margin-bottom: 4px; font-weight: bold; color: #000000; }
+        .sql-item {
+            margin-top: 12px;
+            margin-bottom: 4px;
+            font-family: 'Calibri', sans-serif;
+            font-size: 11pt;
+            font-weight: bold;
+            color: #000000;
+        }
         .sql-block {
-            margin: 4px 0 14px 0;
-            font-family: 'Times New Roman', Times, serif;
-            font-size: 12pt;
+            margin: 4px 0 12px 0;
+            font-family: 'Calibri', sans-serif;
+            font-size: 11pt;
             color: #000000;
             white-space: pre-wrap;
         }
@@ -305,68 +312,32 @@
 
     <h3>d. Database Queries</h3>
 
-    <p class="sql-item">1. Retrieve top 12 recently updated novels</p>
-    <div class="sql-block">SELECT id, title, slug, author, summary, cover_url, status, is_deleted, uploader_id,
-       views, average_rating, rating_count, created_at, updated_at
-FROM novels
-WHERE is_deleted = FALSE
-ORDER BY updated_at DESC
-LIMIT 12;</div>
+    <p class="sql-item">1. Retrieve all active novel categories</p>
+    <div class="sql-block">SELECT id, name, slug, description FROM categories ORDER BY name ASC;</div>
 
-    <p class="sql-item">2. Retrieve top 10 hot novels by view count</p>
-    <div class="sql-block">SELECT id, title, slug, author, summary, cover_url, status, is_deleted, uploader_id,
-       views, average_rating, rating_count, created_at, updated_at
-FROM novels
-WHERE is_deleted = FALSE
-ORDER BY views DESC
-LIMIT 10;</div>
+    <p class="sql-item">2. Retrieve top 12 recently updated novels</p>
+    <div class="sql-block">SELECT id, title, slug, author, summary, cover_url, status, is_deleted, uploader_id, views, average_rating, rating_count, created_at, updated_at FROM novels WHERE is_deleted = FALSE ORDER BY updated_at DESC LIMIT 12;</div>
 
-    <p class="sql-item">3. Retrieve top 12 completed novels</p>
-    <div class="sql-block">SELECT id, title, slug, author, summary, cover_url, status, is_deleted, uploader_id,
-       views, average_rating, rating_count, created_at, updated_at
-FROM novels
-WHERE is_deleted = FALSE
-  AND status = ?
-ORDER BY updated_at DESC
-LIMIT 12;</div>
+    <p class="sql-item">3. Retrieve top 10 hot novels by view count</p>
+    <div class="sql-block">SELECT id, title, slug, author, summary, cover_url, status, is_deleted, uploader_id, views, average_rating, rating_count, created_at, updated_at FROM novels WHERE is_deleted = FALSE ORDER BY views DESC LIMIT 10;</div>
 
-    <p class="sql-item">4. Retrieve top 12 recommended public novels</p>
-    <div class="sql-block">SELECT n.id, n.title, n.slug, n.author, n.summary, n.cover_url, n.status, n.is_deleted,
-       n.uploader_id, n.views, n.average_rating, n.rating_count, n.created_at, n.updated_at
-FROM novels n
-WHERE n.is_deleted = FALSE
-  AND n.status &lt;&gt; 'ARCHIVED'
-  AND EXISTS (
-      SELECT 1
-      FROM chapters c
-      WHERE c.novel_id = n.id
-        AND c.is_deleted = FALSE
-        AND c.status IN ('PUBLISHED_REGULAR', 'PUBLISHED_VIP', 'PUBLISHED')
-  )
-ORDER BY n.average_rating DESC, n.views DESC
-LIMIT 12 OFFSET 0;</div>
+    <p class="sql-item">4. Retrieve top 12 completed novels</p>
+    <div class="sql-block">SELECT id, title, slug, author, summary, cover_url, status, is_deleted, uploader_id, views, average_rating, rating_count, created_at, updated_at FROM novels WHERE is_deleted = FALSE AND status = ? ORDER BY updated_at DESC LIMIT 12;</div>
 
-    <p class="sql-item">5. Retrieve top 12 newly created novels</p>
-    <div class="sql-block">SELECT id, title, slug, author, summary, cover_url, status, is_deleted, uploader_id,
-       views, average_rating, rating_count, created_at, updated_at
-FROM novels
-WHERE is_deleted = FALSE
-ORDER BY created_at DESC
-LIMIT 12;</div>
+    <p class="sql-item">5. Retrieve top 12 recommended public novels</p>
+    <div class="sql-block">SELECT n.id, n.title, n.slug, n.author, n.summary, n.cover_url, n.status, n.is_deleted, n.uploader_id, n.views, n.average_rating, n.rating_count, n.created_at, n.updated_at FROM novels n WHERE n.is_deleted = FALSE AND n.status &lt;&gt; 'ARCHIVED' AND EXISTS (SELECT 1 FROM chapters c WHERE c.novel_id = n.id AND c.is_deleted = FALSE AND c.status IN ('PUBLISHED_REGULAR', 'PUBLISHED_VIP', 'PUBLISHED')) ORDER BY n.average_rating DESC, n.views DESC LIMIT 12 OFFSET 0;</div>
 
-    <p class="sql-item">6. Count total bookshelf favorites for a novel</p>
-    <div class="sql-block">SELECT COUNT(id)
-FROM bookshelves
-WHERE novel_id = ?;</div>
+    <p class="sql-item">6. Retrieve top 12 newly created novels</p>
+    <div class="sql-block">SELECT id, title, slug, author, summary, cover_url, status, is_deleted, uploader_id, views, average_rating, rating_count, created_at, updated_at FROM novels WHERE is_deleted = FALSE ORDER BY created_at DESC LIMIT 12;</div>
 
-    <p class="sql-item">7. Retrieve top 3 latest published chapters per novel</p>
-    <div class="sql-block">SELECT id, novel_id, chapter_number, title, price, status, views, created_at, updated_at
-FROM chapters
-WHERE novel_id = ?
-  AND is_deleted = FALSE
-  AND status IN ('PUBLISHED_REGULAR', 'PUBLISHED_VIP', 'PUBLISHED')
-ORDER BY chapter_number DESC
-LIMIT 3;</div>
+    <p class="sql-item">7. Check if hero featured novel is in authenticated user's bookshelf</p>
+    <div class="sql-block">SELECT EXISTS (SELECT 1 FROM bookshelves WHERE user_id = ? AND novel_id = ?);</div>
+
+    <p class="sql-item">8. Count total bookshelf favorites for a novel</p>
+    <div class="sql-block">SELECT COUNT(id) FROM bookshelves WHERE novel_id = ?;</div>
+
+    <p class="sql-item">9. Retrieve top 3 latest published chapters per novel</p>
+    <div class="sql-block">SELECT id, novel_id, chapter_number, title, price, status, views, created_at, updated_at FROM chapters WHERE novel_id = ? AND is_deleted = FALSE AND status IN ('PUBLISHED_REGULAR', 'PUBLISHED_VIP', 'PUBLISHED') ORDER BY chapter_number DESC LIMIT 3;</div>
 
 </body>
 </html>

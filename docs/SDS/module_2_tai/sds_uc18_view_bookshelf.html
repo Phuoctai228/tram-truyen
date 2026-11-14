@@ -44,11 +44,18 @@
         .col-no { width: 6%; text-align: center; color: #000000; }
         .col-method { width: 28%; font-weight: bold; color: #000000; }
         .col-desc { width: 66%; color: #000000; }
-        .sql-item { margin-top: 12px; margin-bottom: 4px; font-weight: bold; color: #000000; }
+        .sql-item {
+            margin-top: 12px;
+            margin-bottom: 4px;
+            font-family: 'Calibri', sans-serif;
+            font-size: 11pt;
+            font-weight: bold;
+            color: #000000;
+        }
         .sql-block {
-            margin: 4px 0 14px 0;
-            font-family: 'Times New Roman', Times, serif;
-            font-size: 12pt;
+            margin: 4px 0 12px 0;
+            font-family: 'Calibri', sans-serif;
+            font-size: 11pt;
             color: #000000;
             white-space: pre-wrap;
         }
@@ -279,52 +286,22 @@
     <h3>d. Database Queries</h3>
 
     <p class="sql-item">1. Retrieve authenticated user by email</p>
-    <div class="sql-block">SELECT id, email, full_name, avatar_url, wallet_balance, status, created_at
-FROM users
-WHERE email = ?;</div>
+    <div class="sql-block">SELECT id, email, full_name, avatar_url, wallet_balance, status, created_at FROM users WHERE email = ?;</div>
 
     <p class="sql-item">2. Retrieve all bookshelf entries with active novels for the user</p>
-    <div class="sql-block">SELECT b.id, b.user_id, b.novel_id, b.added_at,
-       n.id AS novel_id, n.title, n.slug, n.author, n.cover_url, n.status, n.is_deleted
-FROM bookshelves b
-INNER JOIN novels n ON b.novel_id = n.id
-WHERE b.user_id = ?
-  AND n.is_deleted = FALSE
-ORDER BY b.added_at DESC;</div>
+    <div class="sql-block">SELECT b.id, b.user_id, b.novel_id, b.added_at, n.id AS novel_id, n.title, n.slug, n.author, n.cover_url, n.status, n.is_deleted FROM bookshelves b INNER JOIN novels n ON b.novel_id = n.id WHERE b.user_id = ? AND n.is_deleted = FALSE ORDER BY b.added_at DESC;</div>
 
     <p class="sql-item">3. Count total non-deleted chapters of a novel</p>
-    <div class="sql-block">SELECT COUNT(id)
-FROM chapters
-WHERE novel_id = ?
-  AND is_deleted = FALSE;</div>
+    <div class="sql-block">SELECT COUNT(id) FROM chapters WHERE novel_id = ? AND is_deleted = FALSE;</div>
 
     <p class="sql-item">4. Check if novel has paid VIP chapters</p>
-    <div class="sql-block">SELECT EXISTS (
-    SELECT 1
-    FROM chapters
-    WHERE novel_id = ?
-      AND price &gt; 0
-      AND is_deleted = FALSE
-);</div>
+    <div class="sql-block">SELECT EXISTS (SELECT 1 FROM chapters WHERE novel_id = ? AND price &gt; 0 AND is_deleted = FALSE);</div>
 
     <p class="sql-item">5. Retrieve latest read chapter activity for a novel</p>
-    <div class="sql-block">SELECT uca.id, uca.user_id, uca.chapter_id, uca.is_read, uca.read_at,
-       c.chapter_number, c.title
-FROM user_chapter_activities uca
-INNER JOIN chapters c ON uca.chapter_id = c.id
-WHERE uca.user_id = ?
-  AND c.novel_id = ?
-  AND uca.is_read = TRUE
-ORDER BY uca.read_at DESC, c.chapter_number DESC
-LIMIT 1;</div>
+    <div class="sql-block">SELECT uca.id, uca.user_id, uca.chapter_id, uca.is_read, uca.read_at, c.chapter_number, c.title FROM user_chapter_activities uca INNER JOIN chapters c ON uca.chapter_id = c.id WHERE uca.user_id = ? AND c.novel_id = ? AND uca.is_read = TRUE ORDER BY uca.read_at DESC, c.chapter_number DESC LIMIT 1;</div>
 
     <p class="sql-item">6. Count chapters read by user for a novel</p>
-    <div class="sql-block">SELECT COUNT(uca.id)
-FROM user_chapter_activities uca
-INNER JOIN chapters c ON uca.chapter_id = c.id
-WHERE uca.user_id = ?
-  AND c.novel_id = ?
-  AND uca.is_read = TRUE;</div>
+    <div class="sql-block">SELECT COUNT(uca.id) FROM user_chapter_activities uca INNER JOIN chapters c ON uca.chapter_id = c.id WHERE uca.user_id = ? AND c.novel_id = ? AND uca.is_read = TRUE;</div>
 
 </body>
 </html>
