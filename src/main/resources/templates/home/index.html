@@ -867,6 +867,14 @@
                 .replace(/"/g, '&quot;')
                 .replace(/'/g, '&#39;');
         }
+
+        // Tự động tải bảng xếp hạng Top Tuần thật ngay khi vào trang chủ
+        document.addEventListener('DOMContentLoaded', () => {
+            const weekTabBtn = document.querySelector('.ranking-tab-btn');
+            if (weekTabBtn) {
+                switchRankingPeriod('week', weekTabBtn);
+            }
+        });
     </script>
 </body>
 
