@@ -44,11 +44,18 @@
         .col-no { width: 6%; text-align: center; color: #000000; }
         .col-method { width: 28%; font-weight: bold; color: #000000; }
         .col-desc { width: 66%; color: #000000; }
-        .sql-item { margin-top: 12px; margin-bottom: 4px; font-weight: bold; color: #000000; }
+        .sql-item {
+            margin-top: 12px;
+            margin-bottom: 4px;
+            font-family: 'Calibri', sans-serif;
+            font-size: 11pt;
+            font-weight: bold;
+            color: #000000;
+        }
         .sql-block {
-            margin: 4px 0 14px 0;
-            font-family: 'Times New Roman', Times, serif;
-            font-size: 12pt;
+            margin: 4px 0 12px 0;
+            font-family: 'Calibri', sans-serif;
+            font-size: 11pt;
             color: #000000;
             white-space: pre-wrap;
         }
@@ -261,27 +268,19 @@
     <h3>d. Database Queries</h3>
 
     <p class="sql-item">1. Retrieve authenticated user by email</p>
-    <div class="sql-block">SELECT id, email, full_name, status
-FROM users
-WHERE email = ?;</div>
+    <div class="sql-block">SELECT id, email, full_name, status FROM users WHERE email = ?;</div>
 
     <p class="sql-item">2. Retrieve chapter by primary key ID</p>
-    <div class="sql-block">SELECT id, novel_id, chapter_number, title, status, is_deleted
-FROM chapters
-WHERE id = ?;</div>
+    <div class="sql-block">SELECT id, novel_id, chapter_number, title, status, is_deleted FROM chapters WHERE id = ?;</div>
 
     <p class="sql-item">3. Check existing reading/unlock activity for user and chapter</p>
-    <div class="sql-block">SELECT id, user_id, chapter_id, is_read, read_at, is_unlocked, price_paid, unlocked_at
-FROM user_chapter_activities
-WHERE user_id = ?
-  AND chapter_id = ?;</div>
+    <div class="sql-block">SELECT id, user_id, chapter_id, is_read, read_at, is_unlocked, price_paid, unlocked_at FROM user_chapter_activities WHERE user_id = ? AND chapter_id = ?;</div>
 
-    <p class="sql-item">4. Upsert reading completion status and timestamp</p>
-    <div class="sql-block">INSERT INTO user_chapter_activities (user_id, chapter_id, is_read, read_at)
-VALUES (?, ?, TRUE, CURRENT_TIMESTAMP)
-ON CONFLICT (user_id, chapter_id)
-DO UPDATE SET is_read = TRUE,
-              read_at = CURRENT_TIMESTAMP;</div>
+    <p class="sql-item">4. Insert new reading activity record</p>
+    <div class="sql-block">INSERT INTO user_chapter_activities (user_id, chapter_id, is_read, read_at) VALUES (?, ?, TRUE, CURRENT_TIMESTAMP) RETURNING id;</div>
+
+    <p class="sql-item">5. Update existing reading progress timestamp</p>
+    <div class="sql-block">UPDATE user_chapter_activities SET is_read = TRUE, read_at = CURRENT_TIMESTAMP WHERE id = ?;</div>
 
 </body>
 </html>

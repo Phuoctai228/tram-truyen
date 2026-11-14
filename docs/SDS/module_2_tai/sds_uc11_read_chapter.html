@@ -44,11 +44,18 @@
         .col-no { width: 6%; text-align: center; color: #000000; }
         .col-method { width: 28%; font-weight: bold; color: #000000; }
         .col-desc { width: 66%; color: #000000; }
-        .sql-item { margin-top: 12px; margin-bottom: 4px; font-weight: bold; color: #000000; }
+        .sql-item {
+            margin-top: 12px;
+            margin-bottom: 4px;
+            font-family: 'Calibri', sans-serif;
+            font-size: 11pt;
+            font-weight: bold;
+            color: #000000;
+        }
         .sql-block {
-            margin: 4px 0 14px 0;
-            font-family: 'Times New Roman', Times, serif;
-            font-size: 12pt;
+            margin: 4px 0 12px 0;
+            font-family: 'Calibri', sans-serif;
+            font-size: 11pt;
             color: #000000;
             white-space: pre-wrap;
         }
@@ -531,50 +538,25 @@
     <h3>d. Database Queries</h3>
 
     <p class="sql-item">1. Retrieve public novel by slug</p>
-    <div class="sql-block">SELECT id, title, slug, author, summary, cover_url, status, is_deleted, views, average_rating, rating_count
-FROM novels
-WHERE slug = ?
-  AND is_deleted = FALSE
-  AND status &lt;&gt; 'ARCHIVED';</div>
+    <div class="sql-block">SELECT id, title, slug, author, summary, cover_url, status, is_deleted, views, average_rating, rating_count FROM novels WHERE slug = ? AND is_deleted = FALSE AND status &lt;&gt; 'ARCHIVED';</div>
 
     <p class="sql-item">2. Retrieve published chapter by novel ID and chapter number</p>
-    <div class="sql-block">SELECT id, novel_id, chapter_number, title, content, price, auto_unlock_at, views, status, is_deleted, created_at, updated_at
-FROM chapters
-WHERE novel_id = ?
-  AND chapter_number = ?
-  AND is_deleted = FALSE
-  AND status IN ('PUBLISHED_REGULAR', 'PUBLISHED_VIP', 'PUBLISHED');</div>
+    <div class="sql-block">SELECT id, novel_id, chapter_number, title, content, price, auto_unlock_at, views, status, is_deleted, created_at, updated_at FROM chapters WHERE novel_id = ? AND chapter_number = ? AND is_deleted = FALSE AND status IN ('PUBLISHED_REGULAR', 'PUBLISHED_VIP', 'PUBLISHED');</div>
 
     <p class="sql-item">3. Increment chapter view count</p>
-    <div class="sql-block">UPDATE chapters
-SET views = views + 1,
-    updated_at = CURRENT_TIMESTAMP
-WHERE id = ?;</div>
+    <div class="sql-block">UPDATE chapters SET views = views + 1, updated_at = CURRENT_TIMESTAMP WHERE id = ?;</div>
 
     <p class="sql-item">4. Increment novel cumulative view count</p>
-    <div class="sql-block">UPDATE novels
-SET views = views + 1,
-    updated_at = CURRENT_TIMESTAMP
-WHERE id = ?;</div>
+    <div class="sql-block">UPDATE novels SET views = views + 1, updated_at = CURRENT_TIMESTAMP WHERE id = ?;</div>
 
     <p class="sql-item">5. Retrieve authenticated user by email</p>
-    <div class="sql-block">SELECT id, email, full_name, wallet_balance, status
-FROM users
-WHERE email = ?;</div>
+    <div class="sql-block">SELECT id, email, full_name, wallet_balance, status FROM users WHERE email = ?;</div>
 
     <p class="sql-item">6. Check user's unlock and reading activity for the chapter</p>
-    <div class="sql-block">SELECT id, user_id, chapter_id, is_read, read_at, is_unlocked, price_paid, unlocked_at
-FROM user_chapter_activities
-WHERE user_id = ?
-  AND chapter_id = ?;</div>
+    <div class="sql-block">SELECT id, user_id, chapter_id, is_read, read_at, is_unlocked, price_paid, unlocked_at FROM user_chapter_activities WHERE user_id = ? AND chapter_id = ?;</div>
 
     <p class="sql-item">7. Retrieve all published chapters for previous/next chapter navigation</p>
-    <div class="sql-block">SELECT id, novel_id, chapter_number, title, price, status
-FROM chapters
-WHERE novel_id = ?
-  AND is_deleted = FALSE
-  AND status IN ('PUBLISHED_REGULAR', 'PUBLISHED_VIP', 'PUBLISHED')
-ORDER BY chapter_number ASC;</div>
+    <div class="sql-block">SELECT id, novel_id, chapter_number, title, price, status FROM chapters WHERE novel_id = ? AND is_deleted = FALSE AND status IN ('PUBLISHED_REGULAR', 'PUBLISHED_VIP', 'PUBLISHED') ORDER BY chapter_number ASC;</div>
 
 </body>
 </html>

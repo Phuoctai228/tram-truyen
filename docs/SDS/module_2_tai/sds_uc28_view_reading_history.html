@@ -44,11 +44,18 @@
         .col-no { width: 6%; text-align: center; color: #000000; }
         .col-method { width: 28%; font-weight: bold; color: #000000; }
         .col-desc { width: 66%; color: #000000; }
-        .sql-item { margin-top: 12px; margin-bottom: 4px; font-weight: bold; color: #000000; }
+        .sql-item {
+            margin-top: 12px;
+            margin-bottom: 4px;
+            font-family: 'Calibri', sans-serif;
+            font-size: 11pt;
+            font-weight: bold;
+            color: #000000;
+        }
         .sql-block {
-            margin: 4px 0 14px 0;
-            font-family: 'Times New Roman', Times, serif;
-            font-size: 12pt;
+            margin: 4px 0 12px 0;
+            font-family: 'Calibri', sans-serif;
+            font-size: 11pt;
             color: #000000;
             white-space: pre-wrap;
         }
@@ -306,37 +313,19 @@
     <h3>d. Database Queries</h3>
 
     <p class="sql-item">1. Retrieve authenticated user by email</p>
-    <div class="sql-block">SELECT id, email, full_name, status
-FROM users
-WHERE email = ?;</div>
+    <div class="sql-block">SELECT id, email, full_name, status FROM users WHERE email = ?;</div>
 
     <p class="sql-item">2. Retrieve paginated reading history with chapter and novel details</p>
-    <div class="sql-block">SELECT uca.id, uca.user_id, uca.chapter_id, uca.is_read, uca.read_at, uca.is_unlocked,
-       c.chapter_number, c.title AS chapter_title, c.price,
-       n.id AS novel_id, n.title AS novel_title, n.slug AS novel_slug, n.author, n.cover_url
-FROM user_chapter_activities uca
-INNER JOIN chapters c ON uca.chapter_id = c.id
-INNER JOIN novels n ON c.novel_id = n.id
-WHERE uca.user_id = ?
-  AND uca.read_at IS NOT NULL
-ORDER BY uca.read_at DESC
-LIMIT ? OFFSET ?;</div>
+    <div class="sql-block">SELECT uca.id, uca.user_id, uca.chapter_id, uca.is_read, uca.read_at, uca.is_unlocked, c.chapter_number, c.title AS chapter_title, c.price, n.id AS novel_id, n.title AS novel_title, n.slug AS novel_slug, n.author, n.cover_url FROM user_chapter_activities uca INNER JOIN chapters c ON uca.chapter_id = c.id INNER JOIN novels n ON c.novel_id = n.id WHERE uca.user_id = ? AND uca.read_at IS NOT NULL ORDER BY uca.read_at DESC LIMIT ? OFFSET ?;</div>
 
     <p class="sql-item">3. Find user chapter activity by user ID and chapter ID</p>
-    <div class="sql-block">SELECT id, user_id, chapter_id, is_read, read_at, is_unlocked, price_paid, unlocked_at
-FROM user_chapter_activities
-WHERE user_id = ?
-  AND chapter_id = ?;</div>
+    <div class="sql-block">SELECT id, user_id, chapter_id, is_read, read_at, is_unlocked, price_paid, unlocked_at FROM user_chapter_activities WHERE user_id = ? AND chapter_id = ?;</div>
 
     <p class="sql-item">4. Reset reading flag while preserving VIP unlock record</p>
-    <div class="sql-block">UPDATE user_chapter_activities
-SET is_read = FALSE,
-    read_at = NULL
-WHERE id = ?;</div>
+    <div class="sql-block">UPDATE user_chapter_activities SET is_read = FALSE, read_at = NULL WHERE id = ?;</div>
 
     <p class="sql-item">5. Delete reading history record for non-VIP chapter</p>
-    <div class="sql-block">DELETE FROM user_chapter_activities
-WHERE id = ?;</div>
+    <div class="sql-block">DELETE FROM user_chapter_activities WHERE id = ?;</div>
 
 </body>
 </html>

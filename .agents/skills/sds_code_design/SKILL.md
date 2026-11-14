@@ -79,12 +79,14 @@ Every generated HTML file must strictly obey the following visual and structural
      ```
 
 5. **Database Queries Formatting (`d. Database Queries`)**:
-   - **Query Title (`.sql-item`)**:
-     - Format as `<p class="sql-item">1. [Concise description of the query]</p>`.
-     - **DO NOT include the repository method name in parentheses** at the end of the title (e.g., write `1. Retrieve top 12 recently updated novels`, **NOT** `1. Retrieve top 12 recently updated novels (NovelRepository.findTop12ByIsDeletedFalseOrderByUpdatedAtDesc)`).
-   - **Unboxed SQL Query (`.sql-block`)**:
+   - **Query Title in English (`.sql-item`)**:
+     - Format as `<p class="sql-item">1. [Concise description of the query in English]</p>`.
+     - Separate each query by its concise English name (e.g. `1. Retrieve top 12 recently updated novels`).
+     - Styled as Normal text, `font-family: 'Calibri', sans-serif; font-size: 11pt; font-weight: bold; color: #000000;`.
+   - **Single-Line Unboxed SQL Query (`.sql-block`)**:
      - **DO NOT put a border, box, left-border bar, or gray background** around the SQL query.
-     - Render the SQL query as plain `Times New Roman` `12pt` `#000000` text with `white-space: pre-wrap; margin: 4px 0 14px 0;`.
+     - **Single-Row Rule**: Write each complete SQL query on **1 single line** (do NOT break into multiple indented lines like version 1).
+     - Styled as Normal text, `font-family: 'Calibri', sans-serif; font-size: 11pt; color: #000000; white-space: pre-wrap; margin: 4px 0 12px 0;`.
    - **Parameterized PostgreSQL**:
      - All SQL statements (`SELECT`, `INSERT`, `UPDATE`, `DELETE`) must match the exact table and column names in `database/novels.sql` and the DB interactions in the function's PlantUML Sequence Diagram.
      - Use `?` placeholders for parameters and explicitly list columns in `SELECT` clauses (avoid `SELECT *`).
@@ -142,11 +144,18 @@ Use the following exact HTML5 and CSS template for every SDS Code Design file:
         .col-no { width: 6%; text-align: center; color: #000000; }
         .col-method { width: 28%; font-weight: bold; color: #000000; }
         .col-desc { width: 66%; color: #000000; }
-        .sql-item { margin-top: 12px; margin-bottom: 4px; font-weight: bold; color: #000000; }
+        .sql-item {
+            margin-top: 12px;
+            margin-bottom: 4px;
+            font-family: 'Calibri', sans-serif;
+            font-size: 11pt;
+            font-weight: bold;
+            color: #000000;
+        }
         .sql-block {
-            margin: 4px 0 14px 0;
-            font-family: 'Times New Roman', Times, serif;
-            font-size: 12pt;
+            margin: 4px 0 12px 0;
+            font-family: 'Calibri', sans-serif;
+            font-size: 11pt;
             color: #000000;
             white-space: pre-wrap;
         }
@@ -215,12 +224,7 @@ Use the following exact HTML5 and CSS template for every SDS Code Design file:
     <h3>d. Database Queries</h3>
 
     <p class="sql-item">1. Retrieve top 12 recently updated novels</p>
-    <div class="sql-block">SELECT id, title, slug, author, summary, cover_url, status, is_deleted, uploader_id,
-       views, average_rating, rating_count, created_at, updated_at
-FROM novels
-WHERE is_deleted = FALSE
-ORDER BY updated_at DESC
-LIMIT 12;</div>
+    <div class="sql-block">SELECT id, title, slug, author, summary, cover_url, status, is_deleted, uploader_id, views, average_rating, rating_count, created_at, updated_at FROM novels WHERE is_deleted = FALSE ORDER BY updated_at DESC LIMIT 12;</div>
 
 </body>
 </html>

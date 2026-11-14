@@ -61,6 +61,21 @@
         padding: 0px 3px 0px 3px;
     }
 
+    .ritz .waffle .s10 {
+        border-bottom: 1px SOLID #000000;
+        border-right: 1px SOLID #000000;
+        background-color: #f7caac;
+        text-align: left;
+        font-weight: bold;
+        color: #000000;
+        font-family: Arial;
+        font-size: 10pt;
+        vertical-align: top;
+        white-space: nowrap;
+        direction: ltr;
+        padding: 0px 3px 0px 3px;
+    }
+
     .ritz .waffle .s1 {
         border-left: none;
         border-right: none;
@@ -75,41 +90,12 @@
         padding: 0px 3px 0px 3px;
     }
 
-    .ritz .waffle .s4 {
-        border-right: none;
-        background-color: #ffffff;
-        text-align: left;
-        font-style: italic;
-        color: #c00000;
-        font-family: Arial;
-        font-size: 10pt;
-        vertical-align: top;
-        white-space: nowrap;
-        direction: ltr;
-        padding: 0px 3px 0px 3px;
-    }
-
     .ritz .waffle .s6 {
         border-left: none;
         border-right: none;
         border-bottom: 1px SOLID #000000;
         background-color: #ffffff;
         text-align: left;
-        color: #000000;
-        font-family: Arial;
-        font-size: 10pt;
-        vertical-align: top;
-        white-space: nowrap;
-        direction: ltr;
-        padding: 0px 3px 0px 3px;
-    }
-
-    .ritz .waffle .s10 {
-        border-bottom: 1px SOLID #000000;
-        border-right: 1px SOLID #000000;
-        background-color: #f7caac;
-        text-align: left;
-        font-weight: bold;
         color: #000000;
         font-family: Arial;
         font-size: 10pt;
@@ -138,6 +124,21 @@
         background-color: #ffffff;
         text-align: left;
         color: #000000;
+        font-family: Arial;
+        font-size: 10pt;
+        vertical-align: top;
+        white-space: nowrap;
+        direction: ltr;
+        padding: 0px 3px 0px 3px;
+    }
+
+    .ritz .waffle .s4 {
+        border-right: none;
+        border-bottom: 1px SOLID #000000;
+        background-color: #ffffff;
+        text-align: left;
+        font-style: italic;
+        color: #c00000;
         font-family: Arial;
         font-size: 10pt;
         vertical-align: top;
@@ -274,29 +275,257 @@
                 <td class="freezebar-cell"></td>
                 <td class="freezebar-cell"></td>
                 <td class="freezebar-cell"></td>
-            </tr>
-            <tr style="height: 16px">
+            </tr>            <tr style="height: 16px">
                 <td class="s12">1</td>
-                <td class="s13">Screen/Function Name1</td>
-                <td class="s13">Feature Name1</td>
-                <td class="s14">This is short descripiton for the screen/function (2-3 sentences)</td>
-                <td class="s14">Tuấn Hà</td>
+                <td class="s13">UC-39: Update Chapter</td>
+                <td class="s13">Novel &amp; Chapter CMS</td>
+                <td class="s14">Edit title, index or content of a published chapter.</td>
+                <td class="s14">Kiệt</td>
                 <td class="s13">Done</td>
-                <td class="s13">II.3</td>
-                <td class="s13">III.5</td>
-                <td class="s13"></td>
-            </tr>
-            <tr style="height: 16px">
+                <td class="s13">II.5.2</td>
+                <td class="s13">III.1.2.b</td>
+                <td class="s13">Chapter content editing and index reordering completed.</td>
+            </tr>            <tr style="height: 16px">
                 <td class="s12">2</td>
-                <td class="s13">Screen/Function Name2</td>
-                <td class="s13">Feature Name1</td>
-                <td class="s14">This is short descripiton for the screen/function (2-3 sentences)</td>
-                <td class="s14">Tử Vinh</td>
-                <td class="s13">To Do</td>
-                <td class="s13">II.1</td>
-                <td class="s13">III.4</td>
-                <td class="s13"></td>
-            </tr>
-        </tbody>
+                <td class="s13">UC-40: Lock/Unlock Chapter</td>
+                <td class="s13">Novel &amp; Chapter CMS</td>
+                <td class="s14">Change chapter status to LOCKED to temporarily hide it from public index.</td>
+                <td class="s14">Kiệt</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.5.3</td>
+                <td class="s13">III.1.2.c</td>
+                <td class="s13">Chapter status toggle between LOCKED and PUBLISHED completed.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">3</td>
+                <td class="s13">UC-41: Delete Chapter</td>
+                <td class="s13">Novel &amp; Chapter CMS</td>
+                <td class="s14">Soft delete chapter (mark is_deleted = true, remove from novel index).</td>
+                <td class="s14">Kiệt</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.5.4</td>
+                <td class="s13">III.1.2.d</td>
+                <td class="s13">Chapter soft deletion and chapter list index recalculation completed.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">4</td>
+                <td class="s13">UC-42: Configure Chapter</td>
+                <td class="s13">Novel &amp; Chapter CMS</td>
+                <td class="s14">Configure status (Draft / Published), assign VIP tag and set Coin price to unlock
+                    chapter.</td>
+                <td class="s14">Kiệt</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.5.5</td>
+                <td class="s13">III.1.2.e</td>
+                <td class="s13">Chapter monetization settings (Draft/Published, VIP flag, Coin price) completed.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">5</td>
+                <td class="s13">UC-18: View Bookshelf</td>
+                <td class="s13">Reader Experience, Bookshelf &amp; VIP Unlock</td>
+                <td class="s14">Manage followed novels, display reading % and 'Read Next' jumping to unfinished chapter.</td>
+                <td class="s14">Tài</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.10.1</td>
+                <td class="s13">III.7.1.a</td>
+                <td class="s13">Personal bookshelf management view with reading progress tracking completed.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">6</td>
+                <td class="s13">UC-19: Remove Novel from Bookshelf</td>
+                <td class="s13">Reader Experience, Bookshelf &amp; VIP Unlock</td>
+                <td class="s14">Unfollow or remove novel from personal Bookshelf.</td>
+                <td class="s14">Tài</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.10.2</td>
+                <td class="s13">III.7.1.c</td>
+                <td class="s13">Remove novel from bookshelf action completed with confirmation prompt.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">7</td>
+                <td class="s13">UC-26: Unlock Paid Chapter</td>
+                <td class="s13">Reader Experience, Bookshelf &amp; VIP Unlock</td>
+                <td class="s14">Reader unlocks chapter, deduct Coin, check balance, concurrency safe, grant VIP access.</td>
+                <td class="s14">Tài</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.3.4</td>
+                <td class="s13">III.5.1.c</td>
+                <td class="s13">Concurrency-safe VIP chapter unlocking with atomic coin deduction completed.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">8</td>
+                <td class="s13">UC-28: View Reading History</td>
+                <td class="s13">Reader Experience, Bookshelf &amp; VIP Unlock</td>
+                <td class="s14">Reader looks up history of read chapters.</td>
+                <td class="s14">Tài</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.10.4</td>
+                <td class="s13">III.7.1.d</td>
+                <td class="s13">Chronological reading history tracking view completed.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">9</td>
+                <td class="s13">UC-32: Daily Check-in</td>
+                <td class="s13">Reader Experience, Bookshelf &amp; VIP Unlock</td>
+                <td class="s14">Reader logs in and checks in daily to receive rewards (free Coins) to unlock novels.</td>
+                <td class="s14">Tài</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.12.1</td>
+                <td class="s13">III.10.1.a</td>
+                <td class="s13">Daily check-in feature with consecutive streak and free Coin reward completed.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">10</td>
+                <td class="s13">UC-17: Change Password</td>
+                <td class="s13">Auth, Security &amp; Payment</td>
+                <td class="s14">Logged in user changes password (requires old password verification).</td>
+                <td class="s14">Ngọc</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.2.3</td>
+                <td class="s13">III.2.1.c</td>
+                <td class="s13">Authenticated user password change completed with old password verification.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">11</td>
+                <td class="s13">UC-15: View Profile</td>
+                <td class="s13">Auth, Security &amp; Payment</td>
+                <td class="s14">View personal account info, including current Coin wallet balance.</td>
+                <td class="s14">Ngọc</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.2.1</td>
+                <td class="s13">III.2.1.a</td>
+                <td class="s13">User profile dashboard with real-time Coin wallet balance display completed.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">12</td>
+                <td class="s13">UC-29: View Coin History</td>
+                <td class="s13">Auth, Security &amp; Payment</td>
+                <td class="s14">View detailed Coin history (amount deposited, chapters/novels unlocked).</td>
+                <td class="s14">Ngọc</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.3.1</td>
+                <td class="s13">III.9.1.a</td>
+                <td class="s13">Detailed transaction history for coin top-ups and chapter unlocks completed.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">13</td>
+                <td class="s13">UC-16: Update Profile</td>
+                <td class="s13">Auth, Security &amp; Payment</td>
+                <td class="s14">Update display info, upload avatar to Cloudinary.</td>
+                <td class="s14">Ngọc</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.2.2</td>
+                <td class="s13">III.2.1.b</td>
+                <td class="s13">User profile editing with Cloudinary avatar upload completed.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">14</td>
+                <td class="s13">UC-30: Top-up Coin</td>
+                <td class="s13">Auth, Security &amp; Payment</td>
+                <td class="s14">Init VNPay sandbox URL, process IPN Webhook to verify tx and add Coins safely.</td>
+                <td class="s14">Ngọc</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.3.2</td>
+                <td class="s13">III.9.1.b</td>
+                <td class="s13">VNPay sandbox payment gateway integration with HMAC-SHA512 and IPN webhook completed.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">15</td>
+                <td class="s13">UC-08: Filter Novels</td>
+                <td class="s13">Discovery, Category &amp; Community</td>
+                <td class="s14">Filter novel list by categories and release progress (Ongoing / Completed).</td>
+                <td class="s14">Đạt</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.7.2</td>
+                <td class="s13">III.3.1.a</td>
+                <td class="s13">Multi-criteria filtering by multiple categories, completion status, and VIP tag completed.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">16</td>
+                <td class="s13">UC-09: Sort Novels</td>
+                <td class="s13">Discovery, Category &amp; Community</td>
+                <td class="s14">Sort results by Recently Updated, Most Viewed, Highest Rated, Chapter Count, A-Z.</td>
+                <td class="s14">Đạt</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.7.3</td>
+                <td class="s13">III.3.1.a</td>
+                <td class="s13">Dynamic sorting by update time, total views, rating, and chapter count completed.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">17</td>
+                <td class="s13">UC-14: View Leaderboards</td>
+                <td class="s13">Discovery, Category &amp; Community</td>
+                <td class="s14">View Top novels leaderboard by views: Daily, Weekly, Monthly, All Time.</td>
+                <td class="s14">Đạt</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.7.5</td>
+                <td class="s13">III.3.1.d</td>
+                <td class="s13">Novel leaderboards (Daily, Weekly, Monthly, All-Time) view completed.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">18</td>
+                <td class="s13">UC-23: Review Novel</td>
+                <td class="s13">Discovery, Category &amp; Community</td>
+                <td class="s14">Reader rates 1-5 stars and reviews; auto calculate average_rating, prevent spam vote.</td>
+                <td class="s14">Đạt</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.8.2</td>
+                <td class="s13">III.4.1.b</td>
+                <td class="s13">1-5 star novel rating with review comment and average rating recalculation completed.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">19</td>
+                <td class="s13">UC-24: Create Comment</td>
+                <td class="s13">Discovery, Category &amp; Community</td>
+                <td class="s14">Post comment, discuss novel or chapter.</td>
+                <td class="s14">Đạt</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.8.3</td>
+                <td class="s13">III.4.1.a</td>
+                <td class="s13">Reader comment posting on novels and chapters with anti-spam check completed.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">20</td>
+                <td class="s13">UC-12: View Comments</td>
+                <td class="s13">Discovery, Category &amp; Community</td>
+                <td class="s14">View all reader comments with pagination on novel detail or chapter reading page.</td>
+                <td class="s14">Đạt</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.8.1</td>
+                <td class="s13">III.4.1.a</td>
+                <td class="s13">Paginated reader comment stream display completed.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">21</td>
+                <td class="s13">UC-51: Audit Transactions</td>
+                <td class="s13">System Admin &amp; Moderation</td>
+                <td class="s14">Admin looks up entire Coin balance fluctuation history in the system.</td>
+                <td class="s14">Khánh</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.3.3</td>
+                <td class="s13">III.9.1.c</td>
+                <td class="s13">Admin financial transaction audit ledger completed.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">22</td>
+                <td class="s13">UC-52: Configure System</td>
+                <td class="s13">System Admin &amp; Moderation</td>
+                <td class="s14">Admin configures VND to Coin rate, admin contact info, terms of use, adds themes.</td>
+                <td class="s14">Khánh</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.14.1</td>
+                <td class="s13">III.8.2.c</td>
+                <td class="s13">System configurations (VND-Coin exchange rate, contacts, policy, themes) completed.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">23</td>
+                <td class="s13">UC-49: View User List</td>
+                <td class="s13">System Admin &amp; Moderation</td>
+                <td class="s14">Admin looks up user accounts in system, search by email/name and filter by role.</td>
+                <td class="s14">Khánh</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.15.1</td>
+                <td class="s13">III.8.2.d</td>
+                <td class="s13">Admin user management table with role filtering and account search completed.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">24</td>
+                <td class="s13">UC-48: Assign Roles</td>
+                <td class="s13">System Admin &amp; Moderation</td>
+                <td class="s14">Admin assigns or revokes user roles (ROLE_STAFF, ROLE_ADMIN).</td>
+                <td class="s14">Khánh</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.15.3</td>
+                <td class="s13">III.8.3.a</td>
+                <td class="s13">Role assignment and privilege management (ROLE_STAFF, ROLE_ADMIN) completed.</td>
+            </tr>            <tr style="height: 16px">
+                <td class="s12">25</td>
+                <td class="s13">UC-50: Ban/Enable User</td>
+                <td class="s13">System Admin &amp; Moderation</td>
+                <td class="s14">Admin disables (BANNED) or reactivates accounts violating community guidelines.</td>
+                <td class="s14">Khánh</td>
+                <td class="s13">Done</td>
+                <td class="s13">II.15.2</td>
+                <td class="s13">III.8.3.b</td>
+                <td class="s13">Account moderation (ban/unban user) with immediate session termination completed.</td>
+            </tr>        </tbody>
     </table>
 </div>
