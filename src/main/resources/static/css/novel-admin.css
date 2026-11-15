@@ -134,7 +134,7 @@ nav {
     border-bottom: 1px solid var(--line);
     display: flex;
     height: 64px;
-    justify-content: space-between;
+    justify-content: flex-end;
     padding: 0 36px;
     position: sticky;
     top: 0;

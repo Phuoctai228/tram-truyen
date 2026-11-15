@@ -47,7 +47,6 @@
 </aside>
 
 <header th:fragment="topbar" class="topbar">
-    <span class="search-hint">⌕ &nbsp; Bàn làm việc biên tập và kiểm duyệt nội dung</span>
     <div class="profile" sec:authorize="isAuthenticated()">
         <div style="display: flex; flex-direction: column; align-items: flex-end; line-height: 1.25;">
             <span style="font-size: 13px; font-weight: 600;" sec:authentication="principal.user.fullName">Nhân viên</span>
