@@ -59,59 +59,129 @@
                 </div>
             </div>
 
+            <!-- ========================================== -->
+            <!-- 1. THIẾT LẬP GÓI NẠP COIN (COIN PACKAGES) -->
+            <!-- ========================================== -->
+            <div class="bg-white rounded-2xl border border-[#eae2d5] shadow-sm p-6 sm:p-8 space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#eae2d5] gap-4">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[#bc7d39] text-[22px]">monetization_on</span>
+                            <h2 class="font-bold text-lg text-[#2b2118]">1. Quản lý gói nạp Coin</h2>
+                            <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#f4ece1] text-[#875200]">Kinh tế & Tài chính</span>
+                        </div>
+                        <p class="text-xs text-[#8a7664] mt-1">
+                            Cấu hình danh sách các gói nạp Coin, giá bán VNĐ, số Coin nhận và tùy chọn Ẩn / Hiện.
+                            Hệ thống cho phép <strong class="text-[#875200]">tối đa 6 gói nạp</strong> được hiển thị đồng thời bên trang nạp của độc giả.
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-3 shrink-0">
+                        <!-- Active count badge -->
+                        <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border"
+                            th:classappend="${activePackageCount >= 6 ? 'bg-amber-50 text-amber-800 border-amber-200' : 'bg-emerald-50 text-emerald-800 border-emerald-200'}">
+                            <span class="w-2 h-2 rounded-full"
+                                th:classappend="${activePackageCount >= 6 ? 'bg-amber-500' : 'bg-emerald-500'}"></span>
+                            <span th:text="${activePackageCount} + '/6 Gói đang hiển thị'">0/6 Gói đang hiển thị</span>
+                        </div>
+                        <!-- Add package button -->
+                        <button type="button" onclick="openAddPackageModal()"
+                            class="px-4 py-2 rounded-xl bg-[#875200] hover:bg-[#6c4100] text-white text-xs font-bold transition-all shadow-sm flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-[16px]">add</span>
+                            <span>Thêm gói nạp</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Table of Coin Packages -->
+                <div class="overflow-x-auto rounded-xl border border-[#eae2d5]">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-[#faf7f2] text-[#8a7664] text-xs font-semibold uppercase tracking-wider border-b border-[#eae2d5]">
+                            <tr>
+                                <th scope="col" class="py-3 px-4 w-12 text-center">#</th>
+                                <th scope="col" class="py-3 px-4">Tên gói nạp</th>
+                                <th scope="col" class="py-3 px-4 text-right">Giá tiền (VNĐ)</th>
+                                <th scope="col" class="py-3 px-4 text-right">Số Coin nhận</th>
+                                <th scope="col" class="py-3 px-4 text-center">Trạng thái</th>
+                                <th scope="col" class="py-3 px-4 text-center w-36">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-[#eae2d5] text-[#2b2118]">
+                            <tr th:each="pkg, iterStat : ${coinPackages}" class="hover:bg-[#fffaf4]/60 transition-colors">
+                                <td class="py-3.5 px-4 text-center text-xs text-[#8a7664]" th:text="${iterStat.count}">1</td>
+                                <td class="py-3.5 px-4 font-bold text-sm">
+                                    <span th:text="${pkg.name}">Gói Tiêu Chuẩn</span>
+                                </td>
+                                <td class="py-3.5 px-4 text-right font-semibold text-[#2b2118]"
+                                    th:text="${#numbers.formatInteger(pkg.price, 0, 'POINT')} + ' đ'">
+                                    100.000 đ
+                                </td>
+                                <td class="py-3.5 px-4 text-right font-bold text-[#bc7d39]">
+                                    <span th:text="${#numbers.formatInteger(pkg.coinAmount, 0, 'POINT')} + ' Coin'">1.050 Coin</span>
+                                </td>
+                                <td class="py-3.5 px-4 text-center">
+                                    <span th:if="${pkg.status == 'ACTIVE'}"
+                                        class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                        Hiển thị
+                                    </span>
+                                    <span th:unless="${pkg.status == 'ACTIVE'}"
+                                        class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-stone-100 text-stone-500 border border-stone-200">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-stone-400"></span>
+                                        Đang ẩn
+                                    </span>
+                                </td>
+                                <td class="py-3.5 px-4 text-center">
+                                    <div class="inline-flex items-center gap-1.5">
+                                        <!-- Button Edit -->
+                                        <button type="button"
+                                            th:data-id="${pkg.id}"
+                                            th:data-name="${pkg.name}"
+                                            th:data-price="${pkg.price}"
+                                            th:data-coin="${pkg.coinAmount}"
+                                            th:data-status="${pkg.status}"
+                                            onclick="openEditPackageModal(this)"
+                                            title="Chỉnh sửa gói nạp"
+                                            class="p-1.5 rounded-lg text-[#8a7664] hover:text-[#875200] hover:bg-[#f4ece1] transition-colors">
+                                            <span class="material-symbols-outlined text-[18px]">edit</span>
+                                        </button>
+
+                                        <!-- Button Toggle Status -->
+                                        <form th:action="@{/admin/settings/packages/{id}/toggle-status(id=${pkg.id})}" method="post" class="inline m-0">
+                                            <button type="submit"
+                                                th:title="${pkg.status == 'ACTIVE' ? 'Ẩn gói nạp' : 'Kích hoạt hiển thị'}"
+                                                class="p-1.5 rounded-lg transition-colors"
+                                                th:classappend="${pkg.status == 'ACTIVE' ? 'text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50' : 'text-stone-400 hover:text-stone-600 hover:bg-stone-100'}">
+                                                <span class="material-symbols-outlined text-[18px]"
+                                                    th:text="${pkg.status == 'ACTIVE' ? 'visibility' : 'visibility_off'}">visibility</span>
+                                            </button>
+                                        </form>
+
+                                        <!-- Button Delete -->
+                                        <button type="button"
+                                            th:data-id="${pkg.id}"
+                                            th:data-name="${pkg.name}"
+                                            onclick="openDeletePackageModal(this)"
+                                            title="Xóa gói nạp"
+                                            class="p-1.5 rounded-lg text-red-400 hover:text-red-600 hover:bg-red-50 transition-colors">
+                                            <span class="material-symbols-outlined text-[18px]">delete</span>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr th:if="${coinPackages == null || #lists.isEmpty(coinPackages)}">
+                                <td colspan="6" class="py-8 text-center text-sm text-[#8a7664]">
+                                    Chưa có gói nạp nào trong hệ thống. Bấm "+ Thêm gói nạp" để tạo mới.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
             <!-- Configuration Form (Settings) -->
             <form th:action="@{/admin/settings}" th:object="${settings}" method="post" id="settingsForm"
                 class="space-y-8">
-
-                <!-- 1. Thiết lập tiền tệ & Coin -->
-                <div class="bg-white rounded-2xl border border-[#eae2d5] shadow-sm p-6 sm:p-8 space-y-6">
-                    <div class="flex items-center justify-between pb-3 border-b border-[#eae2d5]">
-                        <div class="flex items-center gap-2">
-                            <span class="material-symbols-outlined text-[#bc7d39] text-[22px]">monetization_on</span>
-                            <h2 class="font-bold text-lg text-[#2b2118]">1. Thiết lập tiền tệ & Coin</h2>
-                        </div>
-                        <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#f4ece1] text-[#875200]">Kinh
-                            tế & Tài chính</span>
-                    </div>
-
-                    <div class="space-y-4 max-w-2xl">
-                        <div class="flex items-center justify-between">
-                            <label class="text-sm font-bold text-[#2b2118]">
-                                Tỷ giá quy đổi tiền mặt VNĐ → Coin <span class="required-star text-red-500">*</span>
-                            </label>
-                            <span
-                                class="text-xs text-[#8a7664] bg-[#faf7f2] px-2 py-0.5 rounded-md border border-[#eae2d5]">Hiển
-                                thị tham chiếu</span>
-                        </div>
-                        <p class="text-xs text-[#8a7664]">Tỷ giá được hiển thị ở trang Ví và Nạp Coin. Số Coin của từng
-                            gói nạp được cấu hình riêng và không thay đổi khi chỉnh tỷ giá.</p>
-
-                        <div
-                            class="p-4 rounded-2xl bg-[#fffaf4] border border-[#f4ece1] flex items-center justify-between gap-4">
-                            <div class="flex-1">
-                                <label class="text-[11px] font-semibold text-[#8a7664] block mb-1">Giá trị thực tế
-                                    (VNĐ)</label>
-                                <div
-                                    class="px-4 py-2.5 bg-white rounded-xl border border-[#eae2d5] font-bold text-sm text-[#2b2118]">
-                                    1.000 <span class="text-xs font-normal text-[#8a7664]">VNĐ</span>
-                                </div>
-                            </div>
-                            <div class="p-2 text-[#bc7d39]">
-                                <span class="material-symbols-outlined text-[20px]">sync_alt</span>
-                            </div>
-                            <div class="flex-1">
-                                <label class="text-[11px] font-semibold text-[#8a7664] block mb-1">Quy đổi nhận được
-                                    (Coin)</label>
-                                <input type="number" id="vndToCoinRateInput" th:field="*{vndToCoinRate}" min="1"
-                                    max="1000" required
-                                    class="w-full px-4 py-2.5 bg-white rounded-xl border font-bold text-sm text-[#bc7d39] focus:outline-none focus:ring-2 focus:ring-[#bc7d39]"
-                                    th:classappend="${#fields.hasErrors('vndToCoinRate') ? 'border-red-500 ring-1 ring-red-500' : 'border-[#eae2d5]'}">
-                            </div>
-                        </div>
-                        <p th:if="${#fields.hasErrors('vndToCoinRate')}" th:errors="*{vndToCoinRate}"
-                            class="text-xs font-medium text-red-500 mt-1"></p>
-                    </div>
-                </div>
+                <input type="hidden" id="vndToCoinRateInput" th:field="*{vndToCoinRate}">
 
                 <!-- 2. Thông tin liên hệ nền tảng -->
                 <div class="bg-white rounded-2xl border border-[#eae2d5] shadow-sm p-6 sm:p-8 space-y-6">
@@ -401,6 +471,177 @@
 
         </section>
     </main>
+
+    <!-- ======================================================== -->
+    <!-- COIN PACKAGE MODALS (Thêm, Sửa, Xóa gói nạp Coin) -->
+    <!-- ======================================================== -->
+    <!-- Bridge for JS Active Count -->
+    <div id="coinPackageBridge" class="hidden" th:data-active-count="${activePackageCount}"></div>
+
+    <!-- 1. Modal Thêm Gói Nạp -->
+    <div id="addPackageModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl border border-[#eae2d5] shadow-xl w-full max-w-md overflow-hidden animate-fade-in">
+            <div class="flex items-center justify-between p-5 border-b border-[#eae2d5] bg-[#faf7f2]/50">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[#875200] text-[22px]">add_circle</span>
+                    <h3 class="font-bold text-base text-[#2b2118]">Thêm gói nạp Coin mới</h3>
+                </div>
+                <button type="button" onclick="closeAddPackageModal()" class="text-[#8a7664] hover:text-[#2b2118] transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">close</span>
+                </button>
+            </div>
+            <form id="addPackageForm" th:action="@{/admin/settings/packages}" method="post" novalidate class="p-6 space-y-4">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <div>
+                    <label class="block text-xs font-bold text-[#2b2118] mb-1">Tên gói nạp <span class="text-red-500">*</span></label>
+                    <input type="text" id="addPackageName" name="name" required maxlength="100" placeholder="Ví dụ: Gói Tiêu Chuẩn (+50 Tặng)"
+                        class="w-full px-3.5 py-2.5 rounded-xl border border-[#eae2d5] bg-white text-sm text-[#2b2118] focus:outline-none focus:ring-2 focus:ring-[#bc7d39]">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-[#2b2118] mb-1">Giá bán (VNĐ) <span class="text-red-500">*</span></label>
+                        <input type="number" id="addPackagePrice" name="price" required min="10000" max="2000000" step="1000" placeholder="100000"
+                            class="w-full px-3.5 py-2.5 rounded-xl border border-[#eae2d5] bg-white text-sm text-[#2b2118] focus:outline-none focus:ring-2 focus:ring-[#bc7d39]">
+                        <span class="text-[11px] text-[#8a7664] mt-1 block">Từ 10.000đ - 2.000.000đ</span>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-[#2b2118] mb-1">Số Coin nhận</label>
+                        <input type="number" id="addPackageCoin" name="coinAmount" readonly
+                            class="w-full px-3.5 py-2.5 rounded-xl border border-[#eae2d5] bg-[#faf7f2] font-bold text-sm text-[#bc7d39] cursor-not-allowed select-none focus:outline-none">
+                        <span class="text-[11px] text-[#8a7664] mt-1 block">Tự động: 1.000đ = 10 Coin</span>
+                    </div>
+                </div>
+
+                <!-- Thông báo lỗi giá tiền chuẩn giao diện hệ thống -->
+                <div id="addPackagePriceError" class="hidden p-3 rounded-xl bg-[#fff4f2] border-l-4 border-[#9e422c] text-[#7e2b17] text-xs flex items-start gap-2 shadow-sm">
+                    <span class="material-symbols-outlined text-[18px] text-[#9e422c] shrink-0 mt-0.5">error</span>
+                    <span class="error-msg font-medium leading-relaxed"></span>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-[#2b2118] mb-1">Trạng thái <span class="text-red-500">*</span></label>
+                    <select id="addPackageStatus" name="status"
+                        class="w-full px-3.5 py-2.5 rounded-xl border border-[#eae2d5] bg-white text-sm text-[#2b2118] focus:outline-none focus:ring-2 focus:ring-[#bc7d39]">
+                        <option value="ACTIVE">Hiển thị (ACTIVE) - Cho phép độc giả nạp</option>
+                        <option value="INACTIVE">Đang ẩn (INACTIVE) - Tạm ngừng kinh doanh</option>
+                    </select>
+                </div>
+                <!-- Cảnh báo khi đã đủ 6 gói ACTIVE -->
+                <div id="addPackageActiveWarning" class="hidden p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-800 leading-relaxed">
+                    <div class="flex items-start gap-2">
+                        <span class="material-symbols-outlined text-[18px] text-amber-600 shrink-0">warning</span>
+                        <p><strong>Lưu ý:</strong> Hệ thống hiện đã có đủ <strong>6 gói nạp hiển thị (ACTIVE)</strong>. Nếu lưu gói này ở trạng thái hiển thị, bạn cần ẩn bớt một gói khác trước.</p>
+                    </div>
+                </div>
+                <div class="flex items-center justify-end gap-3 pt-4 border-t border-[#eae2d5]">
+                    <button type="button" onclick="closeAddPackageModal()"
+                        class="px-4 py-2 rounded-xl bg-[#faf7f2] border border-[#eae2d5] text-[#6b5849] hover:bg-[#f4ece1] text-xs font-bold transition-colors">
+                        Hủy
+                    </button>
+                    <button type="submit"
+                        class="px-5 py-2 rounded-xl bg-[#875200] hover:bg-[#6c4100] text-white text-xs font-bold transition-colors shadow-sm flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[16px]">save</span>
+                        <span>Lưu gói nạp</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 2. Modal Sửa Gói Nạp -->
+    <div id="editPackageModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl border border-[#eae2d5] shadow-xl w-full max-w-md overflow-hidden animate-fade-in">
+            <div class="flex items-center justify-between p-5 border-b border-[#eae2d5] bg-[#faf7f2]/50">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[#875200] text-[22px]">edit_note</span>
+                    <h3 class="font-bold text-base text-[#2b2118]">Chỉnh sửa gói nạp Coin</h3>
+                </div>
+                <button type="button" onclick="closeEditPackageModal()" class="text-[#8a7664] hover:text-[#2b2118] transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">close</span>
+                </button>
+            </div>
+            <form id="editPackageForm" method="post" novalidate class="p-6 space-y-4">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <div>
+                    <label class="block text-xs font-bold text-[#2b2118] mb-1">Tên gói nạp <span class="text-red-500">*</span></label>
+                    <input type="text" id="editPackageName" name="name" required maxlength="100"
+                        class="w-full px-3.5 py-2.5 rounded-xl border border-[#eae2d5] bg-white text-sm text-[#2b2118] focus:outline-none focus:ring-2 focus:ring-[#bc7d39]">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-[#2b2118] mb-1">Giá bán (VNĐ) <span class="text-red-500">*</span></label>
+                        <input type="number" id="editPackagePrice" name="price" required min="10000" max="2000000" step="1000"
+                            class="w-full px-3.5 py-2.5 rounded-xl border border-[#eae2d5] bg-white text-sm text-[#2b2118] focus:outline-none focus:ring-2 focus:ring-[#bc7d39]">
+                        <span class="text-[11px] text-[#8a7664] mt-1 block">Từ 10.000đ - 2.000.000đ</span>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-[#2b2118] mb-1">Số Coin nhận</label>
+                        <input type="number" id="editPackageCoin" name="coinAmount" readonly
+                            class="w-full px-3.5 py-2.5 rounded-xl border border-[#eae2d5] bg-[#faf7f2] font-bold text-sm text-[#bc7d39] cursor-not-allowed select-none focus:outline-none">
+                        <span class="text-[11px] text-[#8a7664] mt-1 block">Tự động: 1.000đ = 10 Coin</span>
+                    </div>
+                </div>
+
+                <!-- Thông báo lỗi giá tiền chuẩn giao diện hệ thống -->
+                <div id="editPackagePriceError" class="hidden p-3 rounded-xl bg-[#fff4f2] border-l-4 border-[#9e422c] text-[#7e2b17] text-xs flex items-start gap-2 shadow-sm">
+                    <span class="material-symbols-outlined text-[18px] text-[#9e422c] shrink-0 mt-0.5">error</span>
+                    <span class="error-msg font-medium leading-relaxed"></span>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-[#2b2118] mb-1">Trạng thái <span class="text-red-500">*</span></label>
+                    <select id="editPackageStatus" name="status"
+                        class="w-full px-3.5 py-2.5 rounded-xl border border-[#eae2d5] bg-white text-sm text-[#2b2118] focus:outline-none focus:ring-2 focus:ring-[#bc7d39]">
+                        <option value="ACTIVE">Hiển thị (ACTIVE) - Cho phép độc giả nạp</option>
+                        <option value="INACTIVE">Đang ẩn (INACTIVE) - Tạm ngừng kinh doanh</option>
+                    </select>
+                </div>
+                <!-- Cảnh báo khi chuyển sang ACTIVE mà đã đủ 6 gói -->
+                <div id="editPackageActiveWarning" class="hidden p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-800 leading-relaxed">
+                    <div class="flex items-start gap-2">
+                        <span class="material-symbols-outlined text-[18px] text-amber-600 shrink-0">warning</span>
+                        <p><strong>Lưu ý:</strong> Hệ thống hiện đã có đủ <strong>6 gói nạp hiển thị (ACTIVE)</strong>. Nếu đổi gói này sang trạng thái hiển thị, bạn cần ẩn bớt một gói khác trước.</p>
+                    </div>
+                </div>
+                <div class="flex items-center justify-end gap-3 pt-4 border-t border-[#eae2d5]">
+                    <button type="button" onclick="closeEditPackageModal()"
+                        class="px-4 py-2 rounded-xl bg-[#faf7f2] border border-[#eae2d5] text-[#6b5849] hover:bg-[#f4ece1] text-xs font-bold transition-colors">
+                        Hủy
+                    </button>
+                    <button type="submit"
+                        class="px-5 py-2 rounded-xl bg-[#875200] hover:bg-[#6c4100] text-white text-xs font-bold transition-colors shadow-sm flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[16px]">save</span>
+                        <span>Cập nhật</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 3. Modal Xác Nhận Xóa Gói Nạp -->
+    <div id="deletePackageModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl border border-[#eae2d5] shadow-xl w-full max-w-sm overflow-hidden p-6 space-y-4 animate-fade-in">
+            <div class="w-12 h-12 rounded-full bg-red-50 text-red-600 flex items-center justify-center mx-auto">
+                <span class="material-symbols-outlined text-[28px]">warning</span>
+            </div>
+            <div class="text-center space-y-1">
+                <h3 class="font-bold text-base text-[#2b2118]">Xác nhận xóa gói nạp</h3>
+                <p class="text-xs text-[#8a7664]">Bạn có chắc chắn muốn xóa gói nạp <strong id="deletePackageName" class="text-[#2b2118]">...</strong> không? Thao tác này sẽ xóa gói khỏi danh sách quản lý.</p>
+            </div>
+            <form id="deletePackageForm" method="post" class="flex items-center justify-center gap-3 pt-2">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <button type="button" onclick="closeDeletePackageModal()"
+                    class="px-4 py-2 rounded-xl bg-[#faf7f2] border border-[#eae2d5] text-[#6b5849] hover:bg-[#f4ece1] text-xs font-bold transition-colors">
+                    Hủy bỏ
+                </button>
+                <button type="submit"
+                    class="px-5 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold transition-colors shadow-sm flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[16px]">delete</span>
+                    <span>Xóa gói nạp</span>
+                </button>
+            </form>
+        </div>
+    </div>
 
     <!-- ======================================================== -->
     <!-- WEB CONFIRMATION MODALS (Thay thế confirm() của trình duyệt) -->
@@ -1332,6 +1573,7 @@
 
     <script th:src="@{/js/admin/theme-color.js(v='1.0')}" defer></script>
     <script th:src="@{/js/admin/theme-modal.js(v='1.0')}" defer></script>
+    <script th:src="@{/js/admin/coin-package-modal.js(v='1.0')}" defer></script>
     <script th:src="@{/js/admin/system-settings.js(v='1.0')}" defer></script>
 
 </body>

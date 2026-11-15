@@ -137,7 +137,7 @@ public class NovelServiceImpl implements NovelService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Novel> advancedSearch(String query, List<Integer> categoryIds, String status,
+    public Page<Novel> advancedSearch(String query, List<Integer> categoryIds, String status, String vip,
             Integer minChapters, Integer maxChapters, Double minRating, Pageable pageable) {
         Specification<Novel> spec = (root, cq, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -171,6 +171,29 @@ public class NovelServiceImpl implements NovelService {
             if (categoryIds != null && !categoryIds.isEmpty()) {
                 Join<Novel, Category> categoryJoin = root.join("categories");
                 predicates.add(categoryJoin.get("id").in(categoryIds));
+            }
+
+            // Filter by Access Type (VIP or Free)
+            if (vip != null && !vip.isBlank()) {
+                jakarta.persistence.criteria.Subquery<Integer> vipSubquery = cq.subquery(Integer.class);
+                jakarta.persistence.criteria.Root<com.tramtruyen.entity.Chapter> chapterRoot = vipSubquery.from(com.tramtruyen.entity.Chapter.class);
+                vipSubquery.select(cb.literal(1));
+                vipSubquery.where(
+                    cb.equal(chapterRoot.get("novel"), root),
+                    cb.isFalse(chapterRoot.get("isDeleted")),
+                    cb.or(
+                        cb.greaterThan(chapterRoot.get("price"), 0),
+                        cb.equal(chapterRoot.get("status"), "PUBLISHED_VIP")
+                    )
+                );
+
+                if ("VIP".equalsIgnoreCase(vip.trim())) {
+                    // Truyện có ít nhất 1 chương VIP thu phí coin
+                    predicates.add(cb.exists(vipSubquery));
+                } else if ("FREE".equalsIgnoreCase(vip.trim())) {
+                    // Truyện hoàn toàn không có chương VIP thu phí nào
+                    predicates.add(cb.not(cb.exists(vipSubquery)));
+                }
             }
 
             // Distinct is needed when joining collections to prevent duplicate rows

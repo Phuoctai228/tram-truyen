@@ -74,6 +74,7 @@ public class ReadingHistoryServiceImpl implements ReadingHistoryService {
                         .user(user)
                         .chapter(chapter)
                         .build());
+        activity.setIsRead(true);
         activity.setReadAt(LocalDateTime.now());
         userChapterActivityRepository.save(activity);
     }

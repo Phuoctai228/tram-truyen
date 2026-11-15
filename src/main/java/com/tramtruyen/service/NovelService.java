@@ -19,7 +19,7 @@ public interface NovelService {
     
     List<Novel> searchPublicNovels(String query);
     
-    org.springframework.data.domain.Page<Novel> advancedSearch(String query, java.util.List<Integer> categoryIds, String status, Integer minChapters, Integer maxChapters, Double minRating, org.springframework.data.domain.Pageable pageable);
+    org.springframework.data.domain.Page<Novel> advancedSearch(String query, java.util.List<Integer> categoryIds, String status, String vip, Integer minChapters, Integer maxChapters, Double minRating, org.springframework.data.domain.Pageable pageable);
 
     Novel createNovel(NovelForm form);
 

@@ -103,6 +103,11 @@ public class ChapterServiceImpl implements ChapterService {
                 .price(price)
                 .build();
         Chapter savedChapter = chapterRepository.save(chapter);
+        
+        // Cập nhật updatedAt của bộ truyện để hiển thị đúng ở mục "Mới cập nhật"
+        novel.setUpdatedAt(java.time.LocalDateTime.now());
+        novelRepository.save(novel);
+
         if (ChapterSaveAction.PUBLISHED == action && notificationService != null) {
             notificationService.notifyNewChapterPublished(novelId, savedChapter.getId());
         }
@@ -140,6 +145,12 @@ public class ChapterServiceImpl implements ChapterService {
         chapter.setStatus(resolveStatus(action, price));
         chapter.setPrice(price);
         Chapter savedChapter = chapterRepository.save(chapter);
+
+        // Cập nhật updatedAt của bộ truyện để hiển thị đúng ở mục "Mới cập nhật"
+        Novel novel = findActiveNovel(novelId);
+        novel.setUpdatedAt(java.time.LocalDateTime.now());
+        novelRepository.save(novel);
+
         boolean wasDraft = ChapterStatus.DRAFT.name().equalsIgnoreCase(oldStatus);
         if (wasDraft && ChapterSaveAction.PUBLISHED == action && notificationService != null) {
             notificationService.notifyNewChapterPublished(novelId, savedChapter.getId());

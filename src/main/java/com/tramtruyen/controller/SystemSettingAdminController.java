@@ -3,12 +3,15 @@ package com.tramtruyen.controller;
 import com.tramtruyen.dto.SystemSettingsDTO;
 import com.tramtruyen.dto.ThemeBackgroundDTO;
 import com.tramtruyen.dto.WebThemeViewDTO;
+import com.tramtruyen.entity.CoinPackage;
 import com.tramtruyen.entity.User;
 import com.tramtruyen.entity.WebSetting;
 import com.tramtruyen.exception.ThemeAlreadyActiveException;
 import com.tramtruyen.repository.UserRepository;
 import com.tramtruyen.security.CustomUserDetails;
+import com.tramtruyen.service.CoinPackageService;
 import com.tramtruyen.service.SystemSettingService;
+import com.tramtruyen.service.impl.CoinPackageServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +38,7 @@ public class SystemSettingAdminController {
 
     private final SystemSettingService systemSettingService;
     private final UserRepository userRepository;
+    private final CoinPackageService coinPackageService;
 
     private static final java.time.format.DateTimeFormatter THEME_DATE_FORMATTER = java.time.format.DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
 
@@ -44,6 +48,14 @@ public class SystemSettingAdminController {
             SystemSettingsDTO currentSettings = systemSettingService.getSettings();
             model.addAttribute("settings", currentSettings);
         }
+
+        List<CoinPackage> coinPackages = coinPackageService.getAllPackages();
+        long activePackageCount = coinPackages.stream()
+                .filter(p -> CoinPackageServiceImpl.STATUS_ACTIVE.equalsIgnoreCase(p.getStatus()))
+                .count();
+        model.addAttribute("coinPackages", coinPackages);
+        model.addAttribute("activePackageCount", activePackageCount);
+        model.addAttribute("maxActivePackages", CoinPackageServiceImpl.MAX_ACTIVE_PACKAGES);
 
         List<WebSetting> rawThemes = systemSettingService.getAllThemes();
         Set<Integer> uploaderIds = rawThemes.stream()

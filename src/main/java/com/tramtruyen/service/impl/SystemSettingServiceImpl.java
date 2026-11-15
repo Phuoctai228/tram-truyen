@@ -115,7 +115,7 @@ public class SystemSettingServiceImpl implements SystemSettingService {
         SystemSettingsDTO current = getSettings();
 
         Map<String, String> newValues = new HashMap<>();
-        newValues.put(KEY_VND_TO_COIN_RATE, String.valueOf(dto.getVndToCoinRate()));
+        newValues.put(KEY_VND_TO_COIN_RATE, dto.getVndToCoinRate() != null ? String.valueOf(dto.getVndToCoinRate()) : String.valueOf(current.getVndToCoinRate()));
         newValues.put(KEY_CONTACT_PHONE, dto.getContactPhone().trim());
         newValues.put(KEY_SUPPORT_EMAIL, dto.getSupportEmail().trim());
         newValues.put(KEY_TERMS_OF_SERVICE, dto.getTermsOfService().trim());

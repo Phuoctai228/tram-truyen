@@ -72,7 +72,7 @@
             <!-- Section Title -->
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-lg font-bold text-[#2B231D]">Chọn gói nạp <span
-                        class="text-xs font-normal text-[#7D7065]">(ưu đãi tốt nhất)</span></h2>
+                        class="text-xs font-normal text-[#7D7065]">(tối đa 6 gói ưu đãi nhất)</span></h2>
             </div>
 
             <!-- Form -->
@@ -86,18 +86,14 @@
                         th:data-coins="${pkg.coinAmount}"
                         class="package-card relative p-5 rounded-2xl bg-white border border-[#EAE3D2] shadow-sm cursor-pointer select-none">
 
-                        <!-- Top Badge / Header row -->
-                        <div class="flex items-center justify-between min-h-[26px] mb-4">
-                            <span th:if="${pkg.badgeText != null}" th:text="${pkg.badgeText}"
-                                class="inline-block text-[11px] font-semibold tracking-wide px-2.5 py-0.5 rounded-full bg-[#FDF0E1] text-[#B45309] border border-[#F6D8B6]">
-                                +50 Tặng
-                            </span>
-                            <span th:unless="${pkg.badgeText != null}" class="text-xs text-[#8C7E72] font-medium">Gói
-                                chuẩn</span>
+                        <!-- Top Header row: Package Name and Radio Indicator -->
+                        <div class="flex items-center justify-between min-h-[26px] mb-3">
+                            <span class="text-xs font-bold text-[#8C7E72] uppercase tracking-wide truncate max-w-[80%]"
+                                th:text="${pkg.name}">Gói Tiêu Chuẩn</span>
 
                             <!-- Radio indicator -->
                             <div
-                                class="radio-indicator w-5 h-5 rounded-full border-2 border-[#D4C8B5] flex items-center justify-center transition-colors">
+                                class="radio-indicator w-5 h-5 rounded-full border-2 border-[#D4C8B5] flex items-center justify-center transition-colors shrink-0">
                                 <span
                                     class="material-symbols-outlined text-xs text-white opacity-0 transition-opacity check-icon font-bold">check</span>
                             </div>
@@ -107,9 +103,8 @@
                         <div class="flex items-center gap-1.5 mb-1">
                             <span class="material-symbols-outlined text-[#B45309] text-xl">monetization_on</span>
                             <span class="text-2xl font-bold font-serif text-[#2B231D]"
-                                th:text="${#numbers.formatInteger(pkg.baseCoin, 0, 'POINT')}">1.000</span>
-                            <span th:if="${pkg.bonusCoin > 0}" class="text-sm font-semibold text-[#B45309]"
-                                th:text="'+' + ${pkg.bonusCoin}">+50</span>
+                                th:text="${#numbers.formatInteger(pkg.coinAmount, 0, 'POINT')}">1.000</span>
+                            <span class="text-xs font-semibold text-[#8C7E72]">Coin</span>
                         </div>
 
                         <!-- Price VND -->
@@ -117,6 +112,13 @@
                             th:text="${#numbers.formatInteger(pkg.price, 0, 'POINT')} + ' đ'">
                             100.000 đ
                         </div>
+                    </div>
+
+                    <!-- Empty state if no active packages -->
+                    <div th:if="${packages == null || #lists.isEmpty(packages)}"
+                        class="col-span-full py-12 text-center text-sm text-[#7D7065] bg-white rounded-2xl border border-[#EAE3D2]">
+                        <span class="material-symbols-outlined text-4xl text-[#D4C8B5] mb-2 block">savings</span>
+                        <p>Hiện tại chưa có gói nạp nào được kích hoạt. Vui lòng quay lại sau!</p>
                     </div>
                 </div>
 

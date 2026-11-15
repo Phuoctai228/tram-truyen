@@ -13,4 +13,12 @@ import java.util.List;
 public interface CoinPackageRepository extends JpaRepository<CoinPackage, Integer> {
 
     List<CoinPackage> findByStatusOrderByPriceAsc(String status);
+
+    List<CoinPackage> findAllByOrderByPriceAsc();
+
+    long countByStatus(String status);
+
+    boolean existsByNameIgnoreCase(String name);
+
+    boolean existsByNameIgnoreCaseAndIdNot(String name, Integer id);
 }

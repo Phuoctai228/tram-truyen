@@ -128,19 +128,22 @@
             <h4 class="font-bold text-[14px] text-[#231A11] mb-3">Phân loại truy cập</h4>
             <div class="grid grid-cols-3 gap-2">
               <label class="cursor-pointer">
-                <input type="radio" name="vip" value="" checked class="peer hidden">
+                <input type="radio" name="vip" value=""
+                  th:checked="${selectedVip == null or selectedVip == ''}" class="peer hidden">
                 <div
                   class="py-1.5 rounded-lg bg-[#f5eae0] text-[#8c7a68] text-[13px] font-medium peer-checked:bg-[#c08d41] peer-checked:text-white peer-checked:font-bold text-center transition-colors">
                   Tất cả</div>
               </label>
-              <label class="cursor-pointer opacity-50">
-                <input type="radio" name="vip" value="VIP" disabled class="peer hidden">
+              <label class="cursor-pointer">
+                <input type="radio" name="vip" value="VIP"
+                  th:checked="${selectedVip == 'VIP'}" class="peer hidden">
                 <div
                   class="py-1.5 rounded-lg bg-[#f5eae0] text-[#8c7a68] text-[13px] font-medium peer-checked:bg-[#a64032] peer-checked:text-white peer-checked:font-bold text-center transition-colors">
                   VIP</div>
               </label>
-              <label class="cursor-pointer opacity-50">
-                <input type="radio" name="vip" value="FREE" disabled class="peer hidden">
+              <label class="cursor-pointer">
+                <input type="radio" name="vip" value="FREE"
+                  th:checked="${selectedVip == 'FREE'}" class="peer hidden">
                 <div
                   class="py-1.5 rounded-lg bg-[#f5eae0] text-[#8c7a68] text-[13px] font-medium peer-checked:bg-[#c08d41] peer-checked:text-white peer-checked:font-bold text-center transition-colors">
                   Miễn phí</div>
@@ -248,6 +251,10 @@
 
             <!-- Pills -->
             <div class="hidden md:flex flex-wrap items-center gap-2 mt-2 sm:mt-0 w-full sm:w-auto">
+              <span th:if="${selectedVip == 'VIP'}"
+                class="px-2.5 py-1 bg-[#a64032]/10 text-[#a64032] text-[12px] font-semibold rounded flex items-center gap-1">VIP</span>
+              <span th:if="${selectedVip == 'FREE'}"
+                class="px-2.5 py-1 bg-[#f5eae0] text-[#6b5b4b] text-[12px] font-semibold rounded flex items-center gap-1">Miễn phí</span>
               <span th:if="${selectedStatus == 'ONGOING'}"
                 class="px-2.5 py-1 bg-[#f5eae0] text-[#6b5b4b] text-[12px] font-semibold rounded flex items-center gap-1">Đang
                 ra</span>
@@ -265,7 +272,7 @@
                 Đánh giá &ge; <span th:text="${selectedMinRating}"></span>★
               </span>
               <a th:href="@{/search(q=${query})}"
-                th:if="${selectedStatus != null or selectedChapterRange != null or (selectedMinRating != null and selectedMinRating > 0) or (selectedCategories != null and !selectedCategories.isEmpty())}"
+                th:if="${(selectedVip != null and selectedVip != '') or selectedStatus != null or selectedChapterRange != null or (selectedMinRating != null and selectedMinRating > 0) or (selectedCategories != null and !selectedCategories.isEmpty())}"
                 class="text-[12px] text-[#c08d41] font-semibold hover:underline ml-1">Xóa bộ lọc</a>
             </div>
           </div>
