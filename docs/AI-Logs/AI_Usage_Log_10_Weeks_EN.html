@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SWP391 - AI Usage Log (10 Weeks - Online Novels System ONS)</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        body {
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            background: #fff;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        h1 {
+            font-size: 18pt;
+            color: #1a365d;
+            margin-top: 0;
+            margin-bottom: 6px;
+        }
+        .subtitle {
+            font-size: 10.5pt;
+            color: #4a5568;
+            margin-bottom: 16px;
+        }
+        .instructions-box {
+            background: #ebf8ff;
+            border-left: 4px solid #3182ce;
+            padding: 10px 14px;
+            margin-bottom: 18px;
+            font-size: 9.5pt;
+            line-height: 1.5;
+        }
+        .instructions-box b {
+            color: #2b6cb0;
+        }
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+            align-items: center;
+        }
+        .btn {
+            background: #2b6cb0;
+            color: #fff;
+            border: none;
+            padding: 7px 12px;
+            font-size: 9pt;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn:hover {
+            background: #2c5282;
+        }
+        .btn-week {
+            background: #edf2f7;
+            color: #2d3748;
+            border: 1px solid #cbd5e0;
+        }
+        .btn-week:hover {
+            background: #e2e8f0;
+            color: #1a202c;
+        }
+        .btn-success {
+            background: #38a169 !important;
+        }
+
+        /* Table styles matching Google Sheets standard waffle output */
+        .table-responsive {
+            overflow-x: auto;
+            margin-top: 10px;
+            border: 1px solid #000;
+        }
+        table.ai-log-table {
+            border-collapse: collapse;
+            width: 100%;
+            min-width: 1250px;
+            background-color: #ffffff;
+            font-size: 9.5pt;
+        }
+        table.ai-log-table th, table.ai-log-table td {
+            border: 1px solid #000000;
+            padding: 5px 6px;
+            vertical-align: middle;
+            line-height: 1.3;
+        }
+        /* Header style matching Instruction.html & 1. Week 1.html */
+        table.ai-log-table thead th {
+            background-color: #ffff00;
+            color: #000000;
+            font-weight: bold;
+            text-align: center;
+            white-space: normal;
+        }
+        /* Week banner row */
+        tr.week-banner td {
+            background-color: #f7caac !important;
+            font-weight: bold;
+            color: #843c0c;
+            text-align: left;
+            padding: 6px 8px;
+            font-size: 10pt;
+        }
+        /* Column alignments & widths */
+        td.col-no { text-align: center; font-weight: bold; width: 40px; }
+        td.col-phase { text-align: center; width: 100px; }
+        td.col-task { text-align: left; width: 180px; }
+        td.col-tool { text-align: center; font-weight: 500; width: 85px; }
+        td.col-output { text-align: left; width: 170px; }
+        td.col-validation { text-align: left; width: 220px; }
+        td.col-link { text-align: center; width: 100px; }
+        td.col-link a { color: #1a0dab; text-decoration: underline; }
+        td.col-measure { text-align: center; width: 130px; }
+        td.col-value { text-align: center; font-weight: bold; width: 60px; }
+        td.col-risks { text-align: left; width: 180px; }
+
+        /* Alternating row styling */
+        tr.data-row:nth-child(even) {
+            background-color: #fafafa;
+        }
+        tr.data-row:hover {
+            background-color: #f0f7ff;
+        }
+
+        .toast {
+            visibility: hidden;
+            min-width: 280px;
+            background-color: #2d3748;
+            color: #fff;
+            text-align: center;
+            border-radius: 4px;
+            padding: 10px 18px;
+            position: fixed;
+            z-index: 1000;
+            right: 25px;
+            bottom: 25px;
+            font-size: 9.5pt;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .toast.show {
+            visibility: visible;
+            animation: fadein 0.3s, fadeout 0.5s 2.5s;
+        }
+        @keyframes fadein {
+            from {bottom: 0; opacity: 0;}
+            to {bottom: 25px; opacity: 1;}
+        }
+        @keyframes fadeout {
+            from {bottom: 25px; opacity: 1;}
+            to {bottom: 0; opacity: 0;}
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>SWP391 - Project AI Usage Report (10-Week Log)</h1>
+    <div class="subtitle">
+        <b>Project:</b> Online Novels System (ONS) - Tram Truyen | <b>Group:</b> SE2003 - Group 4 | <b>AI Tools:</b> Claude, Gemini | <b>Standard:</b> 10 Columns per <code>Instruction .html</code>
+    </div>
+
+    <div class="instructions-box">
+        <b>💡 Instructions for copying into Google Spreadsheet:</b>
+        <ul>
+            <li>Click <b>"📋 Copy Entire Table (10 Weeks - 40 Rows)"</b> or any weekly button, then open Google Sheets and press <b>Ctrl + V</b>.</li>
+            <li>All cells have been formatted into concise, template-matching phrases so they fit neatly without cell overflow.</li>
+        </ul>
+    </div>
+
+    <div class="toolbar">
+        <button class="btn btn-success" onclick="copyEntireTable()">📋 Copy Entire Table (10 Weeks - 40 Rows)</button>
+        <span style="font-size: 9pt; color: #718096; margin-left: 8px;">Copy by Week:</span>
+        <button class="btn btn-week" onclick="copyWeek(1)">Week 1</button>
+        <button class="btn btn-week" onclick="copyWeek(2)">Week 2</button>
+        <button class="btn btn-week" onclick="copyWeek(3)">Week 3</button>
+        <button class="btn btn-week" onclick="copyWeek(4)">Week 4</button>
+        <button class="btn btn-week" onclick="copyWeek(5)">Week 5</button>
+        <button class="btn btn-week" onclick="copyWeek(6)">Week 6</button>
+        <button class="btn btn-week" onclick="copyWeek(7)">Week 7</button>
+        <button class="btn btn-week" onclick="copyWeek(8)">Week 8</button>
+        <button class="btn btn-week" onclick="copyWeek(9)">Week 9</button>
+        <button class="btn btn-week" onclick="copyWeek(10)">Week 10</button>
+    </div>
+
+    <div class="table-responsive">
+        <table class="ai-log-table" id="aiLogTable">
+            <thead>
+                <tr>
+                    <th style="width: 40px;">No.</th>
+                    <th style="width: 100px;">SDLC Phase</th>
+                    <th style="width: 180px;">Task / Activity</th>
+                    <th style="width: 85px;">AI Tool Used</th>
+                    <th style="width: 170px;">AI Output</th>
+                    <th style="width: 220px;">Student’s Validation / Modification</th>
+                    <th style="width: 100px;">Evidence / Link</th>
+                    <th style="width: 130px;">Quantitative Measure</th>
+                    <th style="width: 60px;">Value Added (1-5)</th>
+                    <th style="width: 180px;">Risks / Limitations Observed</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <!-- ==================== WEEK 1 ==================== -->
+                <tr class="week-banner" data-week="1">
+                    <td colspan="10">WEEK 1: REQUIREMENT ANALYSIS & SCOPE DEFINITION</td>
+                </tr>
+                <tr class="data-row" data-week="1">
+                    <td class="col-no">1</td>
+                    <td class="col-phase">Requirement</td>
+                    <td class="col-task">Project Scope Definition</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">15 novel platform features</td>
+                    <td class="col-validation">Selected 10 core features, removed physical books</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session01_RequirementScope.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">10 features kept</td>
+                    <td class="col-value">4</td>
+                    <td class="col-risks">Irrelevant e-commerce shipping</td>
+                </tr>
+                <tr class="data-row" data-week="1">
+                    <td class="col-no">2</td>
+                    <td class="col-phase">Requirement</td>
+                    <td class="col-task">Actor & Role Hierarchy</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">4-tier user roles proposed</td>
+                    <td class="col-validation">Split Author into Staff, refined Admin rights</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session02_ActorHierarchy.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">4 roles, 28 permissions</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">Merged Author with Staff</td>
+                </tr>
+                <tr class="data-row" data-week="1">
+                    <td class="col-no">3</td>
+                    <td class="col-phase">Requirement</td>
+                    <td class="col-task">Reader User Stories</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">12 reading experience stories</td>
+                    <td class="col-validation">Rewrote 4 stories with INVEST criteria</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session03_UserStoryReader.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">8 user stories kept</td>
+                    <td class="col-value">4</td>
+                    <td class="col-risks">Missing Guest progress constraints</td>
+                </tr>
+                <tr class="data-row" data-week="1">
+                    <td class="col-no">4</td>
+                    <td class="col-phase">Requirement</td>
+                    <td class="col-task">NFR & Security Specs</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">Performance & security metrics</td>
+                    <td class="col-validation">Added pessimistic locking for coin wallet</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session04_NFRSecurity.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">6 NFRs, 14 metrics</td>
+                    <td class="col-value">4</td>
+                    <td class="col-risks">Over-complex microservices model</td>
+                </tr>
+
+                <!-- ==================== WEEK 2 ==================== -->
+                <tr class="week-banner" data-week="2">
+                    <td colspan="10">WEEK 2: USE CASE SPECIFICATION & SCREENFLOW MODELING</td>
+                </tr>
+                <tr class="data-row" data-week="2">
+                    <td class="col-no">5</td>
+                    <td class="col-phase">Requirement</td>
+                    <td class="col-task">Use Case Model (UC-01 - 53)</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">53 use cases in 7 packages</td>
+                    <td class="col-validation">Numbered UC-01 to 53, assigned to 5 members</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session05_UseCaseList.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">53 use cases mapped</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">Duplicate Guest & Member flows</td>
+                </tr>
+                <tr class="data-row" data-week="2">
+                    <td class="col-no">6</td>
+                    <td class="col-phase">Requirement</td>
+                    <td class="col-task">UC-26 Unlock Paid Chapter</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">Main & alternative use case flows</td>
+                    <td class="col-validation">Added balance check & audit log step</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session06_UC26UnlockChapter.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">1 UC spec, 3 alt flows</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">Missed rapid double-click issue</td>
+                </tr>
+                <tr class="data-row" data-week="2">
+                    <td class="col-no">7</td>
+                    <td class="col-phase">Requirement</td>
+                    <td class="col-task">Screen Flow Architecture</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">Reader & catalog navigation flow</td>
+                    <td class="col-validation">Added Admin CMS routing & error modal</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session07_ScreenFlow.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">2 diagrams, 24 screens</td>
+                    <td class="col-value">4</td>
+                    <td class="col-risks">Mermaid syntax parentheses error</td>
+                </tr>
+                <tr class="data-row" data-week="2">
+                    <td class="col-no">8</td>
+                    <td class="col-phase">Requirement</td>
+                    <td class="col-task">Screen Authorization Matrix</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">Role access rules for 48 screens</td>
+                    <td class="col-validation">Restricted Screen #48 (Audit Log) to Admin</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session08_ScreenAuth.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">48 screens mapped</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">Guest access to Audio Reader</td>
+                </tr>
+
+                <!-- ==================== WEEK 3 ==================== -->
+                <tr class="week-banner" data-week="3">
+                    <td colspan="10">WEEK 3: DATABASE DESIGN & RELATIONAL SCHEMA MODELING</td>
+                </tr>
+                <tr class="data-row" data-week="3">
+                    <td class="col-no">9</td>
+                    <td class="col-phase">Design</td>
+                    <td class="col-task">Conceptual ERD Design</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">10 entities with relationships</td>
+                    <td class="col-validation">Added novel_categories & unlocked_chapters</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session09_ConceptualERD.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">12 entities, 18 relations</td>
+                    <td class="col-value">4</td>
+                    <td class="col-risks">Stored balance without audit ledger</td>
+                </tr>
+                <tr class="data-row" data-week="3">
+                    <td class="col-no">10</td>
+                    <td class="col-phase">Design</td>
+                    <td class="col-task">MySQL Schema (`novels.sql`)</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">DDL CREATE TABLE scripts</td>
+                    <td class="col-validation">Added InnoDB, UTF8MB4, balance check</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session10_DBSchemaDDL.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">14 tables, 28 FKs</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">Used static DATETIME types</td>
+                </tr>
+                <tr class="data-row" data-week="3">
+                    <td class="col-no">11</td>
+                    <td class="col-phase">Design</td>
+                    <td class="col-task">Database Data Dictionary</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">Column descriptions & data types</td>
+                    <td class="col-validation">Aligned ENUMs (DRAFT, PUBLISHED) with rules</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session11_DataDictionary.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">14 tables, 92 columns</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">Incomplete payment status ENUMs</td>
+                </tr>
+                <tr class="data-row" data-week="3">
+                    <td class="col-no">12</td>
+                    <td class="col-phase">Design</td>
+                    <td class="col-task">Mock Data Script (`seed.sql`)</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">Sample INSERT statements</td>
+                    <td class="col-validation">Added BCrypt passwords, 20 demo novels</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session12_SeedSQL.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">180+ SQL INSERT rows</td>
+                    <td class="col-value">4</td>
+                    <td class="col-risks">FK order violation on insert</td>
+                </tr>
+
+                <!-- ==================== WEEK 4 ==================== -->
+                <tr class="week-banner" data-week="4">
+                    <td colspan="10">WEEK 4: SYSTEM ARCHITECTURE & UI FIELD SPECIFICATIONS</td>
+                </tr>
+                <tr class="data-row" data-week="4">
+                    <td class="col-no">13</td>
+                    <td class="col-phase">Design</td>
+                    <td class="col-task">Layered Package Architecture</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">Spring Boot 3-tier structure</td>
+                    <td class="col-validation">Split God-service into Domain Services</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session13_PackageDesign.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">8 root packages</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">Monolithic service suggestion</td>
+                </tr>
+                <tr class="data-row" data-week="4">
+                    <td class="col-no">14</td>
+                    <td class="col-phase">Design</td>
+                    <td class="col-task">Reader & Novel UI Field Spec</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">UI field tables for screens #10 & #11</td>
+                    <td class="col-validation">Added mobile audio bar & VIP coin badge</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session14_UIWireframes.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">2 screen specs, 22 fields</td>
+                    <td class="col-value">4</td>
+                    <td class="col-risks">Missing dark mode color codes</td>
+                </tr>
+                <tr class="data-row" data-week="4">
+                    <td class="col-no">15</td>
+                    <td class="col-phase">Design</td>
+                    <td class="col-task">DTO & Validation Constraints</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">DTOs with validation rules</td>
+                    <td class="col-validation">Replaced javax with jakarta annotations</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session15_DTODesign.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">12 DTOs, 35 annotations</td>
+                    <td class="col-value">4</td>
+                    <td class="col-risks">Deprecated javax imports used</td>
+                </tr>
+                <tr class="data-row" data-week="4">
+                    <td class="col-no">16</td>
+                    <td class="col-phase">Design</td>
+                    <td class="col-task">Monetization Business Rules</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">Coin conversion & check-in rules</td>
+                    <td class="col-validation">Added anti-cheat (max 3 checkins/IP/day)</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session16_BusinessRules.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">5 rule docs, 18 rules</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">Unhandled network timeout flow</td>
+                </tr>
+
+                <!-- ==================== WEEK 5 ==================== -->
+                <tr class="week-banner" data-week="5">
+                    <td colspan="10">WEEK 5: DETAILED CODE DESIGN - SDS SEQUENCE & CLASS DIAGRAMS</td>
+                </tr>
+                <tr class="data-row" data-week="5">
+                    <td class="col-no">17</td>
+                    <td class="col-phase">Design</td>
+                    <td class="col-task">PlantUML Sequence: UC-03 Login</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">Sequence diagram for user login</td>
+                    <td class="col-validation">Fixed lifelines, added alt frames for errors</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session17_SeqLogin.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">1 diagram, 14 messages</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">Non-standard naming conventions</td>
+                </tr>
+                <tr class="data-row" data-week="5">
+                    <td class="col-no">18</td>
+                    <td class="col-phase">Design</td>
+                    <td class="col-task">PlantUML Sequence: UC-26 Unlock</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">Coin deduction & access flow</td>
+                    <td class="col-validation">Added @Transactional & pessimistic lock</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session18_SeqUnlockChapter.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">1 diagram, 18 steps</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">Missing session cache checks</td>
+                </tr>
+                <tr class="data-row" data-week="5">
+                    <td class="col-no">19</td>
+                    <td class="col-phase">Design</td>
+                    <td class="col-task">Mermaid Class: Novel CMS</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">CMS Controller & Service classes</td>
+                    <td class="col-validation">Aligned methods with SDS Section II</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session19_MermaidClassCMS.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">8 classes, 32 methods</td>
+                    <td class="col-value">4</td>
+                    <td class="col-risks">Syntax error on generic List types</td>
+                </tr>
+                <tr class="data-row" data-week="5">
+                    <td class="col-no">20</td>
+                    <td class="col-phase">Design</td>
+                    <td class="col-task">SQL Queries (SDS Section II d)</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">Parameterized queries for catalog</td>
+                    <td class="col-validation">Used DTO projection, removed FOR UPDATE</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session20_DBQueriesSDS.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">16 SQL queries</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">Missed is_deleted filter in JOINs</td>
+                </tr>
+
+                <!-- ==================== WEEK 6 ==================== -->
+                <tr class="week-banner" data-week="6">
+                    <td colspan="10">WEEK 6: SPRINT 1 - AUTHENTICATION & CORE NOVEL CMS IMPLEMENTATION</td>
+                </tr>
+                <tr class="data-row" data-week="6">
+                    <td class="col-no">21</td>
+                    <td class="col-phase">Implementation</td>
+                    <td class="col-task">Spring Security 6 Config</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">SecurityFilterChain & BCrypt bean</td>
+                    <td class="col-validation">Used authorizeHttpRequests Lambda DSL</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session21_SpringSecurityConfig.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">1 config class, ~120 LOC</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">Deprecated authorizeRequests used</td>
+                </tr>
+                <tr class="data-row" data-week="6">
+                    <td class="col-no">22</td>
+                    <td class="col-phase">Implementation</td>
+                    <td class="col-task">JPA Entities & Repositories</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">User, Novel, Chapter entities</td>
+                    <td class="col-validation">Added FetchType.LAZY & Lombok excludes</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session22_JPAEntities.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">10 entities, 7 repos</td>
+                    <td class="col-value">4</td>
+                    <td class="col-risks">EAGER fetch causing N+1 issue</td>
+                </tr>
+                <tr class="data-row" data-week="6">
+                    <td class="col-no">23</td>
+                    <td class="col-phase">Implementation</td>
+                    <td class="col-task">Novel CMS & Cloudinary Upload</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">Novel CRUD & image upload logic</td>
+                    <td class="col-validation">Added 5MB file check & soft delete logic</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session23_NovelCMSCode.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">1 service, ~220 LOC</td>
+                    <td class="col-value">4</td>
+                    <td class="col-risks">Unhandled Cloudinary timeouts</td>
+                </tr>
+                <tr class="data-row" data-week="6">
+                    <td class="col-no">24</td>
+                    <td class="col-phase">Implementation</td>
+                    <td class="col-task">Chapter CMS & Pricing Config</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">Chapter CRUD & auto-numbering</td>
+                    <td class="col-validation">Enforced free chapter coin_price == 0</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session24_ChapterCMSCode.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">4 endpoints, ~180 LOC</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">Allowed negative coin prices</td>
+                </tr>
+
+                <!-- ==================== WEEK 7 ==================== -->
+                <tr class="week-banner" data-week="7">
+                    <td colspan="10">WEEK 7: SPRINT 2 - READER EXPERIENCE, BOOKSHELF & AUDIO READER</td>
+                </tr>
+                <tr class="data-row" data-week="7">
+                    <td class="col-no">25</td>
+                    <td class="col-phase">Implementation</td>
+                    <td class="col-task">Catalog Filter & Pagination</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">JPA Specification with Pageable</td>
+                    <td class="col-validation">Added JOIN FETCH to fix N+1 category query</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session25_CatalogFilterCode.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">1 spec class, ~150 LOC</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">Case-sensitive search on VN text</td>
+                </tr>
+                <tr class="data-row" data-week="7">
+                    <td class="col-no">26</td>
+                    <td class="col-phase">Implementation</td>
+                    <td class="col-task">Chapter Reader Web UI</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">Thymeleaf view with theme buttons</td>
+                    <td class="col-validation">Added localStorage caching & key shortcuts</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session26_ReaderUIThymeleaf.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">1 view, 1 JS module</td>
+                    <td class="col-value">4</td>
+                    <td class="col-risks">Overflow on narrow mobile screens</td>
+                </tr>
+                <tr class="data-row" data-week="7">
+                    <td class="col-no">27</td>
+                    <td class="col-phase">Implementation</td>
+                    <td class="col-task">Bookshelf & Progress Sync</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">REST endpoints for reading progress</td>
+                    <td class="col-validation">Debounced progress sync (wait 3s)</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session27_BookshelfProgressCode.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">3 endpoints, ~190 LOC</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">Unhandled 401 error on expired session</td>
+                </tr>
+                <tr class="data-row" data-week="7">
+                    <td class="col-no">28</td>
+                    <td class="col-phase">Implementation</td>
+                    <td class="col-task">Web Speech TTS Audio Reader</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">Client JS speech synthesis module</td>
+                    <td class="col-validation">Added text chunking to bypass Chrome limit</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session28_AudioReaderJS.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">1 JS audio module</td>
+                    <td class="col-value">4</td>
+                    <td class="col-risks">Voice quality varies across OS</td>
+                </tr>
+
+                <!-- ==================== WEEK 8 ==================== -->
+                <tr class="week-banner" data-week="8">
+                    <td colspan="10">WEEK 8: SPRINT 3 - MONETIZATION, VNPAY INTEGRATION & AUDIT LOGGING</td>
+                </tr>
+                <tr class="data-row" data-week="8">
+                    <td class="col-no">29</td>
+                    <td class="col-phase">Implementation</td>
+                    <td class="col-task">VNPay Payment Integration</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">VNPay payment URL & IPN handler</td>
+                    <td class="col-validation">Upgraded to HMAC-SHA512 checksum</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session29_VNPayIntegration.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">2 classes, ~280 LOC</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">Used deprecated MD5 hashing</td>
+                </tr>
+                <tr class="data-row" data-week="8">
+                    <td class="col-no">30</td>
+                    <td class="col-phase">Implementation</td>
+                    <td class="col-task">Concurrency-Safe Chapter Unlock</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">Transactional coin deduction code</td>
+                    <td class="col-validation">Added PESSIMISTIC_WRITE & retry logic</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session30_UnlockEngineCode.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">1 service, ~110 LOC</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">Unhandled lock failure exception</td>
+                </tr>
+                <tr class="data-row" data-week="8">
+                    <td class="col-no">31</td>
+                    <td class="col-phase">Implementation</td>
+                    <td class="col-task">Daily Check-in Streak Engine</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">Streak calculation & reward coins</td>
+                    <td class="col-validation">Pinned timezone to Asia/Ho_Chi_Minh</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session31_DailyCheckinCode.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">1 service, ~95 LOC</td>
+                    <td class="col-value">4</td>
+                    <td class="col-risks">UTC default reset streaks at 7 AM</td>
+                </tr>
+                <tr class="data-row" data-week="8">
+                    <td class="col-no">32</td>
+                    <td class="col-phase">Implementation</td>
+                    <td class="col-task">System Audit Interceptor</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">HandlerInterceptor for admin actions</td>
+                    <td class="col-validation">Masked passwords, made logging @Async</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session32_AuditLogCode.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">1 interceptor, ~130 LOC</td>
+                    <td class="col-value">4</td>
+                    <td class="col-risks">Synchronous logging slowed requests</td>
+                </tr>
+
+                <!-- ==================== WEEK 9 ==================== -->
+                <tr class="week-banner" data-week="9">
+                    <td colspan="10">WEEK 9: TESTING & QUALITY ASSURANCE (AUTOMATED TESTS & SECURITY)</td>
+                </tr>
+                <tr class="data-row" data-week="9">
+                    <td class="col-no">33</td>
+                    <td class="col-phase">Testing</td>
+                    <td class="col-task">Auth & User Unit Tests</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">JUnit 5 test cases for UserService</td>
+                    <td class="col-validation">Added SQLi & disabled user edge cases</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session33_UnitTestAuth.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">16 tests, 94% coverage</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">Used JUnit 4 expected exception</td>
+                </tr>
+                <tr class="data-row" data-week="9">
+                    <td class="col-no">34</td>
+                    <td class="col-phase">Testing</td>
+                    <td class="col-task">Chapter Unlock Concurrency Test</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">Mockito tests for chapter unlock</td>
+                    <td class="col-validation">Added 10-thread CountDownLatch test</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session34_UnitTestUnlock.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">10 tests, 1 multithread</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">Mockito cannot test DB row lock</td>
+                </tr>
+                <tr class="data-row" data-week="9">
+                    <td class="col-no">35</td>
+                    <td class="col-phase">Testing</td>
+                    <td class="col-task">Security & RBAC Integration Test</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">MockMvc tests for 401/403 responses</td>
+                    <td class="col-validation">Tested CSRF tampering & URL manipulation</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session35_SecurityRBACTest.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">18 MockMvc test cases</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">Missed malicious file upload case</td>
+                </tr>
+                <tr class="data-row" data-week="9">
+                    <td class="col-no">36</td>
+                    <td class="col-phase">Testing</td>
+                    <td class="col-task">E2E Payment Test Matrix</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">Manual test cases for checkout flow</td>
+                    <td class="col-validation">Tested VNPay sandbox success & cancel</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session36_E2ETestCases.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">22 test scenarios</td>
+                    <td class="col-value">4</td>
+                    <td class="col-risks">Omitted callback page refresh test</td>
+                </tr>
+
+                <!-- ==================== WEEK 10 ==================== -->
+                <tr class="week-banner" data-week="10">
+                    <td colspan="10">WEEK 10: REPORTING, BUG FIXES & FINAL PROJECT DELIVERY</td>
+                </tr>
+                <tr class="data-row" data-week="10">
+                    <td class="col-no">37</td>
+                    <td class="col-phase">Reporting</td>
+                    <td class="col-task">Bug Remediation & Regression</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">Fixes for search offset & audio lag</td>
+                    <td class="col-validation">Refactored CSS, re-ran all test suites</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session37_BugFixRegression.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">8 bug fixes applied</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">Proposed !important broke desktop CSS</td>
+                </tr>
+                <tr class="data-row" data-week="10">
+                    <td class="col-no">38</td>
+                    <td class="col-phase">Reporting</td>
+                    <td class="col-task">RDS & SDS Sync (V1.5)</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">Code vs documentation discrepancies</td>
+                    <td class="col-validation">Updated SDS Section II.d & Record of Changes</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session38_DocSync.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">14 sections updated</td>
+                    <td class="col-value">4</td>
+                    <td class="col-risks">Overlooked change history table</td>
+                </tr>
+                <tr class="data-row" data-week="10">
+                    <td class="col-no">39</td>
+                    <td class="col-phase">Reporting</td>
+                    <td class="col-task">Defense Presentation Slides</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">15-slide defense deck outline</td>
+                    <td class="col-validation">Trimmed demo script to 7 minutes</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session39_PresentationDemo.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">15 slides, 1 demo script</td>
+                    <td class="col-value">4</td>
+                    <td class="col-risks">Initial outline was too long</td>
+                </tr>
+                <tr class="data-row" data-week="10">
+                    <td class="col-no">40</td>
+                    <td class="col-phase">Reporting</td>
+                    <td class="col-task">Final AI Usage Report</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">Contribution breakdown by SDLC phase</td>
+                    <td class="col-validation">Consolidated 40 entries, audited Drive evidence</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session40_FinalAIReport.png" target="_blank">Drive link</a></td>
+                    <td class="col-measure">40 entries, 1 report</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">Exaggerated automated code ratios</td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="toast" class="toast">Copied to Clipboard! You can now press Ctrl+V in Google Sheets.</div>
+
+<script>
+    function showToast(message) {
+        var toast = document.getElementById("toast");
+        toast.innerText = message || "Copied to Clipboard! You can now press Ctrl+V in Google Sheets.";
+        toast.className = "toast show";
+        setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 3000);
+    }
+
+    // Function to copy TSV (Tab Separated Values) directly for clean Google Sheets paste
+    function copyRowsToClipboard(rows, bannerText) {
+        var tsv = [];
+        // Header
+        var headers = ["No.", "SDLC Phase", "Task / Activity", "AI Tool Used", "AI Output", "Student’s Validation / Modification", "Evidence / Link", "Quantitative Measure", "Value Added (1-5)", "Risks / Limitations Observed"];
+        tsv.push(headers.join("\t"));
+
+        rows.forEach(function(row) {
+            var cols = row.querySelectorAll("td");
+            var rowData = [];
+            cols.forEach(function(col) {
+                // Remove linebreaks and clean text
+                var text = col.innerText.trim().replace(/\r?\n|\r/g, " ");
+                rowData.push(text);
+            });
+            if (rowData.length > 0) {
+                tsv.push(rowData.join("\t"));
+            }
+        });
+
+        var textToCopy = tsv.join("\n");
+        navigator.clipboard.writeText(textToCopy).then(function() {
+            showToast(bannerText ? "Copied " + bannerText + " to Clipboard!" : "Copied to Clipboard!");
+        }).catch(function(err) {
+            alert("Copy failed: " + err);
+        });
+    }
+
+    function copyEntireTable() {
+        var rows = document.querySelectorAll("tr.data-row");
+        copyRowsToClipboard(rows, "all 10 weeks (40 rows)");
+    }
+
+    function copyWeek(weekNum) {
+        var rows = document.querySelectorAll('tr.data-row[data-week="' + weekNum + '"]');
+        copyRowsToClipboard(rows, "Week " + weekNum + " (4 rows)");
+    }
+</script>
+
+</body>
+</html>
