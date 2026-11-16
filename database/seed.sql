@@ -201,7 +201,7 @@ Tiếng thét mang theo sự giải thoát, mang theo sự tự tin kiêu hãnh 
 
 Phía chân trời đằng đông, ánh rạng đông màu hồng ngọc bắt đầu xua tan màn đêm lạnh giá, chiếu rọi những tia nắng ấm áp đầu tiên xuống thành Vân Sơn cổ kính. Lâm Phong đứng trên đỉnh núi cao lộng gió, áo choàng bay phần phật, ánh mắt sắc lạnh như kiếm quang hướng về phía phủ đệ Lâm gia xa xăm. "Lâm gia, Triệu gia, những kẻ đã từng coi ta là cỏ rác... Hãy đợi đấy! Lâm Phong ta đã trở về, và thời đại của các ngươi sắp kết thúc rồi!"', 0, 'PUBLISHED_REGULAR', 32, false)
 ) AS c(chapter_number, title, content, price, status, views, is_deleted)
-ON CONFLICT (novel_id, chapter_number) DO UPDATE
+ON CONFLICT (novel_id, chapter_number) WHERE is_deleted = false DO UPDATE
 SET title = EXCLUDED.title, content = EXCLUDED.content, price = EXCLUDED.price, status = EXCLUDED.status;
 
 -- ================================================================================
@@ -339,7 +339,7 @@ Tiêu Viêm nắm chặt bàn tay, cảm nhận được một luồng nhiệt l
 
 Dược Trần vuốt râu cười vang đầy mãn nguyện: "Tốt! Rất tốt! Kể từ hôm nay, con đường của ngươi sẽ bắt đầu lại từ con số không, nhưng đích đến sẽ là bầu trời vô tận!"', 0, 'PUBLISHED_REGULAR', 1450, false)
 ) AS c(chapter_number, title, content, price, status, views, is_deleted)
-ON CONFLICT (novel_id, chapter_number) DO UPDATE
+ON CONFLICT (novel_id, chapter_number) WHERE is_deleted = false DO UPDATE
 SET title = EXCLUDED.title, content = EXCLUDED.content, price = EXCLUDED.price, status = EXCLUDED.status;
 
 -- ================================================================================
@@ -517,7 +517,7 @@ Tôi đứng thẳng dậy, phủi nhẹ vạt áo sơ mi dính vài giọt bụ
 
 Con đường sinh tồn chỉ vừa mới mở ra chương đầu tiên, và tôi sẽ không để bất kỳ ai cản bước mình.', 0, 'PUBLISHED_REGULAR', 4400, false)
 ) AS c(chapter_number, title, content, price, status, views, is_deleted)
-ON CONFLICT (novel_id, chapter_number) DO UPDATE
+ON CONFLICT (novel_id, chapter_number) WHERE is_deleted = false DO UPDATE
 SET title = EXCLUDED.title, content = EXCLUDED.content, price = EXCLUDED.price, status = EXCLUDED.status;
 
 -- ================================================================================
@@ -653,7 +653,7 @@ Hắn thầm hứa với lòng mình, dù con đường trường sinh phía tr�
 
 Chính giọt linh dịch thần bí này, và chiếc Chưởng Thiên Bình nghịch thiên này, sẽ trở thành bảo vật quan trọng nhất đưa Hàn Lập từ một phàm nhân tư chất kém cỏi bước lên đỉnh cao của Tiên Giới, mở ra truyền kỳ Phàm Nhân Tu Tiên bất hủ muôn đời.', 0, 'PUBLISHED_REGULAR', 3600, false)
 ) AS c(chapter_number, title, content, price, status, views, is_deleted)
-ON CONFLICT (novel_id, chapter_number) DO UPDATE
+ON CONFLICT (novel_id, chapter_number) WHERE is_deleted = false DO UPDATE
 SET title = EXCLUDED.title, content = EXCLUDED.content, price = EXCLUDED.price, status = EXCLUDED.status;
 
 -- ================================================================================
@@ -801,7 +801,7 @@ Thế nhưng, chính trong những nghịch cảnh tăm tối nhất của cuộ
 
 Bầu trời đêm sâu thẳm lấp lánh muôn ngàn vì tinh tú xa xôi, mỗi một đốm sáng tượng trưng cho một số phận, một linh hồn đang tranh đấu không ngừng nghỉ để tìm kiếm vị trí của mình trong vũ trụ vô tận. Gió đêm thổi qua những tán cây cổ thụ phát ra âm thanh rì rào như tiếng thở dài của thời gian. Những kỷ nguyên huy hoàng rồi cũng sẽ lụi tàn thành tro bụi, các bậc đế vương bá chủ rồi cũng phải quy về cát bụi thời gian, duy chỉ có những tâm hồn kiên định dũng cảm dám bước đi trên con đường của riêng mình mới có thể lưu danh vĩnh cửu.', 0, 'PUBLISHED_REGULAR', 4100, false)
 ) AS c(chapter_number, title, content, price, status, views, is_deleted)
-ON CONFLICT (novel_id, chapter_number) DO UPDATE
+ON CONFLICT (novel_id, chapter_number) WHERE is_deleted = false DO UPDATE
 SET title = EXCLUDED.title, content = EXCLUDED.content, price = EXCLUDED.price, status = EXCLUDED.status;
 
 -- ================================================================================
@@ -943,7 +943,7 @@ Sức mạnh chân chính không chỉ nằm ở nắm đấm hay vũ lực hủ
 
 Những gian khổ hôm nay trải qua rồi cũng sẽ hóa thành ngọn đèn soi sáng cho tương lai mịt mùng phía trước. Con đường tu luyện trường sinh vốn dĩ cô độc, ít người thấu hiểu, đòi hỏi một sự nhẫn nại phi thường và khả năng chịu đựng nỗi cô đơn tột cùng. Nhưng khi đã vượt qua được muôn ngàn hiểm hách, đứng trên đỉnh cao ngắm nhìn thiên hạ thái bình, mọi hy sinh mất mát đều sẽ trở nên vô cùng xứng đáng.', 0, 'PUBLISHED_REGULAR', 4000, false)
 ) AS c(chapter_number, title, content, price, status, views, is_deleted)
-ON CONFLICT (novel_id, chapter_number) DO UPDATE
+ON CONFLICT (novel_id, chapter_number) WHERE is_deleted = false DO UPDATE
 SET title = EXCLUDED.title, content = EXCLUDED.content, price = EXCLUDED.price, status = EXCLUDED.status;
 
 -- ================================================================================
@@ -1099,7 +1099,7 @@ Bước chân vững chãi tiến về phía trước, không quay đầu lại,
 
 Thiên địa này vốn dĩ là một ván cờ lớn vô biên vô tận, nơi chư thần cùng ma quỷ mượn chúng sinh làm quân cờ mua vui. Nhưng ta sinh ra ở đời, há chịu cam tâm làm một con tốt thí ngoan ngoãn bị kẻ khác giật dây? Dù là phàm nhân thân phận thấp hèn, ta cũng quyết chí cầm cờ, tự tay khắc ghi vận mệnh của chính mình lên vách đá thời gian.', 0, 'PUBLISHED_REGULAR', 4200, false)
 ) AS c(chapter_number, title, content, price, status, views, is_deleted)
-ON CONFLICT (novel_id, chapter_number) DO UPDATE
+ON CONFLICT (novel_id, chapter_number) WHERE is_deleted = false DO UPDATE
 SET title = EXCLUDED.title, content = EXCLUDED.content, price = EXCLUDED.price, status = EXCLUDED.status;
 
 -- ================================================================================
@@ -1259,7 +1259,7 @@ Một trang sử mới đã chính thức mở ra, và tên tuổi của ngườ
 
 Khúc ca bi tráng của thời đại diệt thế và quật khởi bắt đầu vang vọng khắp muôn trùng núi sông vĩ đại.', 0, 'PUBLISHED_REGULAR', 4100, false)
 ) AS c(chapter_number, title, content, price, status, views, is_deleted)
-ON CONFLICT (novel_id, chapter_number) DO UPDATE
+ON CONFLICT (novel_id, chapter_number) WHERE is_deleted = false DO UPDATE
 SET title = EXCLUDED.title, content = EXCLUDED.content, price = EXCLUDED.price, status = EXCLUDED.status;
 
 

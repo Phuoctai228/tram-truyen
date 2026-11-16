@@ -4,7 +4,6 @@ import com.tramtruyen.dto.ChapterForm;
 import com.tramtruyen.dto.ChapterSaveAction;
 import com.tramtruyen.entity.Chapter;
 import com.tramtruyen.entity.Novel;
-import com.tramtruyen.exception.DuplicateResourceException;
 import com.tramtruyen.exception.ResourceNotFoundException;
 import com.tramtruyen.service.ChapterService;
 import com.tramtruyen.service.NovelService;
@@ -79,10 +78,6 @@ public class StaffChapterController {
                 return "redirect:/staff/novels/" + novelId + "/chapters/" + chapter.getId() + "/edit";
             }
             return "redirect:/staff/novels/" + novelId + "/chapters";
-        } catch (DuplicateResourceException exception) {
-            bindingResult.rejectValue("chapterNumber", "duplicate", exception.getMessage());
-            return renderFormWithErrors(novelId, form, model, redirectAttributes,
-                    "Tạo chương mới", "/staff/novels/" + novelId + "/chapters");
         } catch (ResourceNotFoundException exception) {
             redirectAttributes.addFlashAttribute("errorMessage", exception.getMessage());
             return "redirect:/staff/novels";
@@ -119,10 +114,6 @@ public class StaffChapterController {
                     saveAction == ChapterSaveAction.PUBLISHED
                             ? "Đã cập nhật và xuất bản chương thành công."
                             : "Đã lưu thay đổi ở dạng bản nháp.");
-        } catch (DuplicateResourceException exception) {
-            bindingResult.rejectValue("chapterNumber", "duplicate", exception.getMessage());
-            return renderFormWithErrors(novelId, form, model, redirectAttributes,
-                    "Chỉnh sửa chương", "/staff/novels/" + novelId + "/chapters/" + chapterId);
         } catch (ResourceNotFoundException exception) {
             redirectAttributes.addFlashAttribute("errorMessage", exception.getMessage());
             return "redirect:/staff/novels/" + novelId + "/chapters";

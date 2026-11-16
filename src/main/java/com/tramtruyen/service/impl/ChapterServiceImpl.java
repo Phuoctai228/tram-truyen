@@ -4,7 +4,6 @@ import com.tramtruyen.dto.ChapterForm;
 import com.tramtruyen.dto.ChapterSaveAction;
 import com.tramtruyen.entity.Chapter;
 import com.tramtruyen.entity.Novel;
-import com.tramtruyen.exception.DuplicateResourceException;
 import com.tramtruyen.exception.ResourceNotFoundException;
 import com.tramtruyen.repository.ChapterRepository;
 import com.tramtruyen.repository.NovelRepository;
@@ -89,9 +88,6 @@ public class ChapterServiceImpl implements ChapterService {
     @Transactional
     public Chapter createChapter(Integer novelId, ChapterForm form, ChapterSaveAction action) {
         Novel novel = findActiveNovel(novelId);
-        if (chapterRepository.existsByNovelIdAndChapterNumber(novelId, form.getChapterNumber())) {
-            throw new DuplicateResourceException("Số chương đã tồn tại trong truyện này");
-        }
 
         int price = resolvePrice(form);
         Chapter chapter = Chapter.builder()
@@ -133,10 +129,6 @@ public class ChapterServiceImpl implements ChapterService {
         findActiveNovel(novelId);
         Chapter chapter = findActiveChapter(novelId, chapterId);
         String oldStatus = chapter.getStatus();
-        if (chapterRepository.existsByNovelIdAndChapterNumberAndIdNot(
-                novelId, form.getChapterNumber(), chapterId)) {
-            throw new DuplicateResourceException("Số chương đã tồn tại trong truyện này");
-        }
 
         chapter.setChapterNumber(form.getChapterNumber());
         chapter.setTitle(form.getTitle().trim());
