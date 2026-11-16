@@ -124,9 +124,12 @@ CREATE TABLE chapters (
     status VARCHAR(50) DEFAULT 'DRAFT', -- DRAFT (Bản nháp / Tạm ẩn M1-F09), PUBLISHED_REGULAR (Miễn phí), PUBLISHED_VIP (Thu phí Coin)
     is_deleted BOOLEAN DEFAULT FALSE, -- Cờ xóa mềm chương truyện (M1-F10: Delete Chapter)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE (novel_id, chapter_number)
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE UNIQUE INDEX chapters_active_number_unique
+    ON chapters (novel_id, chapter_number)
+    WHERE is_deleted = FALSE;
 
 -- 10. BOOKSHELVES (Tủ sách cá nhân của độc giả M2-F07, M2-F08, M2-F09)
 CREATE TABLE bookshelves (

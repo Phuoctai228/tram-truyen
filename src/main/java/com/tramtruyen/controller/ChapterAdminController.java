@@ -82,7 +82,7 @@ public class ChapterAdminController {
             return "redirect:/admin/novels/" + novelId + "/chapters";
         } catch (DuplicateResourceException exception) {
             bindingResult.rejectValue("chapterNumber", "duplicate", exception.getMessage());
-                return renderFormWithErrors(novelId, form, model, redirectAttributes,
+            return renderFormWithErrors(novelId, form, model, redirectAttributes,
                     "Tạo chương mới", "/admin/novels/" + novelId + "/chapters");
         } catch (ResourceNotFoundException exception) {
             redirectAttributes.addFlashAttribute("errorMessage", exception.getMessage());
@@ -122,8 +122,8 @@ public class ChapterAdminController {
                             : "Đã lưu thay đổi ở dạng bản nháp.");
         } catch (DuplicateResourceException exception) {
             bindingResult.rejectValue("chapterNumber", "duplicate", exception.getMessage());
-                return renderFormWithErrors(novelId, form, model, redirectAttributes,
-                    "Chỉnh sửa chương", "/admin/novels/" + novelId + "/chapters/" + chapterId);
+            return renderFormWithErrors(novelId, form, model, redirectAttributes,
+                            "Chỉnh sửa chương", "/admin/novels/" + novelId + "/chapters/" + chapterId);
         } catch (ResourceNotFoundException exception) {
             redirectAttributes.addFlashAttribute("errorMessage", exception.getMessage());
             return "redirect:/admin/novels/" + novelId + "/chapters";

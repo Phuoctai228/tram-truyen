@@ -48,7 +48,6 @@ class ChapterServiceImplTest {
     void createChapterUsesNovelAndDraftDefaults() {
         Novel novel = Novel.builder().id(1).isDeleted(false).build();
         when(novelRepository.findByIdAndIsDeletedFalse(1)).thenReturn(Optional.of(novel));
-        when(chapterRepository.existsByNovelIdAndChapterNumber(1, 1)).thenReturn(false);
         when(chapterRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         var result = chapterService.createChapter(1, form());
@@ -100,7 +99,6 @@ class ChapterServiceImplTest {
     void createChapterCanBePublished() {
         Novel novel = Novel.builder().id(1).isDeleted(false).build();
         when(novelRepository.findByIdAndIsDeletedFalse(1)).thenReturn(Optional.of(novel));
-        when(chapterRepository.existsByNovelIdAndChapterNumber(1, 1)).thenReturn(false);
         when(chapterRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         var result = chapterService.createChapter(1, form(), ChapterSaveAction.PUBLISHED);
@@ -112,7 +110,6 @@ class ChapterServiceImplTest {
     void createPublishedPaidChapterUsesVipStatus() {
         Novel novel = Novel.builder().id(1).isDeleted(false).build();
         when(novelRepository.findByIdAndIsDeletedFalse(1)).thenReturn(Optional.of(novel));
-        when(chapterRepository.existsByNovelIdAndChapterNumber(1, 1)).thenReturn(false);
         when(chapterRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         ChapterForm chapterForm = form();
@@ -127,7 +124,6 @@ class ChapterServiceImplTest {
     void createDraftPaidChapterRemainsDraft() {
         Novel novel = Novel.builder().id(1).isDeleted(false).build();
         when(novelRepository.findByIdAndIsDeletedFalse(1)).thenReturn(Optional.of(novel));
-        when(chapterRepository.existsByNovelIdAndChapterNumber(1, 1)).thenReturn(false);
         when(chapterRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         ChapterForm chapterForm = form();
@@ -142,7 +138,6 @@ class ChapterServiceImplTest {
     void createChapterStoresPositivePriceForVipChapter() {
         Novel novel = Novel.builder().id(1).isDeleted(false).build();
         when(novelRepository.findByIdAndIsDeletedFalse(1)).thenReturn(Optional.of(novel));
-        when(chapterRepository.existsByNovelIdAndChapterNumber(1, 1)).thenReturn(false);
         when(chapterRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         ChapterForm chapterForm = form();
@@ -163,13 +158,27 @@ class ChapterServiceImplTest {
     }
 
     @Test
-    void createChapterRejectsDuplicateNumber() {
+    void createChapterAllowsNumberUsedBySoftDeletedChapter() {
         Novel novel = Novel.builder().id(1).isDeleted(false).build();
         when(novelRepository.findByIdAndIsDeletedFalse(1)).thenReturn(Optional.of(novel));
-        when(chapterRepository.existsByNovelIdAndChapterNumber(1, 1)).thenReturn(true);
+        when(chapterRepository.existsByNovelIdAndChapterNumberAndIsDeletedFalse(1, 1)).thenReturn(false);
+        when(chapterRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        var result = chapterService.createChapter(1, form());
+
+        assertThat(result.getChapterNumber()).isEqualTo(1);
+        verify(chapterRepository).save(any());
+    }
+
+    @Test
+    void createChapterRejectsNumberUsedByActiveChapter() {
+        Novel novel = Novel.builder().id(1).isDeleted(false).build();
+        when(novelRepository.findByIdAndIsDeletedFalse(1)).thenReturn(Optional.of(novel));
+        when(chapterRepository.existsByNovelIdAndChapterNumberAndIsDeletedFalse(1, 1)).thenReturn(true);
 
         assertThatThrownBy(() -> chapterService.createChapter(1, form()))
-                .isInstanceOf(DuplicateResourceException.class);
+                .isInstanceOf(DuplicateResourceException.class)
+                .hasMessage("Số chương đã tồn tại trong truyện này");
         verify(chapterRepository, never()).save(any());
     }
 
@@ -188,7 +197,6 @@ class ChapterServiceImplTest {
                 .build();
         when(novelRepository.findByIdAndIsDeletedFalse(1)).thenReturn(Optional.of(novel));
         when(chapterRepository.findByIdAndNovelIdAndIsDeletedFalse(5, 1)).thenReturn(Optional.of(chapter));
-        when(chapterRepository.existsByNovelIdAndChapterNumberAndIdNot(1, 2, 5)).thenReturn(false);
         when(chapterRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         var result = chapterService.updateChapter(1, 5, updatedForm());
@@ -200,6 +208,30 @@ class ChapterServiceImplTest {
     }
 
     @Test
+    void updateChapterRejectsNumberUsedByAnotherActiveChapter() {
+        Novel novel = Novel.builder().id(1).isDeleted(false).build();
+        var chapter = com.tramtruyen.entity.Chapter.builder()
+                .id(5)
+                .novel(novel)
+                .chapterNumber(1)
+                .title("Old title")
+                .content("Old content")
+                .status("DRAFT")
+                .price(0)
+                .isDeleted(false)
+                .build();
+        when(novelRepository.findByIdAndIsDeletedFalse(1)).thenReturn(Optional.of(novel));
+        when(chapterRepository.findByIdAndNovelIdAndIsDeletedFalse(5, 1)).thenReturn(Optional.of(chapter));
+        when(chapterRepository.existsByNovelIdAndChapterNumberAndIsDeletedFalseAndIdNot(1, 2, 5))
+                .thenReturn(true);
+
+        assertThatThrownBy(() -> chapterService.updateChapter(1, 5, updatedForm()))
+                .isInstanceOf(DuplicateResourceException.class)
+                .hasMessage("Số chương đã tồn tại trong truyện này");
+        verify(chapterRepository, never()).save(any());
+    }
+
+    @Test
     void updateChapterCanBePublished() {
         Novel novel = Novel.builder().id(1).isDeleted(false).build();
         var chapter = com.tramtruyen.entity.Chapter.builder()
@@ -207,7 +239,6 @@ class ChapterServiceImplTest {
                 .content("Old content").status("DRAFT").price(0).isDeleted(false).build();
         when(chapterRepository.findByIdAndNovelIdAndIsDeletedFalse(5, 1)).thenReturn(Optional.of(chapter));
         when(novelRepository.findByIdAndIsDeletedFalse(1)).thenReturn(Optional.of(novel));
-        when(chapterRepository.existsByNovelIdAndChapterNumberAndIdNot(1, 2, 5)).thenReturn(false);
         when(chapterRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         var result = chapterService.updateChapter(1, 5, updatedForm(), ChapterSaveAction.PUBLISHED);
@@ -223,7 +254,6 @@ class ChapterServiceImplTest {
                 .content("Old content").status("DRAFT").price(0).isDeleted(false).build();
         when(chapterRepository.findByIdAndNovelIdAndIsDeletedFalse(5, 1)).thenReturn(Optional.of(chapter));
         when(novelRepository.findByIdAndIsDeletedFalse(1)).thenReturn(Optional.of(novel));
-        when(chapterRepository.existsByNovelIdAndChapterNumberAndIdNot(1, 2, 5)).thenReturn(false);
         when(chapterRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         ChapterForm chapterForm = updatedForm();
@@ -238,8 +268,6 @@ class ChapterServiceImplTest {
     void createChapterRejectsNegativePrice() {
         Novel novel = Novel.builder().id(1).isDeleted(false).build();
         when(novelRepository.findByIdAndIsDeletedFalse(1)).thenReturn(Optional.of(novel));
-        when(chapterRepository.existsByNovelIdAndChapterNumber(1, 1)).thenReturn(false);
-
         ChapterForm chapterForm = form();
         chapterForm.setPrice(-1);
 
@@ -267,7 +295,6 @@ class ChapterServiceImplTest {
     void createChapterSanitizesRichText() {
         Novel novel = Novel.builder().id(1).isDeleted(false).build();
         when(novelRepository.findByIdAndIsDeletedFalse(1)).thenReturn(Optional.of(novel));
-        when(chapterRepository.existsByNovelIdAndChapterNumber(1, 1)).thenReturn(false);
         when(chapterRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         ChapterForm chapterForm = form();

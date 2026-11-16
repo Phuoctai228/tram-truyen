@@ -122,7 +122,7 @@ public class StaffChapterController {
         } catch (DuplicateResourceException exception) {
             bindingResult.rejectValue("chapterNumber", "duplicate", exception.getMessage());
             return renderFormWithErrors(novelId, form, model, redirectAttributes,
-                    "Chỉnh sửa chương", "/staff/novels/" + novelId + "/chapters/" + chapterId);
+                            "Chỉnh sửa chương", "/staff/novels/" + novelId + "/chapters/" + chapterId);
         } catch (ResourceNotFoundException exception) {
             redirectAttributes.addFlashAttribute("errorMessage", exception.getMessage());
             return "redirect:/staff/novels/" + novelId + "/chapters";
