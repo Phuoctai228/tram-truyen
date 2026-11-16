@@ -23,6 +23,9 @@ public interface UserChapterActivityRepository extends JpaRepository<UserChapter
     Optional<UserChapterActivity> findFirstByUserAndChapter_NovelAndIsReadTrueOrderByReadAtDescChapter_ChapterNumberDesc(
             User user, Novel novel);
 
+    Optional<UserChapterActivity> findFirstByUserAndChapter_NovelAndReadAtIsNotNullOrderByReadAtDescChapter_ChapterNumberDesc(
+            User user, Novel novel);
+
     long countByUserAndChapter_NovelAndIsReadTrue(User user, Novel novel);
 
     Page<UserChapterActivity> findAllByUserAndIsReadTrueOrderByReadAtDesc(User user, Pageable pageable);

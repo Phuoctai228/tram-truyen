@@ -323,7 +323,8 @@ public class BookshelfServiceImpl implements BookshelfService {
 
         // Reading activity lookup
         Optional<UserChapterActivity> lastActivityOpt =
-                userChapterActivityRepository.findFirstByUserAndChapter_NovelAndIsReadTrueOrderByReadAtDescChapter_ChapterNumberDesc(user, novel);
+                userChapterActivityRepository.findFirstByUserAndChapter_NovelAndReadAtIsNotNullOrderByReadAtDescChapter_ChapterNumberDesc(user, novel)
+                        .or(() -> userChapterActivityRepository.findFirstByUserAndChapter_NovelAndIsReadTrueOrderByReadAtDescChapter_ChapterNumberDesc(user, novel));
         long readCount = userChapterActivityRepository.countByUserAndChapter_NovelAndIsReadTrue(user, novel);
 
         int currentChapterNumber = 0;
@@ -409,8 +410,11 @@ public class BookshelfServiceImpl implements BookshelfService {
             return Optional.empty();
         }
         return userChapterActivityRepository
-                .findFirstByUserAndChapter_NovelAndIsReadTrueOrderByReadAtDescChapter_ChapterNumberDesc(
+                .findFirstByUserAndChapter_NovelAndReadAtIsNotNullOrderByReadAtDescChapter_ChapterNumberDesc(
                         userOpt.get(), novelOpt.get())
+                .or(() -> userChapterActivityRepository
+                        .findFirstByUserAndChapter_NovelAndIsReadTrueOrderByReadAtDescChapter_ChapterNumberDesc(
+                                userOpt.get(), novelOpt.get()))
                 .map(UserChapterActivity::getChapter)
                 .filter(ch -> ch != null && !Boolean.TRUE.equals(ch.getIsDeleted()));
     }
