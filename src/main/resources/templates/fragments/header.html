@@ -34,7 +34,7 @@
                         class="material-symbols-outlined absolute left-3.5 text-outline pointer-events-none text-[20px]">search</span>
                     <input name="q" id="searchInput" th:value="${query}" autocomplete="off"
                         class="w-full pl-10 pr-4 py-2.5 rounded-full bg-surface-container-lowest border border-outline-variant/30 text-on-surface placeholder:text-outline font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-[#c08d41] focus:border-transparent shadow-sm transition-all"
-                        placeholder="Tìm kiếm truyện, tác giả, dịch giả..." type="text">
+                        placeholder="Tìm kiếm truyện, tác giả,..." type="text">
                 </form>
 
                 <!-- Search Suggestions Popup -->
@@ -87,7 +87,8 @@
                     <!-- Notification Bell Dropdown -->
                     <details th:with="headerNotif=${@headerNotificationService.getHeaderData(#authentication)}"
                         class="relative group" id="headerNotificationDropdown">
-                        <summary class="list-none cursor-pointer p-2 rounded-full hover:bg-surface-container text-on-surface transition-colors relative flex items-center justify-center focus:outline-none [&::-webkit-details-marker]:hidden"
+                        <summary
+                            class="list-none cursor-pointer p-2 rounded-full hover:bg-surface-container text-on-surface transition-colors relative flex items-center justify-center focus:outline-none [&::-webkit-details-marker]:hidden"
                             title="Thông báo">
                             <span class="material-symbols-outlined text-[24px]">notifications</span>
                             <span th:if="${headerNotif != null and headerNotif.unreadCount > 0}"
@@ -95,7 +96,8 @@
                                 th:title="${headerNotif.unreadCount + ' thông báo chưa đọc'}"></span>
                         </summary>
 
-                        <div class="absolute right-0 mt-2 w-80 sm:w-96 bg-surface rounded-2xl shadow-xl border border-outline-variant py-3 z-50 overflow-hidden">
+                        <div
+                            class="absolute right-0 mt-2 w-80 sm:w-96 bg-surface rounded-2xl shadow-xl border border-outline-variant py-3 z-50 overflow-hidden">
                             <!-- Dropdown Header -->
                             <div class="px-4 pb-2.5 border-b border-outline-variant flex items-center justify-between">
                                 <div class="flex items-center gap-2">
@@ -110,7 +112,8 @@
 
                             <!-- Notifications List -->
                             <div class="max-h-80 overflow-y-auto divide-y divide-outline-variant/40">
-                                <th:block th:if="${headerNotif != null and !#lists.isEmpty(headerNotif.recentNotifications)}">
+                                <th:block
+                                    th:if="${headerNotif != null and !#lists.isEmpty(headerNotif.recentNotifications)}">
                                     <a th:each="n : ${headerNotif.recentNotifications}"
                                         th:href="@{/user/notifications(tab=${n.targetTab}, selectedId=${n.id})}"
                                         class="block px-4 py-3 hover:bg-surface-container-low transition-colors group/item">
@@ -118,7 +121,8 @@
                                             <div class="flex items-center gap-1.5 min-w-0">
                                                 <span th:if="${!n.isSystem and !n.isRead}"
                                                     class="w-2 h-2 rounded-full bg-[#d97706] shrink-0"></span>
-                                                <span class="px-1.5 py-0.5 rounded text-[10px] font-medium bg-surface-container-high text-on-surface-variant shrink-0"
+                                                <span
+                                                    class="px-1.5 py-0.5 rounded text-[10px] font-medium bg-surface-container-high text-on-surface-variant shrink-0"
                                                     th:text="${n.statusBadge}">Hệ thống</span>
                                                 <span th:if="${n.referenceCode != null}"
                                                     class="text-[10px] text-outline shrink-0"
@@ -137,7 +141,8 @@
                                 <!-- Empty State -->
                                 <div th:if="${headerNotif == null or #lists.isEmpty(headerNotif.recentNotifications)}"
                                     class="px-4 py-8 text-center text-outline">
-                                    <span class="material-symbols-outlined text-[32px] text-outline-variant mb-1">notifications_off</span>
+                                    <span
+                                        class="material-symbols-outlined text-[32px] text-outline-variant mb-1">notifications_off</span>
                                     <p class="text-xs">Không có thông báo nào</p>
                                 </div>
                             </div>
@@ -190,7 +195,8 @@
                             </a>
                             <a th:href="@{/wallet}"
                                 class="block px-4 py-2 text-sm text-on-surface hover:bg-surface-container-low transition-colors flex items-center gap-2">
-                                <span class="material-symbols-outlined text-[18px]">account_balance_wallet</span> Ví Coin
+                                <span class="material-symbols-outlined text-[18px]">account_balance_wallet</span> Ví
+                                Coin
                             </a>
                             <a th:href="@{/user/checkin}"
                                 class="block px-4 py-2 text-sm text-on-surface hover:bg-surface-container-low transition-colors flex items-center gap-2">

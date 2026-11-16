@@ -30,8 +30,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-/** Default business implementation for Novel CMS operations. */
 import com.tramtruyen.entity.enums.NovelStatus;
 
 @Service
