@@ -4,6 +4,7 @@ import com.tramtruyen.dto.ChapterForm;
 import com.tramtruyen.dto.ChapterSaveAction;
 import com.tramtruyen.entity.Novel;
 import com.tramtruyen.entity.enums.ChapterStatus;
+import com.tramtruyen.exception.DuplicateResourceException;
 import com.tramtruyen.exception.ResourceNotFoundException;
 import com.tramtruyen.repository.ChapterRepository;
 import com.tramtruyen.repository.NovelRepository;
@@ -160,12 +161,25 @@ class ChapterServiceImplTest {
     void createChapterAllowsNumberUsedBySoftDeletedChapter() {
         Novel novel = Novel.builder().id(1).isDeleted(false).build();
         when(novelRepository.findByIdAndIsDeletedFalse(1)).thenReturn(Optional.of(novel));
+        when(chapterRepository.existsByNovelIdAndChapterNumberAndIsDeletedFalse(1, 1)).thenReturn(false);
         when(chapterRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         var result = chapterService.createChapter(1, form());
 
         assertThat(result.getChapterNumber()).isEqualTo(1);
         verify(chapterRepository).save(any());
+    }
+
+    @Test
+    void createChapterRejectsNumberUsedByActiveChapter() {
+        Novel novel = Novel.builder().id(1).isDeleted(false).build();
+        when(novelRepository.findByIdAndIsDeletedFalse(1)).thenReturn(Optional.of(novel));
+        when(chapterRepository.existsByNovelIdAndChapterNumberAndIsDeletedFalse(1, 1)).thenReturn(true);
+
+        assertThatThrownBy(() -> chapterService.createChapter(1, form()))
+                .isInstanceOf(DuplicateResourceException.class)
+                .hasMessage("Số chương đã tồn tại trong truyện này");
+        verify(chapterRepository, never()).save(any());
     }
 
     @Test
@@ -191,6 +205,30 @@ class ChapterServiceImplTest {
         assertThat(result.getTitle()).isEqualTo("Updated title");
         assertThat(result.getStatus()).isEqualTo("DRAFT");
         assertThat(result.getPrice()).isZero();
+    }
+
+    @Test
+    void updateChapterRejectsNumberUsedByAnotherActiveChapter() {
+        Novel novel = Novel.builder().id(1).isDeleted(false).build();
+        var chapter = com.tramtruyen.entity.Chapter.builder()
+                .id(5)
+                .novel(novel)
+                .chapterNumber(1)
+                .title("Old title")
+                .content("Old content")
+                .status("DRAFT")
+                .price(0)
+                .isDeleted(false)
+                .build();
+        when(novelRepository.findByIdAndIsDeletedFalse(1)).thenReturn(Optional.of(novel));
+        when(chapterRepository.findByIdAndNovelIdAndIsDeletedFalse(5, 1)).thenReturn(Optional.of(chapter));
+        when(chapterRepository.existsByNovelIdAndChapterNumberAndIsDeletedFalseAndIdNot(1, 2, 5))
+                .thenReturn(true);
+
+        assertThatThrownBy(() -> chapterService.updateChapter(1, 5, updatedForm()))
+                .isInstanceOf(DuplicateResourceException.class)
+                .hasMessage("Số chương đã tồn tại trong truyện này");
+        verify(chapterRepository, never()).save(any());
     }
 
     @Test
