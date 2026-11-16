@@ -89,7 +89,8 @@ public class ChapterServiceImpl implements ChapterService {
     @Transactional
     public Chapter createChapter(Integer novelId, ChapterForm form, ChapterSaveAction action) {
         Novel novel = findActiveNovel(novelId);
-        if (chapterRepository.existsByNovelIdAndChapterNumber(novelId, form.getChapterNumber())) {
+        if (chapterRepository.existsByNovelIdAndChapterNumberAndIsDeletedFalse(
+                novelId, form.getChapterNumber())) {
             throw new DuplicateResourceException("Số chương đã tồn tại trong truyện này");
         }
 
@@ -133,7 +134,7 @@ public class ChapterServiceImpl implements ChapterService {
         findActiveNovel(novelId);
         Chapter chapter = findActiveChapter(novelId, chapterId);
         String oldStatus = chapter.getStatus();
-        if (chapterRepository.existsByNovelIdAndChapterNumberAndIdNot(
+        if (chapterRepository.existsByNovelIdAndChapterNumberAndIsDeletedFalseAndIdNot(
                 novelId, form.getChapterNumber(), chapterId)) {
             throw new DuplicateResourceException("Số chương đã tồn tại trong truyện này");
         }

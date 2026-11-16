@@ -9,9 +9,10 @@ import java.util.Optional;
 /** Persistence access for chapters. */
 public interface ChapterRepository extends JpaRepository<Chapter, Integer> {
 
-    boolean existsByNovelIdAndChapterNumber(Integer novelId, Integer chapterNumber);
+    boolean existsByNovelIdAndChapterNumberAndIsDeletedFalse(Integer novelId, Integer chapterNumber);
 
-    boolean existsByNovelIdAndChapterNumberAndIdNot(Integer novelId, Integer chapterNumber, Integer id);
+    boolean existsByNovelIdAndChapterNumberAndIsDeletedFalseAndIdNot(
+            Integer novelId, Integer chapterNumber, Integer id);
 
     Optional<Chapter> findByIdAndNovelIdAndIsDeletedFalse(Integer id, Integer novelId);
 
