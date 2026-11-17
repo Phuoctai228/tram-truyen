@@ -7,10 +7,13 @@ import com.tramtruyen.entity.UserChapterActivity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Persistence access for user chapter activities and reading progress.
@@ -44,6 +47,15 @@ public interface UserChapterActivityRepository extends JpaRepository<UserChapter
     Optional<UserChapterActivity> findByUserAndChapterIdAndIsUnlockedTrue(User user, Integer chapterId);
 
     boolean existsByUserAndChapterIdAndIsUnlockedTrue(User user, Integer chapterId);
+
+    @Query(
+        "SELECT a.chapter.id FROM UserChapterActivity a " +
+        "WHERE a.user.id = :userId AND a.chapter.novel.id = :novelId AND a.isUnlocked = true"
+    )
+    Set<Integer> findUnlockedChapterIdsByUserAndNovel(
+        @Param("userId") Integer userId,
+        @Param("novelId") Integer novelId
+    );
 
     @org.springframework.data.jpa.repository.Query(
         "SELECT a.chapter.novel.id AS novelId, COUNT(a.id) AS readCount " +

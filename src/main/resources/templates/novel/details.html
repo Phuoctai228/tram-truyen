@@ -200,8 +200,17 @@
                 
                 <div class="mt-12 pt-6 border-t border-outline-variant/30 flex justify-between items-center">
                   <span class="font-bold text-on-surface">Chương mới</span>
-                  <a th:if="${not #lists.isEmpty(chapters)}" th:href="@{/truyen/{slug}/chuong-{chapterNumber}(slug=${novel.slug}, chapterNumber=${chapters[#lists.size(chapters)-1].chapterNumber})}" class="text-tertiary hover:text-primary transition-colors text-sm font-medium truncate max-w-sm">
-                    Chương [[${chapters[#lists.size(chapters)-1].chapterNumber}]]: [[${chapters[#lists.size(chapters)-1].title}]]
+                  <a th:if="${not #lists.isEmpty(chapters)}" 
+                     th:with="latestChap=${chapters[#lists.size(chapters)-1]}"
+                     th:href="@{/truyen/{slug}/chuong-{chapterNumber}(slug=${novel.slug}, chapterNumber=${latestChap.chapterNumber})}" 
+                     class="text-tertiary hover:text-primary transition-colors text-sm font-medium truncate max-w-sm inline-flex items-center gap-1.5">
+                    <span class="truncate">Chương [[${latestChap.chapterNumber}]]: [[${latestChap.title}]]</span>
+                    <span th:if="${latestChap.price != null and latestChap.price > 0 and unlockedChapterIds != null and unlockedChapterIds.contains(latestChap.id)}"
+                          class="material-symbols-outlined text-[18px] text-[#2e7d32] shrink-0"
+                          title="Chương VIP (Đã mua)">lock_open</span>
+                    <span th:if="${latestChap.price != null and latestChap.price > 0 and (unlockedChapterIds == null or !unlockedChapterIds.contains(latestChap.id))}"
+                          class="material-symbols-outlined text-[18px] text-[#d97706] shrink-0"
+                          title="Chương VIP (Có phí)">lock</span>
                   </a>
                   <span class="text-xs text-outline ml-4">Vừa cập nhật</span>
                 </div>
@@ -218,10 +227,16 @@
                 
                 <div id="chaptersContainer" class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">
                   <a th:each="chap : ${chapters}" th:href="@{/truyen/{slug}/chuong-{chapterNumber}(slug=${novel.slug}, chapterNumber=${chap.chapterNumber})}" 
-                     class="flex items-center py-2.5 border-b border-outline-variant/20 hover:text-primary group transition-colors">
-                    <span class="text-sm font-medium text-on-surface-variant group-hover:text-primary truncate" th:text="'Chương ' + ${chap.chapterNumber} + ': ' + ${chap.title}">
+                     class="flex items-center justify-between py-2.5 border-b border-outline-variant/20 hover:text-primary group transition-colors">
+                    <span class="text-sm font-medium text-on-surface-variant group-hover:text-primary truncate min-w-0 pr-2" th:text="'Chương ' + ${chap.chapterNumber} + ': ' + ${chap.title}">
                       Chương 1
                     </span>
+                    <span th:if="${chap.price != null and chap.price > 0 and unlockedChapterIds != null and unlockedChapterIds.contains(chap.id)}"
+                          class="material-symbols-outlined text-[18px] text-[#2e7d32] shrink-0 ml-2 group-hover:scale-110 transition-transform"
+                          title="Chương VIP (Đã mua)">lock_open</span>
+                    <span th:if="${chap.price != null and chap.price > 0 and (unlockedChapterIds == null or !unlockedChapterIds.contains(chap.id))}"
+                          class="material-symbols-outlined text-[18px] text-[#d97706] shrink-0 ml-2 group-hover:scale-110 transition-transform"
+                          title="Chương VIP (Có phí)">lock</span>
                   </a>
                   <div th:if="${#lists.isEmpty(chapters)}" class="col-span-2 text-center text-tertiary py-8">
                     Truyện chưa có chương nào được xuất bản.

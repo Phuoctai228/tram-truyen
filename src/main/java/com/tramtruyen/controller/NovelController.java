@@ -30,6 +30,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -146,12 +147,14 @@ public class NovelController {
         boolean hasReadAnyChapter = false;
         com.tramtruyen.entity.NovelRating userRating = null;
         Chapter lastReadChapter = null;
+        Set<Integer> unlockedChapterIds = Collections.emptySet();
         if (authentication != null && authentication.isAuthenticated()
                 && !(authentication instanceof org.springframework.security.authentication.AnonymousAuthenticationToken)) {
             inBookshelf = bookshelfService.isNovelInBookshelf(authentication.getName(), novel.getId());
             hasReadAnyChapter = bookshelfService.hasReadAnyChapter(authentication.getName(), novel.getId());
             userRating = ratingService.getUserRating(authentication.getName(), novel.getId());
             lastReadChapter = bookshelfService.getLastReadChapter(authentication.getName(), novel.getId()).orElse(null);
+            unlockedChapterIds = chapterUnlockService.getUnlockedChapterIds(authentication.getName(), novel.getId());
         }
 
         long favoriteCount = bookshelfService.countNovelFavorites(novel.getId());
@@ -163,6 +166,7 @@ public class NovelController {
         model.addAttribute("chapters", chapters);
         model.addAttribute("inBookshelf", inBookshelf);
         model.addAttribute("lastReadChapter", lastReadChapter);
+        model.addAttribute("unlockedChapterIds", unlockedChapterIds);
         model.addAttribute("hasReadAnyChapter", hasReadAnyChapter);
         model.addAttribute("favoriteCount", favoriteCount);
         model.addAttribute("sameAuthorNovels", sameAuthorNovels);
@@ -354,9 +358,11 @@ public class NovelController {
         // Reading activity tracking
         boolean isChapterRead = false;
         boolean inBookshelf = false;
+        Set<Integer> unlockedChapterIds = Collections.emptySet();
         if (isLoggedIn) {
             inBookshelf = bookshelfService.isNovelInBookshelf(authentication.getName(), novel.getId());
             isChapterRead = bookshelfService.isChapterRead(authentication.getName(), chapter.getId());
+            unlockedChapterIds = chapterUnlockService.getUnlockedChapterIds(authentication.getName(), novel.getId());
         }
 
         // Delegate content security, access resolution and top-up recommendations to service
@@ -397,6 +403,7 @@ public class NovelController {
         model.addAttribute("isLatestChapter", isLatestChapter);
         model.addAttribute("inBookshelf", inBookshelf);
         model.addAttribute("isChapterRead", isChapterRead);
+        model.addAttribute("unlockedChapterIds", unlockedChapterIds);
 
         // VIP Unlock & Access attributes for reading view and modals
         model.addAttribute("chapterAccess", access);

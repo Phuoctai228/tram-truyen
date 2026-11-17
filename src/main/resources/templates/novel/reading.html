@@ -320,10 +320,18 @@
                 1</span>
               <span class="text-sm truncate block" th:text="${c.title}">Tiêu đề chương</span>
             </div>
-            <span th:if="${c.chapterNumber == chapter.chapterNumber}"
-              class="text-[10px] uppercase tracking-wider font-semibold text-primary bg-primary-container/20 px-2 py-0.5 rounded-full flex-shrink-0">
-              Đang đọc
-            </span>
+            <div class="flex items-center gap-1.5 shrink-0">
+              <span th:if="${c.price != null and c.price > 0 and unlockedChapterIds != null and unlockedChapterIds.contains(c.id)}"
+                class="material-symbols-outlined text-[18px] text-[#2e7d32]"
+                title="Chương VIP (Đã mua)">lock_open</span>
+              <span th:if="${c.price != null and c.price > 0 and (unlockedChapterIds == null or !unlockedChapterIds.contains(c.id))}"
+                class="material-symbols-outlined text-[18px] text-[#d97706]"
+                title="Chương VIP (Có phí)">lock</span>
+              <span th:if="${c.chapterNumber == chapter.chapterNumber}"
+                class="text-[10px] uppercase tracking-wider font-semibold text-primary bg-primary-container/20 px-2 py-0.5 rounded-full flex-shrink-0">
+                Đang đọc
+              </span>
+            </div>
           </a>
         </div>
       </aside>
