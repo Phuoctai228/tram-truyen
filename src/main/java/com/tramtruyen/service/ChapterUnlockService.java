@@ -17,6 +17,15 @@ public interface ChapterUnlockService {
     boolean isChapterUnlocked(String email, Integer chapterId);
 
     /**
+     * Retrieves the set of chapter IDs that the user has unlocked for a specific novel.
+     *
+     * @param email user email
+     * @param novelId novel ID
+     * @return set of unlocked chapter IDs
+     */
+    java.util.Set<Integer> getUnlockedChapterIds(String email, Integer novelId);
+
+    /**
      * Performs transactional chapter unlock by deducting coins and granting permanent access.
      *
      * @param email user email

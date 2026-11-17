@@ -22,6 +22,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -227,5 +228,51 @@ class ChapterUnlockServiceImplTest {
 
         assertThatThrownBy(() -> chapterUnlockService.unlockChapter("user@example.com", 999, false))
                 .isInstanceOf(ResourceNotFoundException.class);
+    }
+
+    @Test
+    void getUnlockedChapterIdsReturnsEmptySetForGuestOrInvalidInput() {
+        assertThat(chapterUnlockService.getUnlockedChapterIds(null, 1)).isEmpty();
+        assertThat(chapterUnlockService.getUnlockedChapterIds("", 1)).isEmpty();
+        assertThat(chapterUnlockService.getUnlockedChapterIds("user@example.com", null)).isEmpty();
+
+        when(userRepository.findByEmail("notfound@example.com")).thenReturn(Optional.empty());
+        assertThat(chapterUnlockService.getUnlockedChapterIds("notfound@example.com", 1)).isEmpty();
+    }
+
+    @Test
+    void getUnlockedChapterIdsReturnsAllChaptersForPrivilegedUser() {
+        User staff = User.builder()
+                .id(1)
+                .email("staff@example.com")
+                .roles(Set.of(Role.builder().name("ROLE_ADMIN").build()))
+                .build();
+        Chapter c1 = Chapter.builder().id(101).chapterNumber(1).build();
+        Chapter c2 = Chapter.builder().id(102).chapterNumber(2).build();
+
+        when(userRepository.findByEmail("staff@example.com")).thenReturn(Optional.of(staff));
+        when(chapterRepository.findAllByNovelIdAndIsDeletedFalseOrderByChapterNumberAsc(1))
+                .thenReturn(List.of(c1, c2));
+
+        Set<Integer> unlockedIds = chapterUnlockService.getUnlockedChapterIds("staff@example.com", 1);
+
+        assertThat(unlockedIds).containsExactlyInAnyOrder(101, 102);
+    }
+
+    @Test
+    void getUnlockedChapterIdsReturnsUserUnlockedIdsForRegularUser() {
+        User user = User.builder()
+                .id(2)
+                .email("reader@example.com")
+                .roles(Set.of(Role.builder().name("ROLE_USER").build()))
+                .build();
+
+        when(userRepository.findByEmail("reader@example.com")).thenReturn(Optional.of(user));
+        when(userChapterActivityRepository.findUnlockedChapterIdsByUserAndNovel(2, 1))
+                .thenReturn(Set.of(101));
+
+        Set<Integer> unlockedIds = chapterUnlockService.getUnlockedChapterIds("reader@example.com", 1);
+
+        assertThat(unlockedIds).containsExactly(101);
     }
 }
