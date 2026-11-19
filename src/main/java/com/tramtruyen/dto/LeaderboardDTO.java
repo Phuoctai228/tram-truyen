@@ -24,5 +24,6 @@ public class LeaderboardDTO {
     private LeaderboardItemDTO top2;
     private LeaderboardItemDTO top3;
     private List<LeaderboardItemDTO> restItems;
+    private List<LeaderboardItemDTO> items;
     private int totalCount;
 }
