@@ -20,10 +20,6 @@ public class LeaderboardDTO {
     private String currentTimeframe;
     private Integer currentCategoryId;
     private List<Category> categories;
-    private LeaderboardItemDTO top1;
-    private LeaderboardItemDTO top2;
-    private LeaderboardItemDTO top3;
-    private List<LeaderboardItemDTO> restItems;
     private List<LeaderboardItemDTO> items;
     private int totalCount;
 }
