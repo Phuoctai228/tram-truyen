@@ -8,6 +8,9 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDateTime;
 
 /** Request data for creating a chapter. */
 @Getter
@@ -29,4 +32,7 @@ public class ChapterForm {
     @NotNull(message = "Giá Coin không được để trống")
     @PositiveOrZero(message = "Giá Coin phải lớn hơn hoặc bằng 0")
     private Integer price = 0;
+
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime autoUnlockAt;
 }
