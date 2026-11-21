@@ -285,7 +285,7 @@ public class BookshelfServiceImpl implements BookshelfService {
         try {
             User user = getUserByEmail(email);
             Novel novel = getNovelById(novelId);
-            return userChapterActivityRepository.countByUserAndChapter_NovelAndIsReadTrue(user, novel) > 0;
+            return userChapterActivityRepository.countByUserAndChapter_NovelAndReadAtIsNotNull(user, novel) > 0;
         } catch (Exception e) {
             return false;
         }
