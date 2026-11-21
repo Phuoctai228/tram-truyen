@@ -40,7 +40,7 @@ public class RatingServiceImpl implements RatingService {
         Novel novel = novelRepository.findByIdAndIsDeletedFalse(novelId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy truyện"));
 
-        long readCount = userChapterActivityRepository.countByUserAndChapter_NovelAndIsReadTrue(user, novel);
+        long readCount = userChapterActivityRepository.countByUserAndChapter_NovelAndReadAtIsNotNull(user, novel);
         if (readCount <= 0) {
             throw new IllegalArgumentException("Bạn cần đọc ít nhất 1 chương của bộ truyện này trước khi gửi đánh giá!");
         }

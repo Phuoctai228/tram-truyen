@@ -47,7 +47,8 @@
 
                     <!-- Slide Carousel Container -->
                     <div id="heroSliderContainer" class="relative z-10 w-full overflow-hidden">
-                        <div id="heroTrack" class="flex w-full items-stretch transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] will-change-transform">
+                        <div id="heroTrack"
+                            class="flex w-full items-stretch transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] will-change-transform">
                             <div th:each="heroNovel, iterStat : ${heroNovels}"
                                 class="hero-slide w-full shrink-0 p-8 lg:p-10 flex flex-col md:flex-row items-center gap-8 lg:gap-12"
                                 th:data-slide-index="${iterStat.index}">
@@ -57,7 +58,8 @@
                                         class="w-48 lg:w-56 aspect-[3/4] rounded-xl overflow-hidden shadow-[0_12px_28px_rgba(43,23,0,0.18)] transition-transform duration-300 group-hover:scale-[1.02]">
                                         <img class="w-full h-full object-cover"
                                             th:src="${heroNovel.coverUrl != null ? heroNovel.coverUrl : '/images/default-cover.jpg'}"
-                                            onerror="this.onerror=null;this.src='/images/default-cover.jpg';" alt="Cover">
+                                            onerror="this.onerror=null;this.src='/images/default-cover.jpg';"
+                                            alt="Cover">
                                     </div>
                                     <span
                                         class="absolute top-3 left-3 bg-secondary text-on-secondary px-2.5 py-1 rounded-md font-label-sm text-label-sm shadow-sm font-bold flex items-center gap-1"
@@ -87,15 +89,18 @@
                                             th:text="${heroNovel.title}">
                                             Title
                                         </h1>
-                                        <p class="font-label-lg text-label-lg text-secondary mb-4 flex items-center gap-2">
+                                        <p
+                                            class="font-label-lg text-label-lg text-secondary mb-4 flex items-center gap-2">
                                             <span class="material-symbols-outlined text-[18px]">edit_note</span>
                                             Tác giả: <span class="font-bold" th:text="${heroNovel.author}">Author</span>
                                         </p>
                                         <!-- Metrics -->
-                                        <div class="flex flex-wrap items-center gap-3.5 mb-3 text-on-surface-variant font-label-md text-label-md">
+                                        <div
+                                            class="flex flex-wrap items-center gap-3.5 mb-3 text-on-surface-variant font-label-md text-label-md">
                                             <!-- Rating -->
                                             <div class="flex items-center gap-1 text-primary">
-                                                <span class="material-symbols-outlined text-[18px] icon-fill">star</span>
+                                                <span
+                                                    class="material-symbols-outlined text-[18px] icon-fill">star</span>
                                                 <span class="font-bold"
                                                     th:text="${heroNovel.averageRating != null ? heroNovel.averageRating : '0.0'}"></span>
                                             </div>
@@ -103,19 +108,23 @@
                                             <!-- Chapter Count -->
                                             <div class="flex items-center gap-1.5 font-body-md text-body-md">
                                                 <span class="material-symbols-outlined text-[18px]">menu_book</span>
-                                                <span th:text="${(heroNovel.chapterCount != null ? heroNovel.chapterCount : 0) + ' chương'}"></span>
+                                                <span
+                                                    th:text="${(heroNovel.chapterCount != null ? heroNovel.chapterCount : 0) + ' chương'}"></span>
                                             </div>
                                             <span class="text-outline-variant">•</span>
                                             <!-- Views -->
                                             <div class="flex items-center gap-1.5 font-body-md text-body-md">
                                                 <span class="material-symbols-outlined text-[18px]">visibility</span>
-                                                <span th:text="${(heroNovel.views != null ? #numbers.formatInteger(heroNovel.views, 1, 'POINT') : '0') + ' lượt đọc'}"></span>
+                                                <span
+                                                    th:text="${(heroNovel.views != null ? #numbers.formatInteger(heroNovel.views, 1, 'POINT') : '0') + ' lượt đọc'}"></span>
                                             </div>
                                             <span class="text-outline-variant">•</span>
                                             <!-- Favorites / Bookshelf -->
                                             <div class="flex items-center gap-1.5 font-body-md text-body-md">
-                                                <span class="material-symbols-outlined text-[18px] text-primary">bookmark</span>
-                                                <span th:text="${(heroNovel.favoriteCount != null ? #numbers.formatInteger(heroNovel.favoriteCount, 1, 'POINT') : '0') + ' lưu tủ'}"></span>
+                                                <span
+                                                    class="material-symbols-outlined text-[18px] text-primary">bookmark</span>
+                                                <span
+                                                    th:text="${(heroNovel.favoriteCount != null ? #numbers.formatInteger(heroNovel.favoriteCount, 1, 'POINT') : '0') + ' lưu tủ'}"></span>
                                             </div>
                                         </div>
 
@@ -157,10 +166,10 @@
                     </button>
 
                     <!-- Dots Indicator & Counter -->
-                    <div class="absolute bottom-4 right-8 lg:right-12 z-20 flex items-center gap-2 bg-surface/75 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-outline-variant/30 shadow-sm" id="heroDotsContainer">
+                    <div class="absolute bottom-4 right-8 lg:right-12 z-20 flex items-center gap-2 bg-surface/75 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-outline-variant/30 shadow-sm"
+                        id="heroDotsContainer">
                         <button th:each="heroNovel, iterStat : ${heroNovels}" type="button"
-                            th:data-slide="${iterStat.index}"
-                            onclick="goToHeroSlide(this.getAttribute('data-slide'))"
+                            th:data-slide="${iterStat.index}" onclick="goToHeroSlide(this.getAttribute('data-slide'))"
                             th:class="${iterStat.first ? 'hero-dot w-6 h-2 rounded-full bg-primary transition-all duration-300' : 'hero-dot w-2 h-2 rounded-full bg-outline-variant/70 hover:bg-primary/50 transition-all duration-300'}"
                             th:aria-label="${'Chuyển đến truyện ' + iterStat.count}">
                         </button>
@@ -237,7 +246,8 @@
 
                             <!-- 2 Latest Chapters List (reduced to 2 to keep card compact) -->
                             <div class="mt-auto pt-2 border-t border-outline-variant/20 flex flex-col gap-1">
-                                <th:block th:if="${novel.latestChapters != null and !#lists.isEmpty(novel.latestChapters)}">
+                                <th:block
+                                    th:if="${novel.latestChapters != null and !#lists.isEmpty(novel.latestChapters)}">
                                     <div th:each="chap, chapStat : ${novel.latestChapters}"
                                         th:if="${chapStat.index < 2}"
                                         class="group/chap flex items-center justify-between gap-1 text-[11px] py-0.5 px-1 rounded hover:bg-surface-container-low transition-colors">
@@ -339,7 +349,8 @@
 
                             <!-- 2 Latest Chapters List -->
                             <div class="mt-auto pt-2 border-t border-outline-variant/20 flex flex-col gap-1">
-                                <th:block th:if="${novel.latestChapters != null and !#lists.isEmpty(novel.latestChapters)}">
+                                <th:block
+                                    th:if="${novel.latestChapters != null and !#lists.isEmpty(novel.latestChapters)}">
                                     <div th:each="chap, chapStat : ${novel.latestChapters}"
                                         th:if="${chapStat.index < 2}"
                                         class="group/chap flex items-center justify-between gap-1 text-[11px] py-0.5 px-1 rounded hover:bg-surface-container-low transition-colors">
@@ -376,8 +387,11 @@
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-3">
                             <div class="w-2.5 h-6 rounded-full bg-emerald-600"></div>
-                            <h2 class="font-headline-lg text-headline-lg text-on-surface font-bold tracking-tight">Truyện mới đăng</h2>
-                            <span class="hidden sm:inline-flex px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/60 font-label-sm text-label-sm font-semibold">Tác phẩm mới</span>
+                            <h2 class="font-headline-lg text-headline-lg text-on-surface font-bold tracking-tight">
+                                Truyện mới đăng</h2>
+                            <span
+                                class="hidden sm:inline-flex px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/60 font-label-sm text-label-sm font-semibold">Tác
+                                phẩm mới</span>
                         </div>
                         <a class="inline-flex items-center gap-1 font-label-lg text-label-lg text-primary hover:text-on-primary-container transition-colors group"
                             th:href="@{/search(sort='createdAt,desc')}">
@@ -414,7 +428,8 @@
                                             th:text="${novel.favoriteCount != null ? #numbers.formatInteger(novel.favoriteCount, 1, 'POINT') : '0'}">0</span>
                                     </span>
                                 </div>
-                                <div class="absolute top-2 left-2 px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-600 text-white select-none shadow-sm flex items-center gap-0.5">
+                                <div
+                                    class="absolute top-2 left-2 px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-600 text-white select-none shadow-sm flex items-center gap-0.5">
                                     <span class="material-symbols-outlined text-[11px]">fiber_new</span>
                                     MỚI
                                 </div>
@@ -437,7 +452,8 @@
 
                             <!-- 2 Latest Chapters List -->
                             <div class="mt-auto pt-2 border-t border-outline-variant/20 flex flex-col gap-1">
-                                <th:block th:if="${novel.latestChapters != null and !#lists.isEmpty(novel.latestChapters)}">
+                                <th:block
+                                    th:if="${novel.latestChapters != null and !#lists.isEmpty(novel.latestChapters)}">
                                     <div th:each="chap, chapStat : ${novel.latestChapters}"
                                         th:if="${chapStat.index < 2}"
                                         class="group/chap flex items-center justify-between gap-1 text-[11px] py-0.5 px-1 rounded hover:bg-surface-container-low transition-colors">
@@ -476,7 +492,8 @@
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-1">
                             <div class="flex items-center gap-3">
                                 <div class="w-2.5 h-6 rounded-full bg-primary"></div>
-                                <h2 id="rankingHeaderTitle" class="font-headline-lg text-headline-lg text-on-surface font-bold tracking-tight">
+                                <h2 id="rankingHeaderTitle"
+                                    class="font-headline-lg text-headline-lg text-on-surface font-bold tracking-tight">
                                     Truyện hot tuần này</h2>
                                 <span id="rankingHeaderBadge"
                                     class="px-2.5 py-0.5 rounded-full bg-primary-fixed-dim/40 text-on-primary-container font-label-sm text-label-sm font-semibold">Top
@@ -484,7 +501,8 @@
                             </div>
 
                             <!-- Ranking Period Tabs (Tuần / Ngày / Tháng / Toàn bộ) -->
-                            <div class="flex items-center p-1 rounded-xl bg-surface-container border border-outline-variant/30 text-label-sm font-semibold select-none">
+                            <div
+                                class="flex items-center p-1 rounded-xl bg-surface-container border border-outline-variant/30 text-label-sm font-semibold select-none">
                                 <button type="button" onclick="switchRankingPeriod('week', this)"
                                     class="ranking-tab-btn px-3 py-1 rounded-lg bg-surface text-primary shadow-xs transition-all font-bold">
                                     Top Tuần
@@ -510,11 +528,14 @@
                                 class="flex items-center gap-4 p-3.5 rounded-xl bg-surface-container-lowest shadow-[0_3px_14px_rgba(107,91,75,0.05)] hover:bg-surface-container-high transition-all">
                                 <!-- Top Rank Number Badges: Gold for #1, Silver for #2, Bronze for #3, Surface for #4+ -->
                                 <div th:if="${iterStat.count == 1}"
-                                    class="w-9 h-9 rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 text-white flex items-center justify-center font-headline-sm text-headline-sm font-black shadow-md shadow-amber-500/20 shrink-0">1</div>
+                                    class="w-9 h-9 rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 text-white flex items-center justify-center font-headline-sm text-headline-sm font-black shadow-md shadow-amber-500/20 shrink-0">
+                                    1</div>
                                 <div th:if="${iterStat.count == 2}"
-                                    class="w-9 h-9 rounded-lg bg-gradient-to-br from-slate-300 to-slate-500 text-white flex items-center justify-center font-headline-sm text-headline-sm font-bold shadow-sm shrink-0">2</div>
+                                    class="w-9 h-9 rounded-lg bg-gradient-to-br from-slate-300 to-slate-500 text-white flex items-center justify-center font-headline-sm text-headline-sm font-bold shadow-sm shrink-0">
+                                    2</div>
                                 <div th:if="${iterStat.count == 3}"
-                                    class="w-9 h-9 rounded-lg bg-gradient-to-br from-amber-700 to-amber-900 text-white flex items-center justify-center font-headline-sm text-headline-sm font-bold shadow-sm shrink-0">3</div>
+                                    class="w-9 h-9 rounded-lg bg-gradient-to-br from-amber-700 to-amber-900 text-white flex items-center justify-center font-headline-sm text-headline-sm font-bold shadow-sm shrink-0">
+                                    3</div>
                                 <div th:if="${iterStat.count > 3}"
                                     class="w-9 h-9 rounded-lg bg-surface-container text-on-surface-variant flex items-center justify-center font-headline-sm text-headline-sm font-semibold shrink-0"
                                     th:text="${iterStat.count}">4</div>
@@ -532,8 +553,10 @@
                                     </div>
                                     <div class="flex items-center gap-3 text-label-sm text-on-surface-variant truncate">
                                         <span th:text="${novel.author}">Author</span>
-                                        <span class="text-outline-variant" th:if="${novel.averageRating != null and novel.averageRating > 0}">•</span>
-                                        <span class="flex items-center gap-0.5 text-primary" th:if="${novel.averageRating != null and novel.averageRating > 0}">
+                                        <span class="text-outline-variant"
+                                            th:if="${novel.averageRating != null and novel.averageRating > 0}">•</span>
+                                        <span class="flex items-center gap-0.5 text-primary"
+                                            th:if="${novel.averageRating != null and novel.averageRating > 0}">
                                             <span class="material-symbols-outlined text-[13px] icon-fill">star</span>
                                             <span class="font-bold text-[11px]" th:text="${novel.averageRating}"></span>
                                         </span>
@@ -612,7 +635,7 @@
         function showHeroSlide(index) {
             if (totalSlides <= 1) return;
             currentSlideIndex = (index + totalSlides) % totalSlides;
-            
+
             if (heroTrack) {
                 heroTrack.style.transform = `translate3d(-${currentSlideIndex * 100}%, 0, 0)`;
             }
@@ -737,7 +760,6 @@
         }
 
         // Ranking Period Switcher Handler
-        const rankingCache = {};
         function switchRankingPeriod(period, btn) {
             // Update active styling
             document.querySelectorAll('.ranking-tab-btn').forEach(b => {
@@ -764,11 +786,6 @@
             const container = document.getElementById('rankingListContainer');
             if (!container) return;
 
-            if (rankingCache[period]) {
-                renderRankingList(rankingCache[period]);
-                return;
-            }
-
             // Show subtle opacity while loading
             container.style.opacity = '0.5';
 
@@ -776,7 +793,6 @@
                 .then(res => res.json())
                 .then(items => {
                     container.style.opacity = '1';
-                    rankingCache[period] = items;
                     renderRankingList(items);
                 })
                 .catch(err => {
@@ -787,10 +803,20 @@
 
         function renderRankingList(items) {
             const container = document.getElementById('rankingListContainer');
-            if (!container || !Array.isArray(items) || items.length === 0) return;
+            if (!container) return;
+
+            if (!Array.isArray(items) || items.length === 0) {
+                container.innerHTML = `
+                <div class="text-center py-12 px-4 rounded-xl bg-surface-container-lowest border border-dashed border-outline-variant/40">
+                    <span class="material-symbols-outlined text-[40px] text-primary/40 mb-2">workspace_premium</span>
+                    <p class="text-label-lg font-bold text-on-surface">Chưa có dữ liệu xếp hạng</p>
+                    <p class="text-label-sm text-on-surface-variant">Chưa có lượt đọc nào được ghi nhận trong khoảng thời gian này.</p>
+                </div>`;
+                return;
+            }
 
             container.innerHTML = items.map((item, index) => {
-                const rank = index + 1;
+                const rank = item.rank || (index + 1);
                 let rankBadgeHtml;
                 if (rank === 1) {
                     rankBadgeHtml = '<div class="w-9 h-9 rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 text-white flex items-center justify-center font-headline-sm text-headline-sm font-black shadow-md shadow-amber-500/20 shrink-0">1</div>';
@@ -800,22 +826,6 @@
                     rankBadgeHtml = '<div class="w-9 h-9 rounded-lg bg-gradient-to-br from-amber-700 to-amber-900 text-white flex items-center justify-center font-headline-sm text-headline-sm font-bold shadow-sm shrink-0">3</div>';
                 } else {
                     rankBadgeHtml = `<div class="w-9 h-9 rounded-lg bg-surface-container text-on-surface-variant flex items-center justify-center font-headline-sm text-headline-sm font-semibold shrink-0">${rank}</div>`;
-                }
-
-                // Trend indicator
-                let trendBadgeHtml = '';
-                if (item.trendType === 'UP') {
-                    trendBadgeHtml = `<span class="inline-flex items-center text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1 rounded ml-1.5" title="Tăng hạng">
-                        <span class="material-symbols-outlined text-[12px]">arrow_upward</span>${item.trendText}
-                    </span>`;
-                } else if (item.trendType === 'DOWN') {
-                    trendBadgeHtml = `<span class="inline-flex items-center text-[10px] font-bold text-rose-500 bg-rose-50 px-1 rounded ml-1.5" title="Giảm hạng">
-                        <span class="material-symbols-outlined text-[12px]">arrow_downward</span>${item.trendText}
-                    </span>`;
-                } else {
-                    trendBadgeHtml = `<span class="inline-flex items-center text-[10px] font-bold text-outline-variant px-1 rounded ml-1.5" title="Không đổi">
-                        •
-                    </span>`;
                 }
 
                 const ratingHtml = (item.averageRating && item.averageRating > 0)
@@ -840,7 +850,6 @@
                             <a href="/truyen/${encodeURIComponent(item.slug)}" class="font-headline-sm text-headline-sm text-on-surface font-bold truncate hover:text-primary transition-colors">
                                 ${escapeHtml(item.title)}
                             </a>
-                            ${trendBadgeHtml}
                         </div>
                         <div class="flex items-center gap-3 text-label-sm text-on-surface-variant truncate">
                             <span>${escapeHtml(item.author || 'Đang cập nhật')}</span>
