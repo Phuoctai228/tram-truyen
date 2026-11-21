@@ -27,13 +27,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * Production implementation of ChapterAccessService coordinating access policy and preview creation.
+ * Service handling chapter access checks and reading view data preparation.
  */
 @Service
 @RequiredArgsConstructor
 public class ChapterAccessServiceImpl implements ChapterAccessService {
 
-    private static final int DEFAULT_PACKAGE_SUGGESTION_LIMIT = 2;
+    private static final int DEFAULT_PACKAGE_SUGGESTION_LIMIT = 2; // Maximum suggested coin packages
     private static final DateTimeFormatter WATERMARK_DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     private final UserRepository userRepository;
@@ -42,6 +42,9 @@ public class ChapterAccessServiceImpl implements ChapterAccessService {
     private final ChapterPreviewBuilder chapterPreviewBuilder;
     private final CoinPackageService coinPackageService;
 
+    /**
+     * Checks reading permissions and prepares chapter display data.
+     */
     @Override
     @Transactional(readOnly = true)
     public ChapterAccessDTO checkAccess(Novel novel, Chapter chapter, Authentication authentication) {
@@ -54,12 +57,13 @@ public class ChapterAccessServiceImpl implements ChapterAccessService {
         String userFingerprint;
         String nowStr = LocalDateTime.now().format(WATERMARK_DATE_FORMAT);
 
+        // Fetch account details if logged in
         if (loggedIn) {
             String email = authentication.getName();
             Collection<String> authorities = authentication.getAuthorities().stream()
                     .map(GrantedAuthority::getAuthority)
                     .collect(Collectors.toSet());
-            privileged = chapterAccessPolicy.isPrivileged(authorities);
+            privileged = chapterAccessPolicy.isPrivileged(authorities); // Admin/Staff privileges
 
             Optional<User> userOpt = userRepository.findByEmail(email);
             if (userOpt.isPresent()) {
@@ -68,6 +72,7 @@ public class ChapterAccessServiceImpl implements ChapterAccessService {
                 alreadyUnlocked = userChapterActivityRepository.findByUserAndChapter(user, chapter)
                         .map(act -> Boolean.TRUE.equals(act.getIsUnlocked()))
                         .orElse(false);
+                
                 String displayName = user.getFullName() != null && !user.getFullName().isBlank()
                         ? user.getFullName()
                         : email;
@@ -82,6 +87,7 @@ public class ChapterAccessServiceImpl implements ChapterAccessService {
             userFingerprint = "GUEST";
         }
 
+        // Resolve access status based on policy
         ChapterAccessStatus status = chapterAccessPolicy.resolve(
                 chapter, loggedIn, privileged, alreadyUnlocked, walletBalance);
         boolean isPaid = chapterAccessPolicy.isPaid(chapter);
@@ -91,6 +97,7 @@ public class ChapterAccessServiceImpl implements ChapterAccessService {
         boolean canAfford = walletBalance >= price;
         boolean readable = status.isReadable();
 
+        // Load content paragraphs only when access is granted
         List<String> paragraphs;
         if (readable) {
             paragraphs = chapterPreviewBuilder.splitParagraphs(chapter.getContent());
@@ -98,6 +105,7 @@ public class ChapterAccessServiceImpl implements ChapterAccessService {
             paragraphs = List.of();
         }
 
+        // Suggest coin packages if balance is insufficient
         List<CoinPackageDTO> suggestedPackages = List.of();
         if (status == ChapterAccessStatus.INSUFFICIENT_BALANCE && shortfall > 0) {
             suggestedPackages = coinPackageService.suggestForShortfall(shortfall, DEFAULT_PACKAGE_SUGGESTION_LIMIT);
@@ -120,6 +128,7 @@ public class ChapterAccessServiceImpl implements ChapterAccessService {
                 .build();
     }
 
+    // Check valid authentication (excludes AnonymousToken)
     private boolean isAuthenticated(Authentication authentication) {
         return authentication != null
                 && authentication.isAuthenticated()

@@ -25,21 +25,20 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
-/**
- * Production implementation of DailyCheckinService matching RDS 7-day reward roadmap (image38.png).
- */
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class DailyCheckinServiceImpl implements DailyCheckinService {
 
-    // Rewards matching RDS image38.png: +5, +5, +10, +10, +15, +15, +30 Coin
     private static final int[] REWARD_SCHEDULE = {5, 5, 10, 10, 15, 15, 30};
 
     private final UserRepository userRepository;
     private final UserDailyCheckinRepository userDailyCheckinRepository;
     private final WalletService walletService;
 
+    /**
+     * Retrieves user check-in status and 7-day roadmap progress.
+     */
     @Override
     @Transactional(readOnly = true)
     public DailyCheckinStatusDTO getCheckinStatus(String email) {
@@ -55,27 +54,27 @@ public class DailyCheckinServiceImpl implements DailyCheckinService {
         int streakCount = 0;
         int targetStreakForToday = 1;
 
+        // Calculate continuous streak
         if (isCheckedInToday) {
             streakCount = todayCheckinOpt.get().getStreakCount();
             targetStreakForToday = streakCount;
         } else if (latestCheckinOpt.isPresent()) {
             UserDailyCheckin latest = latestCheckinOpt.get();
             if (latest.getCheckinDate().equals(today.minusDays(1))) {
-                // Streak is maintained from yesterday
+                // Maintained from yesterday
                 streakCount = latest.getStreakCount();
                 targetStreakForToday = streakCount + 1;
             } else {
-                // Streak broken
+                // Streak broken -> reset to day 1
                 streakCount = 0;
                 targetStreakForToday = 1;
             }
         }
 
-        // Map to 1..7 cycle
+        // Map to 1..7 cycle day
         int currentCycleDay = ((targetStreakForToday - 1) % 7) + 1;
         int todayReward = REWARD_SCHEDULE[currentCycleDay - 1];
 
-        // Format dates & weeks
         WeekFields weekFields = WeekFields.of(Locale.getDefault());
         int weekNumber = today.get(weekFields.weekOfWeekBasedYear());
         int year = today.getYear();
@@ -86,7 +85,6 @@ public class DailyCheckinServiceImpl implements DailyCheckinService {
         Long totalRewardCoins = userDailyCheckinRepository.sumRewardCoinByUser(user);
         int totalRewards = totalRewardCoins != null ? totalRewardCoins.intValue() : 0;
 
-        // Build 7-day roadmap
         List<DayRoadmapItemDTO> roadmap = buildRoadmap(currentCycleDay, isCheckedInToday);
 
         return DailyCheckinStatusDTO.builder()
@@ -104,6 +102,9 @@ public class DailyCheckinServiceImpl implements DailyCheckinService {
                 .build();
     }
 
+    /**
+     * Executes daily check-in and credits reward coins to user wallet.
+     */
     @Override
     @Transactional
     public DailyCheckinResultDTO performCheckin(String email) {
@@ -112,11 +113,12 @@ public class DailyCheckinServiceImpl implements DailyCheckinService {
 
         LocalDate today = LocalDate.now();
 
+        // Prevent duplicate check-in on the same day
         if (userDailyCheckinRepository.existsByUserAndCheckinDate(user, today)) {
             throw new DuplicateResourceException("Bạn đã điểm danh hôm nay rồi! Hãy quay lại vào ngày mai.");
         }
 
-        // Determine new streak count
+        // Calculate new streak count
         Optional<UserDailyCheckin> latestCheckinOpt = userDailyCheckinRepository.findTopByUserOrderByCheckinDateDesc(user);
         int newStreak = 1;
         if (latestCheckinOpt.isPresent()) {
@@ -129,7 +131,7 @@ public class DailyCheckinServiceImpl implements DailyCheckinService {
         int cycleDay = ((newStreak - 1) % 7) + 1;
         int rewardCoins = REWARD_SCHEDULE[cycleDay - 1];
 
-        // Persist checkin record
+        // Save check-in record
         UserDailyCheckin checkin = UserDailyCheckin.builder()
                 .user(user)
                 .checkinDate(today)
@@ -138,7 +140,7 @@ public class DailyCheckinServiceImpl implements DailyCheckinService {
                 .build();
         userDailyCheckinRepository.save(checkin);
 
-        // Credit coins to wallet ledger
+        // Credit coins to wallet
         String description = "Điểm danh hàng ngày (Chuỗi " + newStreak + " ngày, mốc +" + rewardCoins + " Coin)";
         walletService.addCoins(user, rewardCoins, TransactionType.GIFT_COIN.name(), checkin.getId(), description);
 
@@ -155,6 +157,7 @@ public class DailyCheckinServiceImpl implements DailyCheckinService {
                 .build();
     }
 
+    // Builds 7-day roadmap representation
     private List<DayRoadmapItemDTO> buildRoadmap(int currentCycleDay, boolean isCheckedInToday) {
         List<DayRoadmapItemDTO> items = new ArrayList<>(7);
         for (int i = 1; i <= 7; i++) {
