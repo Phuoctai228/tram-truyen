@@ -27,11 +27,7 @@ public class LeaderboardItemDTO {
     private String status;
     private Integer views;
     private String formattedViews;
-    private Long favoriteCount;
-    private String formattedFavorites;
     private BigDecimal averageRating;
     private Integer chapterCount;
     private String primaryCategory;
-    private String trendText; // "+2", "0", "-1"
-    private String trendType; // "UP", "STABLE", "DOWN"
 }
