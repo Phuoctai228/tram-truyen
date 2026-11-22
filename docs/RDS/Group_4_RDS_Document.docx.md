@@ -2361,7 +2361,7 @@ Related use cases:
 | \*\*\*Category Navigation & Filter Bar\*\*\* |  |  |
 | Category Icon & Rank | Icon & Text Badge | Displays category icon and rank index (e.g., \#01, \#02) |
 | Category Title & Badge | Hyperlink & Badge | Category name and optional status badge (e.g., Thịnh hành nhất) |
-| Category Stats | Text Label | Shows total novel count and total views (e.g., "2.840 tác phẩm • 16.5M lượt đọc") |
+| Category Stats | Text Label | Shows total novel count and total views (e.g., "2.840 tác phẩm • 16.5M lượt xem") |
 | Category Description | Text Label | Short overview description of the category theme |
 | Sub-Category Tags | Chip List / Badges | List of sub-tags/sub-categories (e.g., Ngọt sủng, Ma pháp, Tu chân) |
 | \*\*\*Category Navigation & Filter Bar\*\*\* |  |  |
