@@ -75,7 +75,8 @@
             <div class="flex flex-wrap gap-2">
               <label class="cursor-pointer" th:each="cat : ${allCategories}">
                 <input type="checkbox" name="categories" th:value="${cat.id}"
-                  th:checked="${selectedCategories != null and selectedCategories.contains(cat.id)}" class="peer hidden">
+                  th:checked="${selectedCategories != null and selectedCategories.contains(cat.id)}"
+                  class="peer hidden">
                 <span
                   class="px-3 py-1.5 rounded-lg bg-[#f5eae0] text-[#4d3b2a] text-[13px] font-medium peer-checked:bg-[#c08d41] peer-checked:text-white transition-colors border border-transparent peer-checked:border-[#b5803a] flex items-center gap-1"><span
                     th:text="${cat.name}">Tiên hiệp</span> <span
@@ -128,22 +129,20 @@
             <h4 class="font-bold text-[14px] text-[#231A11] mb-3">Phân loại truy cập</h4>
             <div class="grid grid-cols-3 gap-2">
               <label class="cursor-pointer">
-                <input type="radio" name="vip" value=""
-                  th:checked="${selectedVip == null or selectedVip == ''}" class="peer hidden">
+                <input type="radio" name="vip" value="" th:checked="${selectedVip == null or selectedVip == ''}"
+                  class="peer hidden">
                 <div
                   class="py-1.5 rounded-lg bg-[#f5eae0] text-[#8c7a68] text-[13px] font-medium peer-checked:bg-[#c08d41] peer-checked:text-white peer-checked:font-bold text-center transition-colors">
                   Tất cả</div>
               </label>
               <label class="cursor-pointer">
-                <input type="radio" name="vip" value="VIP"
-                  th:checked="${selectedVip == 'VIP'}" class="peer hidden">
+                <input type="radio" name="vip" value="VIP" th:checked="${selectedVip == 'VIP'}" class="peer hidden">
                 <div
                   class="py-1.5 rounded-lg bg-[#f5eae0] text-[#8c7a68] text-[13px] font-medium peer-checked:bg-[#a64032] peer-checked:text-white peer-checked:font-bold text-center transition-colors">
                   VIP</div>
               </label>
               <label class="cursor-pointer">
-                <input type="radio" name="vip" value="FREE"
-                  th:checked="${selectedVip == 'FREE'}" class="peer hidden">
+                <input type="radio" name="vip" value="FREE" th:checked="${selectedVip == 'FREE'}" class="peer hidden">
                 <div
                   class="py-1.5 rounded-lg bg-[#f5eae0] text-[#8c7a68] text-[13px] font-medium peer-checked:bg-[#c08d41] peer-checked:text-white peer-checked:font-bold text-center transition-colors">
                   Miễn phí</div>
@@ -158,37 +157,29 @@
             <h4 class="font-bold text-[14px] text-[#231A11] mb-3">Số lượng chương</h4>
             <div class="grid grid-cols-2 gap-2 mt-4">
               <label class="cursor-pointer">
-                <input type="checkbox" name="chapterRange" value="lt5"
-                  th:checked="${selectedChapterRange == 'lt5'}"
-                  onclick="toggleSingleChapterRange(this)"
-                  class="peer hidden">
+                <input type="checkbox" name="chapterRange" value="lt5" th:checked="${selectedChapterRange == 'lt5'}"
+                  onclick="toggleSingleChapterRange(this)" class="peer hidden">
                 <div
                   class="py-2 rounded-lg bg-[#f5eae0] text-[#4d3b2a] text-[13px] font-medium text-center transition-colors border border-transparent peer-checked:bg-[#c08d41] peer-checked:text-white peer-checked:font-bold peer-checked:border-[#b5803a] shadow-sm select-none">
                   &lt; 5 ch.</div>
               </label>
               <label class="cursor-pointer">
-                <input type="checkbox" name="chapterRange" value="5-10"
-                  th:checked="${selectedChapterRange == '5-10'}"
-                  onclick="toggleSingleChapterRange(this)"
-                  class="peer hidden">
+                <input type="checkbox" name="chapterRange" value="5-10" th:checked="${selectedChapterRange == '5-10'}"
+                  onclick="toggleSingleChapterRange(this)" class="peer hidden">
                 <div
                   class="py-2 rounded-lg bg-[#f5eae0] text-[#4d3b2a] text-[13px] font-medium text-center transition-colors border border-transparent peer-checked:bg-[#c08d41] peer-checked:text-white peer-checked:font-bold peer-checked:border-[#b5803a] shadow-sm select-none">
                   5 - 10 ch.</div>
               </label>
               <label class="cursor-pointer">
-                <input type="checkbox" name="chapterRange" value="10-50"
-                  th:checked="${selectedChapterRange == '10-50'}"
-                  onclick="toggleSingleChapterRange(this)"
-                  class="peer hidden">
+                <input type="checkbox" name="chapterRange" value="10-50" th:checked="${selectedChapterRange == '10-50'}"
+                  onclick="toggleSingleChapterRange(this)" class="peer hidden">
                 <div
                   class="py-2 rounded-lg bg-[#f5eae0] text-[#4d3b2a] text-[13px] font-medium text-center transition-colors border border-transparent peer-checked:bg-[#c08d41] peer-checked:text-white peer-checked:font-bold peer-checked:border-[#b5803a] shadow-sm select-none">
                   10 - 50 ch.</div>
               </label>
               <label class="cursor-pointer">
-                <input type="checkbox" name="chapterRange" value="gt50"
-                  th:checked="${selectedChapterRange == 'gt50'}"
-                  onclick="toggleSingleChapterRange(this)"
-                  class="peer hidden">
+                <input type="checkbox" name="chapterRange" value="gt50" th:checked="${selectedChapterRange == 'gt50'}"
+                  onclick="toggleSingleChapterRange(this)" class="peer hidden">
                 <div
                   class="py-2 rounded-lg bg-[#f5eae0] text-[#4d3b2a] text-[13px] font-medium text-center transition-colors border border-transparent peer-checked:bg-[#c08d41] peer-checked:text-white peer-checked:font-bold peer-checked:border-[#b5803a] shadow-sm select-none">
                   &gt; 50 ch.</div>
@@ -202,10 +193,9 @@
           <div>
             <div class="flex items-center justify-between mb-2">
               <h4 class="font-bold text-[14px] text-[#231A11]">Đánh giá sao</h4>
-              <span id="ratingValBadge" 
+              <span id="ratingValBadge"
                 class="text-[12px] font-bold text-[#c08d41] bg-[#f5eae0] px-2.5 py-0.5 rounded-full border border-[#ebd9c7] cursor-pointer hover:bg-[#ebd9c7] transition-colors"
-                title="Bấm để đặt lại về 0.0 (Tất cả)"
-                onclick="resetRatingSlider()"
+                title="Bấm để đặt lại về 0.0 (Tất cả)" onclick="resetRatingSlider()"
                 th:text="${selectedMinRating != null and selectedMinRating > 0 ? 'Từ ' + selectedMinRating + ' ★' : 'Tất cả (0.0)'}">
                 Tất cả (0.0)
               </span>
@@ -254,7 +244,8 @@
               <span th:if="${selectedVip == 'VIP'}"
                 class="px-2.5 py-1 bg-[#a64032]/10 text-[#a64032] text-[12px] font-semibold rounded flex items-center gap-1">VIP</span>
               <span th:if="${selectedVip == 'FREE'}"
-                class="px-2.5 py-1 bg-[#f5eae0] text-[#6b5b4b] text-[12px] font-semibold rounded flex items-center gap-1">Miễn phí</span>
+                class="px-2.5 py-1 bg-[#f5eae0] text-[#6b5b4b] text-[12px] font-semibold rounded flex items-center gap-1">Miễn
+                phí</span>
               <span th:if="${selectedStatus == 'ONGOING'}"
                 class="px-2.5 py-1 bg-[#f5eae0] text-[#6b5b4b] text-[12px] font-semibold rounded flex items-center gap-1">Đang
                 ra</span>
@@ -283,7 +274,7 @@
               class="bg-[#faf8f5] border border-[#f5eae0] rounded-lg px-3 py-1.5 text-[13px] font-bold text-[#231A11] focus:outline-none focus:border-[#c08d41]">
               <option value="updatedAt,desc" th:selected="${currentSort == 'updatedAt,desc'}">Mới cập nhật</option>
               <option value="createdAt,desc" th:selected="${currentSort == 'createdAt,desc'}">Mới đăng gần đây</option>
-              <option value="views,desc" th:selected="${currentSort == 'views,desc'}">Lượt đọc nhiều nhất</option>
+              <option value="views,desc" th:selected="${currentSort == 'views,desc'}">Lượt xem nhiều nhất</option>
               <option value="averageRating,desc" th:selected="${currentSort == 'averageRating,desc'}">Đánh giá cao nhất
               </option>
             </select>
@@ -298,7 +289,8 @@
         </div>
 
         <!-- Results Grid (Classic Home Card Style) -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4" th:if="${!novels.isEmpty()}">
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
+          th:if="${!novels.isEmpty()}">
           <article th:each="novel : ${novels}"
             class="group flex flex-col p-3 rounded-xl bg-surface-container-lowest border border-outline-variant/30 shadow-[0_2px_12px_rgba(107,91,75,0.05)] hover:shadow-[0_8px_24px_rgba(107,91,75,0.12)] transition-all">
             <!-- Cover with Views & Chapter count overlay -->
@@ -306,14 +298,14 @@
               class="relative w-full aspect-[3/4] rounded-lg overflow-hidden mb-2.5 bg-surface-container block group-hover:opacity-95">
               <img class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 th:src="${novel.coverUrl != null ? novel.coverUrl : '/images/default-cover.jpg'}"
-                onerror="this.onerror=null;this.src='/images/default-cover.jpg';"
-                th:alt="${novel.title}">
+                onerror="this.onerror=null;this.src='/images/default-cover.jpg';" th:alt="${novel.title}">
               <!-- Overlay: Views & Chapters at bottom of cover -->
               <div
                 class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/45 to-transparent pt-6 pb-1.5 px-2 flex items-center justify-between text-white font-label-sm text-[11px] leading-tight select-none">
                 <span class="flex items-center gap-1 opacity-90 truncate" title="Lượt xem">
                   <span class="material-symbols-outlined text-[13px]">visibility</span>
-                  <span th:text="${novel.views != null ? #numbers.formatInteger(novel.views, 1, 'POINT') : '0'}">0</span>
+                  <span
+                    th:text="${novel.views != null ? #numbers.formatInteger(novel.views, 1, 'POINT') : '0'}">0</span>
                 </span>
                 <span class="flex items-center gap-1 opacity-90 truncate ml-1.5" title="Số chương">
                   <span class="material-symbols-outlined text-[13px] text-primary-fixed">menu_book</span>
@@ -348,8 +340,10 @@
 
             <!-- Card Footer: Status & Read link -->
             <div class="mt-auto pt-2 border-t border-outline-variant/20 flex items-center justify-between text-[11px]">
-              <span class="text-secondary font-medium" th:text="${novel.status == 'COMPLETED' ? 'Đã hoàn thành' : 'Đang ra'}">Đang ra</span>
-              <a th:href="@{'/truyen/' + ${novel.slug}}" class="text-primary font-bold hover:underline flex items-center gap-0.5">
+              <span class="text-secondary font-medium"
+                th:text="${novel.status == 'COMPLETED' ? 'Đã hoàn thành' : 'Đang ra'}">Đang ra</span>
+              <a th:href="@{'/truyen/' + ${novel.slug}}"
+                class="text-primary font-bold hover:underline flex items-center gap-0.5">
                 <span>Đọc ngay</span>
                 <span class="material-symbols-outlined text-[12px]">chevron_right</span>
               </a>
