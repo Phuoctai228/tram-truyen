@@ -53,55 +53,15 @@ public class LeaderboardServiceImpl implements LeaderboardService {
         }
 
         List<NovelRankData> rankedNovels = resolveRankedNovels(categoryId, activeTimeframe, allTimeNovels);
-
         List<Category> allCategories = categoryRepository.findAll();
-
-        List<LeaderboardItemDTO> allItems = new ArrayList<>();
-        int currentRank = 1;
-        for (int i = 0; i < rankedNovels.size(); i++) {
-            NovelRankData data = rankedNovels.get(i);
-            Novel n = data.novel;
-            
-            // Xử lý đồng hạng: nếu cùng lượt đọc và cùng điểm đánh giá thì giữ nguyên hạng
-            if (i > 0) {
-                NovelRankData prev = rankedNovels.get(i - 1);
-                boolean sameViews = (data.views == prev.views);
-                BigDecimal currRating = (n.getAverageRating() != null ? n.getAverageRating() : BigDecimal.ZERO);
-                BigDecimal prevRating = (prev.novel.getAverageRating() != null ? prev.novel.getAverageRating() : BigDecimal.ZERO);
-                boolean sameRating = (currRating.compareTo(prevRating) == 0);
-
-                if (!sameViews || !sameRating) {
-                    currentRank = i + 1;
-                }
-            } else {
-                currentRank = 1;
-            }
-
-            allItems.add(toItemDTO(n, currentRank, activeTimeframe, data.views, 0L));
-        }
-
-        LeaderboardItemDTO top1 = !allItems.isEmpty() ? allItems.get(0) : null;
-        LeaderboardItemDTO top2 = allItems.size() > 1 ? allItems.get(1) : null;
-        LeaderboardItemDTO top3 = allItems.size() > 2 ? allItems.get(2) : null;
-
-        List<LeaderboardItemDTO> restItems = new ArrayList<>();
-        if (allItems.size() > 3) {
-            int endIndex = Math.min(allItems.size(), 10);
-            restItems = allItems.subList(3, endIndex);
-        }
-
-        List<LeaderboardItemDTO> displayItems = allItems.size() > 10 ? allItems.subList(0, 10) : allItems;
+        List<LeaderboardItemDTO> items = buildLeaderboardItems(rankedNovels, 10);
 
         return LeaderboardDTO.builder()
                 .currentTimeframe(activeTimeframe)
                 .currentCategoryId(categoryId)
                 .categories(allCategories)
-                .top1(top1)
-                .top2(top2)
-                .top3(top3)
-                .restItems(restItems)
-                .items(displayItems)
-                .totalCount(allItems.size())
+                .items(items)
+                .totalCount(items.size())
                 .build();
     }
 
@@ -112,7 +72,13 @@ public class LeaderboardServiceImpl implements LeaderboardService {
         List<Novel> allTimeNovels = publicNovels(novelRepository.findAllByIsDeletedFalseOrderByViewsDesc());
 
         List<NovelRankData> rankedNovels = resolveRankedNovels(null, activeTimeframe, allTimeNovels);
+        return buildLeaderboardItems(rankedNovels, limit);
+    }
 
+    /**
+     * Gán thứ hạng chính xác theo quy tắc đồng hạng (cùng views và cùng averageRating)
+     */
+    private List<LeaderboardItemDTO> buildLeaderboardItems(List<NovelRankData> rankedNovels, int limit) {
         List<LeaderboardItemDTO> result = new ArrayList<>();
         int max = limit > 0 ? Math.min(rankedNovels.size(), limit) : rankedNovels.size();
         int currentRank = 1;
@@ -121,7 +87,6 @@ public class LeaderboardServiceImpl implements LeaderboardService {
             NovelRankData data = rankedNovels.get(i);
             Novel n = data.novel;
 
-            // Xử lý đồng hạng: nếu cùng lượt đọc và cùng điểm đánh giá thì giữ nguyên hạng
             if (i > 0) {
                 NovelRankData prev = rankedNovels.get(i - 1);
                 boolean sameViews = (data.views == prev.views);
@@ -136,7 +101,7 @@ public class LeaderboardServiceImpl implements LeaderboardService {
                 currentRank = 1;
             }
 
-            result.add(toItemDTO(n, currentRank, activeTimeframe, data.views, 0L));
+            result.add(toItemDTO(n, currentRank, data.views));
         }
         return result;
     }
@@ -240,7 +205,7 @@ public class LeaderboardServiceImpl implements LeaderboardService {
         return list;
     }
 
-    private LeaderboardItemDTO toItemDTO(Novel novel, int currentRank, String timeframe, int displayViews, long favCount) {
+    private LeaderboardItemDTO toItemDTO(Novel novel, int currentRank, int displayViews) {
 
         String primaryCategory = "Truyện chữ";
         if (novel.getCategories() != null && !novel.getCategories().isEmpty()) {
@@ -259,13 +224,9 @@ public class LeaderboardServiceImpl implements LeaderboardService {
                 .status(novel.getStatus())
                 .views(displayViews)
                 .formattedViews(formatCount(displayViews))
-                .favoriteCount(favCount)
-                .formattedFavorites(formatCount(favCount))
                 .averageRating(novel.getAverageRating())
                 .chapterCount(novel.getChapterCount() != null ? novel.getChapterCount() : 0)
                 .primaryCategory(primaryCategory)
-                .trendText("•")
-                .trendType("STABLE")
                 .build();
     }
 

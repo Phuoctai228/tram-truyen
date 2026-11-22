@@ -760,7 +760,6 @@
         }
 
         // Ranking Period Switcher Handler
-        const rankingCache = {};
         function switchRankingPeriod(period, btn) {
             // Update active styling
             document.querySelectorAll('.ranking-tab-btn').forEach(b => {
@@ -787,11 +786,6 @@
             const container = document.getElementById('rankingListContainer');
             if (!container) return;
 
-            if (rankingCache[period]) {
-                renderRankingList(rankingCache[period]);
-                return;
-            }
-
             // Show subtle opacity while loading
             container.style.opacity = '0.5';
 
@@ -799,7 +793,6 @@
                 .then(res => res.json())
                 .then(items => {
                     container.style.opacity = '1';
-                    rankingCache[period] = items;
                     renderRankingList(items);
                 })
                 .catch(err => {
