@@ -1,25 +1,34 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title th:text="${novel.title} + ' - Trạm Truyện'">Trạm Truyện</title>
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    rel="stylesheet">
   <link href="https://fonts.googleapis.com" rel="preconnect">
   <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Lora:ital,wght@0,400;0,700;1,400&amp;display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Lora:ital,wght@0,400;0,700;1,400&amp;display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" th:href="@{/css/novel/novel-ui.css}">
   <script src="https://cdn.tailwindcss.com"></script>
   <script th:src="@{/js/novel/tailwind-config.js}"></script>
 </head>
+
 <body class="bg-background font-body-md text-on-surface antialiased">
   <div th:replace="~{fragments/header :: main-header}"></div>
 
   <main class="w-full pt-16 bg-background min-h-screen">
     <div class="flex flex-col w-full">
       <div class="relative w-full overflow-hidden">
-        <div class="absolute -top-32 -left-20 w-96 h-96 rounded-full bg-primary-fixed/20 blur-3xl pointer-events-none"></div>
-        <div class="absolute top-48 -right-24 w-[32rem] h-[32rem] rounded-full bg-surface-container/60 blur-3xl pointer-events-none"></div>
+        <div class="absolute -top-32 -left-20 w-96 h-96 rounded-full bg-primary-fixed/20 blur-3xl pointer-events-none">
+        </div>
+        <div
+          class="absolute top-48 -right-24 w-[32rem] h-[32rem] rounded-full bg-surface-container/60 blur-3xl pointer-events-none">
+        </div>
         <div class="max-w-7xl mx-auto px-6 lg:px-12 py-8 lg:py-12">
           <nav class="flex items-center gap-2 font-label-md text-label-md text-tertiary mb-8">
             <a class="hover:text-primary transition-colors flex items-center gap-1" th:href="@{/}">
@@ -29,81 +38,93 @@
             <span class="text-on-surface font-semibold truncate max-w-xs" th:text="${novel.title}">Title</span>
           </nav>
 
-          
+
           <div class="flex flex-col lg:flex-row gap-8 items-start mb-12">
             <!-- Cover -->
             <div class="w-full lg:w-64 flex-shrink-0">
               <div class="relative rounded-2xl overflow-hidden shadow-lg aspect-[3/4] w-full">
-                <img class="w-full h-full object-cover" th:src="${novel.coverUrl != null ? novel.coverUrl : '/images/default-cover.jpg'}" onerror="this.onerror=null;this.src='/images/default-cover.jpg';">
+                <img class="w-full h-full object-cover"
+                  th:src="${novel.coverUrl != null ? novel.coverUrl : '/images/default-cover.jpg'}"
+                  onerror="this.onerror=null;this.src='/images/default-cover.jpg';">
               </div>
             </div>
-            
+
             <!-- Details -->
             <div class="flex-1 flex flex-col gap-5">
-              <h1 class="font-headline-xl text-3xl md:text-4xl text-on-surface tracking-tight font-bold" th:text="${novel.title}">
+              <h1 class="font-headline-xl text-3xl md:text-4xl text-on-surface tracking-tight font-bold"
+                th:text="${novel.title}">
                 Title
               </h1>
-              
+
               <div class="flex flex-wrap items-center gap-2">
-                <span class="px-3 py-1 rounded-full border border-outline-variant text-body-sm font-medium text-tertiary" th:text="${novel.author}">Tác giả</span>
-                <span class="px-3 py-1 rounded-full border border-[#2d6a4f] text-[#2d6a4f] text-body-sm font-medium" th:text="${novel.status == 'COMPLETED' ? 'Đã hoàn thành' : 'Đang ra'}">Status</span>
+                <span
+                  class="px-3 py-1 rounded-full border border-outline-variant text-body-sm font-medium text-tertiary"
+                  th:text="${novel.author}">Tác giả</span>
+                <span class="px-3 py-1 rounded-full border border-[#2d6a4f] text-[#2d6a4f] text-body-sm font-medium"
+                  th:text="${novel.status == 'COMPLETED' ? 'Đã hoàn thành' : 'Đang ra'}">Status</span>
               </div>
-              
+
               <!-- Categories: riêng một hàng nằm giữa tác giả và số chương -->
-              <div th:if="${novel.categories != null and !#sets.isEmpty(novel.categories)}" class="flex flex-wrap items-center gap-2">
-                <a th:each="cat : ${novel.categories}"
-                   th:href="@{'/the-loai/' + ${cat.slug}}"
-                   class="px-3 py-1 rounded-full border border-[#ebd9c7] bg-[#faf8f5] hover:bg-[#c08d41] hover:text-white hover:border-[#c08d41] text-[#7d6b59] text-body-sm font-semibold transition-all shadow-sm flex items-center gap-1">
+              <div th:if="${novel.categories != null and !#sets.isEmpty(novel.categories)}"
+                class="flex flex-wrap items-center gap-2">
+                <a th:each="cat : ${novel.categories}" th:href="@{'/the-loai/' + ${cat.slug}}"
+                  class="px-3 py-1 rounded-full border border-[#ebd9c7] bg-[#faf8f5] hover:bg-[#c08d41] hover:text-white hover:border-[#c08d41] text-[#7d6b59] text-body-sm font-semibold transition-all shadow-sm flex items-center gap-1">
                   <span class="material-symbols-outlined text-[14px]">local_offer</span>
                   <span th:text="${cat.name}">Thể loại</span>
                 </a>
               </div>
-              
+
               <div class="flex items-center gap-8 text-center my-2">
                 <div>
                   <div class="font-bold text-xl text-on-surface" th:text="${#lists.size(chapters)}">0</div>
                   <div class="text-xs text-outline font-medium uppercase tracking-wider mt-1">Chương</div>
                 </div>
                 <div>
-                  <div class="font-bold text-xl text-on-surface" th:text="${novel.views != null ? novel.views : 0}">0</div>
-                  <div class="text-xs text-outline font-medium uppercase tracking-wider mt-1">Lượt đọc</div>
+                  <div class="font-bold text-xl text-on-surface" th:text="${novel.views != null ? novel.views : 0}">0
+                  </div>
+                  <div class="text-xs text-outline font-medium uppercase tracking-wider mt-1">Lượt xem</div>
                 </div>
                 <div>
-                  <div class="font-bold text-xl text-on-surface" th:text="${favoriteCount != null ? favoriteCount : 0}">0</div>
+                  <div class="font-bold text-xl text-on-surface" th:text="${favoriteCount != null ? favoriteCount : 0}">
+                    0</div>
                   <div class="text-xs text-outline font-medium uppercase tracking-wider mt-1">Lượt lưu</div>
                 </div>
               </div>
-              
+
               <div class="flex items-center gap-2 mb-2">
                 <div class="flex text-yellow-400 text-[18px]">
                   <th:block th:each="i : ${#numbers.sequence(1, 5)}">
                     <span th:if="${novel.averageRating != null and novel.averageRating.doubleValue() >= i}"
-                          class="material-symbols-outlined icon-fill">star</span>
-                    <span th:if="${novel.averageRating != null and novel.averageRating.doubleValue() >= (i - 0.5) and novel.averageRating.doubleValue() < i}"
-                          class="material-symbols-outlined icon-half">star_half</span>
+                      class="material-symbols-outlined icon-fill">star</span>
+                    <span
+                      th:if="${novel.averageRating != null and novel.averageRating.doubleValue() >= (i - 0.5) and novel.averageRating.doubleValue() < i}"
+                      class="material-symbols-outlined icon-half">star_half</span>
                     <span th:if="${novel.averageRating == null or novel.averageRating.doubleValue() < (i - 0.5)}"
-                          class="material-symbols-outlined text-outline/30">star</span>
+                      class="material-symbols-outlined text-outline/30">star</span>
                   </th:block>
                 </div>
-                <span class="font-bold text-on-surface ml-1" th:text="${novel.averageRating != null ? #numbers.formatDecimal(novel.averageRating, 1, 2) : '0.00'}">0.00</span>
-                <span class="text-sm text-tertiary" th:text="'/ 5 (' + ${novel.ratingCount != null ? novel.ratingCount : 0} + ' đánh giá)'">/ 5 (0 đánh giá)</span>
+                <span class="font-bold text-on-surface ml-1"
+                  th:text="${novel.averageRating != null ? #numbers.formatDecimal(novel.averageRating, 1, 2) : '0.00'}">0.00</span>
+                <span class="text-sm text-tertiary"
+                  th:text="'/ 5 (' + ${novel.ratingCount != null ? novel.ratingCount : 0} + ' đánh giá)'">/ 5 (0 đánh
+                  giá)</span>
               </div>
-              
+
               <div class="flex flex-wrap gap-3 mt-auto" id="novelCtaContainer" th:data-novel-slug="${novel.slug}">
                 <!-- If already read a chapter (SSR): Show "Đọc tiếp chương [x]" -->
                 <th:block th:if="${lastReadChapter != null}">
-                  <a th:href="@{/truyen/{slug}/chuong-{chapterNumber}(slug=${novel.slug}, chapterNumber=${lastReadChapter.chapterNumber})}" 
-                     id="primaryReadBtn"
-                     data-is-continue="true"
-                     class="px-6 py-2.5 bg-[#e53935] hover:bg-[#d32f2f] text-white rounded-full font-bold flex items-center gap-2 shadow-md hover:shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98]">
+                  <a th:href="@{/truyen/{slug}/chuong-{chapterNumber}(slug=${novel.slug}, chapterNumber=${lastReadChapter.chapterNumber})}"
+                    id="primaryReadBtn" data-is-continue="true"
+                    class="px-6 py-2.5 bg-[#e53935] hover:bg-[#d32f2f] text-white rounded-full font-bold flex items-center gap-2 shadow-md hover:shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98]">
                     <span class="material-symbols-outlined text-[20px] icon-fill">auto_stories</span>
-                    <span id="primaryReadBtnText" th:text="'Đọc tiếp chương ' + ${lastReadChapter.chapterNumber}">Đọc tiếp chương 1</span>
+                    <span id="primaryReadBtnText" th:text="'Đọc tiếp chương ' + ${lastReadChapter.chapterNumber}">Đọc
+                      tiếp chương 1</span>
                   </a>
                   <!-- Secondary "Đọc từ đầu" button if last read chapter is not the first chapter -->
                   <a th:if="${not #lists.isEmpty(chapters) and lastReadChapter.chapterNumber != chapters[0].chapterNumber}"
-                     id="readFromStartBtn"
-                     th:href="@{/truyen/{slug}/chuong-{chapterNumber}(slug=${novel.slug}, chapterNumber=${chapters[0].chapterNumber})}"
-                     class="px-5 py-2.5 border border-outline-variant/60 hover:border-primary text-on-surface hover:text-primary rounded-full font-semibold flex items-center gap-1.5 transition-colors shadow-2xs text-sm">
+                    id="readFromStartBtn"
+                    th:href="@{/truyen/{slug}/chuong-{chapterNumber}(slug=${novel.slug}, chapterNumber=${chapters[0].chapterNumber})}"
+                    class="px-5 py-2.5 border border-outline-variant/60 hover:border-primary text-on-surface hover:text-primary rounded-full font-semibold flex items-center gap-1.5 transition-colors shadow-2xs text-sm">
                     <span class="material-symbols-outlined text-[18px]">first_page</span>
                     <span>Đọc từ đầu</span>
                   </a>
@@ -111,40 +132,44 @@
 
                 <!-- If not read yet (or guest): Show "Đọc truyện", with client-side localStorage fallback -->
                 <th:block th:if="${lastReadChapter == null}">
-                  <a th:if="${not #lists.isEmpty(chapters)}" 
-                     id="primaryReadBtn"
-                     data-is-continue="false"
-                     th:href="@{/truyen/{slug}/chuong-{chapterNumber}(slug=${novel.slug}, chapterNumber=${chapters[0].chapterNumber})}" 
-                     class="px-6 py-2.5 bg-[#e53935] hover:bg-[#d32f2f] text-white rounded-full font-bold flex items-center gap-2 shadow-md hover:shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98]">
-                    <span class="material-symbols-outlined text-[20px] icon-fill" id="primaryReadBtnIcon">menu_book</span>
+                  <a th:if="${not #lists.isEmpty(chapters)}" id="primaryReadBtn" data-is-continue="false"
+                    th:href="@{/truyen/{slug}/chuong-{chapterNumber}(slug=${novel.slug}, chapterNumber=${chapters[0].chapterNumber})}"
+                    class="px-6 py-2.5 bg-[#e53935] hover:bg-[#d32f2f] text-white rounded-full font-bold flex items-center gap-2 shadow-md hover:shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98]">
+                    <span class="material-symbols-outlined text-[20px] icon-fill"
+                      id="primaryReadBtnIcon">menu_book</span>
                     <span id="primaryReadBtnText">Đọc truyện</span>
                   </a>
                   <button th:if="${#lists.isEmpty(chapters)}" type="button" disabled
-                     class="px-6 py-2.5 bg-[#e53935]/50 text-white rounded-full font-bold flex items-center gap-2 shadow-sm cursor-not-allowed">
+                    class="px-6 py-2.5 bg-[#e53935]/50 text-white rounded-full font-bold flex items-center gap-2 shadow-sm cursor-not-allowed">
                     <span class="material-symbols-outlined text-[20px] icon-fill">menu_book</span>
                     Chưa có chương
                   </button>
                 </th:block>
                 <!-- Bookshelf Action -->
                 <div sec:authorize="isAuthenticated()" class="inline-block">
-                  <form th:if="${inBookshelf}" th:action="@{/user/bookshelf/{id}/remove(id=${novel.id})}" method="POST" class="m-0">
+                  <form th:if="${inBookshelf}" th:action="@{/user/bookshelf/{id}/remove(id=${novel.id})}" method="POST"
+                    class="m-0">
                     <input type="hidden" name="source" th:value="'/truyen/' + ${novel.slug}">
-                    <button type="submit" class="px-6 py-2.5 bg-primary-container hover:bg-primary text-white rounded-full font-semibold flex items-center gap-2 shadow-sm transition-colors">
+                    <button type="submit"
+                      class="px-6 py-2.5 bg-primary-container hover:bg-primary text-white rounded-full font-semibold flex items-center gap-2 shadow-sm transition-colors">
                       <span class="material-symbols-outlined text-[20px] icon-fill">bookmark</span>
                       Đã lưu trong Tủ sách
                     </button>
                   </form>
-                  <form th:unless="${inBookshelf}" th:action="@{/user/bookshelf/{id}(id=${novel.id})}" method="POST" class="m-0">
+                  <form th:unless="${inBookshelf}" th:action="@{/user/bookshelf/{id}(id=${novel.id})}" method="POST"
+                    class="m-0">
                     <input type="hidden" name="source" th:value="'/truyen/' + ${novel.slug}">
-                    <button type="submit" class="px-6 py-2.5 border border-primary text-primary hover:bg-primary-container hover:text-white rounded-full font-semibold flex items-center gap-2 transition-colors shadow-sm">
+                    <button type="submit"
+                      class="px-6 py-2.5 border border-primary text-primary hover:bg-primary-container hover:text-white rounded-full font-semibold flex items-center gap-2 transition-colors shadow-sm">
                       <span class="material-symbols-outlined text-[20px]">bookmark_add</span>
                       Thêm vào Tủ sách
                     </button>
                   </form>
                 </div>
                 <div sec:authorize="!isAuthenticated()" class="inline-block">
-                  <button type="button" onclick="openLoginRequiredModal('Vui lòng đăng nhập để lưu truyện vào Tủ sách và theo dõi tiến độ đọc của bạn.')"
-                          class="px-6 py-2.5 border border-primary text-primary hover:bg-primary-container hover:text-white rounded-full font-semibold flex items-center gap-2 transition-colors shadow-sm">
+                  <button type="button"
+                    onclick="openLoginRequiredModal('Vui lòng đăng nhập để lưu truyện vào Tủ sách và theo dõi tiến độ đọc của bạn.')"
+                    class="px-6 py-2.5 border border-primary text-primary hover:bg-primary-container hover:text-white rounded-full font-semibold flex items-center gap-2 transition-colors shadow-sm">
                     <span class="material-symbols-outlined text-[20px]">bookmark_add</span>
                     Thêm vào Tủ sách
                   </button>
@@ -154,25 +179,28 @@
                 <div sec:authorize="isAuthenticated()" class="inline-flex items-center gap-2">
                   <th:block th:if="${userRating == null}">
                     <button th:if="${hasReadAnyChapter}" type="button" onclick="openRatingModal()"
-                            class="px-6 py-2.5 border border-[#c4a47c] text-[#9c7a4b] hover:bg-[#fff9f0] rounded-full font-semibold flex items-center gap-2 transition-colors shadow-sm">
+                      class="px-6 py-2.5 border border-[#c4a47c] text-[#9c7a4b] hover:bg-[#fff9f0] rounded-full font-semibold flex items-center gap-2 transition-colors shadow-sm">
                       <span class="material-symbols-outlined text-[20px]">star</span>
                       <span>Đánh giá</span>
                     </button>
-                    <button th:unless="${hasReadAnyChapter}" type="button" onclick="openMustReadModal('đánh giá truyện')"
-                            class="px-6 py-2.5 border border-[#c4a47c] text-[#9c7a4b] hover:bg-[#fff9f0] rounded-full font-semibold flex items-center gap-2 transition-colors shadow-sm">
+                    <button th:unless="${hasReadAnyChapter}" type="button"
+                      onclick="openMustReadModal('đánh giá truyện')"
+                      class="px-6 py-2.5 border border-[#c4a47c] text-[#9c7a4b] hover:bg-[#fff9f0] rounded-full font-semibold flex items-center gap-2 transition-colors shadow-sm">
                       <span class="material-symbols-outlined text-[20px]">star</span>
                       <span>Đánh giá</span>
                     </button>
                   </th:block>
-                  <button th:if="${userRating != null}" type="button" onclick="switchTab('ratings'); document.getElementById('tab-ratings').scrollIntoView({behavior: 'smooth'});"
-                          class="px-5 py-2.5 bg-[#fdf3e2] border border-[#f0d6a8] text-[#b88636] hover:bg-[#fbedd5] rounded-full font-bold text-sm flex items-center gap-1.5 shadow-sm transition-colors"
-                          title="Nhấp để xem đánh giá của bạn">
+                  <button th:if="${userRating != null}" type="button"
+                    onclick="switchTab('ratings'); document.getElementById('tab-ratings').scrollIntoView({behavior: 'smooth'});"
+                    class="px-5 py-2.5 bg-[#fdf3e2] border border-[#f0d6a8] text-[#b88636] hover:bg-[#fbedd5] rounded-full font-bold text-sm flex items-center gap-1.5 shadow-sm transition-colors"
+                    title="Nhấp để xem đánh giá của bạn">
                     <span class="material-symbols-outlined text-[18px] text-yellow-500 icon-fill">star</span>
                     <span th:text="'Đã đánh giá (' + ${userRating.rating} + '★)'">Đã đánh giá (5★)</span>
                   </button>
                 </div>
-                <button type="button" sec:authorize="!isAuthenticated()" onclick="openLoginRequiredModal('Vui lòng đăng nhập để gửi đánh giá và chấm điểm cho bộ truyện này.')"
-                        class="px-6 py-2.5 border border-[#c4a47c] text-[#9c7a4b] hover:bg-[#fff9f0] rounded-full font-semibold flex items-center gap-2 transition-colors shadow-sm">
+                <button type="button" sec:authorize="!isAuthenticated()"
+                  onclick="openLoginRequiredModal('Vui lòng đăng nhập để gửi đánh giá và chấm điểm cho bộ truyện này.')"
+                  class="px-6 py-2.5 border border-[#c4a47c] text-[#9c7a4b] hover:bg-[#fff9f0] rounded-full font-semibold flex items-center gap-2 transition-colors shadow-sm">
                   <span class="material-symbols-outlined text-[20px]">star</span>
                   Đánh giá
                 </button>
@@ -182,49 +210,61 @@
 
           <!-- Tabs -->
           <div class="border-b border-outline-variant/30 mb-8 flex gap-8">
-            <button class="pb-3 border-b-2 border-primary text-primary font-bold text-lg tab-btn" onclick="switchTab('intro')">Giới thiệu</button>
-            <button class="pb-3 border-b-2 border-transparent text-tertiary hover:text-on-surface font-semibold text-lg tab-btn transition-colors" onclick="switchTab('chapters')">D.s chương</button>
-            <button class="pb-3 border-b-2 border-transparent text-tertiary hover:text-on-surface font-semibold text-lg tab-btn transition-colors" onclick="switchTab('comments')">Bình luận</button>
-            <button class="pb-3 border-b-2 border-transparent text-tertiary hover:text-on-surface font-semibold text-lg tab-btn transition-colors" onclick="switchTab('ratings')">Đánh giá</button>
+            <button class="pb-3 border-b-2 border-primary text-primary font-bold text-lg tab-btn"
+              onclick="switchTab('intro')">Giới thiệu</button>
+            <button
+              class="pb-3 border-b-2 border-transparent text-tertiary hover:text-on-surface font-semibold text-lg tab-btn transition-colors"
+              onclick="switchTab('chapters')">D.s chương</button>
+            <button
+              class="pb-3 border-b-2 border-transparent text-tertiary hover:text-on-surface font-semibold text-lg tab-btn transition-colors"
+              onclick="switchTab('comments')">Bình luận</button>
+            <button
+              class="pb-3 border-b-2 border-transparent text-tertiary hover:text-on-surface font-semibold text-lg tab-btn transition-colors"
+              onclick="switchTab('ratings')">Đánh giá</button>
           </div>
-          
+
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
             <!-- Main Content Area (Left) -->
             <div class="lg:col-span-8 min-h-[400px]">
-              
+
               <!-- Tab: Giới thiệu -->
               <div id="tab-intro" class="tab-content block">
-                <div class="font-body-reading text-lg text-on-surface-variant leading-loose space-y-4 text-justify" th:utext="${#strings.replace(novel.summary, '&#10;', '&lt;br&gt;')}">
+                <div class="font-body-reading text-lg text-on-surface-variant leading-loose space-y-4 text-justify"
+                  th:utext="${#strings.replace(novel.summary, '&#10;', '&lt;br&gt;')}">
                   Summary
                 </div>
-                
+
                 <div class="mt-12 pt-6 border-t border-outline-variant/30 flex justify-between items-center">
                   <span class="font-bold text-on-surface">Chương mới</span>
-                  <a th:if="${not #lists.isEmpty(chapters)}" 
-                     th:with="latestChap=${chapters[#lists.size(chapters)-1]}"
-                     th:href="@{/truyen/{slug}/chuong-{chapterNumber}(slug=${novel.slug}, chapterNumber=${latestChap.chapterNumber})}" 
-                     class="text-tertiary hover:text-primary transition-colors text-sm font-medium truncate max-w-sm inline-flex items-center gap-1.5">
+                  <a th:if="${not #lists.isEmpty(chapters)}" th:with="latestChap=${chapters[#lists.size(chapters)-1]}"
+                    th:href="@{/truyen/{slug}/chuong-{chapterNumber}(slug=${novel.slug}, chapterNumber=${latestChap.chapterNumber})}"
+                    class="text-tertiary hover:text-primary transition-colors text-sm font-medium truncate max-w-sm inline-flex items-center gap-1.5">
                     <span class="truncate">Chương [[${latestChap.chapterNumber}]]: [[${latestChap.title}]]</span>
-                    <span th:if="${latestChap.price != null and latestChap.price > 0 and unlockedChapterIds != null and unlockedChapterIds.contains(latestChap.id)}"
-                          class="material-symbols-outlined text-[18px] text-[#2e7d32] shrink-0"
-                          title="Chương VIP (Đã mua)">lock_open</span>
-                    <span th:if="${latestChap.price != null and latestChap.price > 0 and (unlockedChapterIds == null or !unlockedChapterIds.contains(latestChap.id))}"
-                          class="material-symbols-outlined text-[18px] text-[#d97706] shrink-0"
-                          title="Chương VIP (Có phí)">lock</span>
+                    <span
+                      th:if="${latestChap.price != null and latestChap.price > 0 and unlockedChapterIds != null and unlockedChapterIds.contains(latestChap.id)}"
+                      class="material-symbols-outlined text-[18px] text-[#2e7d32] shrink-0"
+                      title="Chương VIP (Đã mua)">lock_open</span>
+                    <span
+                      th:if="${latestChap.price != null and latestChap.price > 0 and (unlockedChapterIds == null or !unlockedChapterIds.contains(latestChap.id))}"
+                      class="material-symbols-outlined text-[18px] text-[#d97706] shrink-0"
+                      title="Chương VIP (Có phí)">lock</span>
                   </a>
                   <span class="text-xs text-outline ml-4">Vừa cập nhật</span>
                 </div>
               </div>
-              
+
               <!-- Tab: Danh sách chương -->
               <div id="tab-chapters" class="tab-content hidden">
                 <div class="flex items-center justify-between mb-6">
-                  <h3 class="font-bold text-xl text-on-surface">Danh sách chương (<span th:text="${#lists.size(chapters)}">0</span>)</h3>
-                  <button id="sortChaptersBtn" class="flex items-center gap-1 text-sm font-medium text-tertiary hover:text-primary transition-colors">
-                    <span class="material-symbols-outlined text-[18px]">sort</span> <span id="sortChaptersText">Cũ → Mới</span>
+                  <h3 class="font-bold text-xl text-on-surface">Danh sách chương (<span
+                      th:text="${#lists.size(chapters)}">0</span>)</h3>
+                  <button id="sortChaptersBtn"
+                    class="flex items-center gap-1 text-sm font-medium text-tertiary hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined text-[18px]">sort</span> <span id="sortChaptersText">Cũ →
+                      Mới</span>
                   </button>
                 </div>
-                
+
                 <div id="chaptersContainer" class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">
                   <a th:each="chap : ${chapters}" th:href="@{/truyen/{slug}/chuong-{chapterNumber}(slug=${novel.slug}, chapterNumber=${chap.chapterNumber})}" 
                      class="flex items-center justify-between py-2.5 border-b border-outline-variant/20 hover:text-primary group transition-colors">
@@ -236,55 +276,63 @@
                       <span th:if="${chap.status == 'PUBLISHED_VIP' and chap.price != null and chap.price > 0
                                    and chap.autoUnlockAt != null and chap.autoUnlockAt.isAfter(scheduleNow)}"
                             class="text-[11px] text-[#b45309] mt-0.5">
-                        Miễn phí lúc <span th:text="${#temporals.format(chap.autoUnlockAt, 'dd/MM/yyyy HH:mm')}">22/11/2026 15:30</span>
+                        Miễn phí lúc <span th:text="${#temporals.format(chap.autoUnlockAt, 'dd/MM/yyyy HH:mm')}"</span>
                       </span>
                     </span>
-                    <span th:if="${chap.price != null and chap.price > 0 and unlockedChapterIds != null and unlockedChapterIds.contains(chap.id)}"
-                          class="material-symbols-outlined text-[18px] text-[#2e7d32] shrink-0 ml-2 group-hover:scale-110 transition-transform"
-                          title="Chương VIP (Đã mua)">lock_open</span>
-                    <span th:if="${chap.price != null and chap.price > 0 and (unlockedChapterIds == null or !unlockedChapterIds.contains(chap.id))}"
-                          class="material-symbols-outlined text-[18px] text-[#d97706] shrink-0 ml-2 group-hover:scale-110 transition-transform"
-                          title="Chương VIP (Có phí)">lock</span>
+                    <span
+                      th:if="${chap.price != null and chap.price > 0 and unlockedChapterIds != null and unlockedChapterIds.contains(chap.id)}"
+                      class="material-symbols-outlined text-[18px] text-[#2e7d32] shrink-0 ml-2 group-hover:scale-110 transition-transform"
+                      title="Chương VIP (Đã mua)">lock_open</span>
+                    <span
+                      th:if="${chap.price != null and chap.price > 0 and (unlockedChapterIds == null or !unlockedChapterIds.contains(chap.id))}"
+                      class="material-symbols-outlined text-[18px] text-[#d97706] shrink-0 ml-2 group-hover:scale-110 transition-transform"
+                      title="Chương VIP (Có phí)">lock</span>
                   </a>
                   <div th:if="${#lists.isEmpty(chapters)}" class="col-span-2 text-center text-tertiary py-8">
                     Truyện chưa có chương nào được xuất bản.
                   </div>
                 </div>
               </div>
-              
+
               <!-- Tab: Bình luận (Thảo luận kiểu Facebook) -->
               <div id="tab-comments" class="tab-content hidden">
                 <div class="flex items-center justify-between mb-6">
                   <h3 class="font-bold text-xl text-on-surface flex items-center gap-2">
                     <span class="material-symbols-outlined text-primary">forum</span>
                     <span>Thảo luận về bộ truyện</span>
-                    <span class="text-sm font-semibold text-tertiary">(<span th:text="${allComments != null ? #lists.size(allComments) : 0}">0</span> bình luận)</span>
+                    <span class="text-sm font-semibold text-tertiary">(<span
+                        th:text="${allComments != null ? #lists.size(allComments) : 0}">0</span> bình luận)</span>
                   </h3>
                 </div>
 
                 <!-- Comment Input Box (FB Style) -->
-                <div class="bg-surface-container-lowest p-4 sm:p-5 rounded-2xl border border-outline-variant/40 shadow-sm mb-8">
+                <div
+                  class="bg-surface-container-lowest p-4 sm:p-5 rounded-2xl border border-outline-variant/40 shadow-sm mb-8">
                   <!-- Authenticated form -->
                   <div sec:authorize="isAuthenticated()">
                     <!-- If user has read at least 1 chapter: show active input form -->
-                    <form th:if="${hasReadAnyChapter}" th:action="@{/truyen/{slug}/comments(slug=${novel.slug})}" method="POST" class="m-0">
+                    <form th:if="${hasReadAnyChapter}" th:action="@{/truyen/{slug}/comments(slug=${novel.slug})}"
+                      method="POST" class="m-0">
                       <div class="flex items-start gap-3">
-                        <div class="w-10 h-10 rounded-full overflow-hidden bg-primary flex items-center justify-center shrink-0 shadow-sm border border-outline-variant/30">
-                          <img th:if="${#authentication.principal.user.avatarUrl != null and !#strings.isEmpty(#authentication.principal.user.avatarUrl)}"
-                               th:src="${#authentication.principal.user.avatarUrl}" alt="Avatar"
-                               onerror="this.onerror=null;this.src='/images/default-avatar.jpg';"
-                               class="w-full h-full object-cover">
-                          <img th:unless="${#authentication.principal.user.avatarUrl != null and !#strings.isEmpty(#authentication.principal.user.avatarUrl)}"
-                               src="/images/default-avatar.jpg" alt="Avatar" class="w-full h-full object-cover">
+                        <div
+                          class="w-10 h-10 rounded-full overflow-hidden bg-primary flex items-center justify-center shrink-0 shadow-sm border border-outline-variant/30">
+                          <img
+                            th:if="${#authentication.principal.user.avatarUrl != null and !#strings.isEmpty(#authentication.principal.user.avatarUrl)}"
+                            th:src="${#authentication.principal.user.avatarUrl}" alt="Avatar"
+                            onerror="this.onerror=null;this.src='/images/default-avatar.jpg';"
+                            class="w-full h-full object-cover">
+                          <img
+                            th:unless="${#authentication.principal.user.avatarUrl != null and !#strings.isEmpty(#authentication.principal.user.avatarUrl)}"
+                            src="/images/default-avatar.jpg" alt="Avatar" class="w-full h-full object-cover">
                         </div>
                         <div class="flex-1 min-w-0">
                           <textarea name="content" rows="3" required maxlength="1000"
-                                    class="w-full px-4 py-3 rounded-2xl border border-outline-variant/60 bg-surface text-on-surface focus:outline-none focus:border-primary text-sm resize-none transition-all placeholder:text-outline"
-                                    placeholder="Viết cảm nghĩ, suy đoán tình tiết hoặc chia sẻ về bộ truyện này..."></textarea>
+                            class="w-full px-4 py-3 rounded-2xl border border-outline-variant/60 bg-surface text-on-surface focus:outline-none focus:border-primary text-sm resize-none transition-all placeholder:text-outline"
+                            placeholder="Viết cảm nghĩ, suy đoán tình tiết hoặc chia sẻ về bộ truyện này..."></textarea>
                           <div class="flex items-center justify-between mt-2 pt-1">
                             <span class="text-xs text-outline">Tôn trọng văn hóa thảo luận cộng đồng</span>
                             <button type="submit"
-                                    class="px-5 py-2 bg-primary hover:bg-primary-container text-white font-bold text-sm rounded-full shadow-sm hover:shadow transition-all flex items-center gap-1.5">
+                              class="px-5 py-2 bg-primary hover:bg-primary-container text-white font-bold text-sm rounded-full shadow-sm hover:shadow transition-all flex items-center gap-1.5">
                               <span class="material-symbols-outlined text-[16px]">send</span>
                               <span>Đăng bình luận</span>
                             </button>
@@ -294,19 +342,22 @@
                     </form>
 
                     <!-- If user has NOT read any chapter yet: show notice banner with link to read chapter 1 -->
-                    <div th:unless="${hasReadAnyChapter}" class="p-4 sm:p-5 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div th:unless="${hasReadAnyChapter}"
+                      class="p-4 sm:p-5 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                       <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-amber-500/20 text-amber-700 flex items-center justify-center shrink-0">
+                        <div
+                          class="w-10 h-10 rounded-full bg-amber-500/20 text-amber-700 flex items-center justify-center shrink-0">
                           <span class="material-symbols-outlined text-[22px]">auto_stories</span>
                         </div>
                         <div>
                           <p class="font-bold text-sm text-on-surface">Bạn cần đọc ít nhất 1 chương để bình luận</p>
-                          <p class="text-xs text-tertiary">Vui lòng đọc ít nhất 1 chương của bộ truyện để có trải nghiệm và tham gia thảo luận cùng mọi người.</p>
+                          <p class="text-xs text-tertiary">Vui lòng đọc ít nhất 1 chương của bộ truyện để có trải nghiệm
+                            và tham gia thảo luận cùng mọi người.</p>
                         </div>
                       </div>
                       <a th:if="${chapters != null and !#lists.isEmpty(chapters)}"
-                         th:href="@{'/truyen/' + ${novel.slug} + '/chuong-' + ${chapters[0].chapterNumber}}"
-                         class="px-5 py-2 bg-primary text-white font-bold text-xs rounded-full hover:bg-primary-container shadow-sm transition-all whitespace-nowrap flex items-center gap-1.5 self-end sm:self-center">
+                        th:href="@{'/truyen/' + ${novel.slug} + '/chuong-' + ${chapters[0].chapterNumber}}"
+                        class="px-5 py-2 bg-primary text-white font-bold text-xs rounded-full hover:bg-primary-container shadow-sm transition-all whitespace-nowrap flex items-center gap-1.5 self-end sm:self-center">
                         <span class="material-symbols-outlined text-[16px]">menu_book</span>
                         <span>Đọc chương 1 ngay</span>
                       </a>
@@ -316,13 +367,15 @@
                   <!-- Anonymous CTA -->
                   <div sec:authorize="!isAuthenticated()" class="flex items-center justify-between gap-4 py-2">
                     <div class="flex items-center gap-3">
-                      <div class="w-10 h-10 rounded-full bg-surface-container-high text-outline flex items-center justify-center shrink-0">
+                      <div
+                        class="w-10 h-10 rounded-full bg-surface-container-high text-outline flex items-center justify-center shrink-0">
                         <span class="material-symbols-outlined">person</span>
                       </div>
                       <p class="text-sm text-tertiary">Đăng nhập để tham gia thảo luận cùng hàng ngàn độc giả khác.</p>
                     </div>
-                    <button type="button" onclick="openLoginRequiredModal('Vui lòng đăng nhập để gửi bình luận thảo luận về bộ truyện.')"
-                            class="px-5 py-2 bg-primary text-white font-bold text-sm rounded-full hover:bg-primary-container shadow-sm transition-all whitespace-nowrap">
+                    <button type="button"
+                      onclick="openLoginRequiredModal('Vui lòng đăng nhập để gửi bình luận thảo luận về bộ truyện.')"
+                      class="px-5 py-2 bg-primary text-white font-bold text-sm rounded-full hover:bg-primary-container shadow-sm transition-all whitespace-nowrap">
                       Đăng nhập ngay
                     </button>
                   </div>
@@ -330,49 +383,58 @@
 
                 <!-- Comments Feed (Facebook style with replies) -->
                 <div class="space-y-5" id="commentsListContainer">
-                  <div th:each="comment : ${allComments}" class="comment-item bg-surface-container-lowest p-4 sm:p-5 rounded-2xl border border-outline-variant/30 shadow-sm transition-all" th:id="'comment-root-' + ${comment.id}">
+                  <div th:each="comment : ${allComments}"
+                    class="comment-item bg-surface-container-lowest p-4 sm:p-5 rounded-2xl border border-outline-variant/30 shadow-sm transition-all"
+                    th:id="'comment-root-' + ${comment.id}">
                     <!-- Top-level Comment -->
                     <div class="flex items-start gap-3">
                       <!-- User Avatar -->
-                      <div class="w-10 h-10 rounded-full overflow-hidden bg-primary/10 flex items-center justify-center shrink-0 shadow-sm border border-outline-variant/30">
-                        <img th:if="${comment.user != null and comment.user.avatarUrl != null and !#strings.isEmpty(comment.user.avatarUrl)}"
-                             th:src="${comment.user.avatarUrl}" alt="Avatar"
-                             onerror="this.onerror=null;this.src='/images/default-avatar.jpg';"
-                             class="w-full h-full object-cover">
-                        <img th:unless="${comment.user != null and comment.user.avatarUrl != null and !#strings.isEmpty(comment.user.avatarUrl)}"
-                             src="/images/default-avatar.jpg" alt="Avatar" class="w-full h-full object-cover">
+                      <div
+                        class="w-10 h-10 rounded-full overflow-hidden bg-primary/10 flex items-center justify-center shrink-0 shadow-sm border border-outline-variant/30">
+                        <img
+                          th:if="${comment.user != null and comment.user.avatarUrl != null and !#strings.isEmpty(comment.user.avatarUrl)}"
+                          th:src="${comment.user.avatarUrl}" alt="Avatar"
+                          onerror="this.onerror=null;this.src='/images/default-avatar.jpg';"
+                          class="w-full h-full object-cover">
+                        <img
+                          th:unless="${comment.user != null and comment.user.avatarUrl != null and !#strings.isEmpty(comment.user.avatarUrl)}"
+                          src="/images/default-avatar.jpg" alt="Avatar" class="w-full h-full object-cover">
                       </div>
-                      
+
                       <!-- Comment Content Box -->
                       <div class="flex-1 min-w-0" th:id="'comment-box-' + ${comment.id}">
-                        <div class="bg-surface rounded-2xl p-3 sm:px-4 sm:py-3 inline-block max-w-full border border-outline-variant/30">
+                        <div
+                          class="bg-surface rounded-2xl p-3 sm:px-4 sm:py-3 inline-block max-w-full border border-outline-variant/30">
                           <div class="flex items-center gap-2 mb-1">
-                            <span class="font-bold text-on-surface text-sm hover:underline cursor-pointer" th:text="${comment.user != null ? comment.user.fullName : 'Thành viên'}">Tên user</span>
-                            <span th:if="${comment.user != null and comment.user.roles != null and #sets.contains(comment.user.roles.![name], 'ADMIN')}"
-                                  class="px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 text-[10px] font-bold">Admin</span>
+                            <span class="font-bold text-on-surface text-sm hover:underline cursor-pointer"
+                              th:text="${comment.user != null ? comment.user.fullName : 'Thành viên'}">Tên user</span>
+                            <span
+                              th:if="${comment.user != null and comment.user.roles != null and #sets.contains(comment.user.roles.![name], 'ADMIN')}"
+                              class="px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 text-[10px] font-bold">Admin</span>
                           </div>
-                          
+
                           <!-- Comment Text (Display) -->
                           <div class="comment-display-content">
-                            <p class="text-on-surface text-sm leading-relaxed whitespace-pre-line break-words" th:text="${comment.content}">Nội dung bình luận...</p>
+                            <p class="text-on-surface text-sm leading-relaxed whitespace-pre-line break-words"
+                              th:text="${comment.content}">Nội dung bình luận...</p>
                           </div>
-                          
+
                           <!-- Comment Edit Form (Collapsible) -->
                           <div sec:authorize="isAuthenticated()"
-                               th:if="${comment.user != null and #authentication.name == comment.user.email}"
-                               class="comment-edit-form hidden mt-2 pt-2 border-t border-outline-variant/30">
-                            <form th:action="@{'/truyen/' + ${novel.slug} + '/comments/' + ${comment.id} + '/edit'}" method="POST" class="m-0">
+                            th:if="${comment.user != null and #authentication.name == comment.user.email}"
+                            class="comment-edit-form hidden mt-2 pt-2 border-t border-outline-variant/30">
+                            <form th:action="@{'/truyen/' + ${novel.slug} + '/comments/' + ${comment.id} + '/edit'}"
+                              method="POST" class="m-0">
                               <textarea name="content" rows="2" required maxlength="1000"
-                                        class="w-full px-3 py-2 rounded-xl border border-outline-variant bg-surface text-on-surface focus:outline-none focus:border-primary text-sm resize-none mb-2"
-                                        placeholder="Nhập nội dung mới..."
-                                        th:text="${comment.content}"></textarea>
+                                class="w-full px-3 py-2 rounded-xl border border-outline-variant bg-surface text-on-surface focus:outline-none focus:border-primary text-sm resize-none mb-2"
+                                placeholder="Nhập nội dung mới..." th:text="${comment.content}"></textarea>
                               <div class="flex justify-end gap-2">
                                 <button type="button" th:onclick="'cancelEditComment(this, ' + ${comment.id} + ')'"
-                                        class="px-3 py-1 rounded-full border border-outline-variant text-tertiary hover:bg-surface-container font-semibold text-xs transition-colors">
+                                  class="px-3 py-1 rounded-full border border-outline-variant text-tertiary hover:bg-surface-container font-semibold text-xs transition-colors">
                                   Hủy
                                 </button>
                                 <button type="submit"
-                                        class="px-3.5 py-1 rounded-full bg-primary hover:bg-primary-container text-white font-bold text-xs shadow-sm transition-colors flex items-center gap-1">
+                                  class="px-3.5 py-1 rounded-full bg-primary hover:bg-primary-container text-white font-bold text-xs shadow-sm transition-colors flex items-center gap-1">
                                   <span class="material-symbols-outlined text-[13px]">save</span>
                                   <span>Lưu</span>
                                 </button>
@@ -387,105 +449,107 @@
 
                           <!-- Trả lời (Reply) Button -->
                           <th:block sec:authorize="isAuthenticated()">
-                            <button th:if="${hasReadAnyChapter}" type="button"
-                                    th:data-comment-id="${comment.id}"
-                                    th:data-author-name="${comment.user != null ? comment.user.fullName : 'bạn'}"
-                                    onclick="toggleReplyForm(this)"
-                                    class="text-tertiary hover:text-primary font-semibold hover:underline">
+                            <button th:if="${hasReadAnyChapter}" type="button" th:data-comment-id="${comment.id}"
+                              th:data-author-name="${comment.user != null ? comment.user.fullName : 'bạn'}"
+                              onclick="toggleReplyForm(this)"
+                              class="text-tertiary hover:text-primary font-semibold hover:underline">
                               Trả lời
                             </button>
                             <button th:unless="${hasReadAnyChapter}" type="button"
-                                    onclick="openMustReadModal('trả lời bình luận')"
-                                    class="text-tertiary hover:text-primary font-semibold hover:underline">
+                              onclick="openMustReadModal('trả lời bình luận')"
+                              class="text-tertiary hover:text-primary font-semibold hover:underline">
                               Trả lời
                             </button>
                           </th:block>
-                          <button type="button"
-                                  sec:authorize="!isAuthenticated()"
-                                  onclick="openLoginRequiredModal('Vui lòng đăng nhập để trả lời bình luận này.')"
-                                  class="text-tertiary hover:text-primary font-semibold hover:underline">
+                          <button type="button" sec:authorize="!isAuthenticated()"
+                            onclick="openLoginRequiredModal('Vui lòng đăng nhập để trả lời bình luận này.')"
+                            class="text-tertiary hover:text-primary font-semibold hover:underline">
                             Trả lời
                           </button>
 
                           <!-- Sửa Button (Owner only) -->
                           <button sec:authorize="isAuthenticated()"
-                                  th:if="${comment.user != null and #authentication.name == comment.user.email}"
-                                  type="button"
-                                  th:onclick="'toggleEditComment(this, ' + ${comment.id} + ')'"
-                                  class="text-[#c08d41] hover:text-[#9c7a4b] font-semibold hover:underline">
+                            th:if="${comment.user != null and #authentication.name == comment.user.email}" type="button"
+                            th:onclick="'toggleEditComment(this, ' + ${comment.id} + ')'"
+                            class="text-[#c08d41] hover:text-[#9c7a4b] font-semibold hover:underline">
                             Sửa
                           </button>
 
                           <!-- Xóa Button (Owner only - Mở Modal xác nhận xóa) -->
                           <button sec:authorize="isAuthenticated()"
-                                  th:if="${comment.user != null and #authentication.name == comment.user.email}"
-                                  type="button"
-                                  th:data-action="@{'/truyen/' + ${novel.slug} + '/comments/' + ${comment.id} + '/delete'}"
-                                  data-type="bình luận"
-                                  th:data-content="${#strings.length(comment.content) > 80 ? #strings.substring(comment.content, 0, 80) + '...' : comment.content}"
-                                  onclick="openDeleteCommentModal(this)"
-                                  class="text-rose-500 hover:text-rose-700 font-semibold hover:underline">
+                            th:if="${comment.user != null and #authentication.name == comment.user.email}" type="button"
+                            th:data-action="@{'/truyen/' + ${novel.slug} + '/comments/' + ${comment.id} + '/delete'}"
+                            data-type="bình luận"
+                            th:data-content="${#strings.length(comment.content) > 80 ? #strings.substring(comment.content, 0, 80) + '...' : comment.content}"
+                            onclick="openDeleteCommentModal(this)"
+                            class="text-rose-500 hover:text-rose-700 font-semibold hover:underline">
                             Xóa
                           </button>
 
                           <!-- Báo cáo Button (Others) -->
                           <button sec:authorize="isAuthenticated()"
-                                  th:if="${comment.user == null or #authentication.name != comment.user.email}"
-                                  type="button"
-                                  onclick="openReportCommentModal(this)"
-                                  th:data-comment-id="${comment.id}"
-                                  th:data-author-name="${comment.user != null ? comment.user.fullName : 'Độc giả'}"
-                                  th:data-author-initial="${comment.user != null and !#strings.isEmpty(comment.user.fullName) ? #strings.substring(comment.user.fullName, 0, 1).toUpperCase() : 'DG'}"
-                                  th:data-time-ago="${#temporals.format(comment.createdAt, 'dd/MM/yyyy HH:mm')}"
-                                  th:data-comment-content="${#strings.length(comment.content) > 120 ? #strings.substring(comment.content, 0, 120) + '...' : comment.content}"
-                                  class="text-outline hover:text-rose-600 hover:underline">
+                            th:if="${comment.user == null or #authentication.name != comment.user.email}" type="button"
+                            onclick="openReportCommentModal(this)" th:data-comment-id="${comment.id}"
+                            th:data-author-name="${comment.user != null ? comment.user.fullName : 'Độc giả'}"
+                            th:data-author-initial="${comment.user != null and !#strings.isEmpty(comment.user.fullName) ? #strings.substring(comment.user.fullName, 0, 1).toUpperCase() : 'DG'}"
+                            th:data-time-ago="${#temporals.format(comment.createdAt, 'dd/MM/yyyy HH:mm')}"
+                            th:data-comment-content="${#strings.length(comment.content) > 120 ? #strings.substring(comment.content, 0, 120) + '...' : comment.content}"
+                            class="text-outline hover:text-rose-600 hover:underline">
                             Báo cáo
                           </button>
                         </div>
 
                         <!-- Replies List (Child comments) -->
                         <div class="mt-3 space-y-3 pl-2 sm:pl-4 border-l-2 border-outline-variant/40 ml-2">
-                          <div th:each="reply : ${comment.replies}" th:if="${reply.status == 'VISIBLE'}" class="reply-item flex items-start gap-2.5" th:id="'comment-reply-' + ${reply.id}">
+                          <div th:each="reply : ${comment.replies}" th:if="${reply.status == 'VISIBLE'}"
+                            class="reply-item flex items-start gap-2.5" th:id="'comment-reply-' + ${reply.id}">
                             <!-- Reply User Avatar -->
-                            <div class="w-8 h-8 rounded-full overflow-hidden bg-primary/10 flex items-center justify-center shrink-0 shadow-sm border border-outline-variant/30">
-                              <img th:if="${reply.user != null and reply.user.avatarUrl != null and !#strings.isEmpty(reply.user.avatarUrl)}"
-                                   th:src="${reply.user.avatarUrl}" alt="Avatar"
-                                   onerror="this.onerror=null;this.src='/images/default-avatar.jpg';"
-                                   class="w-full h-full object-cover">
-                              <img th:unless="${reply.user != null and reply.user.avatarUrl != null and !#strings.isEmpty(reply.user.avatarUrl)}"
-                                   src="/images/default-avatar.jpg" alt="Avatar" class="w-full h-full object-cover">
+                            <div
+                              class="w-8 h-8 rounded-full overflow-hidden bg-primary/10 flex items-center justify-center shrink-0 shadow-sm border border-outline-variant/30">
+                              <img
+                                th:if="${reply.user != null and reply.user.avatarUrl != null and !#strings.isEmpty(reply.user.avatarUrl)}"
+                                th:src="${reply.user.avatarUrl}" alt="Avatar"
+                                onerror="this.onerror=null;this.src='/images/default-avatar.jpg';"
+                                class="w-full h-full object-cover">
+                              <img
+                                th:unless="${reply.user != null and reply.user.avatarUrl != null and !#strings.isEmpty(reply.user.avatarUrl)}"
+                                src="/images/default-avatar.jpg" alt="Avatar" class="w-full h-full object-cover">
                             </div>
 
                             <!-- Reply Bubble Box -->
                             <div class="flex-1 min-w-0" th:id="'comment-box-' + ${reply.id}">
-                              <div class="bg-surface rounded-2xl p-2.5 sm:px-3 sm:py-2.5 inline-block max-w-full border border-outline-variant/30">
+                              <div
+                                class="bg-surface rounded-2xl p-2.5 sm:px-3 sm:py-2.5 inline-block max-w-full border border-outline-variant/30">
                                 <div class="flex items-center gap-2 mb-0.5">
-                                  <span class="font-bold text-on-surface text-xs hover:underline cursor-pointer" th:text="${reply.user != null ? reply.user.fullName : 'Thành viên'}">Tên user</span>
-                                  <span th:if="${reply.user != null and reply.user.roles != null and #sets.contains(reply.user.roles.![name], 'ADMIN')}"
-                                        class="px-1 py-0.2 rounded bg-amber-100 text-amber-800 text-[9px] font-bold">Admin</span>
+                                  <span class="font-bold text-on-surface text-xs hover:underline cursor-pointer"
+                                    th:text="${reply.user != null ? reply.user.fullName : 'Thành viên'}">Tên user</span>
+                                  <span
+                                    th:if="${reply.user != null and reply.user.roles != null and #sets.contains(reply.user.roles.![name], 'ADMIN')}"
+                                    class="px-1 py-0.2 rounded bg-amber-100 text-amber-800 text-[9px] font-bold">Admin</span>
                                 </div>
 
                                 <!-- Reply Text (Display) -->
                                 <div class="comment-display-content">
-                                  <p class="text-on-surface text-xs leading-relaxed whitespace-pre-line break-words" th:text="${reply.content}">Nội dung trả lời...</p>
+                                  <p class="text-on-surface text-xs leading-relaxed whitespace-pre-line break-words"
+                                    th:text="${reply.content}">Nội dung trả lời...</p>
                                 </div>
 
                                 <!-- Reply Edit Form -->
                                 <div sec:authorize="isAuthenticated()"
-                                     th:if="${reply.user != null and #authentication.name == reply.user.email}"
-                                     class="comment-edit-form hidden mt-2 pt-2 border-t border-outline-variant/30">
-                                  <form th:action="@{'/truyen/' + ${novel.slug} + '/comments/' + ${reply.id} + '/edit'}" method="POST" class="m-0">
+                                  th:if="${reply.user != null and #authentication.name == reply.user.email}"
+                                  class="comment-edit-form hidden mt-2 pt-2 border-t border-outline-variant/30">
+                                  <form th:action="@{'/truyen/' + ${novel.slug} + '/comments/' + ${reply.id} + '/edit'}"
+                                    method="POST" class="m-0">
                                     <textarea name="content" rows="2" required maxlength="1000"
-                                              class="w-full px-2.5 py-1.5 rounded-xl border border-outline-variant bg-surface text-on-surface focus:outline-none focus:border-primary text-xs resize-none mb-1.5"
-                                              placeholder="Nhập nội dung mới..."
-                                              th:text="${reply.content}"></textarea>
+                                      class="w-full px-2.5 py-1.5 rounded-xl border border-outline-variant bg-surface text-on-surface focus:outline-none focus:border-primary text-xs resize-none mb-1.5"
+                                      placeholder="Nhập nội dung mới..." th:text="${reply.content}"></textarea>
                                     <div class="flex justify-end gap-1.5">
                                       <button type="button" th:onclick="'cancelEditComment(this, ' + ${reply.id} + ')'"
-                                              class="px-2.5 py-0.5 rounded-full border border-outline-variant text-tertiary hover:bg-surface-container font-semibold text-[11px] transition-colors">
+                                        class="px-2.5 py-0.5 rounded-full border border-outline-variant text-tertiary hover:bg-surface-container font-semibold text-[11px] transition-colors">
                                         Hủy
                                       </button>
                                       <button type="submit"
-                                              class="px-3 py-0.5 rounded-full bg-primary hover:bg-primary-container text-white font-bold text-[11px] shadow-sm transition-colors">
+                                        class="px-3 py-0.5 rounded-full bg-primary hover:bg-primary-container text-white font-bold text-[11px] shadow-sm transition-colors">
                                         Lưu
                                       </button>
                                     </div>
@@ -495,62 +559,58 @@
 
                               <!-- Reply Action Bar -->
                               <div class="flex items-center gap-2.5 mt-1 ml-1 text-[11px] text-outline font-medium">
-                                <span th:text="${#temporals.format(reply.createdAt, 'dd/MM/yyyy HH:mm')}">Thời gian</span>
+                                <span th:text="${#temporals.format(reply.createdAt, 'dd/MM/yyyy HH:mm')}">Thời
+                                  gian</span>
 
                                 <!-- Trả lời tiếp (Reply to same top comment with tag) -->
                                 <th:block sec:authorize="isAuthenticated()">
-                                  <button th:if="${hasReadAnyChapter}" type="button"
-                                          th:data-comment-id="${comment.id}"
-                                          th:data-author-name="${reply.user != null ? reply.user.fullName : 'bạn'}"
-                                          onclick="toggleReplyForm(this)"
-                                          class="text-tertiary hover:text-primary font-semibold hover:underline">
+                                  <button th:if="${hasReadAnyChapter}" type="button" th:data-comment-id="${comment.id}"
+                                    th:data-author-name="${reply.user != null ? reply.user.fullName : 'bạn'}"
+                                    onclick="toggleReplyForm(this)"
+                                    class="text-tertiary hover:text-primary font-semibold hover:underline">
                                     Trả lời
                                   </button>
                                   <button th:unless="${hasReadAnyChapter}" type="button"
-                                          onclick="openMustReadModal('trả lời bình luận')"
-                                          class="text-tertiary hover:text-primary font-semibold hover:underline">
+                                    onclick="openMustReadModal('trả lời bình luận')"
+                                    class="text-tertiary hover:text-primary font-semibold hover:underline">
                                     Trả lời
                                   </button>
                                 </th:block>
-                                <button type="button"
-                                        sec:authorize="!isAuthenticated()"
-                                        onclick="openLoginRequiredModal('Vui lòng đăng nhập để trả lời bình luận này.')"
-                                        class="text-tertiary hover:text-primary font-semibold hover:underline">
+                                <button type="button" sec:authorize="!isAuthenticated()"
+                                  onclick="openLoginRequiredModal('Vui lòng đăng nhập để trả lời bình luận này.')"
+                                  class="text-tertiary hover:text-primary font-semibold hover:underline">
                                   Trả lời
                                 </button>
 
                                 <!-- Sửa (Owner only) -->
                                 <button sec:authorize="isAuthenticated()"
-                                        th:if="${reply.user != null and #authentication.name == reply.user.email}"
-                                        type="button"
-                                        th:onclick="'toggleEditComment(this, ' + ${reply.id} + ')'"
-                                        class="text-[#c08d41] hover:text-[#9c7a4b] font-semibold hover:underline">
+                                  th:if="${reply.user != null and #authentication.name == reply.user.email}"
+                                  type="button" th:onclick="'toggleEditComment(this, ' + ${reply.id} + ')'"
+                                  class="text-[#c08d41] hover:text-[#9c7a4b] font-semibold hover:underline">
                                   Sửa
                                 </button>
 
                                 <!-- Xóa (Owner only - Mở Modal xác nhận xóa) -->
                                 <button sec:authorize="isAuthenticated()"
-                                        th:if="${reply.user != null and #authentication.name == reply.user.email}"
-                                        type="button"
-                                        th:data-action="@{'/truyen/' + ${novel.slug} + '/comments/' + ${reply.id} + '/delete'}"
-                                        data-type="phản hồi"
-                                        th:data-content="${#strings.length(reply.content) > 80 ? #strings.substring(reply.content, 0, 80) + '...' : reply.content}"
-                                        onclick="openDeleteCommentModal(this)"
-                                        class="text-rose-500 hover:text-rose-700 font-semibold hover:underline">
+                                  th:if="${reply.user != null and #authentication.name == reply.user.email}"
+                                  type="button"
+                                  th:data-action="@{'/truyen/' + ${novel.slug} + '/comments/' + ${reply.id} + '/delete'}"
+                                  data-type="phản hồi"
+                                  th:data-content="${#strings.length(reply.content) > 80 ? #strings.substring(reply.content, 0, 80) + '...' : reply.content}"
+                                  onclick="openDeleteCommentModal(this)"
+                                  class="text-rose-500 hover:text-rose-700 font-semibold hover:underline">
                                   Xóa
                                 </button>
 
                                 <!-- Báo cáo (Others) -->
                                 <button sec:authorize="isAuthenticated()"
-                                        th:if="${reply.user == null or #authentication.name != reply.user.email}"
-                                        type="button"
-                                        onclick="openReportCommentModal(this)"
-                                        th:data-comment-id="${reply.id}"
-                                        th:data-author-name="${reply.user != null ? reply.user.fullName : 'Độc giả'}"
-                                        th:data-author-initial="${reply.user != null and !#strings.isEmpty(reply.user.fullName) ? #strings.substring(reply.user.fullName, 0, 1).toUpperCase() : 'DG'}"
-                                        th:data-time-ago="${#temporals.format(reply.createdAt, 'dd/MM/yyyy HH:mm')}"
-                                        th:data-comment-content="${#strings.length(reply.content) > 120 ? #strings.substring(reply.content, 0, 120) + '...' : reply.content}"
-                                        class="text-outline hover:text-rose-600 hover:underline">
+                                  th:if="${reply.user == null or #authentication.name != reply.user.email}"
+                                  type="button" onclick="openReportCommentModal(this)" th:data-comment-id="${reply.id}"
+                                  th:data-author-name="${reply.user != null ? reply.user.fullName : 'Độc giả'}"
+                                  th:data-author-initial="${reply.user != null and !#strings.isEmpty(reply.user.fullName) ? #strings.substring(reply.user.fullName, 0, 1).toUpperCase() : 'DG'}"
+                                  th:data-time-ago="${#temporals.format(reply.createdAt, 'dd/MM/yyyy HH:mm')}"
+                                  th:data-comment-content="${#strings.length(reply.content) > 120 ? #strings.substring(reply.content, 0, 120) + '...' : reply.content}"
+                                  class="text-outline hover:text-rose-600 hover:underline">
                                   Báo cáo
                                 </button>
                               </div>
@@ -558,28 +618,34 @@
                           </div>
 
                           <!-- Reply Input Form (Collapsible under parent comment) -->
-                          <div sec:authorize="isAuthenticated()" class="reply-input-box hidden pt-2" th:id="'reply-box-' + ${comment.id}">
-                            <form th:action="@{/truyen/{slug}/comments(slug=${novel.slug})}" method="POST" class="m-0 flex items-start gap-2">
+                          <div sec:authorize="isAuthenticated()" class="reply-input-box hidden pt-2"
+                            th:id="'reply-box-' + ${comment.id}">
+                            <form th:action="@{/truyen/{slug}/comments(slug=${novel.slug})}" method="POST"
+                              class="m-0 flex items-start gap-2">
                               <input type="hidden" name="parentId" th:value="${comment.id}">
-                              <div class="w-8 h-8 rounded-full overflow-hidden bg-primary flex items-center justify-center shrink-0 shadow-sm border border-outline-variant/30">
-                                <img th:if="${#authentication.principal.user.avatarUrl != null and !#strings.isEmpty(#authentication.principal.user.avatarUrl)}"
-                                     th:src="${#authentication.principal.user.avatarUrl}" alt="Avatar"
-                                     onerror="this.onerror=null;this.src='/images/default-avatar.jpg';"
-                                     class="w-full h-full object-cover">
-                                <img th:unless="${#authentication.principal.user.avatarUrl != null and !#strings.isEmpty(#authentication.principal.user.avatarUrl)}"
-                                     src="/images/default-avatar.jpg" alt="Avatar" class="w-full h-full object-cover">
+                              <div
+                                class="w-8 h-8 rounded-full overflow-hidden bg-primary flex items-center justify-center shrink-0 shadow-sm border border-outline-variant/30">
+                                <img
+                                  th:if="${#authentication.principal.user.avatarUrl != null and !#strings.isEmpty(#authentication.principal.user.avatarUrl)}"
+                                  th:src="${#authentication.principal.user.avatarUrl}" alt="Avatar"
+                                  onerror="this.onerror=null;this.src='/images/default-avatar.jpg';"
+                                  class="w-full h-full object-cover">
+                                <img
+                                  th:unless="${#authentication.principal.user.avatarUrl != null and !#strings.isEmpty(#authentication.principal.user.avatarUrl)}"
+                                  src="/images/default-avatar.jpg" alt="Avatar" class="w-full h-full object-cover">
                               </div>
                               <div class="flex-1 min-w-0">
                                 <textarea name="content" rows="2" required maxlength="1000"
-                                          class="reply-textarea w-full px-3 py-2 rounded-2xl border border-outline-variant/60 bg-surface text-on-surface focus:outline-none focus:border-primary text-xs resize-none"
-                                          placeholder="Viết câu trả lời..."></textarea>
+                                  class="reply-textarea w-full px-3 py-2 rounded-2xl border border-outline-variant/60 bg-surface text-on-surface focus:outline-none focus:border-primary text-xs resize-none"
+                                  placeholder="Viết câu trả lời..."></textarea>
                                 <div class="flex justify-end gap-2 mt-1">
-                                  <button type="button" th:data-comment-id="${comment.id}" onclick="closeReplyForm(this)"
-                                          class="px-3 py-1 rounded-full border border-outline-variant text-tertiary hover:bg-surface-container font-semibold text-xs transition-colors">
+                                  <button type="button" th:data-comment-id="${comment.id}"
+                                    onclick="closeReplyForm(this)"
+                                    class="px-3 py-1 rounded-full border border-outline-variant text-tertiary hover:bg-surface-container font-semibold text-xs transition-colors">
                                     Hủy
                                   </button>
                                   <button type="submit"
-                                          class="px-3.5 py-1 rounded-full bg-primary hover:bg-primary-container text-white font-bold text-xs shadow-sm transition-colors flex items-center gap-1">
+                                    class="px-3.5 py-1 rounded-full bg-primary hover:bg-primary-container text-white font-bold text-xs shadow-sm transition-colors flex items-center gap-1">
                                     <span class="material-symbols-outlined text-[13px]">send</span>
                                     <span>Gửi trả lời</span>
                                   </button>
@@ -594,7 +660,8 @@
 
 
                   <!-- Empty State -->
-                  <div th:if="${allComments == null or #lists.isEmpty(allComments)}" class="text-center text-tertiary py-12 border-2 border-dashed border-outline-variant rounded-2xl bg-surface-container-lowest/50">
+                  <div th:if="${allComments == null or #lists.isEmpty(allComments)}"
+                    class="text-center text-tertiary py-12 border-2 border-dashed border-outline-variant rounded-2xl bg-surface-container-lowest/50">
                     <span class="material-symbols-outlined text-4xl mb-2 text-outline">forum</span>
                     <p class="text-sm font-medium mb-1">Chưa có bình luận nào cho bộ truyện này.</p>
                     <p class="text-xs text-outline">Hãy là người đầu tiên để lại cảm nghĩ và khởi động thảo luận!</p>
@@ -604,64 +671,69 @@
                 <!-- Load More Comments Button -->
                 <div id="loadMoreCommentsWrapper" class="hidden text-center pt-6">
                   <button type="button" id="loadMoreCommentsBtn" onclick="loadMoreComments()"
-                          class="px-6 py-2.5 rounded-full border border-outline-variant hover:border-primary text-tertiary hover:text-primary font-semibold text-sm transition-all inline-flex items-center gap-2 hover:bg-surface-container-lowest shadow-sm">
+                    class="px-6 py-2.5 rounded-full border border-outline-variant hover:border-primary text-tertiary hover:text-primary font-semibold text-sm transition-all inline-flex items-center gap-2 hover:bg-surface-container-lowest shadow-sm">
                     <span class="material-symbols-outlined text-[18px]">expand_more</span>
                     <span>Tải thêm bình luận</span>
                   </button>
                 </div>
               </div>
-              
+
               <!-- Tab: Đánh giá -->
               <div id="tab-ratings" class="tab-content hidden">
                 <div class="flex items-center justify-between mb-6">
-                  <h3 class="font-bold text-xl text-on-surface">Đánh giá từ độc giả (<span th:text="${allRatings != null ? #lists.size(allRatings) : 0}">0</span>)</h3>
+                  <h3 class="font-bold text-xl text-on-surface">Đánh giá từ độc giả (<span
+                      th:text="${allRatings != null ? #lists.size(allRatings) : 0}">0</span>)</h3>
                 </div>
                 <div class="space-y-6" id="ratingsListContainer">
-                  <div th:each="rating : ${allRatings}" class="rating-item bg-surface-container-lowest p-5 rounded-xl border border-outline-variant/30 shadow-sm">
+                  <div th:each="rating : ${allRatings}"
+                    class="rating-item bg-surface-container-lowest p-5 rounded-xl border border-outline-variant/30 shadow-sm">
                     <div class="flex items-center justify-between mb-3">
                       <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full overflow-hidden bg-primary/10 flex items-center justify-center shrink-0 shadow-sm border border-outline-variant/30">
-                          <img th:if="${rating.user != null and rating.user.avatarUrl != null and !#strings.isEmpty(rating.user.avatarUrl)}"
-                               th:src="${rating.user.avatarUrl}" alt="Avatar"
-                               onerror="this.onerror=null;this.src='/images/default-avatar.jpg';"
-                               class="w-full h-full object-cover">
-                          <img th:unless="${rating.user != null and rating.user.avatarUrl != null and !#strings.isEmpty(rating.user.avatarUrl)}"
-                               src="/images/default-avatar.jpg" alt="Avatar" class="w-full h-full object-cover">
+                        <div
+                          class="w-10 h-10 rounded-full overflow-hidden bg-primary/10 flex items-center justify-center shrink-0 shadow-sm border border-outline-variant/30">
+                          <img
+                            th:if="${rating.user != null and rating.user.avatarUrl != null and !#strings.isEmpty(rating.user.avatarUrl)}"
+                            th:src="${rating.user.avatarUrl}" alt="Avatar"
+                            onerror="this.onerror=null;this.src='/images/default-avatar.jpg';"
+                            class="w-full h-full object-cover">
+                          <img
+                            th:unless="${rating.user != null and rating.user.avatarUrl != null and !#strings.isEmpty(rating.user.avatarUrl)}"
+                            src="/images/default-avatar.jpg" alt="Avatar" class="w-full h-full object-cover">
                         </div>
                         <div>
-                          <div class="font-bold text-on-surface text-sm" th:text="${rating.user.fullName}">Tên user</div>
-                          <div class="text-xs text-tertiary" th:text="${#temporals.format(rating.updatedAt, 'dd/MM/yyyy HH:mm')}">Thời gian</div>
+                          <div class="font-bold text-on-surface text-sm" th:text="${rating.user.fullName}">Tên user
+                          </div>
+                          <div class="text-xs text-tertiary"
+                            th:text="${#temporals.format(rating.updatedAt, 'dd/MM/yyyy HH:mm')}">Thời gian</div>
                         </div>
                       </div>
                       <div class="flex items-center gap-3">
                         <div class="flex text-yellow-400 text-[14px]">
                           <th:block th:each="i : ${#numbers.sequence(1, 5)}">
                             <span th:if="${rating.rating >= i}" class="material-symbols-outlined icon-fill">star</span>
-                            <span th:if="${rating.rating < i}" class="material-symbols-outlined text-outline/30">star</span>
+                            <span th:if="${rating.rating < i}"
+                              class="material-symbols-outlined text-outline/30">star</span>
                           </th:block>
                         </div>
                         <!-- 3-dots menu for own review (Edit + Delete) -->
-                        <div sec:authorize="isAuthenticated()"
-                             th:if="${#authentication.name == rating.user.email}"
-                             class="relative inline-block text-left review-action-menu">
-                          <button type="button"
-                                  onclick="toggleReviewActionDropdown(event, this)"
-                                  class="w-8 h-8 rounded-full flex items-center justify-center text-outline hover:text-on-surface hover:bg-surface-container-high transition-colors focus:outline-none"
-                                  title="Tùy chọn đánh giá">
+                        <div sec:authorize="isAuthenticated()" th:if="${#authentication.name == rating.user.email}"
+                          class="relative inline-block text-left review-action-menu">
+                          <button type="button" onclick="toggleReviewActionDropdown(event, this)"
+                            class="w-8 h-8 rounded-full flex items-center justify-center text-outline hover:text-on-surface hover:bg-surface-container-high transition-colors focus:outline-none"
+                            title="Tùy chọn đánh giá">
                             <span class="material-symbols-outlined text-[19px]">more_vert</span>
                           </button>
                           <!-- Dropdown popup card -->
-                          <div class="review-action-dropdown hidden absolute right-0 mt-1 w-32 rounded-xl bg-surface-container-lowest border border-outline-variant/40 shadow-lg py-1.5 z-20 animate-in fade-in zoom-in-95 duration-150">
-                            <button type="button"
-                                    onclick="toggleEditReviewFromMenu(this)"
-                                    class="w-full text-left px-3.5 py-2 text-xs font-semibold text-tertiary hover:text-on-surface hover:bg-surface-container-high transition-colors flex items-center gap-2">
+                          <div
+                            class="review-action-dropdown hidden absolute right-0 mt-1 w-32 rounded-xl bg-surface-container-lowest border border-outline-variant/40 shadow-lg py-1.5 z-20 animate-in fade-in zoom-in-95 duration-150">
+                            <button type="button" onclick="toggleEditReviewFromMenu(this)"
+                              class="w-full text-left px-3.5 py-2 text-xs font-semibold text-tertiary hover:text-on-surface hover:bg-surface-container-high transition-colors flex items-center gap-2">
                               <span class="material-symbols-outlined text-[16px] text-[#c08d41]">edit_note</span>
                               <span>Sửa</span>
                             </button>
-                            <button type="button"
-                                    th:data-action="@{/truyen/{slug}/rating/delete(slug=${novel.slug})}"
-                                    onclick="openDeleteRatingModal(this)"
-                                    class="w-full text-left px-3.5 py-2 text-xs font-semibold text-rose-500 hover:text-rose-700 hover:bg-rose-50/60 transition-colors flex items-center gap-2">
+                            <button type="button" th:data-action="@{/truyen/{slug}/rating/delete(slug=${novel.slug})}"
+                              onclick="openDeleteRatingModal(this)"
+                              class="w-full text-left px-3.5 py-2 text-xs font-semibold text-rose-500 hover:text-rose-700 hover:bg-rose-50/60 transition-colors flex items-center gap-2">
                               <span class="material-symbols-outlined text-[16px]">delete</span>
                               <span>Xóa</span>
                             </button>
@@ -671,39 +743,46 @@
                     </div>
 
                     <!-- Display review text -->
-                    <p class="review-display-text text-on-surface-variant text-sm leading-relaxed" th:text="${rating.reviewText != null and !rating.reviewText.isEmpty() ? rating.reviewText : 'Người dùng không để lại nhận xét.'}">Nhận xét</p>
+                    <p class="review-display-text text-on-surface-variant text-sm leading-relaxed"
+                      th:text="${rating.reviewText != null and !rating.reviewText.isEmpty() ? rating.reviewText : 'Người dùng không để lại nhận xét.'}">
+                      Nhận xét</p>
 
                     <!-- Edit review form (hidden by default) -->
-                    <div sec:authorize="isAuthenticated()"
-                         th:if="${#authentication.name == rating.user.email}"
-                         class="review-edit-form hidden mt-3 pt-3 border-t border-outline-variant/30">
+                    <div sec:authorize="isAuthenticated()" th:if="${#authentication.name == rating.user.email}"
+                      class="review-edit-form hidden mt-3 pt-3 border-t border-outline-variant/30">
                       <form th:action="@{/truyen/{slug}/rating/edit(slug=${novel.slug})}" method="POST">
-                        <label class="block text-xs font-semibold text-tertiary mb-1">Cập nhật số sao & nhận xét:</label>
-                        
+                        <label class="block text-xs font-semibold text-tertiary mb-1">Cập nhật số sao & nhận
+                          xét:</label>
+
                         <!-- Star Selector in Edit Form -->
                         <div class="flex items-center gap-3 mb-3">
                           <input type="hidden" name="rating" class="edit-rating-input" th:value="${rating.rating}">
                           <div class="flex items-center gap-1 text-2xl edit-star-container">
-                            <button type="button" class="edit-rating-star hover:scale-110 transition-transform" data-val="1">★</button>
-                            <button type="button" class="edit-rating-star hover:scale-110 transition-transform" data-val="2">★</button>
-                            <button type="button" class="edit-rating-star hover:scale-110 transition-transform" data-val="3">★</button>
-                            <button type="button" class="edit-rating-star hover:scale-110 transition-transform" data-val="4">★</button>
-                            <button type="button" class="edit-rating-star hover:scale-110 transition-transform" data-val="5">★</button>
+                            <button type="button" class="edit-rating-star hover:scale-110 transition-transform"
+                              data-val="1">★</button>
+                            <button type="button" class="edit-rating-star hover:scale-110 transition-transform"
+                              data-val="2">★</button>
+                            <button type="button" class="edit-rating-star hover:scale-110 transition-transform"
+                              data-val="3">★</button>
+                            <button type="button" class="edit-rating-star hover:scale-110 transition-transform"
+                              data-val="4">★</button>
+                            <button type="button" class="edit-rating-star hover:scale-110 transition-transform"
+                              data-val="5">★</button>
                           </div>
                           <span class="edit-rating-label text-xs font-bold text-primary">5 sao</span>
                         </div>
 
                         <textarea name="reviewText" rows="3" maxlength="500"
-                                  class="w-full px-3 py-2 rounded-xl border border-outline-variant bg-surface text-on-surface focus:outline-none focus:border-primary text-sm resize-none mb-2"
-                                  placeholder="Nhập nội dung nhận xét mới..."
-                                  th:text="${rating.reviewText != null ? rating.reviewText : ''}"></textarea>
+                          class="w-full px-3 py-2 rounded-xl border border-outline-variant bg-surface text-on-surface focus:outline-none focus:border-primary text-sm resize-none mb-2"
+                          placeholder="Nhập nội dung nhận xét mới..."
+                          th:text="${rating.reviewText != null ? rating.reviewText : ''}"></textarea>
                         <div class="flex justify-end gap-2">
                           <button type="button" onclick="cancelEditReview(this)"
-                                  class="px-3.5 py-1.5 rounded-full border border-outline-variant text-tertiary hover:bg-surface-container font-semibold text-xs transition-colors">
+                            class="px-3.5 py-1.5 rounded-full border border-outline-variant text-tertiary hover:bg-surface-container font-semibold text-xs transition-colors">
                             Hủy
                           </button>
                           <button type="submit"
-                                  class="px-4 py-1.5 rounded-full bg-primary hover:bg-primary-container text-white font-bold text-xs shadow-sm transition-colors flex items-center gap-1">
+                            class="px-4 py-1.5 rounded-full bg-primary hover:bg-primary-container text-white font-bold text-xs shadow-sm transition-colors flex items-center gap-1">
                             <span class="material-symbols-outlined text-[14px]">save</span>
                             <span>Lưu thay đổi</span>
                           </button>
@@ -711,7 +790,8 @@
                       </form>
                     </div>
                   </div>
-                  <div th:if="${allRatings == null or #lists.isEmpty(allRatings)}" class="text-center text-tertiary py-12 border-2 border-dashed border-outline-variant rounded-xl">
+                  <div th:if="${allRatings == null or #lists.isEmpty(allRatings)}"
+                    class="text-center text-tertiary py-12 border-2 border-dashed border-outline-variant rounded-xl">
                     <span class="material-symbols-outlined text-4xl mb-2 text-outline">star_rate</span>
                     <p>Chưa có đánh giá nào cho truyện này.</p>
                   </div>
@@ -720,40 +800,43 @@
                 <!-- Load More Ratings Button -->
                 <div id="loadMoreRatingsWrapper" class="hidden text-center pt-6">
                   <button type="button" id="loadMoreRatingsBtn" onclick="loadMoreRatings()"
-                          class="px-6 py-2.5 rounded-full border border-outline-variant hover:border-primary text-tertiary hover:text-primary font-semibold text-sm transition-all inline-flex items-center gap-2 hover:bg-surface-container-lowest shadow-sm">
+                    class="px-6 py-2.5 rounded-full border border-outline-variant hover:border-primary text-tertiary hover:text-primary font-semibold text-sm transition-all inline-flex items-center gap-2 hover:bg-surface-container-lowest shadow-sm">
                     <span class="material-symbols-outlined text-[18px]">expand_more</span>
                     <span>Tải thêm đánh giá</span>
                   </button>
                 </div>
               </div>
-              
+
             </div>
-            
+
             <!-- Sidebar (Right) -->
             <div class="lg:col-span-4">
               <div class="flex items-center justify-between mb-4">
                 <h3 class="font-bold text-lg text-on-surface">Cùng tác giả</h3>
-                <a th:href="@{/search(q=${novel.author})}" class="text-xs font-semibold text-primary hover:underline">Xem tất cả</a>
+                <a th:href="@{/search(q=${novel.author})}"
+                  class="text-xs font-semibold text-primary hover:underline">Xem tất cả</a>
               </div>
-              
+
               <div class="space-y-3">
-                <a th:each="authorNovel : ${sameAuthorNovels}"
-                   th:href="@{/truyen/{slug}(slug=${authorNovel.slug})}"
-                   class="flex items-start gap-3 p-3 hover:bg-surface-container-lowest rounded-xl transition-colors group">
-                  <img th:src="${authorNovel.coverUrl != null and !#strings.isEmpty(authorNovel.coverUrl) ? authorNovel.coverUrl : '/images/default-cover.jpg'}"
-                       onerror="this.onerror=null;this.src='/images/default-cover.jpg';"
-                       class="w-12 h-[68px] rounded object-cover shadow-sm flex-shrink-0"
-                       alt="Cover">
+                <a th:each="authorNovel : ${sameAuthorNovels}" th:href="@{/truyen/{slug}(slug=${authorNovel.slug})}"
+                  class="flex items-start gap-3 p-3 hover:bg-surface-container-lowest rounded-xl transition-colors group">
+                  <img
+                    th:src="${authorNovel.coverUrl != null and !#strings.isEmpty(authorNovel.coverUrl) ? authorNovel.coverUrl : '/images/default-cover.jpg'}"
+                    onerror="this.onerror=null;this.src='/images/default-cover.jpg';"
+                    class="w-12 h-[68px] rounded object-cover shadow-sm flex-shrink-0" alt="Cover">
                   <div class="flex flex-col min-w-0">
-                    <span class="font-bold text-sm text-on-surface group-hover:text-primary line-clamp-2 leading-snug transition-colors"
-                          th:text="${authorNovel.title}">Tác phẩm</span>
+                    <span
+                      class="font-bold text-sm text-on-surface group-hover:text-primary line-clamp-2 leading-snug transition-colors"
+                      th:text="${authorNovel.title}">Tác phẩm</span>
                     <span class="text-xs text-tertiary mt-1 flex items-center gap-1">
                       <span class="material-symbols-outlined text-[14px]">visibility</span>
-                      <span th:text="${authorNovel.views != null ? authorNovel.views : 0} + ' lượt đọc'">0 lượt đọc</span>
+                      <span th:text="${authorNovel.views != null ? authorNovel.views : 0} + ' lượt xem'">0 lượt
+                        xem</span>
                     </span>
                   </div>
                 </a>
-                <div th:if="${#lists.isEmpty(sameAuthorNovels)}" class="p-4 rounded-xl bg-surface-container-lowest border border-outline-variant/30 text-center text-xs text-tertiary">
+                <div th:if="${#lists.isEmpty(sameAuthorNovels)}"
+                  class="p-4 rounded-xl bg-surface-container-lowest border border-outline-variant/30 text-center text-xs text-tertiary">
                   Chưa có tác phẩm nào khác của tác giả này.
                 </div>
               </div>
@@ -766,14 +849,17 @@
   <div th:replace="~{fragments/footer :: main-footer}"></div>
 
   <!-- Rating Modal (M4-F10) -->
-  <div sec:authorize="isAuthenticated()" id="ratingModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm hidden">
-    <div class="bg-surface rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl border border-outline-variant/30 animate-in fade-in zoom-in-95 duration-200">
+  <div sec:authorize="isAuthenticated()" id="ratingModal"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm hidden">
+    <div
+      class="bg-surface rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl border border-outline-variant/30 animate-in fade-in zoom-in-95 duration-200">
       <div class="flex items-center justify-between pb-4 border-b border-outline-variant/30 mb-4">
         <h3 class="font-bold text-lg text-on-surface flex items-center gap-2">
           <span class="material-symbols-outlined text-yellow-500 icon-fill">star</span>
           <span th:text="${userRating != null ? 'Đánh giá của bạn' : 'Đánh giá truyện'}">Đánh giá truyện</span>
         </h3>
-        <button type="button" onclick="closeRatingModal()" class="text-tertiary hover:text-on-surface rounded-full p-1 transition-colors">
+        <button type="button" onclick="closeRatingModal()"
+          class="text-tertiary hover:text-on-surface rounded-full p-1 transition-colors">
           <span class="material-symbols-outlined text-[20px]">close</span>
         </button>
       </div>
@@ -785,12 +871,13 @@
           <span>Bạn đã đánh giá bộ truyện này</span>
         </div>
         <p class="text-xs text-amber-800 leading-relaxed mb-3">
-          Mỗi độc giả chỉ được đánh giá 1 lần duy nhất. Nếu muốn thay đổi số sao hoặc viết lại nhận xét, bạn cần <strong>xóa đánh giá hiện tại</strong> trước.
+          Mỗi độc giả chỉ được đánh giá 1 lần duy nhất. Nếu muốn thay đổi số sao hoặc viết lại nhận xét, bạn cần
+          <strong>xóa đánh giá hiện tại</strong> trước.
         </p>
         <form th:action="@{/truyen/{slug}/rating/delete(slug=${novel.slug})}" method="POST"
-              onsubmit="return confirm('Bạn có chắc chắn muốn xóa đánh giá của mình? Sau khi xóa bạn có thể đánh giá lại.');">
+          onsubmit="return confirm('Bạn có chắc chắn muốn xóa đánh giá của mình? Sau khi xóa bạn có thể đánh giá lại.');">
           <button type="submit"
-                  class="px-5 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold text-sm rounded-full shadow transition-all flex items-center justify-center gap-1.5 mx-auto">
+            class="px-5 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold text-sm rounded-full shadow transition-all flex items-center justify-center gap-1.5 mx-auto">
             <span class="material-symbols-outlined text-[18px]">delete</span>
             <span>Xóa đánh giá để đánh giá lại</span>
           </button>
@@ -798,38 +885,45 @@
       </div>
 
       <!-- Form only available if user has NOT rated yet -->
-      <form th:if="${userRating == null}" th:action="@{/truyen/{slug}/rating(slug=${novel.slug})}" method="POST" id="ratingForm">
+      <form th:if="${userRating == null}" th:action="@{/truyen/{slug}/rating(slug=${novel.slug})}" method="POST"
+        id="ratingForm">
         <input type="hidden" name="rating" id="selectedRating" value="5">
 
         <!-- Star Selector -->
         <div class="text-center my-4">
           <p class="text-sm text-tertiary mb-2">Chọn số sao đánh giá:</p>
           <div class="flex justify-center items-center gap-2 text-3xl" id="starContainer">
-            <button type="button" class="rating-star hover:scale-110 transition-transform text-yellow-400" data-val="1">★</button>
-            <button type="button" class="rating-star hover:scale-110 transition-transform text-yellow-400" data-val="2">★</button>
-            <button type="button" class="rating-star hover:scale-110 transition-transform text-yellow-400" data-val="3">★</button>
-            <button type="button" class="rating-star hover:scale-110 transition-transform text-yellow-400" data-val="4">★</button>
-            <button type="button" class="rating-star hover:scale-110 transition-transform text-yellow-400" data-val="5">★</button>
+            <button type="button" class="rating-star hover:scale-110 transition-transform text-yellow-400"
+              data-val="1">★</button>
+            <button type="button" class="rating-star hover:scale-110 transition-transform text-yellow-400"
+              data-val="2">★</button>
+            <button type="button" class="rating-star hover:scale-110 transition-transform text-yellow-400"
+              data-val="3">★</button>
+            <button type="button" class="rating-star hover:scale-110 transition-transform text-yellow-400"
+              data-val="4">★</button>
+            <button type="button" class="rating-star hover:scale-110 transition-transform text-yellow-400"
+              data-val="5">★</button>
           </div>
           <p id="ratingLabel" class="text-sm font-semibold text-primary mt-2">5 sao - Tuyệt phẩm</p>
         </div>
 
         <!-- Review Text -->
         <div class="mb-4">
-          <label for="reviewText" class="block text-xs font-semibold uppercase tracking-wider text-outline mb-1">Cảm nhận của bạn (Tùy chọn)</label>
+          <label for="reviewText" class="block text-xs font-semibold uppercase tracking-wider text-outline mb-1">Cảm
+            nhận của bạn (Tùy chọn)</label>
           <textarea id="reviewText" name="reviewText" rows="3" maxlength="500"
-                    class="w-full px-3 py-2 rounded-xl border border-outline-variant bg-surface-container-lowest text-on-surface focus:outline-none focus:border-primary text-sm resize-none"
-                    placeholder="Chia sẻ cảm nghĩ về cốt truyện, nhân vật, hành văn..."></textarea>
+            class="w-full px-3 py-2 rounded-xl border border-outline-variant bg-surface-container-lowest text-on-surface focus:outline-none focus:border-primary text-sm resize-none"
+            placeholder="Chia sẻ cảm nghĩ về cốt truyện, nhân vật, hành văn..."></textarea>
         </div>
 
         <!-- Action Buttons -->
         <div class="flex justify-end gap-3 pt-2">
-          <button type="button" onclick="closeRatingModal()" 
-                  class="px-5 py-2 rounded-full border border-outline-variant text-tertiary hover:bg-surface-container font-semibold text-sm transition-colors">
+          <button type="button" onclick="closeRatingModal()"
+            class="px-5 py-2 rounded-full border border-outline-variant text-tertiary hover:bg-surface-container font-semibold text-sm transition-colors">
             Hủy
           </button>
-          <button type="submit" 
-                  class="px-6 py-2 rounded-full bg-primary hover:bg-primary-container text-white font-bold text-sm shadow-md transition-colors">
+          <button type="submit"
+            class="px-6 py-2 rounded-full bg-primary hover:bg-primary-container text-white font-bold text-sm shadow-md transition-colors">
             Gửi đánh giá
           </button>
         </div>
@@ -838,35 +932,40 @@
   </div>
 
   <!-- Must Read Modal (Yêu cầu đọc ít nhất 1 chương) -->
-  <div sec:authorize="isAuthenticated()" id="mustReadModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm hidden">
-    <div class="bg-surface rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl border border-outline-variant/30 animate-in fade-in zoom-in-95 duration-200">
+  <div sec:authorize="isAuthenticated()" id="mustReadModal"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm hidden">
+    <div
+      class="bg-surface rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl border border-outline-variant/30 animate-in fade-in zoom-in-95 duration-200">
       <div class="flex items-center justify-between pb-3 border-b border-outline-variant/30 mb-4">
         <h3 class="font-bold text-lg text-on-surface flex items-center gap-2">
           <span class="material-symbols-outlined text-amber-500">auto_stories</span>
           <span>Yêu cầu đọc truyện</span>
         </h3>
-        <button type="button" onclick="closeMustReadModal()" class="text-tertiary hover:text-on-surface rounded-full p-1 transition-colors">
+        <button type="button" onclick="closeMustReadModal()"
+          class="text-tertiary hover:text-on-surface rounded-full p-1 transition-colors">
           <span class="material-symbols-outlined text-[20px]">close</span>
         </button>
       </div>
 
       <div class="text-center py-2">
-        <div class="w-14 h-14 rounded-full bg-amber-500/10 text-amber-600 flex items-center justify-center mx-auto mb-3">
+        <div
+          class="w-14 h-14 rounded-full bg-amber-500/10 text-amber-600 flex items-center justify-center mx-auto mb-3">
           <span class="material-symbols-outlined text-[32px]">menu_book</span>
         </div>
         <h4 class="font-bold text-base text-on-surface mb-2">Bạn cần đọc ít nhất 1 chương</h4>
         <p class="text-xs text-tertiary leading-relaxed mb-6" id="mustReadModalDesc">
-          Để đảm bảo tính khách quan và chất lượng thảo luận, độc giả cần đọc ít nhất 1 chương của bộ truyện trước khi thực hiện thao tác này.
+          Để đảm bảo tính khách quan và chất lượng thảo luận, độc giả cần đọc ít nhất 1 chương của bộ truyện trước khi
+          thực hiện thao tác này.
         </p>
 
         <div class="flex items-center justify-center gap-3">
           <button type="button" onclick="closeMustReadModal()"
-                  class="px-5 py-2 rounded-full border border-outline-variant text-tertiary hover:bg-surface-container font-semibold text-xs transition-colors">
+            class="px-5 py-2 rounded-full border border-outline-variant text-tertiary hover:bg-surface-container font-semibold text-xs transition-colors">
             Đóng
           </button>
           <a th:if="${chapters != null and !#lists.isEmpty(chapters)}"
-             th:href="@{'/truyen/' + ${novel.slug} + '/chuong-' + ${chapters[0].chapterNumber}}"
-             class="px-5 py-2 rounded-full bg-primary hover:bg-primary-container text-white font-bold text-xs shadow-md transition-all flex items-center gap-1.5">
+            th:href="@{'/truyen/' + ${novel.slug} + '/chuong-' + ${chapters[0].chapterNumber}}"
+            class="px-5 py-2 rounded-full bg-primary hover:bg-primary-container text-white font-bold text-xs shadow-md transition-all flex items-center gap-1.5">
             <span class="material-symbols-outlined text-[16px]">menu_book</span>
             <span>Đọc chương 1 ngay</span>
           </a>
@@ -876,32 +975,41 @@
   </div>
 
   <!-- POPUP CONFIRMATION MODAL DELETE (CHUẨN THEO STYLE TỦ SÁCH BOOKSHELF) -->
-  <div id="generalDeleteModalBackdrop" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-[3px] transition-opacity duration-300 hidden items-center justify-center p-4">
-    <div id="generalDeleteModalCard" class="relative w-full max-w-[440px] bg-surface rounded-2xl shadow-[0_24px_48px_-12px_rgba(57,46,37,0.35),0_4px_16px_rgba(107,91,75,0.08)] border border-outline-variant/40 p-6 sm:p-7 space-y-5 transform transition-all duration-300 scale-95 opacity-0">
-      
+  <div id="generalDeleteModalBackdrop"
+    class="fixed inset-0 z-50 bg-black/60 backdrop-blur-[3px] transition-opacity duration-300 hidden items-center justify-center p-4">
+    <div id="generalDeleteModalCard"
+      class="relative w-full max-w-[440px] bg-surface rounded-2xl shadow-[0_24px_48px_-12px_rgba(57,46,37,0.35),0_4px_16px_rgba(107,91,75,0.08)] border border-outline-variant/40 p-6 sm:p-7 space-y-5 transform transition-all duration-300 scale-95 opacity-0">
+
       <!-- Close Button '✕' top-right -->
       <button aria-label="Đóng cửa sổ" type="button" onclick="closeGeneralDeleteModal()"
-              class="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center text-outline hover:text-on-surface hover:bg-surface-container-high transition-colors focus:outline-none">
+        class="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center text-outline hover:text-on-surface hover:bg-surface-container-high transition-colors focus:outline-none">
         <span class="material-symbols-outlined text-[20px]">close</span>
       </button>
 
       <!-- Top Icon & Header -->
       <div class="flex flex-col items-center text-center space-y-2.5 pt-1">
-        <div class="w-14 h-14 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center shadow-inner relative">
-          <span class="material-symbols-outlined text-[30px] select-none text-rose-600" id="generalDeleteIcon">delete</span>
+        <div
+          class="w-14 h-14 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center shadow-inner relative">
+          <span class="material-symbols-outlined text-[30px] select-none text-rose-600"
+            id="generalDeleteIcon">delete</span>
         </div>
-        <span class="font-label-sm text-label-sm uppercase tracking-widest text-secondary font-semibold" id="generalDeleteSubTitle">Xác nhận thao tác</span>
+        <span class="font-label-sm text-label-sm uppercase tracking-widest text-secondary font-semibold"
+          id="generalDeleteSubTitle">Xác nhận thao tác</span>
         <h2 class="font-bold text-xl text-on-surface tracking-tight" id="generalDeleteTitle">Xóa nội dung?</h2>
       </div>
 
       <!-- Preview Snippet Card -->
-      <div id="generalDeletePreviewBox" class="p-3.5 rounded-xl bg-surface-container-low border border-outline-variant/30 flex items-start gap-3 shadow-sm">
-        <div class="w-8 h-8 rounded-full overflow-hidden bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+      <div id="generalDeletePreviewBox"
+        class="p-3.5 rounded-xl bg-surface-container-low border border-outline-variant/30 flex items-start gap-3 shadow-sm">
+        <div
+          class="w-8 h-8 rounded-full overflow-hidden bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
           <span class="material-symbols-outlined text-primary text-[18px]" id="generalDeleteSnippetIcon">chat</span>
         </div>
         <div class="min-w-0 flex-1">
-          <p id="generalDeleteSnippetType" class="text-[11px] font-bold text-secondary uppercase tracking-wider mb-0.5">Bình luận</p>
-          <p id="generalDeleteSnippetText" class="text-xs text-on-surface leading-relaxed line-clamp-3 italic">Nội dung...</p>
+          <p id="generalDeleteSnippetType" class="text-[11px] font-bold text-secondary uppercase tracking-wider mb-0.5">
+            Bình luận</p>
+          <p id="generalDeleteSnippetText" class="text-xs text-on-surface leading-relaxed line-clamp-3 italic">Nội
+            dung...</p>
         </div>
       </div>
 
@@ -915,11 +1023,11 @@
         <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
         <div class="flex flex-col-reverse sm:flex-row items-center gap-3 pt-1">
           <button type="button" onclick="closeGeneralDeleteModal()"
-                  class="w-full sm:flex-1 py-2.5 px-4 rounded-full border border-outline-variant bg-transparent hover:bg-surface-container font-semibold text-xs text-tertiary hover:text-on-surface transition-all text-center focus:outline-none">
+            class="w-full sm:flex-1 py-2.5 px-4 rounded-full border border-outline-variant bg-transparent hover:bg-surface-container font-semibold text-xs text-tertiary hover:text-on-surface transition-all text-center focus:outline-none">
             Hủy
           </button>
           <button type="submit" id="generalConfirmDeleteBtn"
-                  class="w-full sm:flex-1 py-2.5 px-4 rounded-full bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-1.5 focus:outline-none">
+            class="w-full sm:flex-1 py-2.5 px-4 rounded-full bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-1.5 focus:outline-none">
             <span class="material-symbols-outlined text-[16px]">delete</span>
             <span id="generalDeleteConfirmBtnText">Xác nhận xóa</span>
           </button>
@@ -1050,7 +1158,7 @@
       if (title) title.textContent = 'Xóa đánh giá của bạn?';
       if (subTitle) subTitle.textContent = 'Thao tác đánh giá';
       if (desc) desc.textContent = 'Bạn có chắc chắn muốn xóa đánh giá của mình không? Sau khi xóa, bạn có thể thực hiện đánh giá và chấm điểm lại.';
-      
+
       if (reviewText) {
         if (previewBox) previewBox.classList.remove('hidden');
         if (snippetType) snippetType.textContent = 'Đánh giá truyện';
@@ -1193,19 +1301,19 @@
         btn.classList.remove('border-primary', 'text-primary');
         btn.classList.add('border-transparent', 'text-tertiary');
       });
-      
+
       // Show selected content
       document.getElementById('tab-' + tabId).classList.remove('hidden');
       document.getElementById('tab-' + tabId).classList.add('block');
-      
+
       // Activate selected tab
       const activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(btn => btn.getAttribute('onclick').includes(tabId));
-      if(activeBtn) {
+      if (activeBtn) {
         activeBtn.classList.add('border-primary', 'text-primary');
         activeBtn.classList.remove('border-transparent', 'text-tertiary');
       }
     }
-    
+
     // Rating Modal functions
     function openRatingModal() {
       const modal = document.getElementById('ratingModal');
@@ -1383,37 +1491,37 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-       if (window.location.hash === '#chapters') {
-           switchTab('chapters');
-       } else if (window.location.hash === '#comments') {
-           switchTab('comments');
-       } else if (window.location.hash === '#ratings') {
-           switchTab('ratings');
-       }
+      if (window.location.hash === '#chapters') {
+        switchTab('chapters');
+      } else if (window.location.hash === '#comments') {
+        switchTab('comments');
+      } else if (window.location.hash === '#ratings') {
+        switchTab('ratings');
+      }
 
-       // Setup rating stars interactive behavior
-       const stars = document.querySelectorAll('.rating-star');
-       const ratingInput = document.getElementById('selectedRating');
-       if (stars && ratingInput) {
-         stars.forEach(star => {
-           star.addEventListener('click', () => {
-             const val = parseInt(star.getAttribute('data-val'));
-             ratingInput.value = val;
-             updateStarHighlight(val);
-           });
-           star.addEventListener('mouseenter', () => {
-             const val = parseInt(star.getAttribute('data-val'));
-             updateStarHighlight(val);
-           });
-         });
-         const container = document.getElementById('starContainer');
-         if (container) {
-           container.addEventListener('mouseleave', () => {
-             const val = parseInt(ratingInput.value) || 5;
-             updateStarHighlight(val);
-           });
-         }
-       }
+      // Setup rating stars interactive behavior
+      const stars = document.querySelectorAll('.rating-star');
+      const ratingInput = document.getElementById('selectedRating');
+      if (stars && ratingInput) {
+        stars.forEach(star => {
+          star.addEventListener('click', () => {
+            const val = parseInt(star.getAttribute('data-val'));
+            ratingInput.value = val;
+            updateStarHighlight(val);
+          });
+          star.addEventListener('mouseenter', () => {
+            const val = parseInt(star.getAttribute('data-val'));
+            updateStarHighlight(val);
+          });
+        });
+        const container = document.getElementById('starContainer');
+        if (container) {
+          container.addEventListener('mouseleave', () => {
+            const val = parseInt(ratingInput.value) || 5;
+            updateStarHighlight(val);
+          });
+        }
+      }
     });
 
     // Chapter sorting logic
@@ -1421,27 +1529,27 @@
       const sortBtn = document.getElementById('sortChaptersBtn');
       const sortText = document.getElementById('sortChaptersText');
       const container = document.getElementById('chaptersContainer');
-      if(sortBtn && container) {
+      if (sortBtn && container) {
         let isAsc = true;
         sortBtn.addEventListener('click', () => {
           isAsc = !isAsc;
           sortText.textContent = isAsc ? 'Cũ → Mới' : 'Mới → Cũ';
-          
+
           // Lấy tất cả các thẻ a (chương truyện) trong container
           const chapters = Array.from(container.querySelectorAll('a'));
           // Nếu không có chương nào thì thoát
-          if(chapters.length === 0) return;
-          
+          if (chapters.length === 0) return;
+
           // Đảo ngược mảng
           chapters.reverse();
-          
+
           // Xóa tất cả các element hiện có trong container
           const emptyMsg = container.querySelector('div'); // Nếu có thông báo rỗng
           container.innerHTML = '';
-          
+
           // Render lại theo thứ tự mới
           chapters.forEach(chap => container.appendChild(chap));
-          if(emptyMsg) container.appendChild(emptyMsg);
+          if (emptyMsg) container.appendChild(emptyMsg);
         });
       }
     });
@@ -1490,4 +1598,5 @@
   <!-- Report Modals (UC-21 & UC-22) -->
   <div th:replace="~{fragments/report-modals :: report-modals}"></div>
 </body>
+
 </html>
