@@ -124,7 +124,7 @@ public class LeaderboardServiceImpl implements LeaderboardService {
                     list.add(new NovelRankData(n, views));
                 }
             }
-            // Sắp xếp: lượt đọc giảm dần -> nếu bằng nhau, xét average_rating giảm dần
+            // Sắp xếp: lượt xem giảm dần -> nếu bằng nhau, xét average_rating giảm dần
             list.sort((a, b) -> {
                 int cmp = Integer.compare(b.views, a.views);
                 if (cmp != 0) {
@@ -173,7 +173,7 @@ public class LeaderboardServiceImpl implements LeaderboardService {
         }
 
         List<NovelRankData> list = new ArrayList<>();
-        // Chỉ thêm những truyện có lượt đọc thật trong timeframe (> 0)
+        // Chỉ thêm những truyện có lượt xem thật trong timeframe (> 0)
         for (Map.Entry<Integer, Integer> entry : activityCountMap.entrySet()) {
             if (entry.getValue() > 0) {
                 Novel n = novelMap.get(entry.getKey());
@@ -184,8 +184,8 @@ public class LeaderboardServiceImpl implements LeaderboardService {
         }
 
         // Sắp xếp:
-        // 1. Lượt đọc timeframe giảm dần
-        // 2. Nếu lượt đọc timeframe bằng nhau -> xét average_rating (điểm sao) giảm dần
+        // 1. Lượt xem timeframe giảm dần
+        // 2. Nếu lượt xem timeframe bằng nhau -> xét average_rating (điểm sao) giảm dần
         // 3. Nếu average_rating vẫn bằng nhau -> đồng hạng (giữ cùng thứ bậc khi gán rank)
         list.sort((a, b) -> {
             int cmp = Integer.compare(b.views, a.views);
