@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.time.LocalDateTime;
 
 /** Persistence access for chapters. */
 public interface ChapterRepository extends JpaRepository<Chapter, Integer> {
@@ -36,4 +37,7 @@ public interface ChapterRepository extends JpaRepository<Chapter, Integer> {
 
     List<Chapter> findTop3ByNovelIdAndIsDeletedFalseAndStatusInOrderByChapterNumberDesc(
             Integer novelId, List<String> statuses);
+
+    List<Chapter> findAllByStatusAndPriceGreaterThanAndAutoUnlockAtLessThanEqualAndIsDeletedFalse(
+            String status, Integer price, LocalDateTime now);
 }

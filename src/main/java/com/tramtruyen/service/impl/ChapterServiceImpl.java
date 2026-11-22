@@ -20,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 /** Default business implementation for chapter creation. */
 @Service
@@ -27,6 +29,7 @@ public class ChapterServiceImpl implements ChapterService {
 
     private static final String ARCHIVED_STATUS = NovelStatus.ARCHIVED.name();
     private static final int DEFAULT_PRICE = 0;
+    private static final ZoneId APPLICATION_ZONE = ZoneId.of("Asia/Ho_Chi_Minh");
     public static final List<String> PUBLIC_STATUSES = Arrays.asList(
             ChapterStatus.PUBLISHED_REGULAR.name(),
             ChapterStatus.PUBLISHED_VIP.name(),
@@ -102,6 +105,7 @@ public class ChapterServiceImpl implements ChapterService {
                 .content(richTextSanitizer.sanitize(form.getContent()))
                 .status(resolveStatus(action, price))
                 .price(price)
+                .autoUnlockAt(resolveAutoUnlockAt(action, price, form.getAutoUnlockAt()))
                 .build();
         Chapter savedChapter = chapterRepository.save(chapter);
         
@@ -145,6 +149,7 @@ public class ChapterServiceImpl implements ChapterService {
         int price = resolvePrice(form);
         chapter.setStatus(resolveStatus(action, price));
         chapter.setPrice(price);
+        chapter.setAutoUnlockAt(resolveAutoUnlockAt(action, price, form.getAutoUnlockAt()));
         Chapter savedChapter = chapterRepository.save(chapter);
 
         // Cập nhật updatedAt của bộ truyện để hiển thị đúng ở mục "Mới cập nhật"
@@ -193,6 +198,22 @@ public class ChapterServiceImpl implements ChapterService {
     }
 
     @Override
+    @Transactional
+    public int releaseDueVipChapters() {
+        List<Chapter> dueChapters = chapterRepository
+                .findAllByStatusAndPriceGreaterThanAndAutoUnlockAtLessThanEqualAndIsDeletedFalse(
+                        ChapterStatus.PUBLISHED_VIP.name(), DEFAULT_PRICE,
+                        LocalDateTime.now(APPLICATION_ZONE));
+        for (Chapter chapter : dueChapters) {
+            chapter.setStatus(ChapterStatus.PUBLISHED_REGULAR.name());
+            chapter.setPrice(DEFAULT_PRICE);
+            chapter.setAutoUnlockAt(null);
+        }
+        chapterRepository.saveAll(dueChapters);
+        return dueChapters.size();
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public List<Chapter> getPublicChapters(Integer novelId) {
         findPublicNovel(novelId);
@@ -233,5 +254,15 @@ public class ChapterServiceImpl implements ChapterService {
             throw new IllegalArgumentException("Giá Coin phải lớn hơn hoặc bằng 0");
         }
         return price;
+    }
+
+    private LocalDateTime resolveAutoUnlockAt(ChapterSaveAction action, int price, LocalDateTime autoUnlockAt) {
+        if (action != ChapterSaveAction.PUBLISHED || price == DEFAULT_PRICE) {
+            return null;
+        }
+        if (autoUnlockAt != null && !autoUnlockAt.isAfter(LocalDateTime.now(APPLICATION_ZONE))) {
+            throw new IllegalArgumentException("Thời điểm mở miễn phí phải ở tương lai");
+        }
+        return autoUnlockAt;
     }
 }
