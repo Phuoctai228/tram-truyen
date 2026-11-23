@@ -35,6 +35,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Controller
 @RequiredArgsConstructor
@@ -173,6 +175,7 @@ public class NovelController {
         model.addAttribute("userRating", userRating);
         model.addAttribute("allRatings", allRatings);
         model.addAttribute("allComments", allComments);
+        model.addAttribute("scheduleNow", LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         return "novel/details";
     }
 
