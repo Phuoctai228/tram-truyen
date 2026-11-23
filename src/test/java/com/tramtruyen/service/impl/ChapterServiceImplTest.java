@@ -2,6 +2,7 @@ package com.tramtruyen.service.impl;
 
 import com.tramtruyen.dto.ChapterForm;
 import com.tramtruyen.dto.ChapterSaveAction;
+import com.tramtruyen.entity.Chapter;
 import com.tramtruyen.entity.Novel;
 import com.tramtruyen.entity.enums.ChapterStatus;
 import com.tramtruyen.exception.DuplicateResourceException;
@@ -17,10 +18,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Optional;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -118,6 +121,37 @@ class ChapterServiceImplTest {
         var result = chapterService.createChapter(1, chapterForm, ChapterSaveAction.PUBLISHED);
 
         assertThat(result.getStatus()).isEqualTo(ChapterStatus.PUBLISHED_VIP.name());
+    }
+
+    @Test
+    void createPublishedVipChapterStoresScheduledFreeRelease() {
+        Novel novel = Novel.builder().id(1).isDeleted(false).build();
+        LocalDateTime releaseAt = LocalDateTime.now().plusHours(2);
+        when(novelRepository.findByIdAndIsDeletedFalse(1)).thenReturn(Optional.of(novel));
+        when(chapterRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        ChapterForm chapterForm = form();
+        chapterForm.setPrice(25);
+        chapterForm.setAutoUnlockAt(releaseAt);
+
+        var result = chapterService.createChapter(1, chapterForm, ChapterSaveAction.PUBLISHED);
+
+        assertThat(result.getAutoUnlockAt()).isEqualTo(releaseAt);
+    }
+
+    @Test
+    void createPublishedVipChapterRejectsPastFreeRelease() {
+        Novel novel = Novel.builder().id(1).isDeleted(false).build();
+        when(novelRepository.findByIdAndIsDeletedFalse(1)).thenReturn(Optional.of(novel));
+
+        ChapterForm chapterForm = form();
+        chapterForm.setPrice(25);
+        chapterForm.setAutoUnlockAt(LocalDateTime.now().minusMinutes(1));
+
+        assertThatThrownBy(() -> chapterService.createChapter(1, chapterForm, ChapterSaveAction.PUBLISHED))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Thời điểm mở miễn phí phải ở tương lai");
+        verify(chapterRepository, never()).save(any());
     }
 
     @Test
@@ -337,6 +371,28 @@ class ChapterServiceImplTest {
         assertThat(novel.getViews()).isEqualTo(11);
         verify(chapterRepository).save(chapter);
         verify(novelRepository).save(novel);
+    }
+
+    @Test
+    void releaseDueVipChaptersMakesChaptersFreeAndClearsSchedule() {
+        Chapter chapter = Chapter.builder()
+                .status(ChapterStatus.PUBLISHED_VIP.name())
+                .price(25)
+                .autoUnlockAt(LocalDateTime.now().minusMinutes(1))
+                .isDeleted(false)
+                .build();
+        when(chapterRepository
+                .findAllByStatusAndPriceGreaterThanAndAutoUnlockAtLessThanEqualAndIsDeletedFalse(
+                        eq(ChapterStatus.PUBLISHED_VIP.name()), eq(0), any(LocalDateTime.class)))
+                .thenReturn(List.of(chapter));
+
+        int releasedCount = chapterService.releaseDueVipChapters();
+
+        assertThat(releasedCount).isEqualTo(1);
+        assertThat(chapter.getStatus()).isEqualTo(ChapterStatus.PUBLISHED_REGULAR.name());
+        assertThat(chapter.getPrice()).isZero();
+        assertThat(chapter.getAutoUnlockAt()).isNull();
+        verify(chapterRepository).saveAll(List.of(chapter));
     }
 
     private ChapterForm form() {

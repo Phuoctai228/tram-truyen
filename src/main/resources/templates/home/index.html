@@ -116,7 +116,7 @@
                                             <div class="flex items-center gap-1.5 font-body-md text-body-md">
                                                 <span class="material-symbols-outlined text-[18px]">visibility</span>
                                                 <span
-                                                    th:text="${(heroNovel.views != null ? #numbers.formatInteger(heroNovel.views, 1, 'POINT') : '0') + ' lượt đọc'}"></span>
+                                                    th:text="${(heroNovel.views != null ? #numbers.formatInteger(heroNovel.views, 1, 'POINT') : '0') + ' lượt xem'}"></span>
                                             </div>
                                             <span class="text-outline-variant">•</span>
                                             <!-- Favorites / Bookshelf -->
@@ -569,7 +569,7 @@
                                         class="font-label-sm text-label-sm text-tertiary flex items-center justify-end gap-0.5">
                                         <span
                                             class="material-symbols-outlined text-[14px] text-secondary">trending_up</span>
-                                        lượt đọc
+                                        lượt xem
                                     </span>
                                 </div>
                             </div>
@@ -810,7 +810,7 @@
                 <div class="text-center py-12 px-4 rounded-xl bg-surface-container-lowest border border-dashed border-outline-variant/40">
                     <span class="material-symbols-outlined text-[40px] text-primary/40 mb-2">workspace_premium</span>
                     <p class="text-label-lg font-bold text-on-surface">Chưa có dữ liệu xếp hạng</p>
-                    <p class="text-label-sm text-on-surface-variant">Chưa có lượt đọc nào được ghi nhận trong khoảng thời gian này.</p>
+                    <p class="text-label-sm text-on-surface-variant">Chưa có lượt xem nào được ghi nhận trong khoảng thời gian này.</p>
                 </div>`;
                 return;
             }
@@ -860,7 +860,7 @@
                         <span class="font-label-lg text-label-lg text-primary font-bold block">${formattedViews}</span>
                         <span class="font-label-sm text-label-sm text-tertiary flex items-center justify-end gap-0.5">
                             <span class="material-symbols-outlined text-[14px] text-secondary">trending_up</span>
-                            lượt đọc
+                            lượt xem
                         </span>
                     </div>
                 </div>`;
