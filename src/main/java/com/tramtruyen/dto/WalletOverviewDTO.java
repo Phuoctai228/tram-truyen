@@ -23,5 +23,7 @@ public class WalletOverviewDTO {
     private String statusText; // e.g. "Sẵn sàng sử dụng"
     private String lastUpdated; // e.g. "14:30 hôm nay"
     private long totalTransactions;
+    private int totalPages;
+    private int currentPage;
     private List<TransactionDTO> transactions;
 }

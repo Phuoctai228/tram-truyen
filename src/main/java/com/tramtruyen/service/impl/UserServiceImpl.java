@@ -25,9 +25,16 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy người dùng"));
 
-        if (fullName != null && !fullName.trim().isEmpty()) {
-            user.setFullName(fullName.trim());
+        if (fullName == null || fullName.trim().isEmpty()) {
+            throw new IllegalArgumentException("Họ và tên không được để trống");
         }
+
+        String trimmedName = fullName.trim();
+        if (!trimmedName.matches("^[\\p{L} ]+$")) {
+            throw new IllegalArgumentException("Họ và tên không được chứa số và ký tự đặc biệt");
+        }
+
+        user.setFullName(trimmedName);
 
         if (avatar != null && !avatar.isEmpty()) {
             String avatarUrl = mediaStorageService.uploadImage(avatar);
@@ -41,15 +48,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public boolean canChangePassword(String email) {
+        return userRepository.findByEmail(email)
+                .map(user -> !"GOOGLE".equalsIgnoreCase(user.getAuthProvider()))
+                .orElse(false);
+    }
+
+    @Override
     @Transactional
     public void changePassword(String email, String oldPassword, String newPassword) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy người dùng"));
-                
-        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+
+        if ("GOOGLE".equalsIgnoreCase(user.getAuthProvider())) {
+            throw new IllegalArgumentException("Tài khoản đăng nhập bằng Google không thể đổi mật khẩu.");
+        }
+
+        if (user.getPassword() == null || !passwordEncoder.matches(oldPassword, user.getPassword())) {
             throw new IllegalArgumentException("Mật khẩu cũ không chính xác");
         }
-        
+
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
     }

@@ -2,12 +2,14 @@ package com.tramtruyen.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
 public class RegisterRequestDTO {
-    @NotBlank(message = "Tên hiển thị không được để trống")
+    @NotBlank(message = "Họ và tên không được để trống")
+    @Pattern(regexp = "^[\\p{L} ]+$", message = "Họ và tên không được chứa số và ký tự đặc biệt")
     private String fullName;
 
     @NotBlank(message = "Email không được để trống")

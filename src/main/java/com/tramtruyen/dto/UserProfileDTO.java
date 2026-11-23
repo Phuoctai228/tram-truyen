@@ -23,4 +23,9 @@ public class UserProfileDTO {
     private Integer walletBalance;
     private LocalDateTime createdAt;
     private boolean isEmailVerified;
+    private String authProvider;
+
+    public boolean isGoogleAccount() {
+        return "GOOGLE".equalsIgnoreCase(this.authProvider);
+    }
 }

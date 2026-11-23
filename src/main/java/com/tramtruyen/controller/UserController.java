@@ -90,10 +90,13 @@ public class UserController {
     }
 
     @GetMapping("/change-password")
-    public String viewChangePassword(Authentication authentication) {
+    public String viewChangePassword(Authentication authentication, Model model) {
         if (authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
             return "redirect:/login?redirect=/user/change-password";
         }
+        String email = authentication.getName();
+        boolean isGoogleAccount = !userService.canChangePassword(email);
+        model.addAttribute("isGoogleAccount", isGoogleAccount);
         return "user/change-password";
     }
 

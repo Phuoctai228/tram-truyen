@@ -202,6 +202,8 @@ public class WalletServiceImpl implements WalletService {
                 .statusText(statusText)
                 .lastUpdated(lastUpdated)
                 .totalTransactions(totalTx)
+                .totalPages(initialPage.getTotalPages())
+                .currentPage(initialPage.getNumber())
                 .transactions(initialPage.getContent())
                 .build();
     }
