@@ -126,6 +126,8 @@ public class SystemAuditLogAdminController {
                                      @RequestParam(required = false, defaultValue = "all") String timeRange,
                                      @RequestParam(required = false, defaultValue = "") String startDate,
                                      @RequestParam(required = false, defaultValue = "") String endDate,
+                                     org.springframework.security.core.Authentication authentication,
+                                     jakarta.servlet.http.HttpServletRequest request,
                                      RedirectAttributes redirectAttributes,
                                      Model model) {
         Integer parsedId;
@@ -138,6 +140,10 @@ public class SystemAuditLogAdminController {
 
         try {
             SystemAuditLogDetailDTO detail = systemAuditLogService.getAuditLogDetail(parsedId);
+            String viewer = (authentication != null) ? authentication.getName() : "unknown";
+            String clientIp = (request != null) ? request.getRemoteAddr() : "unknown";
+            log.info("AUDIT_ACCESS: Admin '{}' inspected system_audit_logs#{} (action={}) from IP {}",
+                    viewer, parsedId, detail.getActionType(), clientIp);
 
             // Tham số giữ lại bộ lọc cho nút "Quay lại danh sách"
             model.addAttribute("detail", detail);

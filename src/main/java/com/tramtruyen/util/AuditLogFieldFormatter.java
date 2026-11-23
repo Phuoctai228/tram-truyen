@@ -23,6 +23,17 @@ public final class AuditLogFieldFormatter {
     private static final Pattern ISO_DATETIME_PATTERN = Pattern.compile("^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}.*");
     private static final DateTimeFormatter HANOI_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
+    // 0. Từ khóa trường nhạy cảm cần che dữ liệu (BR-25: Audit Log Security & Masking)
+    private static final List<String> SENSITIVE_KEY_TOKENS = List.of(
+            "password", "passwd", "secret", "token", "api_key", "apikey",
+            "private_key", "access_key", "hash_secret", "otp", "cookie",
+            "credential", "authorization"
+    );
+    private static final Pattern PLAIN_SECRET_PATTERN = Pattern.compile(
+            "(?i)(password|passwd|secret|token|api_key|apikey|otp|authorization|credential)(\\s*[:=]\\s*)([^\\s,;\"']+)"
+    );
+    private static final String MASKED_SECRET = "********";
+
     // 1. Ánh xạ khóa JSON sang nhãn tiếng Việt thân thiện
     private static final Map<String, String> FIELD_LABEL_MAP = Map.ofEntries(
             Map.entry("vnd_to_coin_rate", "Tỷ giá quy đổi (VNĐ / Coin)"),
@@ -124,6 +135,44 @@ public final class AuditLogFieldFormatter {
         return FIELD_LABEL_MAP.getOrDefault(fieldName, fieldName);
     }
 
+    public static boolean isSensitiveKey(String fieldName) {
+        if (fieldName == null || fieldName.isBlank()) {
+            return false;
+        }
+        String lower = fieldName.trim().toLowerCase(Locale.ROOT);
+        for (String token : SENSITIVE_KEY_TOKENS) {
+            if (lower.contains(token)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static String maskPersonalEmail(String email) {
+        if (email == null || !email.contains("@")) {
+            return email;
+        }
+        int atIdx = email.indexOf('@');
+        if (atIdx <= 2) {
+            return "***" + email.substring(atIdx);
+        }
+        return email.substring(0, 2) + "***" + email.substring(atIdx);
+    }
+
+    public static String maskPhoneNumber(String phone) {
+        if (phone == null || phone.length() < 6) {
+            return MASKED_SECRET;
+        }
+        return phone.substring(0, 3) + "****" + phone.substring(phone.length() - 3);
+    }
+
+    public static String sanitizePlainText(String rawText) {
+        if (rawText == null || rawText.isBlank()) {
+            return rawText;
+        }
+        return PLAIN_SECRET_PATTERN.matcher(rawText).replaceAll("$1$2" + MASKED_SECRET);
+    }
+
     public static String formatValue(String key, Object rawValue) {
         if (rawValue == null) {
             return "(trống)";
@@ -131,6 +180,21 @@ public final class AuditLogFieldFormatter {
         String strVal = String.valueOf(rawValue).trim();
         if (strVal.isEmpty() || "null".equalsIgnoreCase(strVal)) {
             return "(trống)";
+        }
+
+        // 0. Che dữ liệu nhạy cảm & thông tin cá nhân (BR-25)
+        if (isSensitiveKey(key)) {
+            return MASKED_SECRET;
+        }
+        if (key != null) {
+            String lowerKey = key.trim().toLowerCase(Locale.ROOT);
+            if ((lowerKey.equals("email") || lowerKey.equals("user_email") || lowerKey.equals("useremail"))
+                    && strVal.contains("@")) {
+                return maskPersonalEmail(strVal);
+            }
+            if (lowerKey.equals("phone") || lowerKey.equals("phone_number") || lowerKey.equals("phonenumber")) {
+                return maskPhoneNumber(strVal);
+            }
         }
 
         // 1. Theo key cụ thể
@@ -226,8 +290,13 @@ public final class AuditLogFieldFormatter {
             String formattedOld = formatValue(key, oVal);
             String formattedNew = formatValue(key, nVal);
 
-            // Bỏ qua nếu sau khi định dạng vẫn hoàn toàn giống nhau
-            if (Objects.equals(formattedOld, formattedNew)) {
+            // Nếu là trường nhạy cảm có thay đổi giá trị, vẫn giữ dòng diff ở dạng đã che
+            if (isSensitiveKey(key)) {
+                if (oVal != null && nVal != null) {
+                    formattedNew = MASKED_SECRET + " (đã cập nhật)";
+                }
+            } else if (Objects.equals(formattedOld, formattedNew)) {
+                // Bỏ qua nếu sau khi định dạng vẫn hoàn toàn giống nhau
                 continue;
             }
 
