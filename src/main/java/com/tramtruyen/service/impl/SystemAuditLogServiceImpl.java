@@ -400,13 +400,13 @@ public class SystemAuditLogServiceImpl implements SystemAuditLogService {
             if (oldBlank && newBlank) {
                 plainFallbackNote = "Bản ghi này không có dữ liệu thay đổi chi tiết.";
             } else {
-                // Không phải JSON object, hiển thị nội dung dạng text thường
+                // Không phải JSON object, hiển thị nội dung dạng text thường đã che trường nhạy cảm (BR-25)
                 StringBuilder sb = new StringBuilder();
                 if (!oldBlank) {
-                    sb.append("Giá trị cũ: ").append(rawOld).append("\n");
+                    sb.append("Giá trị cũ: ").append(AuditLogFieldFormatter.sanitizePlainText(rawOld)).append("\n");
                 }
                 if (!newBlank) {
-                    sb.append("Giá trị mới: ").append(rawNew);
+                    sb.append("Giá trị mới: ").append(AuditLogFieldFormatter.sanitizePlainText(rawNew));
                 }
                 plainFallbackNote = sb.toString().trim();
             }
