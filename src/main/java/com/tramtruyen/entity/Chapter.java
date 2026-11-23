@@ -50,6 +50,9 @@ public class Chapter {
     @Column(nullable = false)
     private Integer price = 0;
 
+    @Column(name = "auto_unlock_at")
+    private LocalDateTime autoUnlockAt;
+
     @Builder.Default
     @Column(nullable = false, length = 50)
     private String status = DEFAULT_STATUS;

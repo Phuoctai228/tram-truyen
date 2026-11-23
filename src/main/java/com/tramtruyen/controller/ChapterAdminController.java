@@ -82,11 +82,15 @@ public class ChapterAdminController {
             return "redirect:/admin/novels/" + novelId + "/chapters";
         } catch (DuplicateResourceException exception) {
             bindingResult.rejectValue("chapterNumber", "duplicate", exception.getMessage());
-                return renderFormWithErrors(novelId, form, model, redirectAttributes,
+            return renderFormWithErrors(novelId, form, model, redirectAttributes,
                     "Tạo chương mới", "/admin/novels/" + novelId + "/chapters");
         } catch (ResourceNotFoundException exception) {
             redirectAttributes.addFlashAttribute("errorMessage", exception.getMessage());
             return "redirect:/admin/novels";
+        } catch (IllegalArgumentException exception) {
+            bindingResult.rejectValue("autoUnlockAt", "invalid", exception.getMessage());
+            return renderFormWithErrors(novelId, form, model, redirectAttributes,
+                    "Tạo chương mới", "/admin/novels/" + novelId + "/chapters");
         }
     }
 
@@ -122,11 +126,15 @@ public class ChapterAdminController {
                             : "Đã lưu thay đổi ở dạng bản nháp.");
         } catch (DuplicateResourceException exception) {
             bindingResult.rejectValue("chapterNumber", "duplicate", exception.getMessage());
-                return renderFormWithErrors(novelId, form, model, redirectAttributes,
-                    "Chỉnh sửa chương", "/admin/novels/" + novelId + "/chapters/" + chapterId);
+            return renderFormWithErrors(novelId, form, model, redirectAttributes,
+                            "Chỉnh sửa chương", "/admin/novels/" + novelId + "/chapters/" + chapterId);
         } catch (ResourceNotFoundException exception) {
             redirectAttributes.addFlashAttribute("errorMessage", exception.getMessage());
             return "redirect:/admin/novels/" + novelId + "/chapters";
+        } catch (IllegalArgumentException exception) {
+            bindingResult.rejectValue("autoUnlockAt", "invalid", exception.getMessage());
+            return renderFormWithErrors(novelId, form, model, redirectAttributes,
+                    "Chỉnh sửa chương", "/admin/novels/" + novelId + "/chapters/" + chapterId);
         }
         if (saveAction == ChapterSaveAction.DRAFT) {
             return "redirect:/admin/novels/" + novelId + "/chapters/" + chapterId + "/edit";
@@ -167,6 +175,7 @@ public class ChapterAdminController {
         form.setTitle(chapter.getTitle());
         form.setContent(chapter.getContent());
         form.setPrice(chapter.getPrice());
+        form.setAutoUnlockAt(chapter.getAutoUnlockAt());
         return form;
     }
 }

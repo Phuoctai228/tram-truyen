@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SWP391 - AI Usage Log (10 Weeks - Trạm Truyện ONS)</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        body {
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            background: #fff;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        h1 {
+            font-size: 20pt;
+            color: #1a365d;
+            margin-top: 0;
+            margin-bottom: 6px;
+        }
+        .subtitle {
+            font-size: 11pt;
+            color: #4a5568;
+            margin-bottom: 16px;
+        }
+        .instructions-box {
+            background: #ebf8ff;
+            border-left: 4px solid #3182ce;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            font-size: 10pt;
+            line-height: 1.5;
+        }
+        .instructions-box b {
+            color: #2b6cb0;
+        }
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 18px;
+            align-items: center;
+        }
+        .btn {
+            background: #2b6cb0;
+            color: #fff;
+            border: none;
+            padding: 8px 14px;
+            font-size: 9.5pt;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn:hover {
+            background: #2c5282;
+        }
+        .btn-week {
+            background: #edf2f7;
+            color: #2d3748;
+            border: 1px solid #cbd5e0;
+        }
+        .btn-week:hover {
+            background: #e2e8f0;
+            color: #1a202c;
+        }
+        .btn-success {
+            background: #38a169 !important;
+        }
+
+        /* Table styles matching Google Sheets standard waffle output */
+        .table-responsive {
+            overflow-x: auto;
+            margin-top: 10px;
+            border: 1px solid #000;
+        }
+        table.ai-log-table {
+            border-collapse: collapse;
+            width: 100%;
+            min-width: 1600px;
+            background-color: #ffffff;
+            font-size: 10pt;
+        }
+        table.ai-log-table th, table.ai-log-table td {
+            border: 1px solid #000000;
+            padding: 6px 8px;
+            vertical-align: middle;
+            line-height: 1.35;
+        }
+        /* Header style matching Instruction.html & 1. Week 1.html */
+        table.ai-log-table thead th {
+            background-color: #ffff00;
+            color: #000000;
+            font-weight: bold;
+            text-align: center;
+            white-space: normal;
+        }
+        /* Week banner row */
+        tr.week-banner td {
+            background-color: #f7caac !important;
+            font-weight: bold;
+            color: #843c0c;
+            text-align: left;
+            padding: 8px 10px;
+            font-size: 10.5pt;
+        }
+        /* Column alignments */
+        td.col-no { text-align: center; font-weight: bold; width: 45px; }
+        td.col-phase { text-align: center; font-weight: 500; width: 110px; }
+        td.col-task { text-align: left; font-weight: 500; width: 220px; }
+        td.col-tool { text-align: center; font-weight: 600; width: 105px; }
+        td.col-output { text-align: left; width: 230px; }
+        td.col-validation { text-align: left; width: 260px; }
+        td.col-link { text-align: center; width: 180px; word-break: break-all; }
+        td.col-link a { color: #1a0dab; text-decoration: underline; }
+        td.col-measure { text-align: center; width: 130px; }
+        td.col-value { text-align: center; font-weight: bold; width: 65px; }
+        td.col-risks { text-align: left; width: 240px; }
+
+        /* Alternating row styling */
+        tr.data-row:nth-child(even) {
+            background-color: #fafafa;
+        }
+        tr.data-row:hover {
+            background-color: #f0f7ff;
+        }
+
+        .toast {
+            visibility: hidden;
+            min-width: 280px;
+            background-color: #2d3748;
+            color: #fff;
+            text-align: center;
+            border-radius: 4px;
+            padding: 12px 20px;
+            position: fixed;
+            z-index: 1000;
+            right: 30px;
+            bottom: 30px;
+            font-size: 10pt;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .toast.show {
+            visibility: visible;
+            animation: fadein 0.3s, fadeout 0.5s 2.5s;
+        }
+        @keyframes fadein {
+            from {bottom: 0; opacity: 0;}
+            to {bottom: 30px; opacity: 1;}
+        }
+        @keyframes fadeout {
+            from {bottom: 30px; opacity: 1;}
+            to {bottom: 0; opacity: 0;}
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>SWP391 - Báo Cáo Nhật Ký Sử Dụng AI (AI Usage Log - 10 Tuần)</h1>
+    <div class="subtitle">
+        <b>Đề tài:</b> Online Novels System (ONS) - Trạm Truyện (Nền tảng đọc truyện chữ trực tuyến) | <b>Nhóm:</b> SE2003 - Group 4 | <b>Công cụ AI:</b> Claude, Gemini | <b>Chuẩn cấu trúc:</b> 10 cột theo <code>Instruction .html</code>
+    </div>
+
+    <div class="instructions-box">
+        <b>💡 Hướng dẫn copy vào Google Spreadsheet:</b>
+        <ul>
+            <li><b>Cách 1 (Nhanh nhất):</b> Bấm nút <b>"📋 Copy toàn bộ bảng (10 tuần - 40 dòng)"</b> hoặc nút từng tuần bên dưới, sau đó mở Google Spreadsheet và ấn <b>Ctrl + V</b>.</li>
+            <li><b>Cách 2 (Thủ công):</b> Bôi đen trực tiếp các hàng trong bảng bên dưới rồi nhấn <b>Ctrl + C</b> và dán vào Google Sheet. Mỗi ô trong bảng HTML sẽ tự động nhảy vào đúng 1 ô trên Google Sheet với đầy đủ 10 cột chuẩn.</li>
+        </ul>
+    </div>
+
+    <div class="toolbar">
+        <button class="btn btn-success" onclick="copyEntireTable()">📋 Copy toàn bộ bảng (10 tuần - 40 dòng)</button>
+        <span style="font-size: 9pt; color: #718096; margin-left: 8px;">Copy nhanh theo từng tuần:</span>
+        <button class="btn btn-week" onclick="copyWeek(1)">Tuần 1</button>
+        <button class="btn btn-week" onclick="copyWeek(2)">Tuần 2</button>
+        <button class="btn btn-week" onclick="copyWeek(3)">Tuần 3</button>
+        <button class="btn btn-week" onclick="copyWeek(4)">Tuần 4</button>
+        <button class="btn btn-week" onclick="copyWeek(5)">Tuần 5</button>
+        <button class="btn btn-week" onclick="copyWeek(6)">Tuần 6</button>
+        <button class="btn btn-week" onclick="copyWeek(7)">Tuần 7</button>
+        <button class="btn btn-week" onclick="copyWeek(8)">Tuần 8</button>
+        <button class="btn btn-week" onclick="copyWeek(9)">Tuần 9</button>
+        <button class="btn btn-week" onclick="copyWeek(10)">Tuần 10</button>
+    </div>
+
+    <div class="table-responsive">
+        <table class="ai-log-table" id="aiLogTable">
+            <thead>
+                <tr>
+                    <th style="width: 45px;">No.</th>
+                    <th style="width: 110px;">SDLC Phase</th>
+                    <th style="width: 220px;">Task / Activity</th>
+                    <th style="width: 105px;">AI Tool Used</th>
+                    <th style="width: 230px;">AI Output</th>
+                    <th style="width: 260px;">Student’s Validation / Modification</th>
+                    <th style="width: 180px;">Evidence / Link</th>
+                    <th style="width: 130px;">Quantitative Measure</th>
+                    <th style="width: 65px;">Value Added (1-5)</th>
+                    <th style="width: 240px;">Risks / Limitations Observed</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <!-- ==================== WEEK 1 ==================== -->
+                <tr class="week-banner" data-week="1">
+                    <td colspan="10">TUẦN 1: REQUIREMENT ANALYSIS & SCOPE DEFINITION (GIAI ĐOẠN KHỞI TẠO & PHẠM VI)</td>
+                </tr>
+                <tr class="data-row" data-week="1">
+                    <td class="col-no">1</td>
+                    <td class="col-phase">Requirement</td>
+                    <td class="col-task">Project Scope & Core Requirement Analysis</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">Đề xuất 15 yêu cầu chức năng tổng quan cho nền tảng web đọc truyện chữ trực tuyến (đọc truyện, ví coin, mở khóa chương, đánh dấu).</td>
+                    <td class="col-validation">Chọn lọc 10 yêu cầu phù hợp với phạm vi môn học SWP391; tinh chỉnh cơ chế tiền tệ (Xu/Coin) và giá mở chương theo đặc thù truyện chữ Việt Nam.</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session01_RequirementScope.png" target="_blank">Group4_Session01_RequirementScope.png</a></td>
+                    <td class="col-measure">10 functional requirements kept</td>
+                    <td class="col-value">4</td>
+                    <td class="col-risks">AI gợi ý thêm tính năng bán sách giấy và ship COD không phù hợp với nền tảng đọc truyện số trực tuyến.</td>
+                </tr>
+                <tr class="data-row" data-week="1">
+                    <td class="col-no">2</td>
+                    <td class="col-phase">Requirement</td>
+                    <td class="col-task">Actor & Role Hierarchy Definition</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">Đề xuất cấu trúc phân quyền 4 nhóm tác nhân: Guest (khách vãng lai), Member (thành viên độc giả), Staff (biên tập viên), Admin (quản trị viên).</td>
+                    <td class="col-validation">Áp dụng 4 vai trò vào Mục I.1.1 (RDS); phân định rõ ranh giới: Staff quản lý truyện/chương, chỉ Admin có quyền duyệt tài chính và phân quyền tài khoản.</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session02_ActorHierarchy.png" target="_blank">Group4_Session02_ActorHierarchy.png</a></td>
+                    <td class="col-measure">4 actors, 28 permission boundaries</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">AI ban đầu gộp chung quyền Tác giả (Author) vào Staff; sinh viên phải tách biệt vai trò đăng truyện nội bộ cho nhóm Staff.</td>
+                </tr>
+                <tr class="data-row" data-week="1">
+                    <td class="col-no">3</td>
+                    <td class="col-phase">Requirement</td>
+                    <td class="col-task">User Story Generation for Reader Module</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">12 User Stories về trải nghiệm đọc: duyệt danh mục, tùy chỉnh cỡ chữ, nền sáng/tối, đánh dấu tủ truyện và lưu chương đọc gần nhất.</td>
+                    <td class="col-validation">Viết lại 4 User Stories theo chuẩn INVEST, bổ sung tiêu chí nghiệm thu (Acceptance Criteria) cho chương VIP bị khóa và cuộn trang lưu vị trí.</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session03_UserStoryReader.png" target="_blank">Group4_Session03_UserStoryReader.png</a></td>
+                    <td class="col-measure">8 user stories finalized</td>
+                    <td class="col-value">4</td>
+                    <td class="col-risks">Các User Stories của AI thiếu ràng buộc về việc lưu tiến độ đọc cho Guest (phải lưu bằng LocalStorage thay vì Database).</td>
+                </tr>
+                <tr class="data-row" data-week="1">
+                    <td class="col-no">4</td>
+                    <td class="col-phase">Requirement</td>
+                    <td class="col-task">Non-Functional & Security Requirements Analysis</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">Danh sách yêu cầu phi chức năng: thời gian tải trang &lt;2s, bảo vệ mật khẩu BCrypt, chuẩn hóa CSRF token, idempotency cho giao dịch nạp tiền.</td>
+                    <td class="col-validation">Đối chiếu với đề cương kỹ thuật dự án; bổ sung yêu cầu transaction isolation level (Pessimistic Locking) để tránh race condition khi trừ Coin.</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session04_NFRSecurity.png" target="_blank">Group4_Session04_NFRSecurity.png</a></td>
+                    <td class="col-measure">6 NFR categories, 14 benchmark metrics</td>
+                    <td class="col-value">4</td>
+                    <td class="col-risks">Gợi ý kiến trúc Microservices quá cồng kềnh, không phù hợp với kiến trúc Monolithic chuẩn mực của đồ án SWP391.</td>
+                </tr>
+
+                <!-- ==================== WEEK 2 ==================== -->
+                <tr class="week-banner" data-week="2">
+                    <td colspan="10">TUẦN 2: USE CASE SPECIFICATION & SCREENFLOW (ĐẶC TẢ USE CASE & LUỒNG MÀN HÌNH)</td>
+                </tr>
+                <tr class="data-row" data-week="2">
+                    <td class="col-no">5</td>
+                    <td class="col-phase">Requirement</td>
+                    <td class="col-task">Use Case Model Structuring (UC-01 đến UC-53)</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">Danh mục tổng thể 53 Use Cases được chia vào 7 nhóm chức năng (Auth, Profile, Wallet, Novel CMS, Chapter CMS, Reader, Admin Dashboard).</td>
+                    <td class="col-validation">Đánh số thứ tự chuẩn hóa UC-01 đến UC-53 trong RDS Mục I.1.2; phân nhóm đúng theo trách nhiệm của 5 thành viên trong nhóm 4.</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session05_UseCaseList.png" target="_blank">Group4_Session05_UseCaseList.png</a></td>
+                    <td class="col-measure">53 Use Cases mapped across 4 actors</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">AI bị nhầm lẫn và trùng lặp giữa Use Case đọc chương miễn phí của Guest và đọc chương có phí của Member.</td>
+                </tr>
+                <tr class="data-row" data-week="2">
+                    <td class="col-no">6</td>
+                    <td class="col-phase">Requirement</td>
+                    <td class="col-task">Detailed Use Case Specification: UC-26 Unlock Paid Chapter</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">Bản đặc tả chi tiết UC-26 gồm Main Flow, Alternate Flows (số dư xu không đủ, chương đã được mở khóa trước đó), Exception Flows.</td>
+                    <td class="col-validation">Bổ sung tiền điều kiện: tài khoản Member có wallet_balance &gt;= chapter.coin_price; chèn bước ghi log vào bảng `unlocked_chapters` và audit giao dịch.</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session06_UC26UnlockChapter.png" target="_blank">Group4_Session06_UC26UnlockChapter.png</a></td>
+                    <td class="col-measure">1 detailed UC spec (RDS Section II.3.4), 3 alt flows</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">Bỏ sót trường hợp người dùng click mở khóa liên tiếp nhiều lần gây trừ tiền 2 lần (double spending).</td>
+                </tr>
+                <tr class="data-row" data-week="2">
+                    <td class="col-no">7</td>
+                    <td class="col-phase">Requirement</td>
+                    <td class="col-task">Screen Flow Architecture Design</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">Biểu đồ Screenflow thể hiện hành trình: Trang chủ -&gt; Danh mục lọc -&gt; Chi tiết truyện -&gt; Đọc chương -&gt; Modal nạp xu VNPay.</td>
+                    <td class="col-validation">Bổ sung phân luồng điều hướng màn hình Quản trị (CMS) cho Staff/Admin; tách biệt URL công khai (`/novels/...`) và URL quản lý (`/admin/...`).</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session07_ScreenFlow.png" target="_blank">Group4_Session07_ScreenFlow.png</a></td>
+                    <td class="col-measure">2 screenflow diagrams, 24 screen nodes</td>
+                    <td class="col-value">4</td>
+                    <td class="col-risks">Lỗi cú pháp định dạng Mermaid khi chứa dấu ngoặc đơn; thiếu trạng thái chuyển tiếp khi nạp thẻ thất bại.</td>
+                </tr>
+                <tr class="data-row" data-week="2">
+                    <td class="col-no">8</td>
+                    <td class="col-phase">Requirement</td>
+                    <td class="col-task">Screen Authorization Matrix Definition</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">Ma trận phân quyền ánh xạ 48 màn hình giao diện với 4 vai trò (Guest, Member, Staff, Admin) theo trạng thái Access / Deny / Redirect.</td>
+                    <td class="col-validation">Kiểm tra từng màn hình theo RDS Mục I.2.3; khóa quyền màn hình #48 (Audit Log) và #47 (Quản lý giao dịch) chỉ dành riêng cho Admin.</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session08_ScreenAuth.png" target="_blank">Group4_Session08_ScreenAuth.png</a></td>
+                    <td class="col-measure">48 screens mapped to 4 roles</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">AI đánh dấu màn hình Audio Reader mở cho Guest, xung đột với yêu cầu lưu tiến độ nghe chỉ dành cho tài khoản Member.</td>
+                </tr>
+
+                <!-- ==================== WEEK 3 ==================== -->
+                <tr class="week-banner" data-week="3">
+                    <td colspan="10">TUẦN 3: DATABASE DESIGN & RELATIONAL SCHEMA (THIẾT KẾ CƠ SỞ DỮ LIỆU & BẢNG)</td>
+                </tr>
+                <tr class="data-row" data-week="3">
+                    <td class="col-no">9</td>
+                    <td class="col-phase">Design</td>
+                    <td class="col-task">Conceptual Entity-Relationship Diagram (ERD)</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">Danh sách thực thể ERD: Users, Roles, Novels, Categories, Chapters, Wallets, Transactions, Comments, Bookmarks.</td>
+                    <td class="col-validation">Sửa quan hệ Nhiều-Nhiều giữa Novels và Categories qua bảng trung gian `novel_categories`; thêm bảng `unlocked_chapters` để lưu quyền đọc vĩnh viễn.</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session09_ConceptualERD.png" target="_blank">Group4_Session09_ConceptualERD.png</a></td>
+                    <td class="col-measure">12 core entities, 18 relationships</td>
+                    <td class="col-value">4</td>
+                    <td class="col-risks">Gợi ý lưu số dư ví trực tiếp trong bảng Users mà không có bảng giao dịch đối soát, vi phạm nguyên tắc kiểm toán tài chính.</td>
+                </tr>
+                <tr class="data-row" data-week="3">
+                    <td class="col-no">10</td>
+                    <td class="col-phase">Design</td>
+                    <td class="col-task">MySQL Relational DDL Script Generation (`novels.sql`)</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">Tập lệnh SQL DDL `CREATE TABLE` định nghĩa khóa chính (PK), khóa ngoại (FK), kiểu dữ liệu và chỉ mục cho MySQL.</td>
+                    <td class="col-validation">Lưu vào `database/novels.sql`; bổ sung `ENGINE=InnoDB`, charset `utf8mb4_unicode_ci`, ràng buộc `CHECK (wallet_balance &gt;= 0)`, và `ON DELETE CASCADE` cho chương.</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session10_DBSchemaDDL.png" target="_blank">Group4_Session10_DBSchemaDDL.png</a></td>
+                    <td class="col-measure">14 tables, 28 foreign keys, 8 indexes</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">Sử dụng kiểu `DATETIME` tĩnh thay vì `TIMESTAMP DEFAULT CURRENT_TIMESTAMP`; thiếu đánh chỉ mục kép `(novel_id, chapter_number)`.</td>
+                </tr>
+                <tr class="data-row" data-week="3">
+                    <td class="col-no">11</td>
+                    <td class="col-phase">Design</td>
+                    <td class="col-task">Database Dictionary & Table Descriptions</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">Bảng từ điển dữ liệu chi tiết gồm: Tên cột, Kiểu dữ liệu, Nullable, Default, Khóa, và Mô tả ý nghĩa nghiệp vụ cho từng trường.</td>
+                    <td class="col-validation">Chuẩn hóa vào SDS Mục I.2.b; đồng bộ giá trị ENUM trạng thái (`DRAFT`, `PUBLISHED`, `ARCHIVED`, `BANNED`) khớp với Business Rules.</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session11_DataDictionary.png" target="_blank">Group4_Session11_DataDictionary.png</a></td>
+                    <td class="col-measure">14 table dictionaries, 92 columns documented</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">Mô tả thiếu sót các trạng thái giao dịch nạp tiền (`PENDING`, `SUCCESS`, `FAILED`) của cổng thanh toán VNPay.</td>
+                </tr>
+                <tr class="data-row" data-week="3">
+                    <td class="col-no">12</td>
+                    <td class="col-phase">Design</td>
+                    <td class="col-task">Database Mock Seed Data Script (`seed.sql`)</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">Tập lệnh SQL INSERT dữ liệu mẫu: thể loại truyện (Tiên Hiệp, Đô Thị, Huyền Huyễn), tài khoản Admin/Staff, và 10 bộ truyện demo.</td>
+                    <td class="col-validation">Mã hóa mật khẩu sang chuỗi hash BCrypt (`$2a$10$...`); mở rộng thêm 20 truyện và 120 chương có nội dung dài để test cuộn trang và phân trang.</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session12_SeedSQL.png" target="_blank">Group4_Session12_SeedSQL.png</a></td>
+                    <td class="col-measure">180+ SQL INSERT rows, 8 tables populated</td>
+                    <td class="col-value">4</td>
+                    <td class="col-risks">Vi phạm thứ tự chèn dữ liệu khóa ngoại (insert dữ liệu chương trước khi truyện cha được tạo).</td>
+                </tr>
+
+                <!-- ==================== WEEK 4 ==================== -->
+                <tr class="week-banner" data-week="4">
+                    <td colspan="10">TUẦN 4: SYSTEM ARCHITECTURE & UI SPECIFICATION (KIẾN TRÚC MÃ & ĐẶC TẢ GIAO DIỆN)</td>
+                </tr>
+                <tr class="data-row" data-week="4">
+                    <td class="col-no">13</td>
+                    <td class="col-phase">Design</td>
+                    <td class="col-task">Code Package & Layered Architecture Design</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">Sơ đồ cấu trúc package chuẩn Spring Boot MVC 3 tầng (`config`, `controller`, `service`, `repository`, `entity`, `dto`, `exception`).</td>
+                    <td class="col-validation">Ghi nhận vào SDS Mục I.1; bổ sung package chuyên biệt cho xử lý thanh toán (`payment.vnpay`) và tiện ích Text-to-Speech (`util.tts`).</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session13_PackageDesign.png" target="_blank">Group4_Session13_PackageDesign.png</a></td>
+                    <td class="col-measure">8 root packages, 15 sub-packages documented</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">AI thiết kế God-Service gom toàn bộ nghiệp vụ truyện, chương, ví vào 1 class; sinh viên đã tách thành các Domain Service riêng biệt.</td>
+                </tr>
+                <tr class="data-row" data-week="4">
+                    <td class="col-no">14</td>
+                    <td class="col-phase">Design</td>
+                    <td class="col-task">UI Field Specification (Chi tiết truyện & Đọc chương)</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">Đặc tả bảng trường giao diện cho Màn hình #10 (Novel Details) và Màn hình #11 (Chapter Reader) gồm label, kiểu hiển thị, sự kiện click.</td>
+                    <td class="col-validation">Cập nhật vào RDS Section III; thêm thanh điều khiển Audio đọc giọng nói ở chân trang mobile và huy hiệu biểu thị số xu mở chương VIP.</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session14_UIWireframes.png" target="_blank">Group4_Session14_UIWireframes.png</a></td>
+                    <td class="col-measure">2 screen specs, 22 UI element rows</td>
+                    <td class="col-value">4</td>
+                    <td class="col-risks">Thiếu mã màu hex cụ thể cho bảng màu Dark Mode và tỷ lệ tương phản chữ theo chuẩn WCAG.</td>
+                </tr>
+                <tr class="data-row" data-week="4">
+                    <td class="col-no">15</td>
+                    <td class="col-phase">Design</td>
+                    <td class="col-task">DTO Design & Request Validation Constraints</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">Định nghĩa các lớp DTO kèm annotation ràng buộc Jakarta Validation (`@NotBlank`, `@Size`, `@Min`, `@Pattern`).</td>
+                    <td class="col-validation">Tạo `RegisterRequest`, `NovelCreateDTO`, `ChapterCreateDTO`, `TopupRequest`; bổ sung regex kiểm tra độ mạnh mật khẩu và số điện thoại Việt Nam.</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session15_DTODesign.png" target="_blank">Group4_Session15_DTODesign.png</a></td>
+                    <td class="col-measure">12 DTO classes, 35 validation annotations</td>
+                    <td class="col-value">4</td>
+                    <td class="col-risks">Sử dụng nhầm package cũ `javax.validation` thay vì `jakarta.validation` của Spring Boot 3.2.4.</td>
+                </tr>
+                <tr class="data-row" data-week="4">
+                    <td class="col-no">16</td>
+                    <td class="col-phase">Design</td>
+                    <td class="col-task">Monetization & Daily Bonus Business Rules</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">Văn bản quy tắc kinh tế số: tỷ giá nạp tiền (1.000 VNĐ = 10 Xu), định giá chương VIP (5-20 Xu), thưởng chuỗi điểm danh hàng ngày.</td>
+                    <td class="col-validation">Lưu vào thư mục `docs/Bussiness_Rules/`; bổ sung chặn gian lận (giới hạn tối đa 3 lượt điểm danh trên 1 địa chỉ IP/ngày, kiểm tra trùng lặp callback VNPay).</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session16_BusinessRules.png" target="_blank">Group4_Session16_BusinessRules.png</a></td>
+                    <td class="col-measure">5 business rule docs, 18 constraints</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">Chưa làm rõ cách ứng xử của hệ thống khi người dùng bị ngắt mạng trong lúc thực hiện giao dịch nạp tiền.</td>
+                </tr>
+
+                <!-- ==================== WEEK 5 ==================== -->
+                <tr class="week-banner" data-week="5">
+                    <td colspan="10">TUẦN 5: DETAILED CODE DESIGN - SDS DIAGRAMS (SƠ ĐỒ SEQUENCE & CLASS DIAGRAM)</td>
+                </tr>
+                <tr class="data-row" data-week="5">
+                    <td class="col-no">17</td>
+                    <td class="col-phase">Design</td>
+                    <td class="col-task">PlantUML Sequence Diagram: UC-03 Đăng nhập (Login)</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">Mã nguồn PlantUML mô tả luồng đăng nhập: Actor -&gt; AuthController -&gt; AuthService -&gt; UserRepository -&gt; PasswordEncoder -&gt; Session.</td>
+                    <td class="col-validation">Sửa lại chuẩn lifelines, kích hoạt activate/deactivate hợp lệ, bổ sung khung alt cho 3 kịch bản: Sai mật khẩu, Tài khoản bị khóa, Đăng nhập thành công.</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session17_SeqLogin.png" target="_blank">Group4_Session17_SeqLogin.png</a></td>
+                    <td class="col-measure">1 PlantUML diagram, 14 message calls, 3 alt blocks</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">AI sử dụng định dạng participant không theo chuẩn naming convention của dự án; thiếu bước tạo phiên Session fixation protection.</td>
+                </tr>
+                <tr class="data-row" data-week="5">
+                    <td class="col-no">18</td>
+                    <td class="col-phase">Design</td>
+                    <td class="col-task">PlantUML Sequence Diagram: UC-26 Mở khóa chương VIP</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">Mô hình tuần tự giao dịch trừ coin: kiểm tra số dư ví, trừ tiền nguyên tử, chèn dòng quyền đọc vào `unlocked_chapters`, trả về nội dung chương.</td>
+                    <td class="col-validation">Bổ sung ranh giới giao dịch `@Transactional`, chú thích khóa bi quan (Pessimistic Write Lock) trên thực thể User và rollback khi số dư không đủ.</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session18_SeqUnlockChapter.png" target="_blank">Group4_Session18_SeqUnlockChapter.png</a></td>
+                    <td class="col-measure">1 PlantUML diagram, 18 interaction steps</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">Thiếu bước kiểm tra cache quyền đọc trong phiên làm việc, dẫn đến việc luôn truy vấn database mỗi lần tải trang.</td>
+                </tr>
+                <tr class="data-row" data-week="5">
+                    <td class="col-no">19</td>
+                    <td class="col-phase">Design</td>
+                    <td class="col-task">Mermaid Class Diagram: Quản lý Truyện & Chương CMS</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">Sơ đồ lớp Mermaid thể hiện mối liên hệ giữa các tầng: Controller, Service, Repository, DTO và Entity của module Novel &amp; Chapter.</td>
+                    <td class="col-validation">Đồng bộ tên phương thức và kiểu dữ liệu trả về với SDS Phần II; bổ sung các ngoại lệ tùy biến (`ResourceNotFoundException`, `DuplicateSlugException`).</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session19_MermaidClassCMS.png" target="_blank">Group4_Session19_MermaidClassCMS.png</a></td>
+                    <td class="col-measure">8 classes/interfaces, 32 methods mapped</td>
+                    <td class="col-value">4</td>
+                    <td class="col-risks">Lỗi cú pháp Mermaid khi dùng kiểu dữ liệu generic `List&lt;Chapter&gt;` mà không bọc trong dấu ngoặc kép thoát ký tự.</td>
+                </tr>
+                <tr class="data-row" data-week="5">
+                    <td class="col-no">20</td>
+                    <td class="col-phase">Design</td>
+                    <td class="col-task">Database Query Specification (SDS Section II d)</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">Danh sách câu lệnh SQL tham số hóa (Prepared Queries) dùng trong Repository: tìm kiếm truyện, lọc theo thể loại có phân trang, truy vấn lịch sử đọc.</td>
+                    <td class="col-validation">Thay thế `SELECT *` bằng việc chỉ chọn đúng các cột cần thiết (DTO projection); loại bỏ lệnh `FOR UPDATE` không cần thiết khỏi tài liệu theo V1.5.</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session20_DBQueriesSDS.png" target="_blank">Group4_Session20_DBQueriesSDS.png</a></td>
+                    <td class="col-measure">16 parameterized SQL queries documented</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">AI sinh ra câu truy vấn `JOIN` thiếu điều kiện lọc `is_deleted = false`, dẫn đến việc quét cả các bản ghi đã bị xóa mềm.</td>
+                </tr>
+
+                <!-- ==================== WEEK 6 ==================== -->
+                <tr class="week-banner" data-week="6">
+                    <td colspan="10">TUẦN 6: SPRINT 1 - AUTHENTICATION & CORE CMS (TRIỂN KHAI XÁC THỰC & CMS TRUYỆN)</td>
+                </tr>
+                <tr class="data-row" data-week="6">
+                    <td class="col-no">21</td>
+                    <td class="col-phase">Implementation</td>
+                    <td class="col-task">Spring Security 6 Configuration & Login Form (UC-01, 03)</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">Cấu hình bean `SecurityFilterChain` quản lý session, phân quyền URL theo Role, CSRF protection và mã hóa mật khẩu `BCryptPasswordEncoder`.</td>
+                    <td class="col-validation">Tích hợp `AuthenticationSuccessHandler` chuyển hướng Staff/Admin vào `/admin/dashboard` và Member về trang chủ `/`; bật tính năng Remember-Me.</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session21_SpringSecurityConfig.png" target="_blank">Group4_Session21_SpringSecurityConfig.png</a></td>
+                    <td class="col-measure">1 SecurityConfig class, 8 URL patterns, ~120 LOC</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">Sử dụng phương thức lỗi thời `authorizeRequests()` thay vì cú pháp Lambda DSL `authorizeHttpRequests()` của Spring Security 6.</td>
+                </tr>
+                <tr class="data-row" data-week="6">
+                    <td class="col-no">22</td>
+                    <td class="col-phase">Implementation</td>
+                    <td class="col-task">JPA Entity Models & Repositories Setup</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">Mã nguồn các thực thể JPA (`User`, `Role`, `Novel`, `Chapter`, `Category`) sử dụng Lombok annotations (`@Getter`, `@Setter`, `@Builder`).</td>
+                    <td class="col-validation">Thêm `@ToString.Exclude` và `@EqualsAndHashCode.Exclude` trên các quan hệ hai chiều `@OneToMany`/`@ManyToOne` để chống tràn bộ nhớ `StackOverflowError`.</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session22_JPAEntities.png" target="_blank">Group4_Session22_JPAEntities.png</a></td>
+                    <td class="col-measure">10 JPA Entities, 7 Spring Data Repositories</td>
+                    <td class="col-value">4</td>
+                    <td class="col-risks">Mặc định thiết lập `FetchType.EAGER` trên quan hệ danh sách chương khiến hiệu năng tải dữ liệu cực chậm (lỗi N+1).</td>
+                </tr>
+                <tr class="data-row" data-week="6">
+                    <td class="col-no">23</td>
+                    <td class="col-phase">Implementation</td>
+                    <td class="col-task">Novel CMS CRUD with Cloudinary Image Upload (UC-33, 34)</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">Xây dựng `NovelServiceImpl` xử lý tạo truyện, sinh slug tự động, tải ảnh bìa lên Cloudinary SDK và lưu thông tin vào MySQL.</td>
+                    <td class="col-validation">Thêm kiểm tra định dạng và dung lượng ảnh tải lên (&lt;= 5MB, định dạng JPG/PNG/WEBP); hiện thực logic xóa mềm `is_deleted = true` cho UC-35.</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session23_NovelCMSCode.png" target="_blank">Group4_Session23_NovelCMSCode.png</a></td>
+                    <td class="col-measure">1 Service class, 1 Controller, ~220 LOC</td>
+                    <td class="col-value">4</td>
+                    <td class="col-risks">Chưa xử lý ngoại lệ Timeout khi kết nối tới máy chủ Cloudinary; phải bọc thêm khối try-catch để thông báo lỗi thân thiện.</td>
+                </tr>
+                <tr class="data-row" data-week="6">
+                    <td class="col-no">24</td>
+                    <td class="col-phase">Implementation</td>
+                    <td class="col-task">Chapter CMS Management & Pricing Config (UC-38, 42)</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">Controller và Service xử lý thêm mới/chỉnh sửa chương, tự động tăng số thứ tự chương (`chapter_number`) và cấu hình giá mở khóa xu.</td>
+                    <td class="col-validation">Bổ sung ràng buộc logic: nếu chương miễn phí (`is_locked == false`) thì giá xu bắt buộc bằng 0; kiểm tra không trùng lặp số chương trong cùng một bộ truyện.</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session24_ChapterCMSCode.png" target="_blank">Group4_Session24_ChapterCMSCode.png</a></td>
+                    <td class="col-measure">2 Service methods, 4 Controller endpoints, ~180 LOC</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">Code sinh ra cho phép nhập giá xu âm; sinh viên đã bổ sung annotation `@Min(0)` trong DTO để chặn lỗi.</td>
+                </tr>
+
+                <!-- ==================== WEEK 7 ==================== -->
+                <tr class="week-banner" data-week="7">
+                    <td colspan="10">TUẦN 7: SPRINT 2 - READER EXPERIENCE & BOOKSHELF (GIAO DIỆN ĐỌC & TỦ TRUYỆN)</td>
+                </tr>
+                <tr class="data-row" data-week="7">
+                    <td class="col-no">25</td>
+                    <td class="col-phase">Implementation</td>
+                    <td class="col-task">Catalog Browsing, Filter & Pagination Backend (UC-06, 07)</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">Truy vấn `Pageable` kết hợp Spring Data JPA Specification để lọc truyện đa tiêu chí: thể loại, trạng thái ra chương, sắp xếp theo lượt xem/mới nhất.</td>
+                    <td class="col-validation">Tối ưu câu truy vấn với `JOIN FETCH` để triệt tiêu lỗi N+1 khi tải danh sách thể loại truyện; thêm bộ nhớ đệm (Cache) cho danh mục thể loại.</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session25_CatalogFilterCode.png" target="_blank">Group4_Session25_CatalogFilterCode.png</a></td>
+                    <td class="col-measure">1 Specification class, 3 repository queries, ~150 LOC</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">Truy vấn tìm kiếm tiếng Việt phân biệt có dấu / không dấu chưa chính xác; phải hiệu chỉnh collation của database sang utf8mb4_unicode_ci.</td>
+                </tr>
+                <tr class="data-row" data-week="7">
+                    <td class="col-no">26</td>
+                    <td class="col-phase">Implementation</td>
+                    <td class="col-task">Responsive Chapter Reader UI & Settings (UC-11)</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">Template Thymeleaf và script JavaScript điều khiển giao diện đọc truyện: tùy chỉnh cỡ chữ slider, màu nền (Sáng/Vàng nhạt/Tối), nút chuyển chương trước/sau.</td>
+                    <td class="col-validation">Lưu tùy chọn đọc của độc giả vào `localStorage`; gắn phím tắt bàn phím (mũi tên trái/phải để đổi chương nhanh); hỗ trợ font chữ tùy chỉnh.</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session26_ReaderUIThymeleaf.png" target="_blank">Group4_Session26_ReaderUIThymeleaf.png</a></td>
+                    <td class="col-measure">1 Thymeleaf view (`read_chapter.html`), 1 JS module (~160 LOC)</td>
+                    <td class="col-value">4</td>
+                    <td class="col-risks">Menu điều khiển bị tràn màn hình trên các thiết bị di động có chiều ngang hẹp; đã chỉnh sửa lại CSS Flexbox cho thân thiện với mobile.</td>
+                </tr>
+                <tr class="data-row" data-week="7">
+                    <td class="col-no">27</td>
+                    <td class="col-phase">Implementation</td>
+                    <td class="col-task">Bookshelf & Reading Progress Synchronization (UC-18, 20, 27)</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">REST API endpoints và hàm gọi AJAX để thêm/xóa truyện khỏi tủ truyện và tự động lưu tiến độ đọc (vị trí chương và phần trăm cuộn trang).</td>
+                    <td class="col-validation">Áp dụng kỹ thuật debounce (trì hoãn gửi request 3 giây sau khi ngừng cuộn chuột) để tránh spam request làm nghẽn server.</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session27_BookshelfProgressCode.png" target="_blank">Group4_Session27_BookshelfProgressCode.png</a></td>
+                    <td class="col-measure">3 REST endpoints, 1 BookshelfService, ~190 LOC</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">Không xử lý mã phản hồi 401 Unauthorized trong AJAX khi phiên đăng nhập hết hạn giữa lúc đang đọc truyện.</td>
+                </tr>
+                <tr class="data-row" data-week="7">
+                    <td class="col-no">28</td>
+                    <td class="col-phase">Implementation</td>
+                    <td class="col-task">Audio Reader Integration via Web Speech API (UC-25)</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">Mô-đun JavaScript tích hợp API giọng nói trình duyệt `window.speechSynthesis` hỗ trợ phát âm đọc nội dung chương truyện bằng tiếng Việt.</td>
+                    <td class="col-validation">Phát triển thuật toán ngắt nhỏ đoạn văn (chunking) để vượt qua giới hạn tự ngắt sau 15 giây của Google Chrome; thêm các nút Tạm dừng/Phát tiếp và chỉnh tốc độ đọc (0.75x - 1.5x).</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session28_AudioReaderJS.png" target="_blank">Group4_Session28_AudioReaderJS.png</a></td>
+                    <td class="col-measure">1 JavaScript module (`audio_reader.js`, ~140 LOC)</td>
+                    <td class="col-value">4</td>
+                    <td class="col-risks">Chất lượng giọng đọc phụ thuộc vào hệ điều hành của người dùng; bổ sung cảnh báo khi duyệt bằng các trình duyệt không hỗ trợ TTS tiếng Việt.</td>
+                </tr>
+
+                <!-- ==================== WEEK 8 ==================== -->
+                <tr class="week-banner" data-week="8">
+                    <td colspan="10">TUẦN 8: SPRINT 3 - MONETIZATION & PAYMENT INTEGRATION (NẠP XU VNPAY & MỞ KHÓA CHƯƠNG)</td>
+                </tr>
+                <tr class="data-row" data-week="8">
+                    <td class="col-no">29</td>
+                    <td class="col-phase">Implementation</td>
+                    <td class="col-task">VNPay Payment Gateway Integration (UC-30 Top-up Coin)</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">Lớp tiện ích sinh URL thanh toán VNPay, tính toán chữ ký số bảo mật SHA512 và Controller tiếp nhận webhook IPN đối soát giao dịch nạp tiền.</td>
+                    <td class="col-validation">Cập nhật chuẩn VNPay V2.1.0; xác thực chặt chẽ chữ ký `vnp_SecureHash` trước khi cộng tiền xu vào ví để phòng chống giả mạo request thanh toán.</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session29_VNPayIntegration.png" target="_blank">Group4_Session29_VNPayIntegration.png</a></td>
+                    <td class="col-measure">1 VNPayConfig, 1 VNPayService, 1 PaymentController (~280 LOC)</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">AI sử dụng thuật toán băm MD5 cũ của VNPay; sinh viên đã chủ động nâng cấp lên chuẩn mã hóa an toàn HMAC-SHA512.</td>
+                </tr>
+                <tr class="data-row" data-week="8">
+                    <td class="col-no">30</td>
+                    <td class="col-phase">Implementation</td>
+                    <td class="col-task">Concurrency-Safe Chapter Unlock Engine (UC-26)</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">Phương thức service `@Transactional` sử dụng cơ chế khóa bi quan (`PESSIMISTIC_WRITE`) trên bảng Users để trừ xu và cấp quyền đọc chương an toàn.</td>
+                    <td class="col-validation">Bổ sung bước kiểm tra trạng thái idempotency (nếu đã mở khóa thì không trừ xu thêm); ghi nhận lịch sử biến động số dư vào `coin_transactions`.</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session30_UnlockEngineCode.png" target="_blank">Group4_Session30_UnlockEngineCode.png</a></td>
+                    <td class="col-measure">1 transactional method, 2 custom queries, ~110 LOC</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">AI quên xử lý ngoại lệ `PessimisticLockingFailureException` khi nhiều luồng cùng tranh chấp một tài khoản.</td>
+                </tr>
+                <tr class="data-row" data-week="8">
+                    <td class="col-no">31</td>
+                    <td class="col-phase">Implementation</td>
+                    <td class="col-task">Daily Check-in & Streak Reward Logic (UC-32)</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">Dịch vụ kiểm tra trạng thái điểm danh trong ngày của độc giả, tính toán chuỗi điểm danh liên tục (streak) và tự động cộng xu thưởng.</td>
+                    <td class="col-validation">Cố định múi giờ hệ thống `ZoneId.of("Asia/Ho_Chi_Minh")` để đảm bảo chu kỳ reset điểm danh chính xác vào 00:00:00 hàng ngày theo giờ Việt Nam.</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session31_DailyCheckinCode.png" target="_blank">Group4_Session31_DailyCheckinCode.png</a></td>
+                    <td class="col-measure">1 CheckinService, 1 DailyCheckin entity, ~95 LOC</td>
+                    <td class="col-value">4</td>
+                    <td class="col-risks">Mã sinh ra sử dụng giờ mặc định của máy chủ (UTC) khiến người dùng bị reset chuỗi điểm danh vào 7h sáng thay vì nửa đêm.</td>
+                </tr>
+                <tr class="data-row" data-week="8">
+                    <td class="col-no">32</td>
+                    <td class="col-phase">Implementation</td>
+                    <td class="col-task">System Audit Logging & Interceptor (UC-53)</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">Spring MVC `HandlerInterceptor` ghi nhận vết hoạt động nhạy cảm của Admin/Staff (sửa truyện, xóa chương, đổi quyền) vào bảng `system_audit_logs`.</td>
+                    <td class="col-validation">Lọc bỏ các đường dẫn tĩnh (static assets); che giấu dữ liệu nhạy cảm (mật khẩu, thông tin thanh toán) trước khi ghi log vào database.</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session32_AuditLogCode.png" target="_blank">Group4_Session32_AuditLogCode.png</a></td>
+                    <td class="col-measure">1 AuditInterceptor class, 1 Repository, ~130 LOC</td>
+                    <td class="col-value">4</td>
+                    <td class="col-risks">Tác vụ ghi log đồng bộ làm chậm thời gian phản hồi của request; sinh viên đã chuyển sang ghi log bất đồng bộ bằng `@Async`.</td>
+                </tr>
+
+                <!-- ==================== WEEK 9 ==================== -->
+                <tr class="week-banner" data-week="9">
+                    <td colspan="10">TUẦN 9: TESTING & QUALITY ASSURANCE (KIỂM THỬ TỰ ĐỘNG & BẢO MẬT)</td>
+                </tr>
+                <tr class="data-row" data-week="9">
+                    <td class="col-no">33</td>
+                    <td class="col-phase">Testing</td>
+                    <td class="col-task">Unit Testing for Authentication & User Service</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">Bộ test case JUnit 5 và Mockito kiểm thử các luồng đăng ký tài khoản, mã hóa mật khẩu, kiểm tra trùng username, và xác thực đăng nhập.</td>
+                    <td class="col-validation">Thêm các test case kiểm tra biên: chuỗi SQL Injection trong ô username, email sai định dạng, và tài khoản bị vô hiệu hóa không được đăng nhập.</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session33_UnitTestAuth.png" target="_blank">Group4_Session33_UnitTestAuth.png</a></td>
+                    <td class="col-measure">16 Unit tests, 94% branch coverage for UserService</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">Gemini sinh ra cú pháp kiểm thử JUnit 4 cũ (`@Test(expected = ...)` thay vì `assertThrows()` của JUnit 5).</td>
+                </tr>
+                <tr class="data-row" data-week="9">
+                    <td class="col-no">34</td>
+                    <td class="col-phase">Testing</td>
+                    <td class="col-task">Unit Testing for Chapter Unlock & Concurrency (UC-26)</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">Bộ kiểm thử Mockito cho phương thức mở khóa chương: kịch bản mở khóa thành công, số dư xu không đủ, chương đã mở từ trước.</td>
+                    <td class="col-validation">Tự viết thêm kịch bản mô phỏng kiểm thử đồng thời (Concurrency Test) với 10 threads song song dùng `CountDownLatch` để kiểm tra chống trừ tiền 2 lần.</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session34_UnitTestUnlock.png" target="_blank">Group4_Session34_UnitTestUnlock.png</a></td>
+                    <td class="col-measure">10 test cases, 1 multi-thread concurrency simulation</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">Đối tượng Mockito thông thường không mô phỏng được hành vi khóa hàng (Row Lock) thực tế của MySQL InnoDB.</td>
+                </tr>
+                <tr class="data-row" data-week="9">
+                    <td class="col-no">35</td>
+                    <td class="col-phase">Testing</td>
+                    <td class="col-task">Security & Role-Based Access Control (RBAC) Testing</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">Tập kiểm thử tích hợp Spring `MockMvc` xác minh mã phản hồi HTTP 401 khi Guest truy cập trái phép và HTTP 403 khi Member truy cập URL `/admin/**`.</td>
+                    <td class="col-validation">Đối chiếu toàn bộ URL với Ma trận phân quyền màn hình trong RDS Mục I.2.3; thử nghiệm tấn công giả mạo token CSRF và thao túng URL trực tiếp.</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session35_SecurityRBACTest.png" target="_blank">Group4_Session35_SecurityRBACTest.png</a></td>
+                    <td class="col-measure">18 MockMvc integration tests on 12 secured routes</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">Thiếu kịch bản kiểm thử việc upload file ảnh độc hại (chứa mã thực thi PHP/EXE giả dạng đuôi ảnh JPG).</td>
+                </tr>
+                <tr class="data-row" data-week="9">
+                    <td class="col-no">36</td>
+                    <td class="col-phase">Testing</td>
+                    <td class="col-task">Manual End-to-End Test Case Generation for Payments</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">Bộ bảng biểu kịch bản kiểm thử thủ công E2E: Mã kiểm thử, Điều kiện tiên quyết, Các bước thực hiện, Kết quả mong đợi, Kết quả thực tế.</td>
+                    <td class="col-validation">Lưu vào `docs/Testing/`; chạy kiểm thử thực tế trên cổng Sandbox VNPay với các tình huống: thanh toán thành công, người dùng bấm hủy bỏ giao dịch, sai mã OTP ngân hàng.</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session36_E2ETestCases.png" target="_blank">Group4_Session36_E2ETestCases.png</a></td>
+                    <td class="col-measure">22 manual E2E test scenarios executed</td>
+                    <td class="col-value">4</td>
+                    <td class="col-risks">AI không liệt kê trường hợp người dùng ấn F5 tải lại trang kết quả giao dịch VNPay nhiều lần.</td>
+                </tr>
+
+                <!-- ==================== WEEK 10 ==================== -->
+                <tr class="week-banner" data-week="10">
+                    <td colspan="10">TUẦN 10: REPORTING, BUG FIXES & FINAL DELIVERY (SỬA LỖI, BÀN GIAO & TỔNG KẾT ĐỒ ÁN)</td>
+                </tr>
+                <tr class="data-row" data-week="10">
+                    <td class="col-no">37</td>
+                    <td class="col-phase">Reporting</td>
+                    <td class="col-task">Bug Remediation & Regression Verification</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">Đề xuất giải pháp sửa các lỗi phát hiện sau kiểm thử: lỗi lệch phân trang khi tìm kiếm có dấu, độ trễ khi đồng bộ vị trí đọc audio, xung đột z-index trên menu mobile.</td>
+                    <td class="col-validation">Áp dụng code sửa lỗi vào controllers và views; chạy lại toàn bộ test suite để đảm bảo không phát sinh lỗi hồi quy (regression) trước buổi bảo vệ.</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session37_BugFixRegression.png" target="_blank">Group4_Session37_BugFixRegression.png</a></td>
+                    <td class="col-measure">8 bug fixes applied, 0 critical bugs remaining</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">AI đề xuất gắn cờ CSS `!important` làm vỡ layout của menu thả xuống trên màn hình máy tính; đã refactor lại CSS selector chuẩn.</td>
+                </tr>
+                <tr class="data-row" data-week="10">
+                    <td class="col-no">38</td>
+                    <td class="col-phase">Reporting</td>
+                    <td class="col-task">RDS & SDS Document Synchronization (Version 1.5)</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">Bản tóm tắt đối chiếu sự khác biệt giữa mã nguồn thực tế và tài liệu RDS/SDS ban đầu để chuẩn hóa phiên bản cuối cùng.</td>
+                    <td class="col-validation">Cập nhật tài liệu SDS Mục II.d (xóa các câu lệnh `FOR UPDATE` dư thừa theo V1.5); cập nhật lại tác nhân chính cho UC-25 trong tài liệu RDS.</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session38_DocSync.png" target="_blank">Group4_Session38_DocSync.png</a></td>
+                    <td class="col-measure">14 document sections synced, 2 diagrams re-rendered</td>
+                    <td class="col-value">4</td>
+                    <td class="col-risks">AI bỏ qua bảng lịch sử chỉnh sửa tài liệu (Record of Changes); sinh viên đã tự cập nhật phiên bản V1.5 vào file tài liệu.</td>
+                </tr>
+                <tr class="data-row" data-week="10">
+                    <td class="col-no">39</td>
+                    <td class="col-phase">Reporting</td>
+                    <td class="col-task">Defense Presentation Deck & Demo Script Outline</td>
+                    <td class="col-tool">Gemini</td>
+                    <td class="col-output">Dàn ý bài thuyết trình bảo vệ đồ án 15 slide gồm: Bối cảnh đề tài, Kiến trúc giải pháp, Các tính năng kiếm tiền số cốt lõi, và kịch bản demo trực tiếp.</td>
+                    <td class="col-validation">Cắt gọt kịch bản demo vừa vặn 7 phút; tập trung phô diễn các tính năng độc đáo: nạp xu sandbox VNPay, mở khóa chương VIP bằng xu, và trình đọc truyện Audio TTS.</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session39_PresentationDemo.png" target="_blank">Group4_Session39_PresentationDemo.png</a></td>
+                    <td class="col-measure">1 slide deck outline (15 slides), 1 timed demo script</td>
+                    <td class="col-value">4</td>
+                    <td class="col-risks">Dàn ý AI ban đầu quá dài so với thời lượng quy định 15 phút bảo vệ của hội đồng; sinh viên đã rút gọn 40% nội dung.</td>
+                </tr>
+                <tr class="data-row" data-week="10">
+                    <td class="col-no">40</td>
+                    <td class="col-phase">Reporting</td>
+                    <td class="col-task">Final AI Usage Consolidation & Contribution Assessment</td>
+                    <td class="col-tool">Claude</td>
+                    <td class="col-output">Bản tổng kết thống kê mức độ đóng góp của AI qua các giai đoạn SDLC (Yêu cầu: 20%, Thiết kế: 30%, Lập trình: 30%, Kiểm thử: 15%, Báo cáo: 5%).</td>
+                    <td class="col-validation">Tổng hợp toàn bộ 40 log entry vào `0.Overview.html`; rà soát chứng từ ảnh minh chứng phiên chat trên Google Drive để bàn giao cho giảng viên hướng dẫn.</td>
+                    <td class="col-link"><a href="https://drive.google.com/drive/folders/Group4_Session40_FinalAIReport.png" target="_blank">Group4_Session40_FinalAIReport.png</a></td>
+                    <td class="col-measure">40 validated log entries, 1 comprehensive assessment</td>
+                    <td class="col-value">5</td>
+                    <td class="col-risks">Báo cáo của AI phóng đại tỷ lệ đóng góp tự động; sinh viên đã hiệu chỉnh lại để làm nổi bật vai trò thẩm định và tinh chỉnh mã nguồn của con người.</td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="toast" class="toast">Đã copy vào Clipboard! Bạn có thể ấn Ctrl+V vào Google Sheet.</div>
+
+<script>
+    function showToast(message) {
+        var toast = document.getElementById("toast");
+        toast.innerText = message || "Đã copy vào Clipboard! Bạn có thể ấn Ctrl+V vào Google Sheet.";
+        toast.className = "toast show";
+        setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 3000);
+    }
+
+    // Function to copy TSV (Tab Separated Values) directly for clean Google Sheets paste
+    function copyRowsToClipboard(rows, bannerText) {
+        var tsv = [];
+        // Header
+        var headers = ["No.", "SDLC Phase", "Task / Activity", "AI Tool Used", "AI Output", "Student’s Validation / Modification", "Evidence / Link", "Quantitative Measure", "Value Added (1-5)", "Risks / Limitations Observed"];
+        tsv.push(headers.join("\t"));
+
+        rows.forEach(function(row) {
+            var cols = row.querySelectorAll("td");
+            var rowData = [];
+            cols.forEach(function(col) {
+                // Remove linebreaks and clean text
+                var text = col.innerText.trim().replace(/\r?\n|\r/g, " ");
+                rowData.push(text);
+            });
+            if (rowData.length > 0) {
+                tsv.push(rowData.join("\t"));
+            }
+        });
+
+        var textToCopy = tsv.join("\n");
+        navigator.clipboard.writeText(textToCopy).then(function() {
+            showToast(bannerText ? "Đã copy " + bannerText + " vào Clipboard!" : "Đã copy vào Clipboard!");
+        }).catch(function(err) {
+            alert("Lỗi khi copy: " + err);
+        });
+    }
+
+    function copyEntireTable() {
+        var rows = document.querySelectorAll("tr.data-row");
+        copyRowsToClipboard(rows, "toàn bộ 10 tuần (40 dòng)");
+    }
+
+    function copyWeek(weekNum) {
+        var rows = document.querySelectorAll('tr.data-row[data-week="' + weekNum + '"]');
+        copyRowsToClipboard(rows, "Tuần " + weekNum + " (4 dòng)");
+    }
+</script>
+
+</body>
+</html>

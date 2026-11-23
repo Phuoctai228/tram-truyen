@@ -310,6 +310,28 @@ class BookshelfServiceImplTest {
     }
 
     @Test
+    void getLastReadChapterReturnsChapterWhenOnlyReadAtExists() {
+        when(userRepository.findByEmail("reader@test.com")).thenReturn(Optional.of(sampleUser));
+        when(novelRepository.findByIdAndIsDeletedFalse(1)).thenReturn(Optional.of(sampleNovel));
+
+        Chapter chapter3 = Chapter.builder().id(30).chapterNumber(3).isDeleted(false).build();
+        UserChapterActivity activity = UserChapterActivity.builder()
+                .user(sampleUser)
+                .chapter(chapter3)
+                .isRead(false)
+                .readAt(LocalDateTime.now())
+                .build();
+
+        when(userChapterActivityRepository.findFirstByUserAndChapter_NovelAndReadAtIsNotNullOrderByReadAtDescChapter_ChapterNumberDesc(sampleUser, sampleNovel))
+                .thenReturn(Optional.of(activity));
+
+        Optional<Chapter> result = bookshelfService.getLastReadChapter("reader@test.com", 1);
+
+        assertThat(result).isPresent();
+        assertThat(result.get().getChapterNumber()).isEqualTo(3);
+    }
+
+    @Test
     void getLastReadChapterReturnsEmptyWhenNoActivity() {
         when(userRepository.findByEmail("reader@test.com")).thenReturn(Optional.of(sampleUser));
         when(novelRepository.findByIdAndIsDeletedFalse(1)).thenReturn(Optional.of(sampleNovel));

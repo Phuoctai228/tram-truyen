@@ -46,6 +46,12 @@
                             <small class="field-hint">Giá lớn hơn 0 sẽ gắn thẻ VIP.</small>
                             <small class="field-error" th:errors="*{price}"></small>
                         </div>
+                        <div class="form-field">
+                            <label for="autoUnlockAt">Tự động miễn phí lúc</label>
+                            <input id="autoUnlockAt" type="datetime-local" th:field="*{autoUnlockAt}">
+                            <small class="field-hint">Chỉ áp dụng khi xuất bản chapter VIP. Múi giờ Việt Nam.</small>
+                            <small class="field-error" th:errors="*{autoUnlockAt}"></small>
+                        </div>
                     </div>
 
                     <div class="form-field chapter-content-field">

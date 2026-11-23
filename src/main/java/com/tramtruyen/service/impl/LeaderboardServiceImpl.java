@@ -4,7 +4,6 @@ import com.tramtruyen.dto.LeaderboardDTO;
 import com.tramtruyen.dto.LeaderboardItemDTO;
 import com.tramtruyen.entity.Category;
 import com.tramtruyen.entity.Novel;
-import com.tramtruyen.repository.BookshelfRepository;
 import com.tramtruyen.repository.CategoryRepository;
 import com.tramtruyen.repository.NovelRepository;
 import com.tramtruyen.repository.UserChapterActivityRepository;
@@ -13,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,7 +31,6 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 
     private final NovelRepository novelRepository;
     private final CategoryRepository categoryRepository;
-    private final BookshelfRepository bookshelfRepository;
     private final UserChapterActivityRepository userChapterActivityRepository;
 
     @Override
@@ -53,45 +52,16 @@ public class LeaderboardServiceImpl implements LeaderboardService {
             allTimeNovels = publicNovels(novelRepository.findAllByIsDeletedFalseOrderByViewsDesc());
         }
 
-        // Map all-time baseline ranks to compute actual relative rank change (+2, -1, •)
-        Map<Integer, Integer> allTimeRankMap = new HashMap<>();
-        for (int i = 0; i < allTimeNovels.size(); i++) {
-            allTimeRankMap.put(allTimeNovels.get(i).getId(), i + 1);
-        }
-
         List<NovelRankData> rankedNovels = resolveRankedNovels(categoryId, activeTimeframe, allTimeNovels);
-
         List<Category> allCategories = categoryRepository.findAll();
-
-        List<LeaderboardItemDTO> allItems = new ArrayList<>();
-        int currentRank = 1;
-        for (NovelRankData data : rankedNovels) {
-            Novel n = data.novel;
-            long favCount = bookshelfRepository.countByNovelId(n.getId());
-            int baselineRank = allTimeRankMap.getOrDefault(n.getId(), currentRank);
-            allItems.add(toItemDTO(n, currentRank, baselineRank, activeTimeframe, data.views, favCount));
-            currentRank++;
-        }
-
-        LeaderboardItemDTO top1 = !allItems.isEmpty() ? allItems.get(0) : null;
-        LeaderboardItemDTO top2 = allItems.size() > 1 ? allItems.get(1) : null;
-        LeaderboardItemDTO top3 = allItems.size() > 2 ? allItems.get(2) : null;
-
-        List<LeaderboardItemDTO> restItems = new ArrayList<>();
-        if (allItems.size() > 3) {
-            int endIndex = Math.min(allItems.size(), 10);
-            restItems = allItems.subList(3, endIndex);
-        }
+        List<LeaderboardItemDTO> items = buildLeaderboardItems(rankedNovels, 10);
 
         return LeaderboardDTO.builder()
                 .currentTimeframe(activeTimeframe)
                 .currentCategoryId(categoryId)
                 .categories(allCategories)
-                .top1(top1)
-                .top2(top2)
-                .top3(top3)
-                .restItems(restItems)
-                .totalCount(allItems.size())
+                .items(items)
+                .totalCount(items.size())
                 .build();
     }
 
@@ -101,22 +71,37 @@ public class LeaderboardServiceImpl implements LeaderboardService {
         String activeTimeframe = (timeframe != null && !timeframe.isBlank()) ? timeframe.toLowerCase() : "all";
         List<Novel> allTimeNovels = publicNovels(novelRepository.findAllByIsDeletedFalseOrderByViewsDesc());
 
-        Map<Integer, Integer> allTimeRankMap = new HashMap<>();
-        for (int i = 0; i < allTimeNovels.size(); i++) {
-            allTimeRankMap.put(allTimeNovels.get(i).getId(), i + 1);
-        }
-
         List<NovelRankData> rankedNovels = resolveRankedNovels(null, activeTimeframe, allTimeNovels);
+        return buildLeaderboardItems(rankedNovels, limit);
+    }
 
+    /**
+     * Gán thứ hạng chính xác theo quy tắc đồng hạng (cùng views và cùng averageRating)
+     */
+    private List<LeaderboardItemDTO> buildLeaderboardItems(List<NovelRankData> rankedNovels, int limit) {
         List<LeaderboardItemDTO> result = new ArrayList<>();
         int max = limit > 0 ? Math.min(rankedNovels.size(), limit) : rankedNovels.size();
+        int currentRank = 1;
+
         for (int i = 0; i < max; i++) {
             NovelRankData data = rankedNovels.get(i);
             Novel n = data.novel;
-            int currentRank = i + 1;
-            long favCount = bookshelfRepository.countByNovelId(n.getId());
-            int baselineRank = allTimeRankMap.getOrDefault(n.getId(), currentRank);
-            result.add(toItemDTO(n, currentRank, baselineRank, activeTimeframe, data.views, favCount));
+
+            if (i > 0) {
+                NovelRankData prev = rankedNovels.get(i - 1);
+                boolean sameViews = (data.views == prev.views);
+                BigDecimal currRating = (n.getAverageRating() != null ? n.getAverageRating() : BigDecimal.ZERO);
+                BigDecimal prevRating = (prev.novel.getAverageRating() != null ? prev.novel.getAverageRating() : BigDecimal.ZERO);
+                boolean sameRating = (currRating.compareTo(prevRating) == 0);
+
+                if (!sameViews || !sameRating) {
+                    currentRank = i + 1;
+                }
+            } else {
+                currentRank = 1;
+            }
+
+            result.add(toItemDTO(n, currentRank, data.views));
         }
         return result;
     }
@@ -134,8 +119,21 @@ public class LeaderboardServiceImpl implements LeaderboardService {
         if ("all".equals(timeframe)) {
             List<NovelRankData> list = new ArrayList<>();
             for (Novel n : allTimeNovels) {
-                list.add(new NovelRankData(n, n.getViews() != null ? n.getViews() : 0));
+                int views = n.getViews() != null ? n.getViews() : 0;
+                if (views > 0) {
+                    list.add(new NovelRankData(n, views));
+                }
             }
+            // Sắp xếp: lượt xem giảm dần -> nếu bằng nhau, xét average_rating giảm dần
+            list.sort((a, b) -> {
+                int cmp = Integer.compare(b.views, a.views);
+                if (cmp != 0) {
+                    return cmp;
+                }
+                BigDecimal aRating = a.novel.getAverageRating() != null ? a.novel.getAverageRating() : BigDecimal.ZERO;
+                BigDecimal bRating = b.novel.getAverageRating() != null ? b.novel.getAverageRating() : BigDecimal.ZERO;
+                return bRating.compareTo(aRating);
+            });
             return list;
         }
 
@@ -175,26 +173,30 @@ public class LeaderboardServiceImpl implements LeaderboardService {
         }
 
         List<NovelRankData> list = new ArrayList<>();
-        // 1. Novels with actual recent activities in user_chapter_activities
+        // Chỉ thêm những truyện có lượt xem thật trong timeframe (> 0)
         for (Map.Entry<Integer, Integer> entry : activityCountMap.entrySet()) {
-            Novel n = novelMap.get(entry.getKey());
-            if (n != null) {
-                list.add(new NovelRankData(n, entry.getValue()));
+            if (entry.getValue() > 0) {
+                Novel n = novelMap.get(entry.getKey());
+                if (n != null) {
+                    list.add(new NovelRankData(n, entry.getValue()));
+                }
             }
         }
 
-        // 2. Remaining novels with 0 real reading activity in this timeframe
-        for (Novel n : allTimeNovels) {
-            if (!activityCountMap.containsKey(n.getId())) {
-                list.add(new NovelRankData(n, 0));
-            }
-        }
-
-        // Sort by timeframe views descending. If views are equal, fallback to total all-time views descending
+        // Sắp xếp:
+        // 1. Lượt xem timeframe giảm dần
+        // 2. Nếu lượt xem timeframe bằng nhau -> xét average_rating (điểm sao) giảm dần
+        // 3. Nếu average_rating vẫn bằng nhau -> đồng hạng (giữ cùng thứ bậc khi gán rank)
         list.sort((a, b) -> {
             int cmp = Integer.compare(b.views, a.views);
             if (cmp != 0) {
                 return cmp;
+            }
+            BigDecimal aRating = a.novel.getAverageRating() != null ? a.novel.getAverageRating() : BigDecimal.ZERO;
+            BigDecimal bRating = b.novel.getAverageRating() != null ? b.novel.getAverageRating() : BigDecimal.ZERO;
+            int ratingCmp = bRating.compareTo(aRating);
+            if (ratingCmp != 0) {
+                return ratingCmp;
             }
             int aAllTime = a.novel.getViews() != null ? a.novel.getViews() : 0;
             int bAllTime = b.novel.getViews() != null ? b.novel.getViews() : 0;
@@ -203,33 +205,11 @@ public class LeaderboardServiceImpl implements LeaderboardService {
         return list;
     }
 
-    private LeaderboardItemDTO toItemDTO(Novel novel, int currentRank, int baselineRank, String timeframe, int displayViews, long favCount) {
+    private LeaderboardItemDTO toItemDTO(Novel novel, int currentRank, int displayViews) {
 
         String primaryCategory = "Truyện chữ";
         if (novel.getCategories() != null && !novel.getCategories().isEmpty()) {
             primaryCategory = novel.getCategories().iterator().next().getName();
-        }
-
-        // Rank change calculation: baseline rank vs current timeframe rank
-        String trendType;
-        String trendText;
-        if ("all".equals(timeframe)) {
-            // For all-time, this serves as the global baseline, so trend is steady/neutral
-            trendType = "STABLE";
-            trendText = "•";
-        } else {
-            // In day/week/month: delta = baselineRank - currentRank
-            int rankDiff = baselineRank - currentRank;
-            if (rankDiff > 0) {
-                trendType = "UP";
-                trendText = "+" + rankDiff;
-            } else if (rankDiff < 0) {
-                trendType = "DOWN";
-                trendText = String.valueOf(rankDiff);
-            } else {
-                trendType = "STABLE";
-                trendText = "•";
-            }
         }
 
         return LeaderboardItemDTO.builder()
@@ -244,13 +224,9 @@ public class LeaderboardServiceImpl implements LeaderboardService {
                 .status(novel.getStatus())
                 .views(displayViews)
                 .formattedViews(formatCount(displayViews))
-                .favoriteCount(favCount)
-                .formattedFavorites(formatCount(favCount))
                 .averageRating(novel.getAverageRating())
                 .chapterCount(novel.getChapterCount() != null ? novel.getChapterCount() : 0)
                 .primaryCategory(primaryCategory)
-                .trendText(trendText)
-                .trendType(trendType)
                 .build();
     }
 

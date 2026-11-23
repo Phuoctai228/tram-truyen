@@ -307,8 +307,8 @@ public class ReportServiceImpl implements ReportService {
                     : "bình luận";
 
             String notifTitle = isRejected
-                    ? NotificationService.REPORT_NOTIFICATION_PREFIX + ": Từ chối báo cáo bình luận #RP-" + report.getId()
-                    : NotificationService.REPORT_NOTIFICATION_PREFIX + ": Bình luận đã được xử lý #RP-" + report.getId();
+                    ? NotificationService.REPORT_NOTIFICATION_PREFIX + ": Từ chối báo cáo bình luận #-" + report.getId()
+                    : NotificationService.REPORT_NOTIFICATION_PREFIX + ": Bình luận đã được xử lý #-" + report.getId();
 
             String repliesSuffix = affectedReplyCount > 0 ? " và " + affectedReplyCount + " câu trả lời bên dưới" : "";
             String actionText = isRejected

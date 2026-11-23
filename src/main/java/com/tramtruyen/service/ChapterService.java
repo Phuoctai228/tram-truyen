@@ -36,4 +36,11 @@ public interface ChapterService {
     List<Chapter> getPublicChapters(Integer novelId);
 
     void recordView(Integer novelId, Integer chapterId);
+
+    /**
+     * Converts all published VIP chapters whose scheduled release time has arrived to free chapters.
+     *
+     * @return the number of chapters converted
+     */
+    int releaseDueVipChapters();
 }

@@ -91,258 +91,31 @@
                 thể loại khác.</p>
         </div>
 
-        <!-- Top 3 Podium (Bục Vinh Quang) -->
-        <div th:if="${leaderboard.totalCount > 0}"
-            class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end max-w-5xl mx-auto mb-16">
-
-            <!-- #2: Á Quân (Left on desktop) -->
-            <div th:if="${leaderboard.top2 != null}"
-                class="order-2 md:order-1 flex flex-col bg-white rounded-3xl p-5 border border-[#ebd9c7] shadow-[0_4px_20px_rgba(35,26,17,0.04)] hover:shadow-lg transition-all relative">
-                <!-- Rank ribbon -->
-                <div class="flex items-center justify-between mb-3">
-                    <span
-                        class="px-2.5 py-0.5 rounded-lg bg-[#e8e6e3] text-[#4d4843] text-[12px] font-bold flex items-center gap-1 shadow-sm">
-                        <span># 2</span>
-                    </span>
-                    <span
-                        class="text-[11px] font-bold text-[#7d7367] tracking-wider uppercase flex items-center gap-0.5">
-                        <span class="material-symbols-outlined text-[14px]">trending_up</span> Á QUÂN
-                    </span>
-                </div>
-
-                <!-- Cover Image with Rank Badge -->
-                <a th:href="@{'/truyen/' + ${leaderboard.top2.slug}}"
-                    class="relative w-36 h-48 mx-auto rounded-xl overflow-hidden shadow-md group block mb-3 bg-[#f5eae0]">
-                    <img th:src="${leaderboard.top2.coverUrl != null ? leaderboard.top2.coverUrl : '/images/default-cover.jpg'}"
-                        onerror="this.onerror=null;this.src='/images/default-cover.jpg';"
-                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        th:alt="${leaderboard.top2.title}">
-                    <div
-                        class="absolute bottom-2 right-2 w-6 h-6 rounded-full bg-[#8c8275] text-white text-[12px] font-bold flex items-center justify-center shadow">
-                        2
-                    </div>
-                </a>
-
-                <!-- Meta & Title -->
-                <div class="text-center mb-4">
-                    <div class="text-[11px] font-semibold text-[#8c7a68] mb-1">
-                        <span th:text="${leaderboard.top2.primaryCategory}">Kiếm Hiệp</span>
-                        <span>•</span>
-                        <span th:text="${leaderboard.top2.status == 'COMPLETED' ? 'Hoàn thành' : 'Đang ra'}">Đang
-                            ra</span>
-                    </div>
-                    <a th:href="@{'/truyen/' + ${leaderboard.top2.slug}}"
-                        class="text-[17px] font-bold text-[#231A11] hover:text-[#c08d41] transition-colors line-clamp-1 block mb-0.5"
-                        th:text="${leaderboard.top2.title}">Kiếm Đạo Đệ Nhất Tiên</a>
-                    <p class="text-[12px] text-[#7d6b59] truncate" th:text="${leaderboard.top2.author}">Tiêu Cẩn Du</p>
-                </div>
-
-                <!-- Stats 3 columns -->
-                <div
-                    class="grid grid-cols-3 gap-1 bg-[#faf8f5] rounded-xl p-2.5 text-center mb-4 border border-[#f0e4d7]">
-                    <div>
-                        <div class="font-bold text-[13px] text-[#231A11]" th:text="${leaderboard.top2.formattedViews}">
-                            2.9M</div>
-                        <div class="text-[10px] text-[#8c7a68]">Lượt đọc</div>
-                    </div>
-                    <div>
-                        <div class="font-bold text-[13px] text-[#231A11]" th:text="${leaderboard.top2.chapterCount}">
-                            1.820</div>
-                        <div class="text-[10px] text-[#8c7a68]">Chương</div>
-                    </div>
-                    <div>
-                        <div class="font-bold text-[13px] text-[#c08d41]"
-                            th:text="${'★ ' + leaderboard.top2.averageRating}">★ 4.9</div>
-                        <div class="text-[10px] text-[#8c7a68]">Đánh giá</div>
-                    </div>
-                </div>
-
-                <!-- Button -->
-                <a th:href="@{'/truyen/' + ${leaderboard.top2.slug}}"
-                    class="w-full py-2 rounded-xl bg-[#faf8f5] hover:bg-[#f5eae0] text-[#4d3b2a] font-bold text-[13px] text-center transition-colors border border-[#ebd9c7] flex items-center justify-center gap-1">
-                    <span>Đọc ngay</span>
-                    <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
-                </a>
-            </div>
-
-            <!-- #1: Quán Quân (Center, tallest, golden glowing) -->
-            <div th:if="${leaderboard.top1 != null}"
-                class="order-1 md:order-2 flex flex-col bg-gradient-to-b from-[#fffbf4] to-[#ffffff] rounded-3xl p-6 border-2 border-[#d4a054] shadow-[0_8px_32px_rgba(212,160,84,0.18)] hover:shadow-[0_12px_40px_rgba(212,160,84,0.25)] transition-all relative transform md:-translate-y-3">
-                <!-- Golden Crown Ribbon -->
-                <div class="flex items-center justify-between mb-3">
-                    <span
-                        class="px-3 py-1 rounded-lg bg-gradient-to-r from-[#d4a054] to-[#b88636] text-white text-[13px] font-bold flex items-center gap-1 shadow-sm">
-                        <span># 1</span>
-                    </span>
-                    <span
-                        class="text-[11px] font-bold text-[#b88636] tracking-wider uppercase flex items-center gap-1 bg-[#fdf3e2] px-2.5 py-1 rounded-full border border-[#f0d6a8]">
-                        <span class="material-symbols-outlined text-[14px] text-[#d4a054]">workspace_premium</span> QUÁN
-                        QUÂN
-                    </span>
-                </div>
-
-                <!-- Cover Image with Glow -->
-                <a th:href="@{'/truyen/' + ${leaderboard.top1.slug}}"
-                    class="relative w-44 h-60 mx-auto rounded-xl overflow-hidden shadow-xl group block mb-3.5 bg-[#f5eae0] border-2 border-white">
-                    <img th:src="${leaderboard.top1.coverUrl != null ? leaderboard.top1.coverUrl : '/images/default-cover.jpg'}"
-                        onerror="this.onerror=null;this.src='/images/default-cover.jpg';"
-                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        th:alt="${leaderboard.top1.title}">
-                    <span
-                        class="absolute top-2 left-2 px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#c08d41] text-white shadow-sm">SIÊU
-                        PHẨM</span>
-                    <div
-                        class="absolute bottom-2 right-2 w-7 h-7 rounded-full bg-gradient-to-tr from-[#c08d41] to-[#e8be77] text-white text-[13px] font-black flex items-center justify-center shadow-lg border border-white">
-                        1
-                    </div>
-                </a>
-
-                <!-- Meta & Title -->
-                <div class="text-center mb-4">
-                    <div class="text-[12px] font-semibold text-[#8c7a68] mb-1">
-                        <span th:text="${leaderboard.top1.primaryCategory}">Huyền Huyễn</span>
-                        <span>•</span>
-                        <span th:text="${leaderboard.top1.chapterCount + ' Chương'}">1.402 Chương</span>
-                    </div>
-                    <a th:href="@{'/truyen/' + ${leaderboard.top1.slug}}"
-                        class="text-[20px] font-extrabold text-[#231A11] hover:text-[#c08d41] transition-colors line-clamp-1 block mb-0.5"
-                        th:text="${leaderboard.top1.title}">Quỷ Bí Chi Chủ</a>
-                    <p class="text-[13px] text-[#7d6b59] font-medium truncate" th:text="${leaderboard.top1.author}">Ái
-                        Tiềm Thủy Đích Ô Tặc</p>
-                </div>
-
-                <!-- Stats 3 columns -->
-                <div
-                    class="grid grid-cols-3 gap-1.5 bg-[#fff8ed] rounded-2xl p-3 text-center mb-5 border border-[#f5dfb8]">
-                    <div>
-                        <div class="font-black text-[15px] text-[#231A11]" th:text="${leaderboard.top1.formattedViews}">
-                            3.8M</div>
-                        <div class="text-[11px] text-[#8c7a68] font-medium">Lượt đọc</div>
-                    </div>
-                    <div>
-                        <div class="font-black text-[15px] text-[#231A11]" th:text="${leaderboard.top1.chapterCount}">
-                            1.402</div>
-                        <div class="text-[11px] text-[#8c7a68] font-medium">Số chương</div>
-                    </div>
-                    <div>
-                        <div class="font-black text-[15px] text-[#c08d41]"
-                            th:text="${'★ ' + leaderboard.top1.averageRating}">★ 5.0</div>
-                        <div class="text-[11px] text-[#8c7a68] font-medium">Đánh giá</div>
-                    </div>
-                </div>
-
-                <!-- Hero Button -->
-                <a th:href="@{'/truyen/' + ${leaderboard.top1.slug}}"
-                    class="w-full py-3 rounded-xl bg-gradient-to-r from-[#d4a054] to-[#b88636] hover:from-[#c59247] hover:to-[#a7772c] text-white font-bold text-[14px] text-center shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-1.5">
-                    <span>Đọc ngay</span>
-                    <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
-                </a>
-            </div>
-
-            <!-- #3: Quý Quân (Right on desktop) -->
-            <div th:if="${leaderboard.top3 != null}"
-                class="order-3 md:order-3 flex flex-col bg-white rounded-3xl p-5 border border-[#ebd9c7] shadow-[0_4px_20px_rgba(35,26,17,0.04)] hover:shadow-lg transition-all relative">
-                <!-- Rank ribbon -->
-                <div class="flex items-center justify-between mb-3">
-                    <span
-                        class="px-2.5 py-0.5 rounded-lg bg-[#f0dfd1] text-[#734825] text-[12px] font-bold flex items-center gap-1 shadow-sm">
-                        <span># 3</span>
-                    </span>
-                    <span
-                        class="text-[11px] font-bold text-[#7d7367] tracking-wider uppercase flex items-center gap-0.5">
-                        <span class="material-symbols-outlined text-[14px]">trending_up</span> QUÝ QUÂN
-                    </span>
-                </div>
-
-                <!-- Cover Image with Rank Badge -->
-                <a th:href="@{'/truyen/' + ${leaderboard.top3.slug}}"
-                    class="relative w-36 h-48 mx-auto rounded-xl overflow-hidden shadow-md group block mb-3 bg-[#f5eae0]">
-                    <img th:src="${leaderboard.top3.coverUrl != null ? leaderboard.top3.coverUrl : '/images/default-cover.jpg'}"
-                        onerror="this.onerror=null;this.src='/images/default-cover.jpg';"
-                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        th:alt="${leaderboard.top3.title}">
-                    <div
-                        class="absolute bottom-2 right-2 w-6 h-6 rounded-full bg-[#a3693e] text-white text-[12px] font-bold flex items-center justify-center shadow">
-                        3
-                    </div>
-                </a>
-
-                <!-- Meta & Title -->
-                <div class="text-center mb-4">
-                    <div class="text-[11px] font-semibold text-[#8c7a68] mb-1">
-                        <span th:text="${leaderboard.top3.primaryCategory}">Tiên Hiệp</span>
-                        <span>•</span>
-                        <span th:text="${leaderboard.top3.status == 'COMPLETED' ? 'Hoàn thành' : 'Đang ra'}">Đang
-                            ra</span>
-                    </div>
-                    <a th:href="@{'/truyen/' + ${leaderboard.top3.slug}}"
-                        class="text-[17px] font-bold text-[#231A11] hover:text-[#c08d41] transition-colors line-clamp-1 block mb-0.5"
-                        th:text="${leaderboard.top3.title}">Đại Phụng Đả Canh Nhân</a>
-                    <p class="text-[12px] text-[#7d6b59] truncate" th:text="${leaderboard.top3.author}">Mại Báo Tiểu
-                        Lang Quân</p>
-                </div>
-
-                <!-- Stats 3 columns -->
-                <div
-                    class="grid grid-cols-3 gap-1 bg-[#faf8f5] rounded-xl p-2.5 text-center mb-4 border border-[#f0e4d7]">
-                    <div>
-                        <div class="font-bold text-[13px] text-[#231A11]" th:text="${leaderboard.top3.formattedViews}">
-                            2.2M</div>
-                        <div class="text-[10px] text-[#8c7a68]">Lượt đọc</div>
-                    </div>
-                    <div>
-                        <div class="font-bold text-[13px] text-[#231A11]" th:text="${leaderboard.top3.chapterCount}">925
-                        </div>
-                        <div class="text-[10px] text-[#8c7a68]">Chương</div>
-                    </div>
-                    <div>
-                        <div class="font-bold text-[13px] text-[#c08d41]"
-                            th:text="${'★ ' + leaderboard.top3.averageRating}">★ 4.9</div>
-                        <div class="text-[10px] text-[#8c7a68]">Đánh giá</div>
-                    </div>
-                </div>
-
-                <!-- Button -->
-                <a th:href="@{'/truyen/' + ${leaderboard.top3.slug}}"
-                    class="w-full py-2 rounded-xl bg-[#faf8f5] hover:bg-[#f5eae0] text-[#4d3b2a] font-bold text-[13px] text-center transition-colors border border-[#ebd9c7] flex items-center justify-center gap-1">
-                    <span>Đọc ngay</span>
-                    <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
-                </a>
-            </div>
-
-        </div>
-
-        <!-- Section: Xếp hạng 4 - 10 thịnh hành -->
-        <div th:if="${!#lists.isEmpty(leaderboard.restItems)}" class="max-w-4xl mx-auto mb-14">
+        <!-- Section: Bảng Xếp Hạng Thịnh Hành (Dạng danh sách đơn giản từ Top 1 trở đi) -->
+        <div th:if="${leaderboard.totalCount > 0}" class="max-w-4xl mx-auto mb-14">
             <!-- Section Header -->
             <div
                 class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6 pb-3 border-b border-[#ebd9c7]">
                 <div>
                     <div class="flex items-center gap-2 mb-1">
                         <span class="w-1.5 h-5 rounded-full bg-[#c08d41]"></span>
-                        <h2 class="text-xl sm:text-2xl font-bold text-[#231A11]">Xếp hạng 4 – 10 thịnh hành</h2>
+                        <h2 class="text-xl sm:text-2xl font-bold text-[#231A11]">Danh sách xếp hạng thịnh hành</h2>
                     </div>
                     <p class="text-[13px] text-[#8c7a68]">Tác phẩm bám đuổi sát sao với mức độ lan tỏa mạnh mẽ trong
                         cộng đồng độc giả</p>
-                </div>
-                <!-- Legend -->
-                <div class="flex items-center gap-3 text-[11px] font-semibold text-[#8c7a68] select-none">
-                    <span class="flex items-center gap-1 text-emerald-600">▲ Tăng hạng</span>
-                    <span class="flex items-center gap-1 text-stone-500">• Ổn định</span>
-                    <span class="flex items-center gap-1 text-rose-600">▼ Giảm nhẹ</span>
                 </div>
             </div>
 
             <!-- List items -->
             <div class="flex flex-col gap-3">
-                <div th:each="item : ${leaderboard.restItems}"
+                <div th:each="item : ${leaderboard.items}"
                     class="bg-white rounded-2xl p-3.5 sm:p-4 border border-[#f0e4d7] hover:border-[#c08d41] hover:shadow-[0_4px_16px_rgba(35,26,17,0.06)] transition-all flex items-center justify-between gap-3 sm:gap-6">
 
                     <!-- Left: Rank + Thumbnail + Info -->
                     <div class="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
                         <!-- Rank Number -->
                         <div class="text-2xl sm:text-3xl font-black text-[#c08d41] w-8 sm:w-10 text-center shrink-0 tracking-tight"
-                            th:text="${item.formattedRank}">04</div>
+                            th:text="${item.formattedRank}">01</div>
 
                         <!-- Thumbnail Cover -->
                         <a th:href="@{'/truyen/' + ${item.slug}}"
@@ -370,7 +143,7 @@
                         </div>
                     </div>
 
-                    <!-- Right: Stats + Trend + Read Button -->
+                    <!-- Right: Stats + Read Button (Đã bỏ mũi tên lên xuống hạng) -->
                     <div class="flex items-center gap-3 sm:gap-6 shrink-0">
                         <div class="text-right hidden sm:block">
                             <div class="text-[13px] font-bold text-[#c08d41]" th:text="${'★ ' + item.averageRating}">★
@@ -381,23 +154,7 @@
                         <div class="text-right">
                             <div class="text-[13px] sm:text-[14px] font-bold text-[#231A11]"
                                 th:text="${item.formattedViews}">1.8M</div>
-                            <div class="text-[11px] text-[#8c7a68]">Lượt đọc</div>
-                        </div>
-
-                        <!-- Trend Badge -->
-                        <div class="w-12 text-center">
-                            <span th:if="${item.trendType == 'UP'}"
-                                class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-200">
-                                <span th:text="${item.trendText}">▲ 2</span>
-                            </span>
-                            <span th:if="${item.trendType == 'DOWN'}"
-                                class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-rose-50 text-rose-600 border border-rose-200">
-                                <span th:text="${item.trendText}">▼ 1</span>
-                            </span>
-                            <span th:if="${item.trendType == 'STABLE'}"
-                                class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-stone-100 text-stone-500">
-                                <span>•</span>
-                            </span>
+                            <div class="text-[11px] text-[#8c7a68]">Lượt xem</div>
                         </div>
 
                         <!-- Read Button -->

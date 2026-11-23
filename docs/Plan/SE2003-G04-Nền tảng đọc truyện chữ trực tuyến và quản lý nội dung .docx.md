@@ -250,7 +250,7 @@ Theo nghiệp vụ hiện tại, nội dung được đăng phải được ki�
 
 * Doanh thu Coin 
 
-* Số lượt đọc 
+* Số lượt xem 
 
 * Số lượt mở khóa VIP 
 

@@ -86,6 +86,10 @@ public class StaffChapterController {
         } catch (ResourceNotFoundException exception) {
             redirectAttributes.addFlashAttribute("errorMessage", exception.getMessage());
             return "redirect:/staff/novels";
+        } catch (IllegalArgumentException exception) {
+            bindingResult.rejectValue("autoUnlockAt", "invalid", exception.getMessage());
+            return renderFormWithErrors(novelId, form, model, redirectAttributes,
+                    "Tạo chương mới", "/staff/novels/" + novelId + "/chapters");
         }
     }
 
@@ -122,10 +126,14 @@ public class StaffChapterController {
         } catch (DuplicateResourceException exception) {
             bindingResult.rejectValue("chapterNumber", "duplicate", exception.getMessage());
             return renderFormWithErrors(novelId, form, model, redirectAttributes,
-                    "Chỉnh sửa chương", "/staff/novels/" + novelId + "/chapters/" + chapterId);
+                            "Chỉnh sửa chương", "/staff/novels/" + novelId + "/chapters/" + chapterId);
         } catch (ResourceNotFoundException exception) {
             redirectAttributes.addFlashAttribute("errorMessage", exception.getMessage());
             return "redirect:/staff/novels/" + novelId + "/chapters";
+        } catch (IllegalArgumentException exception) {
+            bindingResult.rejectValue("autoUnlockAt", "invalid", exception.getMessage());
+            return renderFormWithErrors(novelId, form, model, redirectAttributes,
+                    "Chỉnh sửa chương", "/staff/novels/" + novelId + "/chapters/" + chapterId);
         }
         if (saveAction == ChapterSaveAction.DRAFT) {
             return "redirect:/staff/novels/" + novelId + "/chapters/" + chapterId + "/edit";
@@ -166,6 +174,7 @@ public class StaffChapterController {
         form.setTitle(chapter.getTitle());
         form.setContent(chapter.getContent());
         form.setPrice(chapter.getPrice());
+        form.setAutoUnlockAt(chapter.getAutoUnlockAt());
         return form;
     }
 }

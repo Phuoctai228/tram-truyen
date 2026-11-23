@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -71,6 +72,29 @@ public class ChapterUnlockServiceImpl implements ChapterUnlockService {
         return userChapterActivityRepository.findByUserAndChapter(user, chapter)
                 .map(act -> Boolean.TRUE.equals(act.getIsUnlocked()))
                 .orElse(false);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Set<Integer> getUnlockedChapterIds(String email, Integer novelId) {
+        if (email == null || email.isBlank() || novelId == null) {
+            return Collections.emptySet();
+        }
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (user == null) {
+            return Collections.emptySet();
+        }
+
+        Set<String> roleNames = user.getRoles().stream()
+                .map(r -> r.getName())
+                .collect(Collectors.toSet());
+        if (chapterAccessPolicy.isPrivileged(roleNames)) {
+            return chapterRepository.findAllByNovelIdAndIsDeletedFalseOrderByChapterNumberAsc(novelId).stream()
+                    .map(Chapter::getId)
+                    .collect(Collectors.toSet());
+        }
+
+        return userChapterActivityRepository.findUnlockedChapterIdsByUserAndNovel(user.getId(), novelId);
     }
 
     @Override
