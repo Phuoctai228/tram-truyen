@@ -27,6 +27,11 @@ public class AuthController {
         this.authService = authService;
     }
 
+    private boolean isAuthenticated(Authentication authentication) {
+        return authentication != null && authentication.isAuthenticated()
+                && !(authentication instanceof AnonymousAuthenticationToken);
+    }
+
     @GetMapping("/login")
     public String showLoginForm(
             @RequestParam(value = "redirect", required = false) String redirect,
@@ -34,7 +39,7 @@ public class AuthController {
             Authentication authentication,
             Model model) {
             
-        if (authentication != null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
+        if (isAuthenticated(authentication)) {
             return "redirect:/";
         }
         String targetRedirect = redirect;
@@ -64,7 +69,7 @@ public class AuthController {
             Authentication authentication,
             Model model) {
             
-        if (authentication != null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
+        if (isAuthenticated(authentication)) {
             return "redirect:/";
         }
         String targetRedirect = redirect;
@@ -91,8 +96,12 @@ public class AuthController {
     @PostMapping("/register")
     public String processRegistration(@Valid @ModelAttribute("userDto") RegisterRequestDTO userDto,
                                       BindingResult bindingResult,
+                                      Authentication authentication,
                                       Model model,
                                       RedirectAttributes redirectAttributes) {
+        if (isAuthenticated(authentication)) {
+            return "redirect:/";
+        }
         if (bindingResult.hasErrors()) {
             return "authentication/register";
         }
@@ -171,14 +180,21 @@ public class AuthController {
     }
 
     @GetMapping("/forgot-password")
-    public String showForgotPasswordForm() {
+    public String showForgotPasswordForm(Authentication authentication) {
+        if (isAuthenticated(authentication)) {
+            return "redirect:/";
+        }
         return "authentication/forgot-password";
     }
 
     @PostMapping("/forgot-password")
     public String processForgotPassword(@RequestParam("email") String email,
+                                        Authentication authentication,
                                         Model model,
                                         RedirectAttributes redirectAttributes) {
+        if (isAuthenticated(authentication)) {
+            return "redirect:/";
+        }
         try {
             authService.sendForgotPasswordOtp(email);
             redirectAttributes.addFlashAttribute("successMessage", "Mã OTP đã được gửi đến email của bạn.");
@@ -194,7 +210,12 @@ public class AuthController {
     }
 
     @GetMapping("/forgot-password/verify-otp")
-    public String showForgotPasswordVerifyOtpPage(@RequestParam("email") String email, Model model) {
+    public String showForgotPasswordVerifyOtpPage(@RequestParam("email") String email,
+                                                  Authentication authentication,
+                                                  Model model) {
+        if (isAuthenticated(authentication)) {
+            return "redirect:/";
+        }
         model.addAttribute("email", email);
         return "authentication/forgot-password-verify-otp";
     }
@@ -202,8 +223,12 @@ public class AuthController {
     @PostMapping("/forgot-password/verify-otp")
     public String processForgotPasswordVerifyOtp(@RequestParam("email") String email,
                                                  @RequestParam("otpCode") String otpCode,
+                                                 Authentication authentication,
                                                  Model model,
                                                  HttpServletRequest request) {
+        if (isAuthenticated(authentication)) {
+            return "redirect:/";
+        }
         try {
             authService.verifyForgotPasswordOtp(email, otpCode);
             // OTP is correct, save to session to allow resetting password
@@ -222,7 +247,12 @@ public class AuthController {
     }
 
     @GetMapping("/forgot-password/reset")
-    public String showResetPasswordForm(HttpServletRequest request, Model model) {
+    public String showResetPasswordForm(Authentication authentication,
+                                        HttpServletRequest request,
+                                        Model model) {
+        if (isAuthenticated(authentication)) {
+            return "redirect:/";
+        }
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("RESET_PASSWORD_EMAIL") == null) {
             return "redirect:/forgot-password";
@@ -233,9 +263,13 @@ public class AuthController {
     @PostMapping("/forgot-password/reset")
     public String processResetPassword(@RequestParam("newPassword") String newPassword,
                                        @RequestParam("confirmPassword") String confirmPassword,
+                                       Authentication authentication,
                                        HttpServletRequest request,
                                        Model model,
                                        RedirectAttributes redirectAttributes) {
+        if (isAuthenticated(authentication)) {
+            return "redirect:/";
+        }
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("RESET_PASSWORD_EMAIL") == null) {
             return "redirect:/forgot-password";
