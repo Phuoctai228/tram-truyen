@@ -131,24 +131,42 @@
                             </div>
                         </div>
 
+                        <!-- Error and Success Messages -->
+                        <div th:if="${errorMessage}"
+                            class="p-3 text-sm text-on-error-container bg-error-container rounded-lg border border-error/20 flex items-center gap-2"
+                            role="alert">
+                            <span class="material-symbols-outlined text-[20px] text-error">error</span>
+                            <span th:text="${errorMessage}">Lỗi xảy ra</span>
+                        </div>
 
+                        <div th:if="${successMessage}"
+                            class="p-3 text-sm text-[#0f5132] bg-[#d1e7dd] rounded-lg border border-[#badbcc] flex items-center gap-2"
+                            role="alert">
+                            <span class="material-symbols-outlined text-[20px]">check_circle</span>
+                            <span th:text="${successMessage}">Thao tác thành công</span>
+                        </div>
 
                         <!-- Info Cards -->
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <!-- Họ và tên (Editable) -->
                             <div
-                                class="p-4 rounded-xl bg-surface flex items-center gap-4 border border-outline-variant/50 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all">
-                                <div
-                                    class="w-12 h-12 rounded-xl bg-surface-container-lowest flex items-center justify-center text-primary shadow-xs shrink-0">
-                                    <span class="material-symbols-outlined text-[24px]">badge</span>
+                                class="p-4 rounded-xl bg-surface flex flex-col justify-center border border-outline-variant/50 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all">
+                                <div class="flex items-center gap-4">
+                                    <div
+                                        class="w-12 h-12 rounded-xl bg-surface-container-lowest flex items-center justify-center text-primary shadow-xs shrink-0">
+                                        <span class="material-symbols-outlined text-[24px]">badge</span>
+                                    </div>
+                                    <div class="w-full min-w-0">
+                                        <label for="full-name" class="text-xs text-outline font-medium block mb-0.5">Họ và
+                                            tên</label>
+                                        <input id="full-name" name="fullName" type="text" th:value="${userProfile.fullName}"
+                                            required
+                                            pattern="^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s]+$"
+                                            title="Họ và tên chỉ được chứa chữ cái và khoảng trắng, không chứa số hoặc ký tự đặc biệt"
+                                            class="w-full bg-transparent border-none p-0 focus:ring-0 font-bold text-on-surface text-base placeholder:font-normal placeholder:text-outline-variant outline-none">
+                                    </div>
                                 </div>
-                                <div class="w-full min-w-0">
-                                    <label for="full-name" class="text-xs text-outline font-medium block mb-0.5">Họ và
-                                        tên</label>
-                                    <input id="full-name" name="fullName" type="text" th:value="${userProfile.fullName}"
-                                        required
-                                        class="w-full bg-transparent border-none p-0 focus:ring-0 font-bold text-on-surface text-base placeholder:font-normal placeholder:text-outline-variant outline-none">
-                                </div>
+                                <p id="fullNameError" class="text-error text-xs mt-1.5 ml-16 hidden"></p>
                             </div>
 
                             <!-- Email (Readonly) -->
@@ -213,7 +231,11 @@
                                     <div class="font-bold text-on-surface text-base tracking-widest mt-1">********</div>
                                 </div>
                             </div>
-                            <a th:href="@{/user/change-password}"
+                            <div th:if="${userProfile.googleAccount}" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-surface-container text-tertiary text-sm font-medium shrink-0">
+                                <span class="material-symbols-outlined text-[18px] text-primary">verified_user</span>
+                                <span>Tài khoản Google</span>
+                            </div>
+                            <a th:unless="${userProfile.googleAccount}" th:href="@{/user/change-password}"
                                 class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-surface-container text-primary hover:bg-surface-container-high transition-all shadow-sm shrink-0">
                                 <span class="material-symbols-outlined text-[18px]">edit</span>
                                 <span class="font-label-lg text-label-lg">Đổi mật khẩu</span>
@@ -227,6 +249,8 @@
 
     <!-- Footer -->
     <div th:replace="~{fragments/footer :: main-footer}"></div>
+
+    <script th:src="@{/js/user/edit-profile.js}"></script>
 </body>
 
 </html>

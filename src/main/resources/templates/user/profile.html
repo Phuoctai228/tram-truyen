@@ -131,7 +131,11 @@
                                     <div class="font-bold text-on-surface text-base tracking-widest mt-1">********</div>
                                 </div>
                             </div>
-                            <a th:href="@{/user/change-password}"
+                            <div th:if="${userProfile.googleAccount}" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-surface-container text-tertiary text-sm font-medium shrink-0">
+                                <span class="material-symbols-outlined text-[18px] text-primary">verified_user</span>
+                                <span>Tài khoản Google</span>
+                            </div>
+                            <a th:unless="${userProfile.googleAccount}" th:href="@{/user/change-password}"
                                 class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-surface-container text-primary hover:bg-surface-container-high transition-all shadow-sm shrink-0">
                                 <span class="material-symbols-outlined text-[18px]">edit</span>
                                 <span class="font-label-lg text-label-lg">Đổi mật khẩu</span>

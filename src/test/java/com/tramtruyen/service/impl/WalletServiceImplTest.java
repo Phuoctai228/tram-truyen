@@ -188,4 +188,21 @@ class WalletServiceImplTest {
         assertThat(dto.getTitle()).contains("Điểm danh hàng ngày");
         assertThat(dto.getSecondaryText()).isEqualTo("Miễn phí");
     }
+
+    @Test
+    void getWalletOverviewSetsTotalPagesAndCurrentPageCorrectly() {
+        User user = User.builder().id(1).email("test@example.com").walletBalance(500).status("ACTIVE").build();
+        when(userRepository.findById(1)).thenReturn(Optional.of(user));
+        when(transactionRepository.findFirstByUserIdOrderByCreatedAtDesc(1)).thenReturn(Optional.empty());
+        when(topupOrderRepository.findByUserIdAndStatusOrderByCreatedAtDesc(1, "FAILED")).thenReturn(List.of());
+        when(transactionRepository.countByUserId(1)).thenReturn(12L);
+        when(transactionRepository.findByUserIdOrderByCreatedAtDesc(1)).thenReturn(List.of());
+
+        var overview = walletService.getWalletOverview(user);
+
+        assertThat(overview).isNotNull();
+        assertThat(overview.getWalletBalance()).isEqualTo(500);
+        assertThat(overview.getCurrentPage()).isEqualTo(0);
+        assertThat(overview.getTotalPages()).isGreaterThanOrEqualTo(0);
+    }
 }
