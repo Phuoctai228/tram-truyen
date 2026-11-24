@@ -1,16 +1,20 @@
 package com.tramtruyen.controller;
 
+import com.tramtruyen.dto.ChapterAccessDTO;
 import com.tramtruyen.dto.UnlockResultDTO;
 import com.tramtruyen.entity.Chapter;
+import com.tramtruyen.entity.Comment;
 import com.tramtruyen.entity.Novel;
+import com.tramtruyen.entity.NovelRating;
 import com.tramtruyen.service.BookshelfService;
 import com.tramtruyen.service.CategoryService;
+import com.tramtruyen.service.ChapterAccessService;
 import com.tramtruyen.service.ChapterService;
 import com.tramtruyen.service.ChapterUnlockService;
+import com.tramtruyen.service.CommentService;
 import com.tramtruyen.service.NovelService;
 import com.tramtruyen.service.RatingService;
 import com.tramtruyen.service.ReadingHistoryService;
-import com.tramtruyen.service.WalletService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +33,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -49,9 +53,8 @@ public class NovelController {
     private final RatingService ratingService;
     private final CategoryService categoryService;
     private final ChapterUnlockService chapterUnlockService;
-    private final WalletService walletService;
-    private final com.tramtruyen.service.CommentService commentService;
-    private final com.tramtruyen.service.ChapterAccessService chapterAccessService;
+    private final CommentService commentService;
+    private final ChapterAccessService chapterAccessService;
     private final ReadingHistoryService readingHistoryService;
 
     @GetMapping("/search")
@@ -66,7 +69,7 @@ public class NovelController {
             @RequestParam(defaultValue = "12") int size,
             @RequestParam(defaultValue = "updatedAt,desc") String sort,
             Model model) {
-            
+
         if (minRating != null && minRating <= 0.0) {
             minRating = null;
         }
@@ -75,27 +78,40 @@ public class NovelController {
         Integer maxChapters = null;
         if (chapterRange != null) {
             switch (chapterRange) {
-                case "lt5": maxChapters = 4; break;
-                case "5-10": minChapters = 5; maxChapters = 10; break;
-                case "10-50": minChapters = 11; maxChapters = 50; break;
-                case "gt50": minChapters = 51; break;
+                case "lt5":
+                    maxChapters = 4;
+                    break;
+                case "5-10":
+                    minChapters = 5;
+                    maxChapters = 10;
+                    break;
+                case "10-50":
+                    minChapters = 11;
+                    maxChapters = 50;
+                    break;
+                case "gt50":
+                    minChapters = 51;
+                    break;
             }
         }
 
         String[] sortParams = sort.split(",");
-        org.springframework.data.domain.Sort.Direction direction = sortParams.length > 1 && sortParams[1].equalsIgnoreCase("asc") ? 
-                org.springframework.data.domain.Sort.Direction.ASC : org.springframework.data.domain.Sort.Direction.DESC;
-        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(page, size, org.springframework.data.domain.Sort.by(direction, sortParams[0]));
+        org.springframework.data.domain.Sort.Direction direction = sortParams.length > 1
+                && sortParams[1].equalsIgnoreCase("asc") ? org.springframework.data.domain.Sort.Direction.ASC
+                        : org.springframework.data.domain.Sort.Direction.DESC;
+        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(page, size,
+                org.springframework.data.domain.Sort.by(direction, sortParams[0]));
 
-        org.springframework.data.domain.Page<Novel> results = novelService.advancedSearch(q, categories, status, vip, minChapters, maxChapters, minRating, pageable);
-        
+        org.springframework.data.domain.Page<Novel> results = novelService.advancedSearch(q, categories, status, vip,
+                minChapters, maxChapters, minRating, pageable);
+
         model.addAttribute("novelPage", results);
         model.addAttribute("novels", results.getContent());
         model.addAttribute("query", q);
         model.addAttribute("allCategories", categoryService.getAllCategories());
-        
+
         // Pass back current filters for UI state
-        model.addAttribute("selectedCategories", categories != null ? categories : new java.util.ArrayList<>());
+        model.addAttribute("selectedCategories", categories != null ? categories : new ArrayList<>());
         model.addAttribute("selectedStatus", status);
         model.addAttribute("selectedVip", vip);
         model.addAttribute("selectedChapterRange", chapterRange);
@@ -106,18 +122,19 @@ public class NovelController {
     }
 
     @GetMapping("/api/search/suggestions")
-    @org.springframework.web.bind.annotation.ResponseBody
-    public java.util.Map<String, Object> searchSuggestions(@RequestParam(required = false) String q) {
+    @ResponseBody
+    public Map<String, Object> searchSuggestions(@RequestParam(required = false) String q) {
         List<Novel> results = novelService.searchPublicNovels(q);
+        int totalCount = (results != null) ? results.size() : 0;
         // limit to 5
         if (results != null && results.size() > 5) {
             results = results.subList(0, 5);
         }
-        
-        List<java.util.Map<String, Object>> suggestions = new java.util.ArrayList<>();
+
+        List<Map<String, Object>> suggestions = new ArrayList<>();
         if (results != null) {
             for (Novel n : results) {
-                java.util.Map<String, Object> map = new java.util.HashMap<>();
+                Map<String, Object> map = new HashMap<>();
                 map.put("slug", n.getSlug());
                 map.put("title", n.getTitle());
                 map.put("author", n.getAuthor());
@@ -131,27 +148,27 @@ public class NovelController {
                 suggestions.add(map);
             }
         }
-        
-        java.util.Map<String, Object> response = new java.util.HashMap<>();
+
+        Map<String, Object> response = new HashMap<>();
         response.put("results", suggestions);
-        response.put("total", novelService.searchPublicNovels(q).size());
+        response.put("total", totalCount);
         return response;
     }
 
     @GetMapping("/truyen/{slug}")
     public String novelDetailsBySlug(
             @PathVariable String slug,
-            org.springframework.security.core.Authentication authentication,
+            Authentication authentication,
             Model model) {
         Novel novel = novelService.getPublicNovelBySlug(slug);
         List<Chapter> chapters = chapterService.getPublicChapters(novel.getId());
         boolean inBookshelf = false;
         boolean hasReadAnyChapter = false;
-        com.tramtruyen.entity.NovelRating userRating = null;
+        NovelRating userRating = null;
         Chapter lastReadChapter = null;
         Set<Integer> unlockedChapterIds = Collections.emptySet();
         if (authentication != null && authentication.isAuthenticated()
-                && !(authentication instanceof org.springframework.security.authentication.AnonymousAuthenticationToken)) {
+                && !(authentication instanceof AnonymousAuthenticationToken)) {
             inBookshelf = bookshelfService.isNovelInBookshelf(authentication.getName(), novel.getId());
             hasReadAnyChapter = bookshelfService.hasReadAnyChapter(authentication.getName(), novel.getId());
             userRating = ratingService.getUserRating(authentication.getName(), novel.getId());
@@ -161,8 +178,8 @@ public class NovelController {
 
         long favoriteCount = bookshelfService.countNovelFavorites(novel.getId());
         List<Novel> sameAuthorNovels = novelService.getNovelsBySameAuthor(novel.getAuthor(), novel.getId());
-        List<com.tramtruyen.entity.NovelRating> allRatings = ratingService.getRatingsByNovel(novel.getId());
-        List<com.tramtruyen.entity.Comment> allComments = commentService.getVisibleCommentsByNovel(novel.getId());
+        List<NovelRating> allRatings = ratingService.getRatingsByNovel(novel.getId());
+        List<Comment> allComments = commentService.getVisibleCommentsByNovel(novel.getId());
 
         model.addAttribute("novel", novel);
         model.addAttribute("chapters", chapters);
@@ -179,15 +196,15 @@ public class NovelController {
         return "novel/details";
     }
 
-    @org.springframework.web.bind.annotation.PostMapping("/truyen/{slug}/rating")
+    @PostMapping("/truyen/{slug}/rating")
     public String submitRating(
             @PathVariable String slug,
             @RequestParam Integer rating,
             @RequestParam(required = false) String reviewText,
-            org.springframework.security.core.Authentication authentication,
-            org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+            Authentication authentication,
+            RedirectAttributes redirectAttributes) {
         if (authentication == null || !authentication.isAuthenticated()
-                || authentication instanceof org.springframework.security.authentication.AnonymousAuthenticationToken) {
+                || authentication instanceof AnonymousAuthenticationToken) {
             return "redirect:/login";
         }
         Novel novel = novelService.getPublicNovelBySlug(slug);
@@ -197,39 +214,42 @@ public class NovelController {
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Đã xảy ra lỗi khi gửi đánh giá. Vui lòng thử lại sau.");
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Đã xảy ra lỗi khi gửi đánh giá. Vui lòng thử lại sau.");
         }
         return "redirect:/truyen/" + novel.getSlug() + "#ratings";
     }
 
-    @org.springframework.web.bind.annotation.PostMapping("/truyen/{slug}/rating/delete")
+    @PostMapping("/truyen/{slug}/rating/delete")
     public String deleteRating(
             @PathVariable String slug,
-            org.springframework.security.core.Authentication authentication,
-            org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+            Authentication authentication,
+            RedirectAttributes redirectAttributes) {
         if (authentication == null || !authentication.isAuthenticated()
-                || authentication instanceof org.springframework.security.authentication.AnonymousAuthenticationToken) {
+                || authentication instanceof AnonymousAuthenticationToken) {
             return "redirect:/login";
         }
         Novel novel = novelService.getPublicNovelBySlug(slug);
         try {
             ratingService.deleteRating(authentication.getName(), novel.getId());
-            redirectAttributes.addFlashAttribute("successMessage", "Đã xóa đánh giá của bạn thành công. Bây giờ bạn có thể đánh giá lại.");
+            redirectAttributes.addFlashAttribute("successMessage",
+                    "Đã xóa đánh giá của bạn thành công. Bây giờ bạn có thể đánh giá lại.");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage() != null ? e.getMessage() : "Đã xảy ra lỗi khi xóa đánh giá.");
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    e.getMessage() != null ? e.getMessage() : "Đã xảy ra lỗi khi xóa đánh giá.");
         }
         return "redirect:/truyen/" + novel.getSlug() + "#ratings";
     }
 
-    @org.springframework.web.bind.annotation.PostMapping("/truyen/{slug}/rating/edit")
+    @PostMapping("/truyen/{slug}/rating/edit")
     public String editReview(
             @PathVariable String slug,
             @RequestParam Integer rating,
             @RequestParam(required = false) String reviewText,
-            org.springframework.security.core.Authentication authentication,
-            org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+            Authentication authentication,
+            RedirectAttributes redirectAttributes) {
         if (authentication == null || !authentication.isAuthenticated()
-                || authentication instanceof org.springframework.security.authentication.AnonymousAuthenticationToken) {
+                || authentication instanceof AnonymousAuthenticationToken) {
             return "redirect:/login";
         }
         Novel novel = novelService.getPublicNovelBySlug(slug);
@@ -239,7 +259,8 @@ public class NovelController {
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage() != null ? e.getMessage() : "Đã xảy ra lỗi khi cập nhật đánh giá.");
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    e.getMessage() != null ? e.getMessage() : "Đã xảy ra lỗi khi cập nhật đánh giá.");
         }
         return "redirect:/truyen/" + novel.getSlug() + "#ratings";
     }
@@ -248,21 +269,22 @@ public class NovelController {
     // BÌNH LUẬN TRUYỆN (Facebook-style Novel Discussion)
     // -------------------------------------------------------------------------
 
-    @org.springframework.web.bind.annotation.PostMapping("/truyen/{slug}/comments")
+    @PostMapping("/truyen/{slug}/comments")
     public String addNovelComment(
             @PathVariable String slug,
             @RequestParam String content,
             @RequestParam(required = false) Integer parentId,
-            org.springframework.security.core.Authentication authentication,
-            org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+            Authentication authentication,
+            RedirectAttributes redirectAttributes) {
         if (authentication == null || !authentication.isAuthenticated()
-                || authentication instanceof org.springframework.security.authentication.AnonymousAuthenticationToken) {
+                || authentication instanceof AnonymousAuthenticationToken) {
             return "redirect:/login";
         }
         Novel novel = novelService.getPublicNovelBySlug(slug);
         try {
             commentService.addNovelComment(authentication.getName(), novel.getId(), parentId, content);
-            redirectAttributes.addFlashAttribute("successMessage", parentId != null ? "Đã gửi câu trả lời bình luận!" : "Đã gửi bình luận thành công!");
+            redirectAttributes.addFlashAttribute("successMessage",
+                    parentId != null ? "Đã gửi câu trả lời bình luận!" : "Đã gửi bình luận thành công!");
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         } catch (Exception e) {
@@ -271,15 +293,15 @@ public class NovelController {
         return "redirect:/truyen/" + novel.getSlug() + "#comments";
     }
 
-    @org.springframework.web.bind.annotation.PostMapping("/truyen/{slug}/comments/{commentId}/edit")
+    @PostMapping("/truyen/{slug}/comments/{commentId}/edit")
     public String editNovelComment(
             @PathVariable String slug,
             @PathVariable Integer commentId,
             @RequestParam String content,
-            org.springframework.security.core.Authentication authentication,
-            org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+            Authentication authentication,
+            RedirectAttributes redirectAttributes) {
         if (authentication == null || !authentication.isAuthenticated()
-                || authentication instanceof org.springframework.security.authentication.AnonymousAuthenticationToken) {
+                || authentication instanceof AnonymousAuthenticationToken) {
             return "redirect:/login";
         }
         Novel novel = novelService.getPublicNovelBySlug(slug);
@@ -294,14 +316,14 @@ public class NovelController {
         return "redirect:/truyen/" + novel.getSlug() + "#comments";
     }
 
-    @org.springframework.web.bind.annotation.PostMapping("/truyen/{slug}/comments/{commentId}/delete")
+    @PostMapping("/truyen/{slug}/comments/{commentId}/delete")
     public String deleteNovelComment(
             @PathVariable String slug,
             @PathVariable Integer commentId,
-            org.springframework.security.core.Authentication authentication,
-            org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+            Authentication authentication,
+            RedirectAttributes redirectAttributes) {
         if (authentication == null || !authentication.isAuthenticated()
-                || authentication instanceof org.springframework.security.authentication.AnonymousAuthenticationToken) {
+                || authentication instanceof AnonymousAuthenticationToken) {
             return "redirect:/login";
         }
         Novel novel = novelService.getPublicNovelBySlug(slug);
@@ -322,7 +344,7 @@ public class NovelController {
         return "redirect:/truyen/" + novel.getSlug();
     }
 
-    @GetMapping({"/truyen/{slug}/chapters", "/truyen/{slug}/danh-sach-chuong"})
+    @GetMapping({ "/truyen/{slug}/chapters", "/truyen/{slug}/danh-sach-chuong" })
     public String novelChaptersBySlug(@PathVariable String slug) {
         return "redirect:/truyen/" + slug + "#chapters";
     }
@@ -333,7 +355,7 @@ public class NovelController {
         return "redirect:/truyen/" + novel.getSlug() + "#chapters";
     }
 
-    @GetMapping({"/truyen/{slug}/chuong-{chapterNumber}", "/truyen/{slug}/read/{chapterNumber}"})
+    @GetMapping({ "/truyen/{slug}/chuong-{chapterNumber}", "/truyen/{slug}/read/{chapterNumber}" })
     public String readChapterBySlug(
             @PathVariable String slug,
             @PathVariable Integer chapterNumber,
@@ -343,7 +365,8 @@ public class NovelController {
         Novel novel = novelService.getPublicNovelBySlug(slug);
         Chapter chapter = chapterService.getPublicChapter(novel.getId(), chapterNumber);
 
-        // Deduplicate view increment per session (prevents double counting from prefetch, double-click, F5 reload)
+        // Deduplicate view increment per session (prevents double counting from
+        // prefetch, double-click, F5 reload)
         HttpSession session = request.getSession(true);
         @SuppressWarnings("unchecked")
         Set<Integer> viewedChapters = (Set<Integer>) session.getAttribute("VIEWED_CHAPTER_IDS");
@@ -368,16 +391,17 @@ public class NovelController {
             unlockedChapterIds = chapterUnlockService.getUnlockedChapterIds(authentication.getName(), novel.getId());
         }
 
-        // Delegate content security, access resolution and top-up recommendations to service
-        com.tramtruyen.dto.ChapterAccessDTO access =
-                chapterAccessService.checkAccess(novel, chapter, authentication);
+        // Delegate content security, access resolution and top-up recommendations to
+        // service
+        ChapterAccessDTO access = chapterAccessService.checkAccess(novel, chapter, authentication);
 
         // If chapter is locked/unreadable, force isChapterRead to false
         if (!access.isReadable()) {
             isChapterRead = false;
         }
 
-        // Record reading history (UC-28) only when the member can actually read the chapter
+        // Record reading history (UC-28) only when the member can actually read the
+        // chapter
         if (isLoggedIn && access.isReadable()) {
             recordReadingHistory(authentication.getName(), chapter.getId());
         }
@@ -441,7 +465,8 @@ public class NovelController {
         if (authentication == null || !authentication.isAuthenticated()
                 || authentication instanceof AnonymousAuthenticationToken) {
             if (isAjax) {
-                return ResponseEntity.status(401).body(Map.of("success", false, "message", "Vui lòng đăng nhập để mở khóa chương"));
+                return ResponseEntity.status(401)
+                        .body(Map.of("success", false, "message", "Vui lòng đăng nhập để mở khóa chương"));
             }
             return "redirect:/login?redirect=/truyen/" + slug + "/chuong-" + chapterNumber;
         }
@@ -461,7 +486,8 @@ public class NovelController {
     }
 
     /**
-     * Records chapter access into the member's reading history without blocking the reading page
+     * Records chapter access into the member's reading history without blocking the
+     * reading page
      * if a persistence error (e.g. concurrent duplicate insert) occurs.
      *
      * @param email     authenticated member email

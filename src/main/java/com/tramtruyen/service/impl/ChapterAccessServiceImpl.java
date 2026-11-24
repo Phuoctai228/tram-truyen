@@ -72,7 +72,7 @@ public class ChapterAccessServiceImpl implements ChapterAccessService {
                 alreadyUnlocked = userChapterActivityRepository.findByUserAndChapter(user, chapter)
                         .map(act -> Boolean.TRUE.equals(act.getIsUnlocked()))
                         .orElse(false);
-                
+
                 String displayName = user.getFullName() != null && !user.getFullName().isBlank()
                         ? user.getFullName()
                         : email;

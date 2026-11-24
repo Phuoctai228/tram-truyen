@@ -8,13 +8,19 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.Map;
 
 import com.tramtruyen.security.CustomAuthenticationSuccessHandler;
 
 /**
- * Controller handling reader personal bookshelf web requests (M2-F06, M2-F07, M2-F08).
+ * Controller handling reader personal bookshelf web requests (M2-F06, M2-F07,
+ * M2-F08).
  */
 @Controller
 @RequiredArgsConstructor
@@ -36,7 +42,8 @@ public class BookshelfController {
             Authentication authentication,
             Model model) {
 
-        if (authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
+        if (authentication == null || !authentication.isAuthenticated()
+                || authentication instanceof AnonymousAuthenticationToken) {
             return "redirect:/login?redirect=/user/bookshelf";
         }
 
@@ -56,7 +63,8 @@ public class BookshelfController {
             Authentication authentication,
             RedirectAttributes redirectAttributes) {
 
-        if (authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
+        if (authentication == null || !authentication.isAuthenticated()
+                || authentication instanceof AnonymousAuthenticationToken) {
             String returnTarget = (source != null && source.startsWith("/")) ? source : ("/novel/" + novelId);
             return "redirect:/login?redirect=" + returnTarget;
         }
@@ -88,7 +96,8 @@ public class BookshelfController {
             Authentication authentication,
             RedirectAttributes redirectAttributes) {
 
-        if (authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
+        if (authentication == null || !authentication.isAuthenticated()
+                || authentication instanceof AnonymousAuthenticationToken) {
             String returnTarget = (source != null && source.startsWith("/")) ? source : ("/novel/" + novelId);
             return "redirect:/login?redirect=" + returnTarget;
         }
@@ -113,55 +122,57 @@ public class BookshelfController {
         return "redirect:/user/bookshelf";
     }
 
-    @PostMapping(value = "/api/user/bookshelf/{novelId}/toggle", produces = org.springframework.http.MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/api/user/bookshelf/{novelId}/toggle", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public org.springframework.http.ResponseEntity<?> toggleBookshelfAjax(
+    public ResponseEntity<?> toggleBookshelfAjax(
             @PathVariable Integer novelId,
             Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
-            return org.springframework.http.ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED)
-                    .body(java.util.Map.of("success", false, "message", "Vui lòng đăng nhập để thao tác Tủ sách."));
+        if (authentication == null || !authentication.isAuthenticated()
+                || authentication instanceof AnonymousAuthenticationToken) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("success", false, "message", "Vui lòng đăng nhập để thao tác Tủ sách."));
         }
         String email = authentication.getName();
         try {
             boolean inBookshelf = bookshelfService.isNovelInBookshelf(email, novelId);
             if (inBookshelf) {
                 bookshelfService.removeNovelFromBookshelf(email, novelId);
-                return org.springframework.http.ResponseEntity.ok(
-                        java.util.Map.of("success", true, "inBookshelf", false, "message", "Đã xóa truyện khỏi Tủ sách!"));
+                return ResponseEntity.ok(
+                        Map.of("success", true, "inBookshelf", false, "message", "Đã xóa truyện khỏi Tủ sách!"));
             } else {
                 bookshelfService.addNovelToBookshelf(email, novelId);
-                return org.springframework.http.ResponseEntity.ok(
-                        java.util.Map.of("success", true, "inBookshelf", true, "message", "Đã thêm truyện vào Tủ sách!"));
+                return ResponseEntity.ok(
+                        Map.of("success", true, "inBookshelf", true, "message", "Đã thêm truyện vào Tủ sách!"));
             }
         } catch (Exception e) {
-            return org.springframework.http.ResponseEntity.badRequest()
-                    .body(java.util.Map.of("success", false, "message", e.getMessage()));
+            return ResponseEntity.badRequest()
+                    .body(Map.of("success", false, "message", e.getMessage()));
         }
     }
 
-    @PostMapping(value = "/api/user/reading/complete-chapter", consumes = org.springframework.http.MediaType.APPLICATION_JSON_VALUE, produces = org.springframework.http.MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/api/user/reading/complete-chapter", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public org.springframework.http.ResponseEntity<?> completeChapter(
-            @RequestBody java.util.Map<String, Integer> payload,
+    public ResponseEntity<?> completeChapter(
+            @RequestBody Map<String, Integer> payload,
             Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
-            return org.springframework.http.ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED)
-                    .body(java.util.Map.of("success", false, "message", "Vui lòng đăng nhập để lưu tiến độ."));
+        if (authentication == null || !authentication.isAuthenticated()
+                || authentication instanceof AnonymousAuthenticationToken) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("success", false, "message", "Vui lòng đăng nhập để lưu tiến độ."));
         }
         Integer chapterId = payload != null ? payload.get("chapterId") : null;
         if (chapterId == null) {
-            return org.springframework.http.ResponseEntity.badRequest()
-                    .body(java.util.Map.of("success", false, "message", "Thiếu chapterId"));
+            return ResponseEntity.badRequest()
+                    .body(Map.of("success", false, "message", "Thiếu chapterId"));
         }
         String email = authentication.getName();
         try {
             bookshelfService.recordChapterRead(email, chapterId);
-            return org.springframework.http.ResponseEntity.ok(
-                    java.util.Map.of("success", true, "chapterId", chapterId, "message", "Đã lưu hoàn thành chương!"));
+            return ResponseEntity.ok(
+                    Map.of("success", true, "chapterId", chapterId, "message", "Đã lưu hoàn thành chương!"));
         } catch (Exception e) {
-            return org.springframework.http.ResponseEntity.status(org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(java.util.Map.of("success", false, "message", "Lỗi khi lưu tiến độ: " + e.getMessage()));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("success", false, "message", "Lỗi khi lưu tiến độ: " + e.getMessage()));
         }
     }
 
@@ -171,7 +182,8 @@ public class BookshelfController {
             Authentication authentication,
             RedirectAttributes redirectAttributes) {
 
-        if (authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
+        if (authentication == null || !authentication.isAuthenticated()
+                || authentication instanceof AnonymousAuthenticationToken) {
             return "redirect:/login?redirect=/user/bookshelf";
         }
 

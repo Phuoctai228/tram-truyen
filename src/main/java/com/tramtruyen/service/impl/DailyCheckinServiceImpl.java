@@ -30,7 +30,7 @@ import java.util.Optional;
 @Slf4j
 public class DailyCheckinServiceImpl implements DailyCheckinService {
 
-    private static final int[] REWARD_SCHEDULE = {5, 5, 10, 10, 15, 15, 30};
+    private static final int[] REWARD_SCHEDULE = { 5, 5, 10, 10, 15, 15, 30 };
 
     private final UserRepository userRepository;
     private final UserDailyCheckinRepository userDailyCheckinRepository;
@@ -49,7 +49,8 @@ public class DailyCheckinServiceImpl implements DailyCheckinService {
         Optional<UserDailyCheckin> todayCheckinOpt = userDailyCheckinRepository.findByUserAndCheckinDate(user, today);
         boolean isCheckedInToday = todayCheckinOpt.isPresent();
 
-        Optional<UserDailyCheckin> latestCheckinOpt = userDailyCheckinRepository.findTopByUserOrderByCheckinDateDesc(user);
+        Optional<UserDailyCheckin> latestCheckinOpt = userDailyCheckinRepository
+                .findTopByUserOrderByCheckinDateDesc(user);
 
         int streakCount = 0;
         int targetStreakForToday = 1;
@@ -119,7 +120,8 @@ public class DailyCheckinServiceImpl implements DailyCheckinService {
         }
 
         // Calculate new streak count
-        Optional<UserDailyCheckin> latestCheckinOpt = userDailyCheckinRepository.findTopByUserOrderByCheckinDateDesc(user);
+        Optional<UserDailyCheckin> latestCheckinOpt = userDailyCheckinRepository
+                .findTopByUserOrderByCheckinDateDesc(user);
         int newStreak = 1;
         if (latestCheckinOpt.isPresent()) {
             UserDailyCheckin latest = latestCheckinOpt.get();
@@ -179,7 +181,8 @@ public class DailyCheckinServiceImpl implements DailyCheckinService {
                 }
             } else {
                 status = "LOCKED";
-                label = (i == currentCycleDay + 1) ? "Ngày mai" : (isSpecial ? "Thưởng mốc: +" + reward + " Coin" : "Chưa mở");
+                label = (i == currentCycleDay + 1) ? "Ngày mai"
+                        : (isSpecial ? "Thưởng mốc: +" + reward + " Coin" : "Chưa mở");
             }
 
             items.add(DayRoadmapItemDTO.builder()
