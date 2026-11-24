@@ -28,7 +28,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Production implementation of ChapterUnlockService coordinating chapter verification and coin deduction.
+ * Service handling chapter unlocking and coin deduction.
  */
 @Service
 @RequiredArgsConstructor
@@ -41,6 +41,9 @@ public class ChapterUnlockServiceImpl implements ChapterUnlockService {
     private final WalletService walletService;
     private final ChapterAccessPolicy chapterAccessPolicy;
 
+    /**
+     * Checks if a chapter has already been unlocked by the user.
+     */
     @Override
     @Transactional(readOnly = true)
     public boolean isChapterUnlocked(String email, Integer chapterId) {
@@ -53,6 +56,7 @@ public class ChapterUnlockServiceImpl implements ChapterUnlockService {
             return false;
         }
 
+        // Free chapters are always accessible
         if (!chapterAccessPolicy.isPaid(chapter)) {
             return true;
         }
@@ -62,6 +66,7 @@ public class ChapterUnlockServiceImpl implements ChapterUnlockService {
             return false;
         }
 
+        // Admin/Staff has privileged access
         Set<String> roleNames = user.getRoles().stream()
                 .map(r -> r.getName())
                 .collect(Collectors.toSet());
@@ -74,6 +79,9 @@ public class ChapterUnlockServiceImpl implements ChapterUnlockService {
                 .orElse(false);
     }
 
+    /**
+     * Returns unlocked chapter IDs for a novel.
+     */
     @Override
     @Transactional(readOnly = true)
     public Set<Integer> getUnlockedChapterIds(String email, Integer novelId) {
@@ -85,6 +93,7 @@ public class ChapterUnlockServiceImpl implements ChapterUnlockService {
             return Collections.emptySet();
         }
 
+        // Admin/Staff has access to all chapters
         Set<String> roleNames = user.getRoles().stream()
                 .map(r -> r.getName())
                 .collect(Collectors.toSet());
@@ -97,6 +106,9 @@ public class ChapterUnlockServiceImpl implements ChapterUnlockService {
         return userChapterActivityRepository.findUnlockedChapterIdsByUserAndNovel(user.getId(), novelId);
     }
 
+    /**
+     * Unlocks a chapter and deducts coins from user's wallet.
+     */
     @Override
     @Transactional
     public UnlockResultDTO unlockChapter(String email, Integer chapterId, Boolean autoUnlockNext) {
@@ -109,10 +121,11 @@ public class ChapterUnlockServiceImpl implements ChapterUnlockService {
 
         validateChapterEligibility(chapter);
 
-        // Lock user first to prevent concurrent double-spend
+        // Pessimistic lock on user to prevent double-spending
         User lockedUser = userRepository.findByEmailWithLock(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy thông tin tài khoản"));
 
+        // Privileged account (Admin/Staff)
         Set<String> roleNames = lockedUser.getRoles().stream()
                 .map(r -> r.getName())
                 .collect(Collectors.toSet());
@@ -120,19 +133,23 @@ public class ChapterUnlockServiceImpl implements ChapterUnlockService {
             return buildPrivilegedResult(chapter, lockedUser, autoUnlockNext);
         }
 
-        Optional<UserChapterActivity> activityOpt =
-                userChapterActivityRepository.findByUserAndChapter(lockedUser, chapter);
+        // Already unlocked
+        Optional<UserChapterActivity> activityOpt = userChapterActivityRepository.findByUserAndChapter(lockedUser,
+                chapter);
         if (activityOpt.isPresent() && Boolean.TRUE.equals(activityOpt.get().getIsUnlocked())) {
             return buildAlreadyUnlockedResult(chapter, lockedUser, autoUnlockNext);
         }
 
+        // Free chapter
         if (!chapterAccessPolicy.isPaid(chapter)) {
             return buildFreeResult(chapter, lockedUser, autoUnlockNext, activityOpt);
         }
 
+        // Deduct coins and record unlock activity
         int price = chapter.getPrice();
         String description = buildTransactionDescription(chapter);
-        walletService.deductCoins(lockedUser, price, TransactionType.UNLOCK_CHAPTER.name(), chapter.getId(), description);
+        walletService.deductCoins(lockedUser, price, TransactionType.UNLOCK_CHAPTER.name(), chapter.getId(),
+                description);
 
         markChapterUnlocked(lockedUser, chapter, price, activityOpt);
         int remainingBalance = lockedUser.getWalletBalance() != null ? lockedUser.getWalletBalance() : 0;
@@ -151,6 +168,7 @@ public class ChapterUnlockServiceImpl implements ChapterUnlockService {
                 .build();
     }
 
+    // Validates novel and chapter eligibility
     private void validateChapterEligibility(Chapter chapter) {
         if (Boolean.TRUE.equals(chapter.getIsDeleted())) {
             throw new ResourceNotFoundException("Chương truyện đã bị xóa hoặc không khả dụng");
@@ -171,12 +189,14 @@ public class ChapterUnlockServiceImpl implements ChapterUnlockService {
         }
     }
 
+    // Builds wallet transaction description
     private String buildTransactionDescription(Chapter chapter) {
         String novelTitle = chapter.getNovel() != null ? chapter.getNovel().getTitle() : "";
         return String.format("Mở khóa Chương %d: %s (%s)",
                 chapter.getChapterNumber(), chapter.getTitle(), novelTitle);
     }
 
+    // Result for privileged account
     private UnlockResultDTO buildPrivilegedResult(Chapter chapter, User user, Boolean autoUnlockNext) {
         int balance = user.getWalletBalance() != null ? user.getWalletBalance() : 0;
         return UnlockResultDTO.builder()
@@ -191,6 +211,7 @@ public class ChapterUnlockServiceImpl implements ChapterUnlockService {
                 .build();
     }
 
+    // Result when already unlocked
     private UnlockResultDTO buildAlreadyUnlockedResult(Chapter chapter, User user, Boolean autoUnlockNext) {
         int balance = user.getWalletBalance() != null ? user.getWalletBalance() : 0;
         return UnlockResultDTO.builder()
@@ -205,8 +226,9 @@ public class ChapterUnlockServiceImpl implements ChapterUnlockService {
                 .build();
     }
 
+    // Result for free chapter
     private UnlockResultDTO buildFreeResult(Chapter chapter, User user, Boolean autoUnlockNext,
-                                            Optional<UserChapterActivity> existingOpt) {
+            Optional<UserChapterActivity> existingOpt) {
         markChapterUnlocked(user, chapter, 0, existingOpt);
         int balance = user.getWalletBalance() != null ? user.getWalletBalance() : 0;
         return UnlockResultDTO.builder()
@@ -221,8 +243,9 @@ public class ChapterUnlockServiceImpl implements ChapterUnlockService {
                 .build();
     }
 
+    // Saves chapter unlock record
     private void markChapterUnlocked(User user, Chapter chapter, int price,
-                                     Optional<UserChapterActivity> existingOpt) {
+            Optional<UserChapterActivity> existingOpt) {
         UserChapterActivity activity = existingOpt.orElseGet(() -> UserChapterActivity.builder()
                 .user(user)
                 .chapter(chapter)

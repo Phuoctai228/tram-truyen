@@ -27,10 +27,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * Production implementation of ReadingHistoryService respecting BR-14 (50 recent entries limit).
+ * Production implementation of ReadingHistoryService respecting BR-14 (50
+ * recent entries limit).
  * <p>
- * Reading history is driven by {@code readAt} (last access time of a chapter), while {@code isRead}
- * keeps its meaning of "chapter completed" used by the progress bar and bookshelf.
+ * Reading history is driven by {@code readAt} (last access time of a chapter),
+ * while {@code isRead}
+ * keeps its meaning of "chapter completed" used by the progress bar and
+ * bookshelf.
  */
 @Service
 @RequiredArgsConstructor
@@ -56,8 +59,8 @@ public class ReadingHistoryServiceImpl implements ReadingHistoryService {
         int effectivePage = Math.max(0, page);
         Pageable pageable = PageRequest.of(effectivePage, effectiveSize);
 
-        Page<UserChapterActivity> activitiesPage =
-                userChapterActivityRepository.findAllByUserAndReadAtIsNotNullOrderByReadAtDesc(user, pageable);
+        Page<UserChapterActivity> activitiesPage = userChapterActivityRepository
+                .findAllByUserAndReadAtIsNotNullOrderByReadAtDesc(user, pageable);
 
         return activitiesPage.map(this::mapToHistoryDTO);
     }
@@ -83,7 +86,8 @@ public class ReadingHistoryServiceImpl implements ReadingHistoryService {
     public void removeHistoryItem(String email, Integer chapterId) {
         User user = getUserByEmail(email);
 
-        Optional<UserChapterActivity> activityOpt = userChapterActivityRepository.findByUserAndChapterId(user, chapterId);
+        Optional<UserChapterActivity> activityOpt = userChapterActivityRepository.findByUserAndChapterId(user,
+                chapterId);
         if (activityOpt.isPresent()) {
             removeFromHistory(activityOpt.get());
             log.info("Removed chapter {} from reading history for user {}", chapterId, email);
@@ -95,8 +99,8 @@ public class ReadingHistoryServiceImpl implements ReadingHistoryService {
     public void clearHistory(String email) {
         User user = getUserByEmail(email);
 
-        Page<UserChapterActivity> activities =
-                userChapterActivityRepository.findAllByUserAndReadAtIsNotNullOrderByReadAtDesc(
+        Page<UserChapterActivity> activities = userChapterActivityRepository
+                .findAllByUserAndReadAtIsNotNullOrderByReadAtDesc(
                         user, Pageable.unpaged());
 
         for (UserChapterActivity activity : activities.getContent()) {
@@ -106,7 +110,8 @@ public class ReadingHistoryServiceImpl implements ReadingHistoryService {
     }
 
     /**
-     * Removes an activity from reading history. Unlocked VIP chapters keep their ownership record
+     * Removes an activity from reading history. Unlocked VIP chapters keep their
+     * ownership record
      * (only read flags are reset); other records are deleted.
      *
      * @param activity activity to remove from history

@@ -51,11 +51,11 @@ public interface NovelRepository extends JpaRepository<Novel, Integer>, JpaSpeci
            "ORDER BY n.averageRating DESC, n.views DESC")
     List<Novel> findTopRecommendedNovels(@Param("publicStatuses") Collection<String> publicStatuses, Pageable pageable);
 
-    // Truyện đề cử tự động (2 hàng x 6 cột trên trang chủ)
+    // Truyện đề cử tự động
     List<Novel> findTop12ByIsDeletedFalseOrderByAverageRatingDesc();
     List<Novel> findTop10ByIsDeletedFalseOrderByAverageRatingDesc();
 
-    // Lấy truyện mới đăng gần đây (2 hàng x 6 cột trên trang chủ)
+    // Lấy truyện mới đăng gần đây
     List<Novel> findTop12ByIsDeletedFalseOrderByCreatedAtDesc();
 
     boolean existsByCategoriesIdAndIsDeletedFalse(Integer categoryId);

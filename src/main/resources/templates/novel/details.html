@@ -266,17 +266,18 @@
                 </div>
 
                 <div id="chaptersContainer" class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">
-                  <a th:each="chap : ${chapters}" th:href="@{/truyen/{slug}/chuong-{chapterNumber}(slug=${novel.slug}, chapterNumber=${chap.chapterNumber})}" 
-                     class="flex items-center justify-between py-2.5 border-b border-outline-variant/20 hover:text-primary group transition-colors">
+                  <a th:each="chap : ${chapters}"
+                    th:href="@{/truyen/{slug}/chuong-{chapterNumber}(slug=${novel.slug}, chapterNumber=${chap.chapterNumber})}"
+                    class="flex items-center justify-between py-2.5 border-b border-outline-variant/20 hover:text-primary group transition-colors">
                     <span class="min-w-0 pr-2 flex flex-col">
                       <span class="text-sm font-medium text-on-surface-variant group-hover:text-primary truncate"
-                            th:text="'Chương ' + ${chap.chapterNumber} + ': ' + ${chap.title}">
+                        th:text="'Chương ' + ${chap.chapterNumber} + ': ' + ${chap.title}">
                         Chương 1
                       </span>
                       <span th:if="${chap.status == 'PUBLISHED_VIP' and chap.price != null and chap.price > 0
                                    and chap.autoUnlockAt != null and chap.autoUnlockAt.isAfter(scheduleNow)}"
-                            class="text-[11px] text-[#b45309] mt-0.5">
-                        Miễn phí lúc <span th:text="${#temporals.format(chap.autoUnlockAt, 'dd/MM/yyyy HH:mm')}"</span>
+                        class="text-[11px] text-[#b45309] mt-0.5">
+                        Miễn phí lúc <span th:text="${#temporals.format(chap.autoUnlockAt, 'dd/MM/yyyy HH:mm')}"></span>
                       </span>
                     </span>
                     <span

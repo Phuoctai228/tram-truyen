@@ -29,8 +29,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.tramtruyen.util.DateTimeUtils;
+
 /**
- * Production implementation of BookshelfService coordinating domain repositories
+ * Production implementation of BookshelfService coordinating domain
+ * repositories
  * and calculating real reading progress without hardcoded values.
  */
 @Service
@@ -53,7 +56,8 @@ public class BookshelfServiceImpl implements BookshelfService {
 
     @Override
     @Transactional(readOnly = true)
-    public BookshelfPageDTO getBookshelfPage(String email, String filter, String query, String sort, int page, int size) {
+    public BookshelfPageDTO getBookshelfPage(String email, String filter, String query, String sort, int page,
+            int size) {
         User user = getUserByEmail(email);
         List<Bookshelf> bookshelves = bookshelfRepository.findAllByUserWithNovel(user);
 
@@ -194,11 +198,13 @@ public class BookshelfServiceImpl implements BookshelfService {
         User user = getUserByEmail(email);
         Novel novel = getNovelById(novelId);
 
-        List<Chapter> chapters = chapterRepository.findAllByNovelIdAndIsDeletedFalseOrderByChapterNumberAsc(novel.getId());
+        List<Chapter> chapters = chapterRepository
+                .findAllByNovelIdAndIsDeletedFalseOrderByChapterNumberAsc(novel.getId());
         LocalDateTime now = LocalDateTime.now();
 
         for (Chapter chapter : chapters) {
-            Optional<UserChapterActivity> activityOpt = userChapterActivityRepository.findByUserAndChapter(user, chapter);
+            Optional<UserChapterActivity> activityOpt = userChapterActivityRepository.findByUserAndChapter(user,
+                    chapter);
             boolean isVipLocked = (chapter.getPrice() != null && chapter.getPrice() > 0)
                     && (activityOpt.isEmpty() || !Boolean.TRUE.equals(activityOpt.get().getIsUnlocked()));
             if (isVipLocked) {
@@ -261,13 +267,15 @@ public class BookshelfServiceImpl implements BookshelfService {
                 return false;
             }
             Chapter chapter = chapterOpt.get();
-            Optional<UserChapterActivity> activityOpt = userChapterActivityRepository.findByUserAndChapter(user, chapter);
+            Optional<UserChapterActivity> activityOpt = userChapterActivityRepository.findByUserAndChapter(user,
+                    chapter);
             if (activityOpt.isEmpty()) {
                 return false;
             }
             UserChapterActivity activity = activityOpt.get();
             // If it's a VIP chapter and not unlocked, it cannot be considered read
-            if (chapter.getPrice() != null && chapter.getPrice() > 0 && !Boolean.TRUE.equals(activity.getIsUnlocked())) {
+            if (chapter.getPrice() != null && chapter.getPrice() > 0
+                    && !Boolean.TRUE.equals(activity.getIsUnlocked())) {
                 return false;
             }
             return Boolean.TRUE.equals(activity.getIsRead());
@@ -323,9 +331,12 @@ public class BookshelfServiceImpl implements BookshelfService {
         boolean hasVip = chapterRepository.existsByNovelIdAndPriceGreaterThanAndIsDeletedFalse(novel.getId(), 0);
 
         // Reading activity lookup
-        Optional<UserChapterActivity> lastActivityOpt =
-                userChapterActivityRepository.findFirstByUserAndChapter_NovelAndReadAtIsNotNullOrderByReadAtDescChapter_ChapterNumberDesc(user, novel)
-                        .or(() -> userChapterActivityRepository.findFirstByUserAndChapter_NovelAndIsReadTrueOrderByReadAtDescChapter_ChapterNumberDesc(user, novel));
+        Optional<UserChapterActivity> lastActivityOpt = userChapterActivityRepository
+                .findFirstByUserAndChapter_NovelAndReadAtIsNotNullOrderByReadAtDescChapter_ChapterNumberDesc(user,
+                        novel)
+                .or(() -> userChapterActivityRepository
+                        .findFirstByUserAndChapter_NovelAndIsReadTrueOrderByReadAtDescChapter_ChapterNumberDesc(user,
+                                novel));
         long readCount = userChapterActivityRepository.countByUserAndChapter_NovelAndIsReadTrue(user, novel);
 
         int currentChapterNumber = 0;
@@ -394,7 +405,7 @@ public class BookshelfServiceImpl implements BookshelfService {
                 .isCaughtUp(isCaughtUp)
                 .hasVipChapters(hasVip)
                 .addedAt(bookshelf.getAddedAt())
-                .relativeTime(com.tramtruyen.util.DateTimeUtils.formatRelativeTime(lastTime))
+                .relativeTime(DateTimeUtils.formatRelativeTime(lastTime))
                 .readUrl(readUrl)
                 .build();
     }
