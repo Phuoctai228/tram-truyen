@@ -29,16 +29,19 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public Category createCategory(CategoryRequestDTO request) {
-        if (categoryRepository.existsByName(request.getName())) {
+        String cleanSlug = request.getSlug() != null ? request.getSlug().trim().toLowerCase() : "";
+        String cleanName = request.getName() != null ? request.getName().trim() : "";
+
+        if (categoryRepository.existsByName(cleanName)) {
             throw new IllegalArgumentException("Tên thể loại đã tồn tại");
         }
-        if (categoryRepository.existsBySlug(request.getSlug())) {
+        if (categoryRepository.existsBySlug(cleanSlug)) {
             throw new IllegalArgumentException("Slug đã tồn tại");
         }
 
         Category category = Category.builder()
-                .name(request.getName())
-                .slug(request.getSlug())
+                .name(cleanName)
+                .slug(cleanSlug)
                 .description(request.getDescription())
                 .build();
         return categoryRepository.save(category);
@@ -49,15 +52,18 @@ public class CategoryServiceImpl implements CategoryService {
     public Category updateCategory(Integer id, CategoryRequestDTO request) {
         Category category = getCategoryById(id);
 
-        if (categoryRepository.existsByNameAndIdNot(request.getName(), id)) {
+        String cleanSlug = request.getSlug() != null ? request.getSlug().trim().toLowerCase() : "";
+        String cleanName = request.getName() != null ? request.getName().trim() : "";
+
+        if (categoryRepository.existsByNameAndIdNot(cleanName, id)) {
             throw new IllegalArgumentException("Tên thể loại đã tồn tại");
         }
-        if (categoryRepository.existsBySlugAndIdNot(request.getSlug(), id)) {
+        if (categoryRepository.existsBySlugAndIdNot(cleanSlug, id)) {
             throw new IllegalArgumentException("Slug đã tồn tại");
         }
 
-        category.setName(request.getName());
-        category.setSlug(request.getSlug());
+        category.setName(cleanName);
+        category.setSlug(cleanSlug);
         category.setDescription(request.getDescription());
 
         return categoryRepository.save(category);
