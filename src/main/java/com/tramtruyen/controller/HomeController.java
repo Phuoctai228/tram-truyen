@@ -1,77 +1,100 @@
 package com.tramtruyen.controller;
 
 import com.tramtruyen.dto.HomePageDTO;
+import com.tramtruyen.dto.LeaderboardItemDTO;
+import com.tramtruyen.dto.NovelSummaryDTO;
+import com.tramtruyen.service.BookshelfService;
 import com.tramtruyen.service.HomeService;
+import com.tramtruyen.service.LeaderboardService;
+import com.tramtruyen.service.SystemSettingService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
 public class HomeController {
 
     private final HomeService homeService;
-    private final com.tramtruyen.service.BookshelfService bookshelfService;
-    private final com.tramtruyen.service.SystemSettingService systemSettingService;
-    private final com.tramtruyen.service.LeaderboardService leaderboardService;
+    private final BookshelfService bookshelfService;
+    private final SystemSettingService systemSettingService;
+    private final LeaderboardService leaderboardService;
 
     @GetMapping("/")
-    public String home(org.springframework.security.core.Authentication authentication, Model model) {
+    public String home(Authentication authentication, Model model) {
         HomePageDTO homePageData = homeService.getHomePageData();
-        
+        bindHomePageDataToModel(model, homePageData);
+
+        List<NovelSummaryDTO> heroNovels = resolveHeroNovels(homePageData.getHotNovels(), 5);
+        model.addAttribute("heroNovels", heroNovels);
+        model.addAttribute("heroInBookshelf", isHeroInBookshelf(authentication, heroNovels));
+
+        return "home/index";
+    }
+
+    private void bindHomePageDataToModel(Model model, HomePageDTO homePageData) {
         model.addAttribute("categories", homePageData.getCategories());
         model.addAttribute("recentlyUpdatedNovels", homePageData.getRecentlyUpdatedNovels());
         model.addAttribute("hotNovels", homePageData.getHotNovels());
         model.addAttribute("completedNovels", homePageData.getCompletedNovels());
         model.addAttribute("recommendedNovels", homePageData.getRecommendedNovels());
         model.addAttribute("newNovels", homePageData.getNewNovels());
-        
-        java.util.List<com.tramtruyen.dto.NovelSummaryDTO> hotList = homePageData.getHotNovels();
-        java.util.List<com.tramtruyen.dto.NovelSummaryDTO> heroNovels = java.util.Collections.emptyList();
-        
-        if (hotList != null && !hotList.isEmpty()) {
-            java.util.Map<Integer, com.tramtruyen.dto.NovelSummaryDTO> summaryMap = hotList.stream()
-                    .collect(java.util.stream.Collectors.toMap(com.tramtruyen.dto.NovelSummaryDTO::getId, dto -> dto, (existing, replacing) -> existing));
-            
-            java.util.List<com.tramtruyen.dto.LeaderboardItemDTO> weekTopItems = leaderboardService.getLeaderboardItems("week", 5);
-            java.util.List<com.tramtruyen.dto.NovelSummaryDTO> sortedHeroes = new java.util.ArrayList<>();
-            java.util.Set<Integer> addedIds = new java.util.HashSet<>();
+    }
 
-            if (weekTopItems != null) {
-                for (com.tramtruyen.dto.LeaderboardItemDTO item : weekTopItems) {
-                    if (item.getNovelId() != null && summaryMap.containsKey(item.getNovelId())) {
-                        sortedHeroes.add(summaryMap.get(item.getNovelId()));
-                        addedIds.add(item.getNovelId());
-                    }
-                }
-            }
-
-            // Fallback: nếu chưa đủ 5 truyện từ leaderboard tuần, bổ sung từ hotList gốc
-            for (com.tramtruyen.dto.NovelSummaryDTO dto : hotList) {
-                if (sortedHeroes.size() >= 5) break;
-                if (!addedIds.contains(dto.getId())) {
-                    sortedHeroes.add(dto);
-                    addedIds.add(dto.getId());
-                }
-            }
-
-            heroNovels = sortedHeroes;
+    private List<NovelSummaryDTO> resolveHeroNovels(List<NovelSummaryDTO> hotList, int limit) {
+        if (hotList == null || hotList.isEmpty()) {
+            return Collections.emptyList();
         }
 
-        model.addAttribute("heroNovels", heroNovels);
-        
-        boolean heroInBookshelf = false;
+        Map<Integer, NovelSummaryDTO> summaryMap = hotList.stream()
+                .collect(Collectors.toMap(NovelSummaryDTO::getId, dto -> dto, (existing, replacing) -> existing));
+
+        List<LeaderboardItemDTO> weekTopItems = leaderboardService.getLeaderboardItems("week", limit);
+        List<NovelSummaryDTO> heroNovels = new ArrayList<>();
+        Set<Integer> addedIds = new HashSet<>();
+
+        if (weekTopItems != null) {
+            for (LeaderboardItemDTO item : weekTopItems) {
+                if (item.getNovelId() != null && summaryMap.containsKey(item.getNovelId())) {
+                    heroNovels.add(summaryMap.get(item.getNovelId()));
+                    addedIds.add(item.getNovelId());
+                }
+            }
+        }
+
+        // Fallback: nếu chưa đủ limit từ leaderboard tuần, bổ sung từ hotList gốc
+        for (NovelSummaryDTO dto : hotList) {
+            if (heroNovels.size() >= limit) {
+                break;
+            }
+            if (addedIds.add(dto.getId())) {
+                heroNovels.add(dto);
+            }
+        }
+
+        return heroNovels;
+    }
+
+    private boolean isHeroInBookshelf(Authentication authentication, List<NovelSummaryDTO> heroNovels) {
         if (authentication != null && authentication.isAuthenticated()
-                && !(authentication instanceof org.springframework.security.authentication.AnonymousAuthenticationToken)) {
-            if (!heroNovels.isEmpty()) {
+                && !(authentication instanceof AnonymousAuthenticationToken)) {
+            if (heroNovels != null && !heroNovels.isEmpty()) {
                 Integer heroNovelId = heroNovels.get(0).getId();
-                heroInBookshelf = bookshelfService.isNovelInBookshelf(authentication.getName(), heroNovelId);
+                return bookshelfService.isNovelInBookshelf(authentication.getName(), heroNovelId);
             }
         }
-        model.addAttribute("heroInBookshelf", heroInBookshelf);
-        
-        return "home/index";
+        return false;
     }
 
     @GetMapping("/terms")
