@@ -47,7 +47,7 @@ public class ChapterUnlockServiceImpl implements ChapterUnlockService {
     @Override
     @Transactional(readOnly = true)
     public boolean isChapterUnlocked(String email, Integer chapterId) {
-        if (email == null || chapterId == null) {
+        if (chapterId == null) {
             return false;
         }
 
@@ -56,9 +56,14 @@ public class ChapterUnlockServiceImpl implements ChapterUnlockService {
             return false;
         }
 
-        // Free chapters are always accessible
+        // Free chapters are always accessible (even for unauthenticated visitors)
         if (!chapterAccessPolicy.isPaid(chapter)) {
             return true;
+        }
+
+        // For paid/VIP chapters, an authenticated user is required
+        if (email == null || email.isBlank()) {
+            return false;
         }
 
         User user = userRepository.findByEmail(email).orElse(null);
