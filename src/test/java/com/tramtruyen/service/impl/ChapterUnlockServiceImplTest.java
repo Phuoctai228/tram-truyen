@@ -72,8 +72,25 @@ class ChapterUnlockServiceImplTest {
         when(chapterRepository.findById(1)).thenReturn(Optional.of(freeChapter));
 
         boolean unlocked = chapterUnlockService.isChapterUnlocked("user@example.com", 1);
+        boolean guestUnlocked = chapterUnlockService.isChapterUnlocked(null, 1);
 
         assertThat(unlocked).isTrue();
+        assertThat(guestUnlocked).isTrue();
+    }
+
+    @Test
+    void isChapterUnlockedReturnsFalseForGuestOnVipChapter() {
+        Chapter vipChapter = Chapter.builder()
+                .id(2)
+                .price(50)
+                .status(ChapterStatus.PUBLISHED_VIP.name())
+                .isDeleted(false)
+                .build();
+        when(chapterRepository.findById(2)).thenReturn(Optional.of(vipChapter));
+
+        boolean unlocked = chapterUnlockService.isChapterUnlocked(null, 2);
+
+        assertThat(unlocked).isFalse();
     }
 
     @Test
