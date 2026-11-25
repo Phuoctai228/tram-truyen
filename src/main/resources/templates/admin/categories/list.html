@@ -121,11 +121,12 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Slug đường dẫn <span style="color:red">*</span> <small style="color: var(--amber);">⚡ Tự sinh
-                            tự động</small></label>
+                    <label>Slug đường dẫn <span style="color:red">*</span> <small style="color: var(--amber);">⚡ a-z, 0-9 và dấu '-'</small></label>
                     <div class="slug-input">
                         <div class="slug-prefix">/the-loai/</div>
-                        <input type="text" th:field="*{slug}" id="catSlug" placeholder="huyen-huyen-ky-ao" required>
+                        <input type="text" th:field="*{slug}" id="catSlug" placeholder="huyen-huyen-ky-ao" 
+                               pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$" 
+                               title="Slug chỉ được chứa chữ thường (a-z), chữ số (0-9) và dấu gạch nối (-), ví dụ: tien-hiep" required>
                     </div>
                     <span class="error-message" th:if="${#fields.hasErrors('slug')}" th:errors="*{slug}"></span>
                 </div>
